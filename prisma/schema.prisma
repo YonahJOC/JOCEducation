@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+enum Role {
+  teacher
+  coordinator
+  admin
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  role          Role      @default(teacher)
+  createdAt     DateTime  @default(now())
+
+  accounts      Account[]
+  sessions      Session[]
+  school        School?   @relation(fields: [schoolId], references: [id])
+  schoolId      String?
+
+  savedLessons  SavedLesson[]
+  ideas         Idea[]
+  ideaLikes     IdeaLike[]
+  cartItems     CartItem[]
+  orders        Order[]
+  subscription  Subscription?
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── School ───────────────────────────────────────────────────────────────────
+
+model School {
+  id           String  @id @default(cuid())
+  name         String
+  city         String?
+  region       String?
+  enrollmentBand EnrollmentBand @default(under150)
+
+  users        User[]
+  subscription Subscription?
+  ideas        Idea[]
+  orders       Order[]
+}
+
+enum EnrollmentBand {
+  under150
+  s150to400
+  over400
+}
+
+// ─── Subscription ─────────────────────────────────────────────────────────────
+
+enum SubscriptionTierKey {
+  single_teacher
+  joc_education
+  joc_app
+  full_partnership
+}
+
+enum BillingCycle {
+  monthly
+  annual
+}
+
+model Subscription {
+  id         String              @id @default(cuid())
+  tier       SubscriptionTierKey
+  billing    BillingCycle        @default(monthly)
+  status     String              @default("active") // active | canceled | past_due
+  stripeId   String?             @unique
+  startedAt  DateTime            @default(now())
+  renewsAt   DateTime?
+
+  school   School? @relation(fields: [schoolId], references: [id])
+  schoolId String? @unique
+  user     User?   @relation(fields: [userId], references: [id])
+  userId   String? @unique
+}
+
+// ─── Content ──────────────────────────────────────────────────────────────────
+
+enum GradeBand {
+  elementary
+  middle
+  high
+}
+
+enum LessonTime {
+  t20
+  t40
+  t60
+  t90plus
+}
+
+enum PrepLevel {
+  minimal
+  moderate
+  substantial
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  theme       String
+  description String     @db.Text
+  body        String?    @db.Text
+  gradeBand   GradeBand
+  timeMinutes Int
+  timeLabel   LessonTime
+  prepLevel   PrepLevel
+  files       Json       @default("[]") // [{ name, url, type }]
+  published   Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  savedBy SavedLesson[]
+}
+
+model SavedLesson {
+  userId   String
+  lessonId String
+  savedAt  DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([userId, lessonId])
+}
+
+enum ResourceCategory {
+  worksheets
+  activities
+  posters
+  videos
+  source_sheets
+}
+
+model Resource {
+  id          String           @id @default(cuid())
+  title       String
+  description String           @db.Text
+  category    ResourceCategory
+  fileUrl     String?
+  videoUrl    String?
+  published   Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+}
+
+// ─── Teachers' Board ──────────────────────────────────────────────────────────
+
+model Idea {
+  id        String   @id @default(cuid())
+  title     String
+  body      String   @db.Text
+  region    String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+  school   School? @relation(fields: [schoolId], references: [id])
+  schoolId String?
+  schoolName String?
+
+  likes IdeaLike[]
+}
+
+model IdeaLike {
+  userId String
+  ideaId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  idea Idea @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  @@id([userId, ideaId])
+}
+
+// ─── Shop ─────────────────────────────────────────────────────────────────────
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  priceCents  Int
+  imageUrl    String?
+  published   Boolean @default(true)
+
+  cartItems CartItem[]
+  orderItems OrderItem[]
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  quantity  Int    @default(1)
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  status        String   @default("pending") // pending | paid | shipped | canceled
+  totalCents    Int
+  poNumber      String?  // purchase order path
+  stripeId      String?
+  createdAt     DateTime @default(now())
+
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String
+  school   School? @relation(fields: [schoolId], references: [id])
+  schoolId String?
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  quantity   Int
+  priceCents Int
+
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+// ─── Pricing (per-program table) ──────────────────────────────────────────────
+
+enum ProgramKey {
+  kindness_booth
+  bake_for_chesed
+  just_one_tutor
+  chesed_match
+  joc_center_trip
+  assembly_event
+}
+
+model ProgramPrice {
+  programKey    ProgramKey
+  tierKey       SubscriptionTierKey
+  priceCents    Int?    // null = Not available; 0 = Included
+  isIncluded    Boolean @default(false)
+  isAvailable   Boolean @default(true)
+
+  @@id([programKey, tierKey])
+}

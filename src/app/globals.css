@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-ink:          #10233F;
+  --color-ink-deep:     #0B1A31;
+  --color-blue:         #1E47B8;
+  --color-blue-light:   #2C7AC9;
+  --color-orange:       #F7941D;
+  --color-orange-text:  #C96C00;
+  --color-orange-light: #FFB55E;
+  --color-orange-pale:  #FFC98A;
+  --color-paper:        #FBF9F4;
+  --color-panel:        #F4F7FD;
+  --color-input:        #F8FAFE;
+  --color-amber-bg:     #FDEEDA;
+  --color-amber-text:   #9A5405;
+  --color-joc-green:    #1B7F4B;
+  --color-white:        #FFFFFF;
+
+  /* Typography */
+  --font-outfit:      'Outfit', sans-serif;
+  --font-newsreader:  'Newsreader', serif;
+
+  /* Border radius */
+  --radius-pill:   9999px;
+  --radius-card-lg: 26px;
+  --radius-card:    20px;
+  --radius-inner:   18px;
+  --radius-input:   12px;
+  --radius-chip:    8px;
+
+  /* Shadow */
+  --shadow-hover: 0 10px 26px rgba(16,35,63,.11);
+
+  /* Max width */
+  --width-content: 1280px;
+}
+
+:root {
+  --border-subtle: rgba(16,35,63,.10);
+  --ink-body:      rgba(16,35,63,.72);
+  --ink-muted:     rgba(16,35,63,.62);
+}
+
+html {
+  font-family: var(--font-outfit);
+  background-color: #FBF9F4;
+  color: #10233F;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: #FBF9F4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Suppress dark mode — design is light only */
+@media (prefers-color-scheme: dark) {}
