@@ -18,9 +18,32 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "JOC Education — Educating Towards Chesed",
+  title: {
+    default: "JOC Education — Educating Towards Chesed",
+    template: "%s — JOC Education",
+  },
   description:
-    "Lesson plans, resources, and programs for schools. Educating Towards Chesed — Just One Student at a Time.",
+    "Lesson plans, chesed programs, and classroom resources for Jewish schools. Educating Towards Chesed — Just One Student at a Time.",
+  keywords: ["Jewish education", "chesed curriculum", "lesson plans", "Jewish schools", "JOC", "middos", "character education"],
+  authors: [{ name: "JustOneChesed" }],
+  openGraph: {
+    type: "website",
+    siteName: "JOC Education",
+    title: "JOC Education — Educating Towards Chesed",
+    description:
+      "Lesson plans, chesed programs, and classroom resources for Jewish schools. Educating Towards Chesed — Just One Student at a Time.",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "JOC Education — Educating Towards Chesed",
+    description:
+      "Lesson plans, chesed programs, and classroom resources for Jewish schools.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

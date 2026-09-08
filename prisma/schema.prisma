@@ -1,3 +1,7 @@
+// JOC Education — Prisma schema
+// Run: npx prisma migrate dev --name init
+// Requires .env.local with DATABASE_URL (pooler port 6543) and DIRECT_URL (direct port 5432)
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,291 +12,271 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─── Auth ─────────────────────────────────────────────────────────────────────
-
-enum Role {
-  teacher
-  coordinator
-  admin
-}
+// ─── NextAuth v5 / @auth/prisma-adapter ──────────────────────────────────────
 
 model User {
   id            String    @id @default(cuid())
+  name          String?
   email         String    @unique
   emailVerified DateTime?
-  name          String?
   image         String?
-  role          Role      @default(teacher)
-  createdAt     DateTime  @default(now())
+  role          Role      @default(TEACHER)
+  schoolName    String?
+  schoolRegion  String?
 
-  accounts      Account[]
-  sessions      Session[]
-  school        School?   @relation(fields: [schoolId], references: [id])
-  schoolId      String?
+  accounts     Account[]
+  sessions     Session[]
+  savedLessons SavedLesson[]
+  boardPosts   BoardPost[]
+  boardLikes   BoardLike[]
+  subscription Subscription?
 
-  savedLessons  SavedLesson[]
-  ideas         Idea[]
-  ideaLikes     IdeaLike[]
-  cartItems     CartItem[]
-  orders        Order[]
-  subscription  Subscription?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([provider, providerAccountId])
 }
 
 model Session {
-  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
   identifier String
-  token      String   @unique
+  token      String
   expires    DateTime
 
-  @@unique([identifier, token])
+  @@id([identifier, token])
 }
 
-// ─── School ───────────────────────────────────────────────────────────────────
-
-model School {
-  id           String  @id @default(cuid())
-  name         String
-  city         String?
-  region       String?
-  enrollmentBand EnrollmentBand @default(under150)
-
-  users        User[]
-  subscription Subscription?
-  ideas        Idea[]
-  orders       Order[]
-}
-
-enum EnrollmentBand {
-  under150
-  s150to400
-  over400
-}
-
-// ─── Subscription ─────────────────────────────────────────────────────────────
-
-enum SubscriptionTierKey {
-  single_teacher
-  joc_education
-  joc_app
-  full_partnership
-}
-
-enum BillingCycle {
-  monthly
-  annual
-}
+// ─── Subscriptions ────────────────────────────────────────────────────────────
 
 model Subscription {
-  id         String              @id @default(cuid())
-  tier       SubscriptionTierKey
-  billing    BillingCycle        @default(monthly)
-  status     String              @default("active") // active | canceled | past_due
-  stripeId   String?             @unique
-  startedAt  DateTime            @default(now())
-  renewsAt   DateTime?
+  id             String             @id @default(cuid())
+  userId         String             @unique
+  plan           Plan
+  status         SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId  String?         @unique
+  stripeSubId       String?         @unique
+  currentPeriodEnd  DateTime?
+  seats             Int             @default(1)
 
-  school   School? @relation(fields: [schoolId], references: [id])
-  schoolId String? @unique
-  user     User?   @relation(fields: [userId], references: [id])
-  userId   String? @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// ─── Content ──────────────────────────────────────────────────────────────────
+// ─── Lesson Plans ─────────────────────────────────────────────────────────────
 
-enum GradeBand {
-  elementary
-  middle
-  high
-}
-
-enum LessonTime {
-  t20
-  t40
-  t60
-  t90plus
-}
-
-enum PrepLevel {
-  minimal
-  moderate
-  substantial
-}
-
-model Lesson {
-  id          String     @id @default(cuid())
-  slug        String     @unique
-  title       String
+model LessonPlan {
+  id          Int          @id @default(autoincrement())
+  slug        String       @unique
   theme       String
-  description String     @db.Text
-  body        String?    @db.Text
-  gradeBand   GradeBand
+  title       String
+  description String       @db.Text
+  grade       Grade
   timeMinutes Int
-  timeLabel   LessonTime
-  prepLevel   PrepLevel
-  files       Json       @default("[]") // [{ name, url, type }]
-  published   Boolean    @default(true)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  prep        PrepLevel
+  published   Boolean      @default(true)
+  featured    Boolean      @default(false)
 
-  savedBy SavedLesson[]
+  files       LessonFile[]
+  objectives  LessonObjective[]
+  materials   LessonMaterial[]
+  steps       LessonStep[]
+  discussion  LessonDiscussion[]
+  savedBy     SavedLesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LessonFile {
+  id       Int    @id @default(autoincrement())
+  lessonId Int
+  name     String
+  url      String
+
+  lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+}
+
+model LessonObjective {
+  id       Int    @id @default(autoincrement())
+  lessonId Int
+  text     String
+  order    Int    @default(0)
+
+  lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+}
+
+model LessonMaterial {
+  id       Int    @id @default(autoincrement())
+  lessonId Int
+  text     String
+  order    Int    @default(0)
+
+  lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+}
+
+model LessonStep {
+  id          Int    @id @default(autoincrement())
+  lessonId    Int
+  duration    String
+  title       String
+  description String @db.Text
+  order       Int    @default(0)
+
+  lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+}
+
+model LessonDiscussion {
+  id       Int    @id @default(autoincrement())
+  lessonId Int
+  text     String @db.Text
+  order    Int    @default(0)
+
+  lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
 }
 
 model SavedLesson {
   userId   String
-  lessonId String
-  savedAt  DateTime @default(now())
+  lessonId Int
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  savedAt DateTime @default(now())
 
   @@id([userId, lessonId])
 }
 
-enum ResourceCategory {
-  worksheets
-  activities
-  posters
-  videos
-  source_sheets
-}
+// ─── Resources ────────────────────────────────────────────────────────────────
 
 model Resource {
-  id          String           @id @default(cuid())
+  id          Int          @id @default(autoincrement())
+  tag         String
   title       String
-  description String           @db.Text
-  category    ResourceCategory
+  description String       @db.Text
   fileUrl     String?
-  videoUrl    String?
-  published   Boolean          @default(true)
-  createdAt   DateTime         @default(now())
+  published   Boolean      @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ─── Teachers' Board ──────────────────────────────────────────────────────────
 
-model Idea {
-  id        String   @id @default(cuid())
-  title     String
-  body      String   @db.Text
-  region    String
-  approved  Boolean  @default(false)
+model BoardPost {
+  id         String      @id @default(cuid())
+  userId     String
+  title      String
+  body       String      @db.Text
+  grade      Grade
+  region     String
+  schoolName String
+  likes      Int         @default(0)
+  approved   Boolean     @default(true)
+
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likedBy BoardLike[]
+
   createdAt DateTime @default(now())
-
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String
-  school   School? @relation(fields: [schoolId], references: [id])
-  schoolId String?
-  schoolName String?
-
-  likes IdeaLike[]
+  updatedAt DateTime @updatedAt
 }
 
-model IdeaLike {
-  userId String
-  ideaId String
+model BoardLike {
+  userId    String
+  postId    String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  idea Idea @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post BoardPost @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@id([userId, ideaId])
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
 }
 
 // ─── Shop ─────────────────────────────────────────────────────────────────────
 
 model Product {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
-  description String
-  priceCents  Int
-  imageUrl    String?
-  published   Boolean @default(true)
+  description String   @db.Text
+  price       Int
+  unit        String   @default("item")
+  inStock     Boolean  @default(true)
+  stripePriceId String?
 
-  cartItems CartItem[]
-  orderItems OrderItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model CartItem {
-  id        String @id @default(cuid())
-  quantity  Int    @default(1)
+// ─── Enums ────────────────────────────────────────────────────────────────────
 
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  product   Product @relation(fields: [productId], references: [id])
-  productId String
-
-  @@unique([userId, productId])
+enum Role {
+  TEACHER
+  ADMIN
+  SCHOOL_ADMIN
 }
 
-model Order {
-  id            String   @id @default(cuid())
-  status        String   @default("pending") // pending | paid | shipped | canceled
-  totalCents    Int
-  poNumber      String?  // purchase order path
-  stripeId      String?
-  createdAt     DateTime @default(now())
-
-  user     User    @relation(fields: [userId], references: [id])
-  userId   String
-  school   School? @relation(fields: [schoolId], references: [id])
-  schoolId String?
-
-  items OrderItem[]
+enum Grade {
+  es
+  ms
+  hs
 }
 
-model OrderItem {
-  id         String @id @default(cuid())
-  quantity   Int
-  priceCents Int
-
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId   String
-  product   Product @relation(fields: [productId], references: [id])
-  productId String
+enum PrepLevel {
+  Minimal
+  Moderate
+  Substantial
 }
 
-// ─── Pricing (per-program table) ──────────────────────────────────────────────
-
-enum ProgramKey {
-  kindness_booth
-  bake_for_chesed
-  just_one_tutor
-  chesed_match
-  joc_center_trip
-  assembly_event
+enum Plan {
+  SINGLE_TEACHER
+  SCHOOL_WIDE
+  MULTI_SCHOOL
 }
 
-model ProgramPrice {
-  programKey    ProgramKey
-  tierKey       SubscriptionTierKey
-  priceCents    Int?    // null = Not available; 0 = Included
-  isIncluded    Boolean @default(false)
-  isAvailable   Boolean @default(true)
-
-  @@id([programKey, tierKey])
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
 }

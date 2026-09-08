@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, useMemo } from "react";
 
 const STRIPE_COLORS = ["#1E47B8", "#F7941D", "#2C7AC9", "#10233F"];
@@ -106,7 +107,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: typeof LESSONS[0]; colorIn
         {/* Footer */}
         <div style={{ borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "13px", color: "rgba(16,35,63,.55)" }}>{lesson.files.join(", ")}</span>
-          <span style={{ fontWeight: 600, fontSize: "14px", color: "#1E47B8" }}>Open plan →</span>
+          <Link href={`/lesson-plans/${lesson.id}`} style={{ fontWeight: 700, fontSize: "14px", color: "#1E47B8", textDecoration: "none" }}>Open plan →</Link>
         </div>
       </div>
     </div>

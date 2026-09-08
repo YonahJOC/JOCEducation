@@ -8,18 +8,20 @@ const EDUCATION = [
   { label: "Teachers' Board",  href: "/board" },
   { label: "School Shop",      href: "/shop" },
   { label: "Pricing",          href: "/pricing" },
+  { label: "About us",         href: "/about" },
 ];
 
 const PROGRAMS = [
-  { label: "Kindness Booth",  href: "/portal#kindness-booth" },
-  { label: "JOC App",         href: "/portal#joc-app" },
-  { label: "Bake for Chesed", href: "/portal#bake" },
-  { label: "Just One Tutor",  href: "/portal#tutor" },
-  { label: "Chesed Match",    href: "https://chesedmatch.org" },
+  { label: "Kindness Booth",  href: "/programs/kindness-booth" },
+  { label: "Bake for Chesed", href: "/programs/bake-for-chesed" },
+  { label: "Just One Tutor",  href: "/programs/just-one-tutor" },
+  { label: "Chesed Match",    href: "/programs/chesed-match" },
+  { label: "JOC Center Trip", href: "/programs/joc-center-trip" },
 ];
 
 const JOC = [
   { label: "About JustOneChesed", href: "https://justonechesed.org" },
+  { label: "Contact us",          href: "/contact" },
   { label: "Chesed Match",        href: "https://chesedmatch.org" },
   { label: "Volunteer",           href: "https://justonechesed.org/volunteer" },
   { label: "Donate",              href: "https://justonechesed.org/donate" },
