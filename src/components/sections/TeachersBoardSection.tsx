@@ -46,7 +46,7 @@ export function TeachersBoardSection() {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "28px" }}>
         <div>
-          <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>04 — TEACHERS' BOARD</p>
+          <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>05 — TEACHERS' BOARD</p>
           <h2 style={{ fontWeight: 800, fontSize: "clamp(29px, 3.5vw, 44px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "8px" }}>What other schools are running.</h2>
           <p style={{ fontSize: "15px", color: "rgba(16,35,63,.72)", lineHeight: 1.6 }}>Teachers share what they actually ran. Filter by region to find ideas from nearby schools.</p>
         </div>

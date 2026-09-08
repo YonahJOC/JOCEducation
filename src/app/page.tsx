@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { DedicationLine } from "@/components/sections/DedicationLine";
+import { CycleStripSection } from "@/components/sections/CycleStripSection";
 import { ProgramsSection } from "@/components/sections/ProgramsSection";
 import { LessonPlansSection } from "@/components/sections/LessonPlansSection";
 import { ResourceLibrarySection } from "@/components/sections/ResourceLibrarySection";
@@ -26,6 +27,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <DedicationLine />
+      <CycleStripSection />
       <ProgramsSection />
       <LessonPlansSection />
       <ResourceLibrarySection />

@@ -34,7 +34,7 @@ export function LessonPlansSection() {
 
   return (
     <section id="lesson-plans" style={{ padding: "66px 26px 20px", maxWidth: "1280px", margin: "0 auto" }}>
-      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>02 — LESSON PLANS</p>
+      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>03 — LESSON PLANS</p>
       <h2 style={{ fontWeight: 800, fontSize: "clamp(29px, 3.5vw, 44px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "28px" }}>
         Tomorrow's lesson, ready today.
       </h2>

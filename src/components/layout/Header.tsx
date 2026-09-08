@@ -7,6 +7,7 @@ import { LogoMark } from "@/components/ui/LogoMark";
 
 const NAV = [
   { label: "Programs",        href: "/programs" },
+  { label: "Chesed Cycles",  href: "/cycles" },
   { label: "Lesson Plans",    href: "/lesson-plans" },
   { label: "Resources",       href: "/resources" },
   { label: "Teachers' Board", href: "/board" },

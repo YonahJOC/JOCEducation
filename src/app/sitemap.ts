@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { LESSONS } from "@/lib/lessons";
 import { PROGRAMS } from "@/lib/programs";
+import { CYCLES } from "@/lib/cycles";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://education.justonechesed.org";
 
@@ -31,5 +32,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...static_routes, ...lesson_routes, ...program_routes];
+  const cycle_routes: MetadataRoute.Sitemap = [
+    { url: `${BASE_URL}/cycles`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.9 },
+    ...CYCLES.map((c) => ({
+      url: `${BASE_URL}/cycles/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+  ];
+
+  return [...static_routes, ...lesson_routes, ...program_routes, ...cycle_routes];
 }

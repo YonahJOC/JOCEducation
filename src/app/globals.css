@@ -59,3 +59,17 @@ body {
 
 /* Suppress dark mode — design is light only */
 @media (prefers-color-scheme: dark) {}
+
+/* Status dot pulse for Chesed Cycles */
+@keyframes jocPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .35; }
+}
+
+.joc-pulse {
+  animation: jocPulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .joc-pulse { animation: none; }
+}

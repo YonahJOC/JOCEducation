@@ -57,7 +57,7 @@ export function ProgramsSection() {
   return (
     <section id="programs" style={{ padding: "66px 26px 20px", maxWidth: "1280px", margin: "0 auto" }}>
       {/* Eyebrow */}
-      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>01 — CHESED PROGRAMS</p>
+      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>02 — CHESED PROGRAMS</p>
       <h2 style={{ fontWeight: 800, fontSize: "clamp(29px, 3.5vw, 44px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "32px" }}>
         Four tiers, one mission.
       </h2>
