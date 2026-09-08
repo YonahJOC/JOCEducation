@@ -13,7 +13,7 @@ export function CycleStripSection() {
   return (
     <section
       id="chesed-cycle"
-      style={{ padding: "40px 26px 0", maxWidth: "1280px", margin: "0 auto" }}
+      style={{ padding: "16px 26px 0", maxWidth: "1280px", margin: "0 auto" }}
     >
       {/* Eyebrow */}
       <p

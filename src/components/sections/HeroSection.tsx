@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function HeroSection() {
   return (
-    <section style={{ padding: "64px 26px 20px", maxWidth: "1280px", margin: "0 auto" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(330px, 1fr))", gap: "48px", alignItems: "start" }}>
+    <section style={{ padding: "36px 26px 8px", maxWidth: "1280px", margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(330px, 1fr))", gap: "32px", alignItems: "start" }}>
         {/* Left */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           {/* Eligibility pill */}
@@ -19,7 +19,7 @@ export function HeroSection() {
           </h1>
 
           {/* Body */}
-          <p style={{ fontWeight: 400, fontSize: "19px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "47ch", margin: 0 }}>
+          <p style={{ fontWeight: 400, fontSize: "16px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "47ch", margin: 0 }}>
             Lesson plans, classroom resources, and chesed programs built for Jewish day schools and yeshivos. Everything a rebbe or morah needs, in one place.
           </p>
 
@@ -37,15 +37,15 @@ export function HeroSection() {
         {/* Right — stats cards */}
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {/* Stats card */}
-          <div style={{ backgroundColor: "#1E47B8", borderRadius: "24px", padding: "28px", color: "#fff" }}>
+          <div style={{ backgroundColor: "#1E47B8", borderRadius: "24px", padding: "20px 24px", color: "#fff" }}>
             <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FFC98A", marginBottom: "16px" }}>THIS SCHOOL YEAR</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
               <div>
-                <p style={{ fontWeight: 800, fontSize: "36px", lineHeight: 1, marginBottom: "4px" }}>140,392</p>
+                <p style={{ fontWeight: 800, fontSize: "28px", lineHeight: 1, marginBottom: "4px" }}>140,392</p>
                 <p style={{ fontSize: "13px", color: "rgba(255,255,255,.7)" }}>chesed hours</p>
               </div>
               <div>
-                <p style={{ fontWeight: 800, fontSize: "36px", lineHeight: 1, marginBottom: "4px" }}>312</p>
+                <p style={{ fontWeight: 800, fontSize: "28px", lineHeight: 1, marginBottom: "4px" }}>312</p>
                 <p style={{ fontSize: "13px", color: "rgba(255,255,255,.7)" }}>partner schools</p>
               </div>
             </div>
