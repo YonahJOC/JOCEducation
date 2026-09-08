@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { DedicationLine } from "@/components/sections/DedicationLine";
 import { CycleStripSection } from "@/components/sections/CycleStripSection";
 import { ProgramsSection } from "@/components/sections/ProgramsSection";
 import { LessonPlansSection } from "@/components/sections/LessonPlansSection";
@@ -26,7 +25,6 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <DedicationLine />
       <CycleStripSection />
       <ProgramsSection />
       <LessonPlansSection />
