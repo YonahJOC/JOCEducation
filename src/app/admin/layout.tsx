@@ -64,15 +64,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const showAccounts = !isAuthConfigured || canManageAccounts(session?.user);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
-      {/* Sidebar */}
+    <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
+      {/* Sidebar — becomes a top bar with a scrolling nav on narrow screens */}
       <aside
+        className="joc-admin-sidebar"
         style={{
           width: "232px", flexShrink: 0, backgroundColor: "#0B1A31", color: "rgba(255,255,255,.72)",
           display: "flex", flexDirection: "column", padding: "22px 0",
         }}
       >
-        <div style={{ padding: "0 20px 20px", borderBottom: "1px solid rgba(255,255,255,.1)", marginBottom: "16px" }}>
+        <div className="joc-admin-brand" style={{ padding: "0 20px 20px", borderBottom: "1px solid rgba(255,255,255,.1)", marginBottom: "16px" }}>
           <Link href="/admin" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
             <Image src="/brand/joc-icon-orange.png" alt="" width={26} height={26} style={{ height: "26px", width: "auto" }} />
             <div>
@@ -84,10 +85,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
         </div>
 
-        {showAccounts && <SideGroup label="Accounts" items={ACCOUNTS_NAV} />}
-        <SideGroup label="Content" items={CONTENT_NAV} />
+        <div className="joc-admin-nav">
+          {showAccounts && <SideGroup label="Accounts" items={ACCOUNTS_NAV} />}
+          <SideGroup label="Content" items={CONTENT_NAV} />
+        </div>
 
-        <div style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: "1px solid rgba(255,255,255,.1)" }}>
+        <div className="joc-admin-who" style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: "1px solid rgba(255,255,255,.1)" }}>
           {who && (
             <p style={{ fontSize: "12px", margin: "0 0 3px", color: "rgba(255,255,255,.85)", wordBreak: "break-all" }}>{who}</p>
           )}
@@ -112,7 +115,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </p>
           </div>
         )}
-        <div style={{ padding: "30px" }}>{children}</div>
+        <div className="joc-admin-body" style={{ padding: "30px" }}>{children}</div>
       </div>
     </div>
   );

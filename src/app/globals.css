@@ -60,9 +60,44 @@ body {
 /* Suppress dark mode — design is light only */
 @media (prefers-color-scheme: dark) {}
 
-/* Educator landing page: nav collapses so the logo and both actions stay on one row */
+/* Admin console: the sidebar becomes a top bar with a scrolling nav on phones
+   and tablets, so content gets the full width instead of ~80px. */
+@media (max-width: 860px) {
+  .joc-admin-shell   { flex-direction: column !important; }
+  .joc-admin-sidebar { width: 100% !important; padding: 10px 0 0 !important; }
+  .joc-admin-brand   { padding: 0 16px 10px !important; margin-bottom: 8px !important; }
+
+  .joc-admin-nav              { display: flex; overflow-x: auto; padding: 0 12px 8px; scrollbar-width: none; }
+  .joc-admin-nav::-webkit-scrollbar { display: none; }
+  .joc-admin-nav > div        { margin-bottom: 0 !important; display: flex; align-items: center; }
+  .joc-admin-nav > div + div  { margin-left: 8px; padding-left: 8px; border-left: 1px solid rgba(255,255,255,.14); }
+  .joc-admin-nav > div > p    { display: none !important; }
+  .joc-admin-nav nav          { flex-direction: row !important; }
+  .joc-admin-nav nav a        { padding: 9px 13px !important; white-space: nowrap; min-height: 44px; display: flex; align-items: center; }
+
+  .joc-admin-who   { margin-top: 0 !important; padding: 10px 16px !important; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .joc-admin-who p { margin: 0 !important; }
+  .joc-admin-body  { padding: 18px 16px !important; }
+}
+
+/* Educator landing page header.
+   The nav goes first, then the EDUCATION lockup and the long CTA wording, so
+   the logo and a usable action always fit on one row down to 320px. */
+.joc-cta-short { display: none; }
+
 @media (max-width: 1040px) {
   .joc-landing-nav { display: none !important; }
+}
+
+@media (max-width: 620px) {
+  .joc-cta-long  { display: none; }
+  .joc-cta-short { display: inline; }
+}
+
+@media (max-width: 480px) {
+  .joc-brand-sub      { display: none !important; }
+  .joc-wordmark       { height: 18px !important; }
+  .joc-header-signin  { display: none !important; }
 }
 
 /* Status dot pulse for Chesed Cycles */

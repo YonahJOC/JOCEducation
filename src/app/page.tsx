@@ -105,9 +105,9 @@ export default async function EducatorLanding({
           }}
         >
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "11px", textDecoration: "none", flexShrink: 0 }}>
-            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={168} height={20} priority style={{ height: "20px", width: "auto" }} />
-            <span aria-hidden="true" style={{ width: "1px", height: "20px", backgroundColor: RULE }} />
-            <span style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
+            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={168} height={20} priority className="joc-wordmark" style={{ height: "20px", width: "auto" }} />
+            <span aria-hidden="true" className="joc-brand-sub" style={{ width: "1px", height: "20px", backgroundColor: RULE }} />
+            <span className="joc-brand-sub" style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
               Education
             </span>
           </Link>
@@ -124,10 +124,11 @@ export default async function EducatorLanding({
           <div style={{ display: "flex", alignItems: "center", gap: "9px", flexShrink: 0 }}>
             <a
               href="#auth"
+              className="joc-header-signin"
               style={{
                 fontSize: "14px", fontWeight: 600, color: INK, textDecoration: "none",
                 border: `1.5px solid ${RULE}`, borderRadius: "9999px", padding: "9px 18px",
-                display: "inline-flex", alignItems: "center", minHeight: "40px",
+                display: "inline-flex", alignItems: "center", minHeight: "44px",
               }}
             >
               Sign in
@@ -137,10 +138,12 @@ export default async function EducatorLanding({
               style={{
                 fontSize: "14px", fontWeight: 700, color: INK, backgroundColor: ORANGE,
                 borderRadius: "9999px", padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
-                display: "inline-flex", alignItems: "center", minHeight: "40px",
+                display: "inline-flex", alignItems: "center", minHeight: "44px",
               }}
             >
-              Bring JOC to your school
+              {/* Full wording on desktop; the phone gets something that fits */}
+              <span className="joc-cta-long">Bring JOC to your school</span>
+              <span className="joc-cta-short">Book a walkthrough</span>
             </a>
           </div>
         </div>
