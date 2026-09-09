@@ -2,7 +2,10 @@ import NextAuth, { type NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { initialRoleFor, isStaffEmail, isSuperAdminEmail } from "@/lib/access";
+import {
+  initialRoleFor, isStaffEmail, isSuperAdminEmail,
+  emailDomain, isConsumerEmail,
+} from "@/lib/access";
 
 /**
  * Google sign-in.
@@ -78,15 +81,42 @@ const config: NextAuthConfig = {
 
   events: {
     /**
-     * Stamp the right role on first sign-in. The adapter creates everyone as
-     * TEACHER; a @justonechesed.org address becomes STAFF (free access to
-     * everything, no ability to change anything). ADMIN is never automatic.
+     * First sign-in. Two things are decided here:
+     *
+     *   Role — a @justonechesed.org address becomes STAFF (free access to
+     *   everything, changes nothing). ADMIN is never automatic. Everyone else
+     *   is a regular TEACHER account.
+     *
+     *   School — if the address is on a domain a school has registered, they
+     *   join that school and inherit its plan. A personal address (gmail and
+     *   the like) never auto-joins anything; an invitation is the way in.
      */
     async createUser({ user }) {
+      if (!isDatabaseConfigured()) return;
       const role = initialRoleFor(user.email);
-      if (role === "TEACHER" || !isDatabaseConfigured()) return;
+
+      let schoolId: string | null = null;
+      if (!isStaffEmail(user.email) && !isConsumerEmail(user.email)) {
+        const domain = emailDomain(user.email);
+        if (domain) {
+          try {
+            const school = await prisma.school.findFirst({
+              where: { emailDomains: { has: domain } },
+              select: { id: true },
+            });
+            schoolId = school?.id ?? null;
+          } catch {
+            // Domain matching is a convenience; never block sign-in on it.
+          }
+        }
+      }
+
+      if (role === "TEACHER" && !schoolId) return;
       try {
-        await prisma.user.update({ where: { id: user.id }, data: { role } });
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { ...(role !== "TEACHER" ? { role } : {}), ...(schoolId ? { schoolId } : {}) },
+        });
       } catch {
         // Non-fatal: the session callback still resolves staff by email.
       }

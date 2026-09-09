@@ -261,9 +261,10 @@ export function AuthCard({
           borderTop: `1px solid ${RULE}`,
         }}
       >
-        Every teacher and administrator at a partner school gets their own login. Not a partner yet?{" "}
+        Sign in with your <strong>school email address</strong> to be matched to your school. Not a partner
+        yet?{" "}
         <a href="#demo" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
-          Book a demo
+          Book a walkthrough
         </a>
         .
       </p>

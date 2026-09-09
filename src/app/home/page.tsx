@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { safeAuth, isAuthConfigured } from "@/auth";
+import { hasSiteAccess } from "@/lib/access";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { CycleStripSection } from "@/components/sections/CycleStripSection";
 import { ProgramsSection } from "@/components/sections/ProgramsSection";
@@ -17,7 +20,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Signed in but attached to no school with an active plan: send them
+  // somewhere that explains why, rather than an empty site.
+  if (isAuthConfigured) {
+    const session = await safeAuth();
+    if (session?.user && !hasSiteAccess(session.user)) redirect("/no-access");
+  }
+
   return (
     <>
       <HeroSection />

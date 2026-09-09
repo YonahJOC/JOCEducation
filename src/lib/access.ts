@@ -22,6 +22,40 @@
 
 export const JOC_STAFF_DOMAIN = "justonechesed.org";
 
+/**
+ * Anyone may sign in with any Google account — they become a regular user with
+ * no school attached. Belonging to a school requires either an email on that
+ * school's domain, or an invitation from the JOC team.
+ */
+
+/** Domain part of an email, lowercased. `null` if there isn't one. */
+export function emailDomain(email?: string | null): string | null {
+  if (!email) return null;
+  const at = email.lastIndexOf("@");
+  if (at === -1) return null;
+  return email.slice(at + 1).trim().toLowerCase() || null;
+}
+
+/**
+ * Free and generic providers never identify a school, so they never
+ * auto-join one. An invitation is the only route in from these.
+ */
+const CONSUMER_DOMAINS = new Set([
+  "gmail.com", "googlemail.com", "outlook.com", "hotmail.com", "live.com",
+  "yahoo.com", "ymail.com", "aol.com", "icloud.com", "me.com", "mac.com",
+  "proton.me", "protonmail.com", "gmx.com", "mail.com", "msn.com", "verizon.net",
+]);
+
+export function isConsumerEmail(email?: string | null): boolean {
+  const d = emailDomain(email);
+  return d ? CONSUMER_DOMAINS.has(d) : true;
+}
+
+/** Could this address plausibly belong to an organisation? */
+export function couldBeSchoolEmail(email?: string | null): boolean {
+  return !isConsumerEmail(email) && !isStaffEmail(email);
+}
+
 export type Role = "TEACHER" | "SCHOOL_ADMIN" | "STAFF" | "ADMIN" | "SUPER_ADMIN";
 
 export type Plan =
@@ -43,13 +77,21 @@ export function isStaffEmail(email?: string | null): boolean {
 /**
  * Bootstrap list. These addresses are SUPER_ADMIN from their first sign-in,
  * so there is somebody who can promote everyone else.
+ *
+ * Falls back to the founding super admin when SUPER_ADMIN_EMAILS is unset, so
+ * the console is never locked with nobody able to open it. Knowing the address
+ * grants nothing on its own — access still requires signing in as that Google
+ * account. Override with SUPER_ADMIN_EMAILS (comma-separated) in Vercel.
  */
+const DEFAULT_SUPER_ADMINS = ["yonah@justonechesed.org"];
+
 export function isSuperAdminEmail(email?: string | null): boolean {
   if (!email) return false;
-  const list = (process.env.SUPER_ADMIN_EMAILS ?? "")
+  const configured = (process.env.SUPER_ADMIN_EMAILS ?? "")
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
+  const list = configured.length > 0 ? configured : DEFAULT_SUPER_ADMINS;
   return list.includes(email.trim().toLowerCase());
 }
 

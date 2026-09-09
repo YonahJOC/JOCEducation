@@ -27,6 +27,11 @@ model School {
   country  String? @default("United States")
   website  String?
 
+  /// Email domains belonging to this school, e.g. ["darcheitorah.org"].
+  /// Someone signing in with an address on one of these joins the school
+  /// automatically. Consumer domains (gmail.com and the like) are ignored.
+  emailDomains String[] @default([])
+
   type       SchoolType     @default(DAY_SCHOOL)
   enrollment EnrollmentBand @default(MEDIUM)
   /// Actual enrollment where known — `enrollment` is the pricing band

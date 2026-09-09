@@ -15,15 +15,10 @@ const PANEL = "#F4F7FD";
 const RULE = "rgba(16,35,63,.12)";
 const WIDTH = "1180px";
 
-// TODO: these three are unverified — they came from the pricing page and
-// contradict the About page (900+ schools) and the old homepage (312).
-// The education team's Phase 3 truth audit replaces or removes them.
-// This is the only page a logged-out visitor sees, so fix these first.
-const PROOF = [
-  { value: "300+", label: "partner schools" },
-  { value: "14,000+", label: "teachers with access" },
-  { value: "2.1M", label: "chesed hours logged" },
-];
+// The ten JOC programs schools can run today, while the teaching platform
+// is still being built. TODO: source from src/lib/programs.ts once the real
+// programme copy is written.
+const PROGRAM_COUNT = 10;
 
 const INSIDE = [
   { color: BLUE, figure: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion questions. Print and teach." },
@@ -62,7 +57,12 @@ function nextSchoolDays(count = 5): DemoDay[] {
   return out;
 }
 
-export default function EducatorLanding() {
+export default async function EducatorLanding({
+  searchParams,
+}: {
+  searchParams: Promise<{ signin?: string }>;
+}) {
+  const { signin } = await searchParams;
   const cycle = getCurrentCycle();
   const state = getCycleState(cycle);
   const week = getCurrentWeek(cycle);
@@ -168,24 +168,49 @@ export default function EducatorLanding() {
               <span style={{ display: "block", color: BLUE }}>Just One Student at a Time</span>
             </h1>
 
-            <p style={{ fontSize: "17.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "46ch", margin: "0 0 30px" }}>
+            <p style={{ fontSize: "17.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "46ch", margin: "0 0 22px" }}>
               Lesson plans, classroom resources and chesed programs for Jewish day schools and yeshivos — organised around the
               Chesed Cycle, so the whole school is working on one middah at a time.
             </p>
 
-            <div style={{ display: "flex", gap: "30px", flexWrap: "wrap", paddingTop: "26px", borderTop: `1px solid ${RULE}` }}>
-              {PROOF.map((p) => (
-                <div key={p.label}>
-                  <p style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, lineHeight: 1, margin: "0 0 5px" }}>
-                    {p.value}
-                  </p>
-                  <p style={{ fontSize: "13px", color: "rgba(16,35,63,.6)", margin: 0 }}>{p.label}</p>
-                </div>
-              ))}
+            {/* The platform is not open to schools yet — say so plainly. */}
+            <div
+              style={{
+                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px",
+                padding: "16px 18px", marginBottom: "26px", maxWidth: "46ch",
+              }}
+            >
+              <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 7px" }}>
+                In development
+              </p>
+              <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: 0 }}>
+                The teaching platform is still being built and accounts are not open to schools yet. In the
+                meantime, JOC runs {PROGRAM_COUNT} chesed programs your school can start this year —{" "}
+                <a href="#demo" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+                  book a walkthrough
+                </a>
+                .
+              </p>
             </div>
           </div>
 
-          <AuthCard googleEnabled={isGoogleConfigured} />
+          <div>
+            {signin === "no-access" && (
+              <div
+                role="status"
+                style={{
+                  backgroundColor: "#FDEEDA", border: "1px solid rgba(154,84,5,.25)",
+                  borderRadius: "14px", padding: "13px 16px", marginBottom: "12px",
+                }}
+              >
+                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: "#9A5405", margin: 0 }}>
+                  <strong>That account isn&rsquo;t attached to a school yet.</strong> Sign in with your school
+                  email address, or <a href="#demo" style={{ color: "#9A5405", fontWeight: 700 }}>book a walkthrough</a>.
+                </p>
+              </div>
+            )}
+            <AuthCard googleEnabled={isGoogleConfigured} />
+          </div>
         </div>
       </section>
 
@@ -291,20 +316,21 @@ export default function EducatorLanding() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "48px", alignItems: "start" }}>
           <div>
             <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
-              Book a demo
+              Book a walkthrough
             </p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 18px" }}>
-              Twenty minutes, and you&rsquo;ll know if it fits.
+              Start a chesed program this year.
             </h2>
             <p style={{ fontSize: "16px", lineHeight: 1.65, color: "rgba(16,35,63,.72)", margin: "0 0 24px", maxWidth: "44ch" }}>
-              A conversation with someone from the JOC Education team — not a sales pitch, and not a slide deck.
+              Twenty minutes with someone from Just One Chesed — not a sales pitch, and not a slide deck.
             </p>
 
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 30px", display: "flex", flexDirection: "column", gap: "14px" }}>
               {[
-                "We walk your actual grade levels through the current Cycle and the lessons that go with it.",
-                "You tell us how your year is already structured, and we say honestly whether the Cycles fit around it.",
-                "We go through what running this costs, including the scholarship route if the budget is tight.",
+                "We go through the programs — Kindness Booth, Bake for Chesed, Just One Tutor and the rest — and which ones suit your grades.",
+                "You tell us how your year is already structured, and we say honestly which programs fit around it.",
+                "We cover what running one costs, including the scholarship route if the budget is tight.",
+                "We show you where the teaching platform is up to, so you know what is coming and when.",
               ].map((t) => (
                 <li key={t} style={{ display: "flex", gap: "13px", alignItems: "flex-start" }}>
                   <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "8px" }} />
