@@ -295,7 +295,7 @@ export function CurrentCycleSection({ cycle }: { cycle: Cycle }) {
           </ul>
         </div>
 
-        {/* Stats (only Cycle 1 has stats hardcoded) */}
+        {/* Stats — rendered only when a cycle has an approved figure */}
         {cycle.stats && (
           <div
             style={{

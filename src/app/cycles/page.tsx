@@ -5,10 +5,10 @@ import { CycleRailSection } from "@/components/sections/CycleRailSection";
 export const metadata: Metadata = {
   title: "Chesed Cycles — JOC Education",
   description:
-    "The Just One Chesed year in ten consecutive cycles — one middah, one guiding question, four to six weeks each. From Elul to Av.",
+    "The Just One Chesed year in eight consecutive cycles — one middah, one guiding question, four to six weeks each. From school opening through Shavuos.",
   openGraph: {
     title: "Chesed Cycles — JOC Education",
-    description: "Ten cycles. Ten middos. One question to carry through each.",
+    description: "Eight cycles. Eight middos. One question to carry through each.",
   },
 };
 

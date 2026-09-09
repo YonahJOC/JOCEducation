@@ -324,7 +324,7 @@ export function CycleRailSection({ initialIndex }: { initialIndex: number }) {
             maxWidth: "400px",
           }}
         >
-          Ten cycles. Ten middos. One question to carry through each.
+          Eight cycles. Eight middos. One question to carry through each.
         </p>
       </div>
 
@@ -421,7 +421,7 @@ export function CycleRailSection({ initialIndex }: { initialIndex: number }) {
       <div
         ref={railRef}
         role="group"
-        aria-label="Chesed Cycles — all ten"
+        aria-label={`Chesed Cycles — all ${CYCLES.length}`}
         tabIndex={0}
         onKeyDown={onKeyDown}
         onPointerDown={onPointerDown}
@@ -462,7 +462,7 @@ export function CycleRailSection({ initialIndex }: { initialIndex: number }) {
           lineHeight: 1.6,
         }}
       >
-        Cycles 7 (Nissan) and 8 (Iyar) include Israel-focused programming around Yom HaZikaron, Yom Ha&apos;atzmaut, and Yom Yerushalayim.
+        Cycles 7 (Nisan) and 8 (Iyar&ndash;Sivan) include Israel-focused programming around Yom HaShoah, Yom HaZikaron, Yom Ha&apos;atzmaut, and Yom Yerushalayim.
       </p>
     </section>
   );

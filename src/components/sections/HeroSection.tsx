@@ -7,9 +7,9 @@ export function HeroSection() {
         {/* Left */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           {/* Eligibility pill */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", border: "1px solid rgba(16,35,63,.15)", borderRadius: "9999px", padding: "8px 16px", width: "fit-content", backgroundColor: "#fff" }}>
-            <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "#F7941D", flexShrink: 0 }} />
-            <span style={{ fontWeight: 500, fontSize: "14px", color: "#10233F" }}>For schools, rebbeim and morahs</span>
+          <div style={{ display: "inline-flex", alignItems: "flex-start", gap: "8px", border: "1px solid rgba(16,35,63,.15)", borderRadius: "9999px", padding: "8px 16px", width: "fit-content", backgroundColor: "#fff" }}>
+            <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "#F7941D", flexShrink: 0, marginTop: "7px" }} />
+            <span style={{ fontWeight: 500, fontSize: "14px", color: "#10233F" }}>Spreading kindness, to every Jewish student, in every Jewish school, everywhere</span>
           </div>
 
           {/* H1 */}
@@ -46,7 +46,7 @@ export function HeroSection() {
               </div>
               <div>
                 <p style={{ fontWeight: 800, fontSize: "28px", lineHeight: 1, marginBottom: "4px" }}>312</p>
-                <p style={{ fontSize: "13px", color: "rgba(255,255,255,.7)" }}>partner schools</p>
+                <p style={{ fontSize: "13px", color: "rgba(255,255,255,.7)" }}>acts of chesed</p>
               </div>
             </div>
             {/* Progress bar */}

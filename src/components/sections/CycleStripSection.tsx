@@ -178,7 +178,7 @@ export function CycleStripSection() {
                 whiteSpace: "nowrap",
               }}
             >
-              All 10 Cycles ›
+              All {CYCLES.length} Cycles ›
             </Link>
           </div>
         </div>
