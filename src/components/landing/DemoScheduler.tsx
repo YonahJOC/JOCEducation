@@ -9,6 +9,16 @@ const RULE = "rgba(16,35,63,.14)";
 
 export type DemoDay = { key: string; weekday: string; day: string; month: string };
 
+/** Combine the chosen day (ISO date) and slot ("11:30 AM") into a timestamp. */
+function isoFor(day: DemoDay, slot: string): string {
+  const m = slot.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!m) return day.key;
+  let hour = Number(m[1]) % 12;
+  if (m[3].toUpperCase() === "PM") hour += 12;
+  const [y, mo, d] = day.key.split("-").map(Number);
+  return new Date(y, mo - 1, d, hour, Number(m[2])).toISOString();
+}
+
 // Slots that are already taken. TODO: replace with real availability
 // (Calendly / Google Calendar) once the JOC team picks a scheduler.
 const TAKEN = new Set(["1-10:00 AM", "1-2:30 PM", "2-11:30 AM", "3-9:30 AM", "4-1:00 PM"]);
@@ -45,19 +55,27 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
     setError(null);
     setSending(true);
     try {
-      await fetch("/api/contact", {
+      const res = await fetch("/api/demo-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           email,
           school,
-          subject: "Demo request",
-          message: `Demo requested for ${day.weekday} ${day.month} ${day.day} at ${slot}. School: ${school || "not given"}.`,
+          requestedFor: isoFor(day, slot),
+          message: `Requested ${day.weekday} ${day.month} ${day.day} at ${slot}.`,
         }),
       });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setSending(false);
+        setError(data?.error ?? "Something went wrong. Please email us instead.");
+        return;
+      }
     } catch {
-      // The confirmation still stands — the team follows up by email.
+      setSending(false);
+      setError("Couldn't reach the server. Please email education@justonechesed.org.");
+      return;
     }
     setSending(false);
     setDone(true);

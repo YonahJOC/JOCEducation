@@ -98,7 +98,7 @@ const JOC_PROGRAMS = [
     available: ["All subscriptions (per-event pricing)"],
   },
   {
-    key: "joc-center",
+    key: "joc-center-trip",
     name: "JOC Center Trip (Israel)",
     tag: "Trip",
     description: "A guided trip to the JOC Center in Israel for high school groups. Full partnership schools receive an included trip each year.",
