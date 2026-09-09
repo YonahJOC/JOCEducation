@@ -1,3 +1,4 @@
+import { AccountsGuard } from "@/components/admin/AccountsGuard";
 import { getDemoRequests } from "@/lib/admin-data";
 
 const INK = "#10233F";
@@ -15,6 +16,9 @@ function fmt(d: Date | null) {
 }
 
 export default async function DemosPage() {
+  return (<AccountsGuard>{await Inner()}</AccountsGuard>);
+}
+async function Inner() {
   const demos = await getDemoRequests();
   const isNew = demos.filter((d) => d.status === "NEW");
 

@@ -436,11 +436,16 @@ model Stat {
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 enum Role {
+  /// Teacher at a partner school — access follows the school's subscription
   TEACHER
+  /// Main contact for their school — access still follows the subscription
   SCHOOL_ADMIN
-  /// JOC staff — access to the internal admin console
+  /// Anyone at Just One Chesed. Free access to everything, changes nothing.
+  /// This is what a @justonechesed.org address gets automatically.
+  STAFF
+  /// JOC educational team — uploads and edits lessons, resources and content
   ADMIN
-  /// JOC leadership — can manage other admins and delete accounts
+  /// Full control: school accounts, plans, discounts, users and roles
   SUPER_ADMIN
 }
 

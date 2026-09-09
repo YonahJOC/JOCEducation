@@ -1,13 +1,28 @@
 /**
- * Who gets in, and how much.
+ * Who gets in, and what they can do.
  *
- * Two independent things decide access:
- *   1. JOC staff — anyone signing in with a @justonechesed.org address is
- *      internal. They get everything, free, forever, with no subscription.
- *   2. Everyone else — access follows their school's subscription.
+ * Roles, lowest to highest:
+ *
+ *   TEACHER       A teacher at a partner school. Content access follows their
+ *                 school's subscription.
+ *   SCHOOL_ADMIN  As above, plus they are the contact for their own school.
+ *   STAFF         Anyone at Just One Chesed. Free access to the whole site,
+ *                 all materials and all programs — but cannot change anything
+ *                 or see anyone else's account. This is what a
+ *                 @justonechesed.org address gets automatically.
+ *   ADMIN         The JOC educational team. Everything STAFF has, plus the
+ *                 content console: upload and edit lesson plans, resources,
+ *                 products and the Teachers' Board.
+ *   SUPER_ADMIN   Everything. School accounts, plans, discounts and free
+ *                 access, user records, and granting roles to others.
+ *
+ * Only SUPER_ADMIN can hand out ADMIN or SUPER_ADMIN — nobody is promoted
+ * automatically by their email domain beyond STAFF.
  */
 
 export const JOC_STAFF_DOMAIN = "justonechesed.org";
+
+export type Role = "TEACHER" | "SCHOOL_ADMIN" | "STAFF" | "ADMIN" | "SUPER_ADMIN";
 
 export type Plan =
   | "SINGLE_TEACHER"
@@ -15,17 +30,19 @@ export type Plan =
   | "APP_AND_EDUCATION"
   | "FULL_PARTNERSHIP";
 
-export type AccessLevel = "none" | "subscriber" | "staff";
+export type AccessLevel = "none" | "subscriber" | "internal";
 
-/** True for any @justonechesed.org address (case- and whitespace-insensitive). */
+type U = { email?: string | null; role?: string | null } | null | undefined;
+
+/** True for any @justonechesed.org address. */
 export function isStaffEmail(email?: string | null): boolean {
   if (!email) return false;
   return email.trim().toLowerCase().endsWith(`@${JOC_STAFF_DOMAIN}`);
 }
 
 /**
- * Emails listed in SUPER_ADMIN_EMAILS get SUPER_ADMIN on first sign-in.
- * Everyone else on the JOC domain gets ADMIN.
+ * Bootstrap list. These addresses are SUPER_ADMIN from their first sign-in,
+ * so there is somebody who can promote everyone else.
  */
 export function isSuperAdminEmail(email?: string | null): boolean {
   if (!email) return false;
@@ -36,28 +53,87 @@ export function isSuperAdminEmail(email?: string | null): boolean {
   return list.includes(email.trim().toLowerCase());
 }
 
-/** The role a brand-new user should be created with, based on their email. */
-export function initialRoleFor(email?: string | null): "TEACHER" | "ADMIN" | "SUPER_ADMIN" {
+/**
+ * Role for a brand-new account. A JOC address gets STAFF — full access to
+ * everything, no ability to alter anyone else. ADMIN is granted by hand.
+ */
+export function initialRoleFor(email?: string | null): Role {
   if (isSuperAdminEmail(email)) return "SUPER_ADMIN";
-  if (isStaffEmail(email)) return "ADMIN";
+  if (isStaffEmail(email)) return "STAFF";
   return "TEACHER";
 }
 
-export function isJocStaffRole(role?: string | null): boolean {
-  return role === "ADMIN" || role === "SUPER_ADMIN";
+const RANK: Record<Role, number> = {
+  TEACHER: 0,
+  SCHOOL_ADMIN: 1,
+  STAFF: 2,
+  ADMIN: 3,
+  SUPER_ADMIN: 4,
+};
+
+function rankOf(role?: string | null): number {
+  return RANK[(role as Role) ?? "TEACHER"] ?? 0;
 }
 
-/** Can this person reach the internal admin console? */
-export function canUseAdminConsole(user?: { email?: string | null; role?: string | null } | null): boolean {
+/** Anyone on the JOC side: STAFF, ADMIN or SUPER_ADMIN. */
+export function isInternal(user: U): boolean {
   if (!user) return false;
-  return isJocStaffRole(user.role) || isStaffEmail(user.email);
+  return rankOf(user.role) >= RANK.STAFF || isStaffEmail(user.email);
 }
 
-/** Only SUPER_ADMIN can change other people's roles or delete accounts. */
-export function canManageAdmins(user?: { email?: string | null; role?: string | null } | null): boolean {
-  if (!user) return false;
-  return user.role === "SUPER_ADMIN" || isSuperAdminEmail(user.email);
+// ─── Capabilities ────────────────────────────────────────────────────────────
+
+/** Reach the admin console at all. STAFF cannot — they just use the site. */
+export function canAccessConsole(user: U): boolean {
+  return rankOf(user?.role) >= RANK.ADMIN;
 }
+
+/** Upload and edit lesson plans, resources, products, Teachers' Board. */
+export function canManageContent(user: U): boolean {
+  return rankOf(user?.role) >= RANK.ADMIN;
+}
+
+/** School accounts, plans, seats, discounts, free access, demo pipeline. */
+export function canManageAccounts(user: U): boolean {
+  return rankOf(user?.role) >= RANK.SUPER_ADMIN || isSuperAdminEmail(user?.email);
+}
+
+/** Edit user records, suspend logins, make people members. */
+export function canManageUsers(user: U): boolean {
+  return canManageAccounts(user);
+}
+
+/** Grant or remove ADMIN / SUPER_ADMIN. */
+export function canManageRoles(user: U): boolean {
+  return canManageAccounts(user);
+}
+
+/** Roles a super admin is allowed to assign. */
+export const ASSIGNABLE_ROLES: Role[] = [
+  "TEACHER",
+  "SCHOOL_ADMIN",
+  "STAFF",
+  "ADMIN",
+  "SUPER_ADMIN",
+];
+
+export const ROLE_LABELS: Record<Role, string> = {
+  TEACHER: "Teacher",
+  SCHOOL_ADMIN: "School admin",
+  STAFF: "JOC staff",
+  ADMIN: "Educational team",
+  SUPER_ADMIN: "Super admin",
+};
+
+export const ROLE_DESCRIPTIONS: Record<Role, string> = {
+  TEACHER: "Access follows their school's plan.",
+  SCHOOL_ADMIN: "Main contact for their school. Access follows the school's plan.",
+  STAFF: "Free access to everything on the site. Cannot change anything.",
+  ADMIN: "Educational team — uploads and edits lessons, resources and content.",
+  SUPER_ADMIN: "Full control: accounts, plans, discounts, users and roles.",
+};
+
+// ─── Content access ──────────────────────────────────────────────────────────
 
 type AccessInput = {
   email?: string | null;
@@ -66,12 +142,12 @@ type AccessInput = {
 };
 
 /**
- * What this person can see. JOC staff always get full access regardless of
- * subscription; everyone else needs their school to be in good standing.
+ * Everyone at JOC reads everything for free. Everyone else needs their school
+ * to be in good standing.
  */
 export function accessLevelFor(user?: AccessInput | null): AccessLevel {
   if (!user) return "none";
-  if (isJocStaffRole(user.role) || isStaffEmail(user.email)) return "staff";
+  if (isInternal(user)) return "internal";
 
   const status = user.subscription?.status;
   if (status === "ACTIVE" || status === "TRIALING" || status === "PAST_DUE") {
@@ -80,7 +156,6 @@ export function accessLevelFor(user?: AccessInput | null): AccessLevel {
   return "none";
 }
 
-/** Signed in and entitled to the gated site. */
 export function hasSiteAccess(user?: AccessInput | null): boolean {
   return accessLevelFor(user) !== "none";
 }
@@ -92,14 +167,13 @@ const PLAN_RANK: Record<Plan, number> = {
   FULL_PARTNERSHIP: 4,
 };
 
-/** Staff clear every tier. Otherwise compare the school's plan against the requirement. */
+/** JOC people clear every tier. Everyone else is measured against their plan. */
 export function meetsPlan(user: AccessInput | null | undefined, required: Plan): boolean {
   const level = accessLevelFor(user);
-  if (level === "staff") return true;
+  if (level === "internal") return true;
   if (level === "none") return false;
   const plan = user?.subscription?.plan as Plan | undefined;
-  if (!plan) return false;
-  return PLAN_RANK[plan] >= PLAN_RANK[required];
+  return plan ? PLAN_RANK[plan] >= PLAN_RANK[required] : false;
 }
 
 export const PLAN_LABELS: Record<Plan, string> = {

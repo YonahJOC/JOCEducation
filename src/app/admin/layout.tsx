@@ -1,18 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { canUseAdminConsole } from "@/lib/access";
+import { canAccessConsole, canManageAccounts, ROLE_LABELS, type Role } from "@/lib/access";
 import { usingSampleData } from "@/lib/admin-data";
 
 export const metadata = { title: "JOC Console", robots: { index: false, follow: false } };
 
-const NAV = [
+/** Accounts, billing and people — super admins only. */
+const ACCOUNTS_NAV = [
   { label: "Overview", href: "/admin" },
   { label: "Schools", href: "/admin/schools" },
   { label: "Demo requests", href: "/admin/demos" },
   { label: "People", href: "/admin/users" },
 ];
 
+/** Content — the educational team's work. */
 const CONTENT_NAV = [
   { label: "Lesson plans", href: "/admin/lessons" },
   { label: "Resources", href: "/admin/resources" },
@@ -23,25 +25,32 @@ const CONTENT_NAV = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
 
-  // Once sign-in is live, only JOC staff get in. Before then the console is
-  // reachable so it can be built and reviewed — the banner says so.
-  if (isAuthConfigured && !canUseAdminConsole(session?.user)) {
+  // The console is for the educational team and above. JOC staff have full
+  // access to the site itself but nothing to do here.
+  if (isAuthConfigured && !canAccessConsole(session?.user)) {
+    const signedIn = Boolean(session?.user);
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
-        <div style={{ maxWidth: "420px", textAlign: "center" }}>
+        <div style={{ maxWidth: "440px", textAlign: "center" }}>
           <p style={{ fontSize: "34px", marginBottom: "14px" }}>🔒</p>
           <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "10px" }}>
-            JOC staff only
+            {signedIn ? "You don't have console access" : "Sign in required"}
           </h1>
           <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", marginBottom: "22px" }}>
-            This console is for the Just One Chesed team. Sign in with your{" "}
-            <strong style={{ color: "#10233F" }}>@justonechesed.org</strong> account.
+            {signedIn ? (
+              <>
+                Your account has full access to the site, materials and programs — but the console is
+                limited to the educational team. Ask a super admin if you need to manage content.
+              </>
+            ) : (
+              <>Sign in with your <strong style={{ color: "#10233F" }}>@justonechesed.org</strong> account.</>
+            )}
           </p>
           <Link
-            href="/"
+            href={signedIn ? "/home" : "/"}
             style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none" }}
           >
-            Go to sign in
+            {signedIn ? "Go to the site" : "Go to sign in"}
           </Link>
         </div>
       </div>
@@ -49,7 +58,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   const who = session?.user?.email ?? null;
-  const role = session?.user?.role ?? null;
+  const role = (session?.user?.role ?? null) as Role | null;
+  // Before auth is configured the console is open so it can be reviewed;
+  // treat that as full access rather than hiding half the navigation.
+  const showAccounts = !isAuthConfigured || canManageAccounts(session?.user);
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
@@ -72,7 +84,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
         </div>
 
-        <SideGroup label="Accounts" items={NAV} />
+        {showAccounts && <SideGroup label="Accounts" items={ACCOUNTS_NAV} />}
         <SideGroup label="Content" items={CONTENT_NAV} />
 
         <div style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: "1px solid rgba(255,255,255,.1)" }}>
@@ -81,7 +93,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           )}
           {role && (
             <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#FA912D", margin: "0 0 12px", fontWeight: 700 }}>
-              {role.replace("_", " ")}
+              {ROLE_LABELS[role] ?? role.replace("_", " ")}
             </p>
           )}
           <Link href="/home" style={{ fontSize: "12.5px", color: "rgba(255,255,255,.6)", textDecoration: "none" }}>

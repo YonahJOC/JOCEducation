@@ -1,3 +1,4 @@
+import { AccountsGuard } from "@/components/admin/AccountsGuard";
 import Link from "next/link";
 import {
   getSchools, getPipeline, getRecentActivity, getDemoRequests,
@@ -25,6 +26,9 @@ const ACTIVITY_ICON: Record<string, string> = {
 };
 
 export default async function AdminOverview() {
+  return (<AccountsGuard>{await Inner()}</AccountsGuard>);
+}
+async function Inner() {
   const schools = await getSchools();
   const pipeline = await getPipeline(schools);
   const activity = await getRecentActivity(8);

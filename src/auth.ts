@@ -50,32 +50,37 @@ const config: NextAuthConfig = {
 
   callbacks: {
     async session({ session, user }) {
-      if (session.user) {
-        // Database strategy hands us the persisted user.
-        if (user) {
-          session.user.id = user.id;
-          session.user.role = (user as { role?: string }).role ?? "TEACHER";
-          session.user.schoolId = (user as { schoolId?: string | null }).schoolId ?? null;
-        }
-        // JOC staff always resolve to staff access, even if the stored row is
-        // stale or the database is unavailable.
-        if (isStaffEmail(session.user.email)) {
-          session.user.isStaff = true;
-          if (session.user.role !== "SUPER_ADMIN") {
-            session.user.role = isSuperAdminEmail(session.user.email) ? "SUPER_ADMIN" : "ADMIN";
-          }
-        } else {
-          session.user.isStaff = false;
-        }
+      if (!session.user) return session;
+
+      // Database strategy hands us the persisted user; that role is the truth.
+      if (user) {
+        session.user.id = user.id;
+        session.user.role = (user as { role?: string }).role ?? "TEACHER";
+        session.user.schoolId = (user as { schoolId?: string | null }).schoolId ?? null;
       }
+
+      const staffEmail = isStaffEmail(session.user.email);
+      session.user.isStaff = staffEmail;
+
+      // A JOC address guarantees STAFF — free access to everything — even if
+      // the stored row is stale or the database is unreachable. It never
+      // grants ADMIN: that is assigned by a super admin, so an existing
+      // higher role is left alone and never downgraded here.
+      if (staffEmail && !session.user.role) session.user.role = "STAFF";
+      if (staffEmail && session.user.role === "TEACHER") session.user.role = "STAFF";
+
+      // Bootstrap: the configured owners are always super admins.
+      if (isSuperAdminEmail(session.user.email)) session.user.role = "SUPER_ADMIN";
+
       return session;
     },
   },
 
   events: {
     /**
-     * Stamp the right role on first sign-in. The adapter creates every user as
-     * TEACHER, so JOC staff are promoted here.
+     * Stamp the right role on first sign-in. The adapter creates everyone as
+     * TEACHER; a @justonechesed.org address becomes STAFF (free access to
+     * everything, no ability to change anything). ADMIN is never automatic.
      */
     async createUser({ user }) {
       const role = initialRoleFor(user.email);

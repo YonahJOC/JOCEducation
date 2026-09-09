@@ -1,3 +1,4 @@
+import { AccountsGuard } from "@/components/admin/AccountsGuard";
 import { getAllUsers } from "@/lib/admin-data";
 import { JOC_STAFF_DOMAIN } from "@/lib/access";
 
@@ -6,8 +7,11 @@ const INK = "#10233F";
 export const metadata = { title: "People — JOC Console" };
 
 const ROLE_COLOR: Record<string, string> = {
-  SUPER_ADMIN: "#B8321E", ADMIN: "#2D46AF", SCHOOL_ADMIN: "#1B7F4B", TEACHER: "#7A8699",
+  SUPER_ADMIN: "#B8321E", ADMIN: "#2D46AF", STAFF: "#1B7F4B",
+  SCHOOL_ADMIN: "#2C7AC9", TEACHER: "#7A8699",
 };
+
+const INTERNAL_ROLES = ["STAFF", "ADMIN", "SUPER_ADMIN"];
 
 function ago(d: Date | null) {
   if (!d) return "never";
@@ -19,21 +23,29 @@ function ago(d: Date | null) {
 }
 
 export default async function UsersPage() {
+  return (<AccountsGuard>{await Inner()}</AccountsGuard>);
+}
+async function Inner() {
   const users = await getAllUsers();
-  const staff = users.filter((u) => u.role === "ADMIN" || u.role === "SUPER_ADMIN");
-  const teachers = users.filter((u) => u.role !== "ADMIN" && u.role !== "SUPER_ADMIN");
+  const internal = users.filter((u) => INTERNAL_ROLES.includes(u.role));
+  const teachers = users.filter((u) => !INTERNAL_ROLES.includes(u.role));
 
   return (
     <div>
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         People
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 22px" }}>
-        {staff.length} JOC staff, {teachers.length} school users. Anyone signing in with a{" "}
-        <strong style={{ color: INK }}>@{JOC_STAFF_DOMAIN}</strong> address becomes staff automatically, with full access.
+      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 8px" }}>
+        {internal.length} at Just One Chesed, {teachers.length} at schools.
+      </p>
+      <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", margin: "0 0 22px", lineHeight: 1.6, maxWidth: "62ch" }}>
+        Anyone signing in with a <strong style={{ color: INK }}>@{JOC_STAFF_DOMAIN}</strong> address becomes{" "}
+        <strong style={{ color: INK }}>JOC staff</strong> automatically — free access to the whole site, no ability to
+        change anyone&rsquo;s account. <strong style={{ color: INK }}>Educational team</strong> and{" "}
+        <strong style={{ color: INK }}>Super admin</strong> are granted by hand, by a super admin.
       </p>
 
-      <Section title={`JOC team (${staff.length})`} users={staff} showSchool={false} />
+      <Section title={`Just One Chesed (${internal.length})`} users={internal} showSchool={false} />
       <div style={{ height: "16px" }} />
       <Section title={`School users (${teachers.length})`} users={teachers} showSchool />
     </div>
