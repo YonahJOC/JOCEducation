@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CYCLES, getCurrentCycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
+import { isGoogleConfigured } from "@/auth";
 import { AuthCard } from "@/components/landing/AuthCard";
 import { DemoScheduler, type DemoDay } from "@/components/landing/DemoScheduler";
 
@@ -184,7 +185,7 @@ export default function EducatorLanding() {
             </div>
           </div>
 
-          <AuthCard />
+          <AuthCard googleEnabled={isGoogleConfigured} />
         </div>
       </section>
 

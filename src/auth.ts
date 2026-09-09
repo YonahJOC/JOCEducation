@@ -1,51 +1,121 @@
-// Auth configuration — requires DATABASE_URL + DIRECT_URL in .env.local.
-// Once the database is connected and `prisma generate` / `prisma migrate dev` have run,
-// uncomment the Prisma adapter block below and remove the stub export.
+import NextAuth, { type NextAuthConfig } from "next-auth";
+import Google from "next-auth/providers/google";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { initialRoleFor, isStaffEmail, isSuperAdminEmail } from "@/lib/access";
 
-// import NextAuth from "next-auth";
-// import { PrismaAdapter } from "@auth/prisma-adapter";
-// import Google from "next-auth/providers/google";
-// import Credentials from "next-auth/providers/credentials";
-// import { prisma } from "@/lib/prisma";
-//
-// export const { handlers, auth, signIn, signOut } = NextAuth({
-//   adapter: PrismaAdapter(prisma),
-//   providers: [
-//     Google({
-//       clientId: process.env.AUTH_GOOGLE_ID!,
-//       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-//     }),
-//     Credentials({
-//       credentials: {
-//         email: { label: "Email", type: "email" },
-//         password: { label: "Password", type: "password" },
-//       },
-//       async authorize(credentials) {
-//         if (!credentials?.email || !credentials?.password) return null;
-//         const user = await prisma.user.findUnique({
-//           where: { email: credentials.email as string },
-//         });
-//         return user ?? null;
-//       },
-//     }),
-//   ],
-//   session: { strategy: "database" },
-//   callbacks: {
-//     async session({ session, user }) {
-//       if (session.user) {
-//         session.user.id = user.id;
-//         (session.user as Record<string, unknown>).role = (user as { role?: string }).role;
-//       }
-//       return session;
-//     },
-//   },
-//   pages: { signIn: "/login", error: "/login" },
-// });
+/**
+ * Google sign-in.
+ *
+ * Everything degrades gracefully: with no AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET
+ * / DATABASE_URL the app still builds and runs, `auth()` simply returns null
+ * and the sign-in card explains that sign-in is not switched on yet.
+ *
+ * Anyone signing in with a @justonechesed.org address is JOC staff — created
+ * as ADMIN (or SUPER_ADMIN if listed in SUPER_ADMIN_EMAILS) and given full
+ * access to the whole site with no subscription. See src/lib/access.ts.
+ */
 
-// Stub — replace with the real NextAuth export above once the DB is ready
-export const GET = () => new Response();
-export const POST = () => new Response();
-export const handlers = { GET, POST };
-export const auth = async () => null;
-export const signIn = async () => {};
-export const signOut = async () => {};
+export const isGoogleConfigured = Boolean(
+  process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
+);
+
+export const isAuthConfigured = Boolean(
+  isGoogleConfigured && process.env.AUTH_SECRET && isDatabaseConfigured()
+);
+
+const config: NextAuthConfig = {
+  // The adapter needs a live database; without one, sign-in stays off.
+  adapter: isDatabaseConfigured() ? PrismaAdapter(prisma) : undefined,
+  session: { strategy: isDatabaseConfigured() ? "database" : "jwt" },
+  trustHost: true,
+
+  // The educator landing page is the sign-in page.
+  pages: { signIn: "/", error: "/" },
+
+  providers: isGoogleConfigured
+    ? [
+        Google({
+          clientId: process.env.AUTH_GOOGLE_ID,
+          clientSecret: process.env.AUTH_GOOGLE_SECRET,
+          // Google verifies the address, so linking to an existing user with
+          // the same email is safe and avoids duplicate accounts.
+          allowDangerousEmailAccountLinking: true,
+          authorization: {
+            params: { prompt: "select_account", scope: "openid email profile" },
+          },
+        }),
+      ]
+    : [],
+
+  callbacks: {
+    async session({ session, user }) {
+      if (session.user) {
+        // Database strategy hands us the persisted user.
+        if (user) {
+          session.user.id = user.id;
+          session.user.role = (user as { role?: string }).role ?? "TEACHER";
+          session.user.schoolId = (user as { schoolId?: string | null }).schoolId ?? null;
+        }
+        // JOC staff always resolve to staff access, even if the stored row is
+        // stale or the database is unavailable.
+        if (isStaffEmail(session.user.email)) {
+          session.user.isStaff = true;
+          if (session.user.role !== "SUPER_ADMIN") {
+            session.user.role = isSuperAdminEmail(session.user.email) ? "SUPER_ADMIN" : "ADMIN";
+          }
+        } else {
+          session.user.isStaff = false;
+        }
+      }
+      return session;
+    },
+  },
+
+  events: {
+    /**
+     * Stamp the right role on first sign-in. The adapter creates every user as
+     * TEACHER, so JOC staff are promoted here.
+     */
+    async createUser({ user }) {
+      const role = initialRoleFor(user.email);
+      if (role === "TEACHER" || !isDatabaseConfigured()) return;
+      try {
+        await prisma.user.update({ where: { id: user.id }, data: { role } });
+      } catch {
+        // Non-fatal: the session callback still resolves staff by email.
+      }
+    },
+
+    async signIn({ user }) {
+      if (!isDatabaseConfigured() || !user.id) return;
+      try {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { lastSeenAt: new Date() },
+        });
+      } catch {
+        // Never block sign-in on a bookkeeping write.
+      }
+    },
+  },
+};
+
+const nextAuth = NextAuth(config);
+
+export const { auth, signIn, signOut } = nextAuth;
+export const { GET, POST } = nextAuth.handlers;
+
+/**
+ * `auth()` throws when AUTH_SECRET is missing, which is the normal state
+ * before credentials are configured. Callers that just want "who is signed in,
+ * if anyone" should use this instead.
+ */
+export async function safeAuth() {
+  if (!isAuthConfigured) return null;
+  try {
+    return await auth();
+  } catch {
+    return null;
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { signInWithGoogle } from "@/app/actions/auth";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -27,7 +28,13 @@ const labelStyle: React.CSSProperties = {
   marginBottom: "6px",
 };
 
-export function AuthCard({ defaultTab = "login" }: { defaultTab?: "login" | "signup" }) {
+export function AuthCard({
+  defaultTab = "login",
+  googleEnabled = false,
+}: {
+  defaultTab?: "login" | "signup";
+  googleEnabled?: boolean;
+}) {
   const [tab, setTab] = useState<"login" | "signup">(defaultTab);
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -111,11 +118,15 @@ export function AuthCard({ defaultTab = "login" }: { defaultTab?: "login" | "sig
         ))}
       </div>
 
-      {/* Google */}
+      {/* Google — a real sign-in once AUTH_GOOGLE_ID/SECRET are set */}
+      <form action={googleEnabled ? signInWithGoogle : undefined}>
       <button
-        type="button"
-        onClick={() =>
-          setNotice("Google sign-in isn't switched on yet. Book a demo below to get your school set up.")
+        type={googleEnabled ? "submit" : "button"}
+        onClick={
+          googleEnabled
+            ? undefined
+            : () =>
+                setNotice("Google sign-in isn't switched on yet. Book a demo below to get your school set up.")
         }
         style={{
           width: "100%",
@@ -143,6 +154,7 @@ export function AuthCard({ defaultTab = "login" }: { defaultTab?: "login" | "sig
         </svg>
         Continue with Google
       </button>
+      </form>
 
       {/* Divider */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "18px 0" }}>

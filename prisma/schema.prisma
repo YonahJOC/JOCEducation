@@ -1,5 +1,5 @@
 // JOC Education — Prisma schema
-// Run: npx prisma migrate dev --name init
+// Run: npx prisma@6 migrate dev --name init
 // Requires .env.local with DATABASE_URL (pooler port 6543) and DIRECT_URL (direct port 5432)
 
 generator client {
@@ -12,6 +12,133 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ─── Schools ──────────────────────────────────────────────────────────────────
+// A School is the account. Teachers belong to one, the subscription belongs to
+// the school rather than to any individual, and the JOC team manages the
+// relationship through the internal admin console.
+
+model School {
+  id       String  @id @default(cuid())
+  name     String
+  slug     String  @unique
+  /// Free-text region used for the Teachers' Board filter (e.g. "Brooklyn", "Lakewood")
+  region   String?
+  city     String?
+  country  String? @default("United States")
+  website  String?
+
+  type       SchoolType     @default(DAY_SCHOOL)
+  enrollment EnrollmentBand @default(MEDIUM)
+  /// Actual enrollment where known — `enrollment` is the pricing band
+  studentCount Int?
+
+  status SchoolStatus @default(PROSPECT)
+
+  /// JOC staff member who owns this relationship
+  accountManagerId String?
+  accountManager   User?   @relation("AccountManager", fields: [accountManagerId], references: [id], onDelete: SetNull)
+
+  members      User[]         @relation("SchoolMembers")
+  contacts     SchoolContact[]
+  activities   SchoolActivity[]
+  invitations  Invitation[]
+  subscription Subscription?
+  boardPosts   BoardPost[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([accountManagerId])
+}
+
+/// A person at the school. May or may not have a login — a principal who signs
+/// the contract but never uses the site still needs to be reachable.
+model SchoolContact {
+  id       String  @id @default(cuid())
+  schoolId String
+  name     String
+  title    String?
+  email    String?
+  phone    String?
+  isPrimary Boolean @default(false)
+  notes    String? @db.Text
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([schoolId])
+}
+
+/// Relationship timeline: calls, emails, meetings and demos logged by hand,
+/// plus an automatic audit trail of plan changes and access grants.
+model SchoolActivity {
+  id       String       @id @default(cuid())
+  schoolId String
+  type     ActivityType @default(NOTE)
+  summary  String
+  detail   String?      @db.Text
+  /// When the call/meeting actually happened — may differ from createdAt
+  occurredAt DateTime   @default(now())
+
+  /// JOC staff member who logged it (null for system-generated entries)
+  authorId String?
+  author   User?  @relation("ActivityAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([schoolId, occurredAt])
+}
+
+/// Granting access. A JOC admin invites an email to a school; the invite is
+/// consumed on first sign-in.
+model Invitation {
+  id       String           @id @default(cuid())
+  email    String
+  schoolId String
+  role     Role             @default(TEACHER)
+  token    String           @unique @default(cuid())
+  status   InvitationStatus @default(PENDING)
+  expiresAt DateTime
+  acceptedAt DateTime?
+
+  invitedById String?
+  invitedBy   User?   @relation("Inviter", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([schoolId])
+  @@index([email])
+}
+
+/// Demo requests from the educator landing page scheduler — the top of the
+/// sales pipeline, before a School record exists.
+model DemoRequest {
+  id         String            @id @default(cuid())
+  name       String
+  email      String
+  schoolName String?
+  phone      String?
+  /// Requested slot, as chosen on the landing page
+  requestedFor DateTime?
+  message    String?           @db.Text
+  status     DemoRequestStatus @default(NEW)
+  /// Set once the request is converted into a School record
+  schoolId   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
 // ─── NextAuth v5 / @auth/prisma-adapter ──────────────────────────────────────
 
 model User {
@@ -21,18 +148,29 @@ model User {
   emailVerified DateTime?
   image         String?
   role          Role      @default(TEACHER)
-  schoolName    String?
-  schoolRegion  String?
+
+  schoolId String?
+  school   School? @relation("SchoolMembers", fields: [schoolId], references: [id], onDelete: SetNull)
+
+  /// Set false to suspend a login without deleting the account
+  active Boolean  @default(true)
+  lastSeenAt DateTime?
 
   accounts     Account[]
   sessions     Session[]
   savedLessons SavedLesson[]
   boardPosts   BoardPost[]
   boardLikes   BoardLike[]
-  subscription Subscription?
+
+  managedSchools   School[]         @relation("AccountManager")
+  loggedActivities SchoolActivity[] @relation("ActivityAuthor")
+  sentInvitations  Invitation[]     @relation("Inviter")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([schoolId])
+  @@index([role])
 }
 
 model Account {
@@ -40,12 +178,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -76,46 +214,64 @@ model VerificationToken {
 }
 
 // ─── Subscriptions ────────────────────────────────────────────────────────────
+// Belongs to the school, not to a user.
 
 model Subscription {
-  id             String             @id @default(cuid())
-  userId         String             @unique
-  plan           Plan
-  status         SubscriptionStatus @default(ACTIVE)
-  stripeCustomerId  String?         @unique
-  stripeSubId       String?         @unique
-  currentPeriodEnd  DateTime?
-  seats             Int             @default(1)
+  id       String @id @default(cuid())
+  schoolId String @unique
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan   Plan
+  status SubscriptionStatus @default(ACTIVE)
+  /// Monthly or annual billing
+  interval BillingInterval @default(ANNUAL)
+
+  stripeCustomerId String?   @unique
+  stripeSubId      String?   @unique
+  currentPeriodEnd DateTime?
+
+  /// Number of staff logins included
+  seats Int @default(1)
+
+  /// Access granted manually by JOC (scholarship, pilot, comp) rather than paid
+  grantedManually Boolean @default(false)
+  /// Why access was granted or discounted — shown in the admin console
+  grantNote String? @db.Text
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status])
 }
 
 // ─── Lesson Plans ─────────────────────────────────────────────────────────────
 
 model LessonPlan {
-  id          Int          @id @default(autoincrement())
-  slug        String       @unique
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
   theme       String
   title       String
-  description String       @db.Text
+  description String    @db.Text
   grade       Grade
   timeMinutes Int
   prep        PrepLevel
-  published   Boolean      @default(true)
-  featured    Boolean      @default(false)
+  published   Boolean   @default(true)
+  featured    Boolean   @default(false)
+  /// Chesed Cycle this lesson belongs to, by slug (see src/lib/cycles.ts)
+  cycleSlug   String?
 
-  files       LessonFile[]
-  objectives  LessonObjective[]
-  materials   LessonMaterial[]
-  steps       LessonStep[]
-  discussion  LessonDiscussion[]
-  savedBy     SavedLesson[]
+  files      LessonFile[]
+  objectives LessonObjective[]
+  materials  LessonMaterial[]
+  steps      LessonStep[]
+  discussion LessonDiscussion[]
+  savedBy    SavedLesson[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([cycleSlug])
 }
 
 model LessonFile {
@@ -123,6 +279,7 @@ model LessonFile {
   lessonId Int
   name     String
   url      String
+  order    Int    @default(0)
 
   lesson LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
@@ -190,40 +347,50 @@ model SavedLesson {
 // ─── Resources ────────────────────────────────────────────────────────────────
 
 model Resource {
-  id          Int          @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   tag         String
   title       String
-  description String       @db.Text
+  description String  @db.Text
   fileUrl     String?
-  published   Boolean      @default(true)
+  published   Boolean @default(true)
+  cycleSlug   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([cycleSlug])
 }
 
 // ─── Teachers' Board ──────────────────────────────────────────────────────────
 
 model BoardPost {
-  id         String      @id @default(cuid())
-  userId     String
-  title      String
-  body       String      @db.Text
-  grade      Grade
+  id     String  @id @default(cuid())
+  userId String
+  title  String
+  body   String  @db.Text
+  grade  Grade
+  likes  Int     @default(0)
+  approved Boolean @default(false)
+
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  /// Denormalised for display and for posts whose school record was removed
   region     String
   schoolName String
-  likes      Int         @default(0)
-  approved   Boolean     @default(true)
 
-  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   likedBy BoardLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([approved])
+  @@index([schoolId])
 }
 
 model BoardLike {
-  userId    String
-  postId    String
+  userId String
+  postId String
 
   user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   post BoardPost @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -236,13 +403,31 @@ model BoardLike {
 // ─── Shop ─────────────────────────────────────────────────────────────────────
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  description String   @db.Text
-  price       Int
-  unit        String   @default("item")
-  inStock     Boolean  @default(true)
+  id            String  @id @default(cuid())
+  name          String
+  description   String  @db.Text
+  price         Int
+  unit          String  @default("item")
+  inStock       Boolean @default(true)
   stripePriceId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Site statistics ──────────────────────────────────────────────────────────
+// Every number shown publicly comes from here, with a source and an as-of date,
+// so nothing on the site is a figure nobody can account for.
+
+model Stat {
+  id     String  @id @default(cuid())
+  key    String  @unique
+  label  String
+  value  String
+  /// Where the number came from: JOC App export, manual count, CRM
+  source String?
+  asOf   DateTime
+  published Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -252,8 +437,67 @@ model Product {
 
 enum Role {
   TEACHER
-  ADMIN
   SCHOOL_ADMIN
+  /// JOC staff — access to the internal admin console
+  ADMIN
+  /// JOC leadership — can manage other admins and delete accounts
+  SUPER_ADMIN
+}
+
+enum SchoolType {
+  DAY_SCHOOL
+  YESHIVA
+  SEMINARY
+  CHEDER
+  HIGH_SCHOOL
+  OTHER
+}
+
+enum EnrollmentBand {
+  /// Under 150 students
+  SMALL
+  /// 150–400 students
+  MEDIUM
+  /// 400+ students
+  LARGE
+}
+
+enum SchoolStatus {
+  PROSPECT
+  DEMO_SCHEDULED
+  TRIAL
+  ACTIVE
+  LAPSED
+  CHURNED
+}
+
+enum ActivityType {
+  NOTE
+  CALL
+  EMAIL
+  MEETING
+  DEMO
+  /// System-generated audit entries
+  PLAN_CHANGE
+  ACCESS_GRANTED
+  ACCESS_REVOKED
+  STATUS_CHANGE
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+enum DemoRequestStatus {
+  NEW
+  CONTACTED
+  SCHEDULED
+  COMPLETED
+  CONVERTED
+  LOST
 }
 
 enum Grade {
@@ -270,8 +514,14 @@ enum PrepLevel {
 
 enum Plan {
   SINGLE_TEACHER
-  SCHOOL_WIDE
-  MULTI_SCHOOL
+  JOC_EDUCATION
+  APP_AND_EDUCATION
+  FULL_PARTNERSHIP
+}
+
+enum BillingInterval {
+  MONTHLY
+  ANNUAL
 }
 
 enum SubscriptionStatus {
