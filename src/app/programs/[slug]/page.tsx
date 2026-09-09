@@ -26,7 +26,7 @@ export default async function ProgramDetailPage({ params }: Props) {
   if (!program) notFound();
 
   const tagColors: Record<string, { bg: string; text: string }> = {
-    Event:    { bg: "#EAF0FD", text: "#1E47B8" },
+    Event:    { bg: "#EAF0FD", text: "#2D46AF" },
     Ongoing:  { bg: "#FDEEDA", text: "#9A5405" },
     Platform: { bg: "#F4F7FD", text: "#10233F" },
     "One-time": { bg: "#E8F5EE", text: "#1B7F4B" },
@@ -90,7 +90,7 @@ export default async function ProgramDetailPage({ params }: Props) {
                   style={{ backgroundColor: "#fff", borderRadius: "18px", border: "1px solid rgba(16,35,63,.1)", padding: "24px 26px", display: "flex", gap: "20px" }}
                 >
                   <div style={{ width: "36px", height: "36px", borderRadius: "9px", backgroundColor: "#F4F7FD", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <span style={{ fontWeight: 800, fontSize: "12px", color: "#1E47B8", letterSpacing: "0.05em" }}>{s.step}</span>
+                    <span style={{ fontWeight: 800, fontSize: "12px", color: "#2D46AF", letterSpacing: "0.05em" }}>{s.step}</span>
                   </div>
                   <div>
                     <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "6px" }}>{s.title}</h3>
@@ -160,14 +160,14 @@ export default async function ProgramDetailPage({ params }: Props) {
                   href={program.externalHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ display: "block", textAlign: "center", backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 20px", textDecoration: "none", marginBottom: "10px" }}
+                  style={{ display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 20px", textDecoration: "none", marginBottom: "10px" }}
                 >
                   {program.cta} ↗
                 </a>
               ) : (
                 <Link
                   href="/pricing"
-                  style={{ display: "block", textAlign: "center", backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 20px", textDecoration: "none", marginBottom: "10px" }}
+                  style={{ display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 20px", textDecoration: "none", marginBottom: "10px" }}
                 >
                   {program.cta}
                 </Link>
@@ -183,7 +183,7 @@ export default async function ProgramDetailPage({ params }: Props) {
               <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                 {program.whatsIncluded.map((item, i) => (
                   <li key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "9px 0", borderBottom: i < program.whatsIncluded.length - 1 ? "1px solid rgba(16,35,63,.08)" : "none", fontSize: "13.5px", color: "#10233F", lineHeight: 1.5 }}>
-                    <span style={{ color: "#F7941D", fontWeight: 700, flexShrink: 0, marginTop: "1px" }}>•</span>
+                    <span style={{ color: "#FA912D", fontWeight: 700, flexShrink: 0, marginTop: "1px" }}>•</span>
                     {item}
                   </li>
                 ))}

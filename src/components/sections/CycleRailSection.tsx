@@ -362,8 +362,8 @@ export function CycleRailSection({ initialIndex }: { initialIndex: number }) {
             style={{
               fontSize: "12.5px",
               fontWeight: 600,
-              color: "#1E47B8",
-              background: "rgba(30,71,184,.08)",
+              color: "#2D46AF",
+              background: "rgba(45,70,175,.08)",
               border: "none",
               borderRadius: "9999px",
               padding: "8px 16px",

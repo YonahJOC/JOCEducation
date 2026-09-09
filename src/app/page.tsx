@@ -1,39 +1,367 @@
 import type { Metadata } from "next";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { CycleStripSection } from "@/components/sections/CycleStripSection";
-import { ProgramsSection } from "@/components/sections/ProgramsSection";
-import { LessonPlansSection } from "@/components/sections/LessonPlansSection";
-import { ResourceLibrarySection } from "@/components/sections/ResourceLibrarySection";
-import { TeachersBoardSection } from "@/components/sections/TeachersBoardSection";
-import { ShopSection } from "@/components/sections/ShopSection";
-import { PricingSection } from "@/components/sections/PricingSection";
-import { PortalSection } from "@/components/sections/PortalSection";
-import { ClosingCTA } from "@/components/sections/ClosingCTA";
+import Image from "next/image";
+import Link from "next/link";
+import { CYCLES, getCurrentCycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
+import { AuthCard } from "@/components/landing/AuthCard";
+import { DemoScheduler, type DemoDay } from "@/components/landing/DemoScheduler";
+
+const INK = "#10233F";
+const BLUE = "#2D46AF";
+const ORANGE = "#FA912D";
+const ORANGE_TEXT = "#C96C00";
+const PAPER = "#FBF9F4";
+const PANEL = "#F4F7FD";
+const RULE = "rgba(16,35,63,.12)";
+const WIDTH = "1180px";
+
+// TODO: these three are unverified — they came from the pricing page and
+// contradict the About page (900+ schools) and the old homepage (312).
+// The education team's Phase 3 truth audit replaces or removes them.
+// This is the only page a logged-out visitor sees, so fix these first.
+const PROOF = [
+  { value: "300+", label: "partner schools" },
+  { value: "14,000+", label: "teachers with access" },
+  { value: "2.1M", label: "chesed hours logged" },
+];
+
+const INSIDE = [
+  { color: BLUE, figure: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion questions. Print and teach." },
+  { color: ORANGE, figure: "5", title: "Resource library", body: "Source sheets, activities, posters and videos, tagged by grade." },
+  { color: "#1B7F4B", figure: "10", title: "Programs for your school", body: "Kindness Booth, Bake for Chesed, Just One Tutor and more — JOC runs the logistics." },
+  { color: "#2C7AC9", figure: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },
+];
 
 export const metadata: Metadata = {
-  title: "JOC Education — Educating Towards Chesed",
+  title: "JOC Educators Portal — Educating Towards Chesed",
   description:
-    "Lesson plans, chesed programs, and classroom resources for Jewish schools. Educating Towards Chesed — Just One Student at a Time.",
+    "The front door to JOC Education. Lesson plans, chesed programs and classroom resources for Jewish schools, organised around the Chesed Cycle. Sign in or book a demo.",
   openGraph: {
-    title: "JOC Education — Educating Towards Chesed",
-    description:
-      "Lesson plans, chesed programs, and classroom resources for Jewish schools.",
+    title: "JOC Educators Portal",
+    description: "Educating Towards Chesed — Just One Student at a Time.",
   },
 };
 
-export default function HomePage() {
+/** Next five school days (Sunday–Thursday), computed server-side to avoid hydration drift. */
+function nextSchoolDays(count = 5): DemoDay[] {
+  const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const mo = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const out: DemoDay[] = [];
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  while (out.length < count) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() === 5 || d.getDay() === 6) continue; // no Friday or Shabbos
+    out.push({
+      key: d.toISOString().slice(0, 10),
+      weekday: wd[d.getDay()],
+      day: String(d.getDate()),
+      month: mo[d.getMonth()],
+    });
+  }
+  return out;
+}
+
+export default function EducatorLanding() {
+  const cycle = getCurrentCycle();
+  const state = getCycleState(cycle);
+  const week = getCurrentWeek(cycle);
+  const pct = state === "past" ? 100 : state === "upcoming" ? 0 : Math.round((week / cycle.weeks) * 100);
+  const days = nextSchoolDays();
+
   return (
-    <>
-      <HeroSection />
-      <CycleStripSection />
-      <ProgramsSection />
-      <LessonPlansSection />
-      <ResourceLibrarySection />
-      <TeachersBoardSection />
-      <ShopSection />
-      <PricingSection />
-      <PortalSection />
-      <ClosingCTA />
-    </>
+    <div style={{ backgroundColor: PAPER }}>
+      {/* 1 — Wayfinding */}
+      <div style={{ backgroundColor: PANEL, borderBottom: `1px solid ${RULE}` }}>
+        <p
+          style={{
+            maxWidth: WIDTH, margin: "0 auto", padding: "9px 26px",
+            fontSize: "13px", color: "rgba(16,35,63,.72)", textAlign: "center", lineHeight: 1.5,
+          }}
+        >
+          This is the JOC Educators Portal. Looking for the main site?{" "}
+          <a
+            href="https://justonechesed.org"
+            style={{ color: BLUE, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
+          >
+            Go to JustOneChesed.org →
+          </a>
+        </p>
+      </div>
+
+      {/* 2 — Header */}
+      <header
+        style={{
+          position: "sticky", top: 0, zIndex: 40,
+          backgroundColor: "rgba(251,249,244,.94)",
+          backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+          borderBottom: `1px solid ${RULE}`,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: WIDTH, margin: "0 auto", padding: "12px 26px",
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px",
+          }}
+        >
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "11px", textDecoration: "none", flexShrink: 0 }}>
+            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={168} height={20} priority style={{ height: "20px", width: "auto" }} />
+            <span aria-hidden="true" style={{ width: "1px", height: "20px", backgroundColor: RULE }} />
+            <span style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
+              Education
+            </span>
+          </Link>
+
+          {/* Same-page anchors only — every other route is gated */}
+          <nav className="joc-landing-nav" style={{ display: "flex", alignItems: "center", gap: "22px" }}>
+            {[["What's inside", "#inside"], ["The Chesed Cycle", "#cycle"], ["Book a demo", "#demo"]].map(([label, href]) => (
+              <a key={href} href={href} style={{ fontSize: "14px", fontWeight: 500, color: INK, textDecoration: "none" }}>
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "9px", flexShrink: 0 }}>
+            <a
+              href="#auth"
+              style={{
+                fontSize: "14px", fontWeight: 600, color: INK, textDecoration: "none",
+                border: `1.5px solid ${RULE}`, borderRadius: "9999px", padding: "9px 18px",
+                display: "inline-flex", alignItems: "center", minHeight: "40px",
+              }}
+            >
+              Sign in
+            </a>
+            <a
+              href="#demo"
+              style={{
+                fontSize: "14px", fontWeight: 700, color: INK, backgroundColor: ORANGE,
+                borderRadius: "9999px", padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
+                display: "inline-flex", alignItems: "center", minHeight: "40px",
+              }}
+            >
+              Bring JOC to your school
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* 3 — Hero */}
+      <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "44px 26px 52px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "48px", alignItems: "start" }}>
+          {/* Pitch */}
+          <div>
+            <span
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px",
+                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "9999px",
+                padding: "7px 15px", marginBottom: "22px",
+                fontSize: "13.5px", fontWeight: 500, color: INK,
+              }}
+            >
+              <span className="joc-pulse" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0 }} />
+              Cycle {cycle.num} of {CYCLES.length} is running now · week {week} of {cycle.weeks}
+            </span>
+
+            <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.04em", margin: "0 0 20px" }}>
+              <span style={{ display: "block", color: INK }}>Educating Towards Chesed</span>
+              <span style={{ display: "block", color: BLUE }}>Just One Student at a Time</span>
+            </h1>
+
+            <p style={{ fontSize: "17.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "46ch", margin: "0 0 30px" }}>
+              Lesson plans, classroom resources and chesed programs for Jewish day schools and yeshivos — organised around the
+              Chesed Cycle, so the whole school is working on one middah at a time.
+            </p>
+
+            <div style={{ display: "flex", gap: "30px", flexWrap: "wrap", paddingTop: "26px", borderTop: `1px solid ${RULE}` }}>
+              {PROOF.map((p) => (
+                <div key={p.label}>
+                  <p style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, lineHeight: 1, margin: "0 0 5px" }}>
+                    {p.value}
+                  </p>
+                  <p style={{ fontSize: "13px", color: "rgba(16,35,63,.6)", margin: 0 }}>{p.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <AuthCard />
+        </div>
+      </section>
+
+      {/* 4 — Chesed Cycle band */}
+      <section id="cycle" style={{ backgroundColor: INK, color: "#fff" }}>
+        <div style={{ maxWidth: WIDTH, margin: "0 auto", padding: "56px 26px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "44px", alignItems: "start" }}>
+            <div>
+              <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE, margin: "0 0 14px" }}>
+                This Chesed Cycle · {cycle.hebrew}
+              </p>
+              <h2 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.04em", margin: "0 0 8px" }}>
+                {cycle.theme}
+              </h2>
+              <p style={{ fontSize: "16px", color: "rgba(255,255,255,.66)", margin: "0 0 26px" }}>{cycle.gloss}</p>
+              <p
+                style={{
+                  fontFamily: "var(--font-newsreader)", fontStyle: "italic",
+                  fontSize: "clamp(18px, 2.1vw, 23px)", lineHeight: 1.5,
+                  color: "rgba(255,255,255,.94)", borderLeft: `3px solid ${ORANGE}`,
+                  paddingLeft: "20px", margin: 0, maxWidth: "34ch",
+                }}
+              >
+                {cycle.question}
+              </p>
+            </div>
+
+            <div>
+              <p style={{ fontSize: "15.5px", lineHeight: 1.65, color: "rgba(255,255,255,.76)", margin: "0 0 24px" }}>
+                The JOC year runs as {CYCLES.length} consecutive Cycles, from the first week of school through Shavuos. Each one takes a single
+                middah and one guiding question, and every lesson, program and resource for those weeks points at it. The whole school is
+                working on the same thing at the same time.
+              </p>
+
+              <div style={{ marginBottom: "26px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12.5px", color: "rgba(255,255,255,.6)", marginBottom: "8px" }}>
+                  <span>Week {week} of {cycle.weeks}</span>
+                  <span>{cycle.range}</span>
+                </div>
+                <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: ORANGE, transition: "width .4s ease" }} />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "7px" }}>
+                {CYCLES.map((c) => {
+                  const on = c.num === cycle.num;
+                  const done = getCycleState(c) === "past";
+                  return (
+                    <span
+                      key={c.slug}
+                      style={{
+                        fontSize: "12.5px", fontWeight: on ? 700 : 500,
+                        padding: "7px 13px", borderRadius: "9999px",
+                        backgroundColor: on ? ORANGE : "rgba(255,255,255,.09)",
+                        color: on ? INK : done ? "rgba(255,255,255,.42)" : "rgba(255,255,255,.8)",
+                        border: on ? "none" : "1px solid rgba(255,255,255,.14)",
+                      }}
+                    >
+                      {c.theme}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 — What's inside */}
+      <section id="inside" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 20px" }}>
+        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
+          What&rsquo;s inside
+        </p>
+        <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 34px" }}>
+          Everything a rebbe or morah needs, in one place.
+        </h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>
+          {INSIDE.map((c) => (
+            <div
+              key={c.title}
+              style={{
+                backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.09)`,
+                borderRadius: "22px", overflow: "hidden", display: "flex", flexDirection: "column",
+              }}
+            >
+              <div style={{ height: "4px", backgroundColor: c.color }} />
+              <div style={{ padding: "24px" }}>
+                <p style={{ fontWeight: 800, fontSize: "30px", letterSpacing: "-0.035em", color: c.color, lineHeight: 1, margin: "0 0 12px" }}>
+                  {c.figure}
+                </p>
+                <p style={{ fontWeight: 700, fontSize: "16.5px", color: INK, letterSpacing: "-0.02em", margin: "0 0 7px" }}>{c.title}</p>
+                <p style={{ fontSize: "14px", lineHeight: 1.55, color: "rgba(16,35,63,.66)", margin: 0 }}>{c.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6 — Book a demo */}
+      <section id="demo" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 72px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "48px", alignItems: "start" }}>
+          <div>
+            <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
+              Book a demo
+            </p>
+            <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 18px" }}>
+              Twenty minutes, and you&rsquo;ll know if it fits.
+            </h2>
+            <p style={{ fontSize: "16px", lineHeight: 1.65, color: "rgba(16,35,63,.72)", margin: "0 0 24px", maxWidth: "44ch" }}>
+              A conversation with someone from the JOC Education team — not a sales pitch, and not a slide deck.
+            </p>
+
+            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 30px", display: "flex", flexDirection: "column", gap: "14px" }}>
+              {[
+                "We walk your actual grade levels through the current Cycle and the lessons that go with it.",
+                "You tell us how your year is already structured, and we say honestly whether the Cycles fit around it.",
+                "We go through what running this costs, including the scholarship route if the budget is tight.",
+              ].map((t) => (
+                <li key={t} style={{ display: "flex", gap: "13px", alignItems: "flex-start" }}>
+                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "8px" }} />
+                  <span style={{ fontSize: "15px", lineHeight: 1.6, color: INK }}>{t}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* TODO: replace with a real educator quote, with permission on file. */}
+            <p
+              style={{
+                fontFamily: "var(--font-newsreader)", fontStyle: "italic",
+                fontSize: "17px", lineHeight: 1.6, color: "rgba(16,35,63,.78)",
+                borderLeft: `3px solid ${ORANGE}`, paddingLeft: "18px", margin: "0 0 26px", maxWidth: "40ch",
+              }}
+            >
+              Chesed stops being an assembly once the whole school is working on the same middah in the same weeks.
+            </p>
+
+            <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: 0 }}>
+              Would rather just email?{" "}
+              <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+                education@justonechesed.org
+              </a>
+            </p>
+          </div>
+
+          <DemoScheduler days={days} />
+        </div>
+      </section>
+
+      {/* 7 — Footer */}
+      <footer style={{ backgroundColor: INK, color: "rgba(255,255,255,.7)" }}>
+        <div
+          style={{
+            maxWidth: WIDTH, margin: "0 auto", padding: "40px 26px",
+            display: "flex", flexWrap: "wrap", gap: "24px", alignItems: "center", justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "13px" }}>
+            <Image src="/brand/joc-icon-orange.png" alt="" width={30} height={30} style={{ height: "30px", width: "auto" }} />
+            <div>
+              <p style={{ fontWeight: 700, fontSize: "14.5px", color: "#fff", margin: 0, letterSpacing: "-0.02em" }}>
+                JustOneChesed <span style={{ color: ORANGE, fontWeight: 700 }}>Education</span>
+              </p>
+              <p style={{ fontSize: "12.5px", margin: "3px 0 0" }}>
+                A 501(c)(3) nonprofit organization
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "22px", flexWrap: "wrap", fontSize: "13.5px" }}>
+            <Link href="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
+            <Link href="/terms" style={{ color: "inherit", textDecoration: "none" }}>Terms</Link>
+            <a href="mailto:education@justonechesed.org" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }

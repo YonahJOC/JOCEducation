@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
-const STRIPE_COLORS = ["#1E47B8", "#F7941D", "#2C7AC9", "#10233F"];
+const STRIPE_COLORS = ["#2D46AF", "#FA912D", "#2C7AC9", "#10233F"];
 
 const LESSONS = [
   { id: 1, theme: "Bein Adam LaChaveiro", title: "Seeing the Person in Front of You", description: "Students learn to give full attention when someone speaks to them — eye contact, body language, and what it means to truly listen.", grade: "es", time: 20, prep: "Minimal", files: ["lesson-plan.pdf", "reflection-cards.pdf"] },
@@ -86,14 +86,14 @@ function LessonCard({ lesson, colorIndex }: { lesson: typeof LESSONS[0]; colorIn
   return (
     <div
       style={{ backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden", transition: "border-color .15s, box-shadow .15s", cursor: "pointer" }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "#1E47B8"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 26px rgba(16,35,63,.11)"; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "#2D46AF"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 26px rgba(16,35,63,.11)"; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(16,35,63,.1)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; }}
     >
       {/* Color stripe */}
       <div style={{ height: "8px", backgroundColor: STRIPE_COLORS[colorIndex] }} />
       <div style={{ padding: "20px" }}>
         {/* Theme pill */}
-        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#1E47B8", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 12px", marginBottom: "10px" }}>
+        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 12px", marginBottom: "10px" }}>
           {lesson.theme}
         </span>
         <h3 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: "#10233F", marginBottom: "8px" }}>{lesson.title}</h3>
@@ -107,7 +107,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: typeof LESSONS[0]; colorIn
         {/* Footer */}
         <div style={{ borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "13px", color: "rgba(16,35,63,.55)" }}>{lesson.files.join(", ")}</span>
-          <Link href={`/lesson-plans/${lesson.id}`} style={{ fontWeight: 700, fontSize: "14px", color: "#1E47B8", textDecoration: "none" }}>Open plan →</Link>
+          <Link href={`/lesson-plans/${lesson.id}`} style={{ fontWeight: 700, fontSize: "14px", color: "#2D46AF", textDecoration: "none" }}>Open plan →</Link>
         </div>
       </div>
     </div>

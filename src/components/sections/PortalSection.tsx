@@ -12,7 +12,7 @@ export function PortalSection() {
   return (
     <section style={{ backgroundColor: "#10233F", padding: "66px 26px 56px" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#F7941D", marginBottom: "12px" }}>07 — JOC PROGRAM PORTAL</p>
+        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginBottom: "12px" }}>07 — JOC PROGRAM PORTAL</p>
         <h2 style={{ fontWeight: 800, fontSize: "clamp(29px, 3.5vw, 44px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: "#fff", marginBottom: "32px" }}>
           JOC programs for your school.
         </h2>
@@ -27,7 +27,7 @@ export function PortalSection() {
                   href={p.href}
                   target={(p as any).external ? "_blank" : undefined}
                   rel={(p as any).external ? "noopener noreferrer" : undefined}
-                  style={{ backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "11px 20px", textDecoration: "none" }}
+                  style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "11px 20px", textDecoration: "none" }}
                 >
                   {p.cta}
                 </Link>

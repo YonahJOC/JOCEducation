@@ -78,7 +78,7 @@ export default function BoardPage() {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          style={{ backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+          style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
         >
           {showForm ? "Close" : "+ Share an idea"}
         </button>
@@ -86,7 +86,7 @@ export default function BoardPage() {
 
       {/* Post form */}
       {showForm && (
-        <div style={{ backgroundColor: "#fff", border: "2px solid #F7941D", borderRadius: "20px", padding: "28px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "14px" }}>
+        <div style={{ backgroundColor: "#fff", border: "2px solid #FA912D", borderRadius: "20px", padding: "28px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "14px" }}>
           <h3 style={{ fontWeight: 700, fontSize: "18px", color: "#10233F", margin: "0 0 4px" }}>Share what you ran</h3>
           <input value={fTitle} onChange={(e) => setFTitle(e.target.value)} placeholder="Idea title (required)" style={inputStyle} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
@@ -127,7 +127,7 @@ export default function BoardPage() {
         {/* Grade */}
         <div style={{ display: "flex", gap: "6px" }}>
           {GRADE_OPTIONS.map((g) => (
-            <button key={g.key} onClick={() => { setGrade(g.key); setPage(1); }} style={{ fontWeight: 600, fontSize: "13px", padding: "8px 14px", borderRadius: "9999px", border: grade === g.key ? "1.5px solid #1E47B8" : "1px solid rgba(16,35,63,.18)", backgroundColor: grade === g.key ? "#1E47B8" : "#fff", color: grade === g.key ? "#fff" : "#10233F", cursor: "pointer" }}>
+            <button key={g.key} onClick={() => { setGrade(g.key); setPage(1); }} style={{ fontWeight: 600, fontSize: "13px", padding: "8px 14px", borderRadius: "9999px", border: grade === g.key ? "1.5px solid #2D46AF" : "1px solid rgba(16,35,63,.18)", backgroundColor: grade === g.key ? "#2D46AF" : "#fff", color: grade === g.key ? "#fff" : "#10233F", cursor: "pointer" }}>
               {g.label}
             </button>
           ))}
@@ -167,7 +167,7 @@ export default function BoardPage() {
                   <span style={{ fontSize: "13px", color: "rgba(16,35,63,.5)", fontWeight: 500 }}>{idea.school}</span>
                   <button
                     onClick={() => toggleLike(idea.id, idea.likes)}
-                    style={{ fontWeight: 600, fontSize: "13px", padding: "6px 14px", borderRadius: "9999px", cursor: "pointer", border: likes[idea.id] ? "1px solid #F7941D" : "1px solid rgba(16,35,63,.18)", backgroundColor: likes[idea.id] ? "#FDEEDA" : "transparent", color: likes[idea.id] ? "#9A5405" : "rgba(16,35,63,.6)" }}
+                    style={{ fontWeight: 600, fontSize: "13px", padding: "6px 14px", borderRadius: "9999px", cursor: "pointer", border: likes[idea.id] ? "1px solid #FA912D" : "1px solid rgba(16,35,63,.18)", backgroundColor: likes[idea.id] ? "#FDEEDA" : "transparent", color: likes[idea.id] ? "#9A5405" : "rgba(16,35,63,.6)" }}
                   >
                     {likes[idea.id] ? "★" : "☆"} {idea.likes} useful
                   </button>

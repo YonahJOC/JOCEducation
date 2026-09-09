@@ -16,7 +16,7 @@ export function LogoMark({ size = 40 }: { size?: number }) {
       {/* Orange broken arc — top right gap */}
       <path
         d="M 20 7 A 13 13 0 1 1 7.5 26.5"
-        stroke="#F7941D"
+        stroke="#FA912D"
         strokeWidth="3.5"
         fill="none"
         strokeLinecap="round"

@@ -33,7 +33,7 @@ export function ShopSection() {
                   onClick={() => setCart({ ...cart, [p.id]: true })}
                   style={{
                     fontWeight: 700, fontSize: "13.5px", padding: "9px 18px", borderRadius: "9999px", border: "none", cursor: cart[p.id] ? "default" : "pointer",
-                    backgroundColor: cart[p.id] ? "#10233F" : "#F7941D",
+                    backgroundColor: cart[p.id] ? "#10233F" : "#FA912D",
                     color: cart[p.id] ? "#fff" : "#10233F",
                   }}
                 >
@@ -45,7 +45,7 @@ export function ShopSection() {
         ))}
       </div>
       <p style={{ marginTop: "16px", fontSize: "13.5px", color: "rgba(16,35,63,.55)" }}>
-        Need to pay by purchase order? <a href="mailto:education@justonechesed.org" style={{ color: "#1E47B8" }}>Contact us</a> and we'll send an invoice.
+        Need to pay by purchase order? <a href="mailto:education@justonechesed.org" style={{ color: "#2D46AF" }}>Contact us</a> and we'll send an invoice.
       </p>
     </section>
   );

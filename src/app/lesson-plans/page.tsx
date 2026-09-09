@@ -134,7 +134,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: (typeof LESSONS)[0]; color
       style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden", transition: "border-color .15s, box-shadow .15s, transform .15s" }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLAnchorElement;
-        el.style.borderColor = "#1E47B8";
+        el.style.borderColor = "#2D46AF";
         el.style.boxShadow = "0 10px 28px rgba(16,35,63,.11)";
         el.style.transform = "translateY(-2px)";
       }}
@@ -147,7 +147,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: (typeof LESSONS)[0]; color
     >
       <div style={{ height: "8px", backgroundColor: STRIPE_COLORS[colorIndex] }} />
       <div style={{ padding: "20px" }}>
-        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#1E47B8", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 12px", marginBottom: "10px" }}>
+        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 12px", marginBottom: "10px" }}>
           {lesson.theme}
         </span>
         <h2 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: "#10233F", marginBottom: "8px" }}>{lesson.title}</h2>
@@ -159,7 +159,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: (typeof LESSONS)[0]; color
         </div>
         <div style={{ borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "13px", color: "rgba(16,35,63,.45)" }}>{lesson.files.length} file{lesson.files.length !== 1 ? "s" : ""} included</span>
-          <span style={{ fontWeight: 700, fontSize: "14px", color: "#1E47B8" }}>Open plan →</span>
+          <span style={{ fontWeight: 700, fontSize: "14px", color: "#2D46AF" }}>Open plan →</span>
         </div>
       </div>
     </Link>

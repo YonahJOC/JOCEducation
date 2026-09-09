@@ -51,7 +51,7 @@ const CATEGORIES = [
   },
 ];
 
-const TAG_COLORS: Record<string, string> = { PDF: "#1E47B8", ACT: "#2C7AC9", PRT: "#F7941D", VID: "#10233F", SRC: "#1B7F4B" };
+const TAG_COLORS: Record<string, string> = { PDF: "#2D46AF", ACT: "#2C7AC9", PRT: "#FA912D", VID: "#10233F", SRC: "#1B7F4B" };
 
 export default function ResourcesPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -73,10 +73,10 @@ export default function ResourcesPage() {
           <strong>Full access</strong> is included with any JOC Education subscription.
         </p>
         <div style={{ display: "flex", gap: "10px" }}>
-          <Link href="/login" style={{ backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 20px", textDecoration: "none" }}>
+          <Link href="/login" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 20px", textDecoration: "none" }}>
             Sign in to download
           </Link>
-          <Link href="/pricing" style={{ backgroundColor: "transparent", color: "#1E47B8", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 20px", textDecoration: "none", border: "1px solid #1E47B8" }}>
+          <Link href="/pricing" style={{ backgroundColor: "transparent", color: "#2D46AF", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 20px", textDecoration: "none", border: "1px solid #2D46AF" }}>
             See plans
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function ResourcesPage() {
           <div
             key={cat.tag}
             style={{ backgroundColor: "#fff", borderRadius: "22px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden", transition: "border-color .15s" }}
-            onMouseEnter={(e) => { if (expanded !== cat.tag) (e.currentTarget as HTMLDivElement).style.borderColor = "#1E47B8"; }}
+            onMouseEnter={(e) => { if (expanded !== cat.tag) (e.currentTarget as HTMLDivElement).style.borderColor = "#2D46AF"; }}
             onMouseLeave={(e) => { if (expanded !== cat.tag) (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(16,35,63,.1)"; }}
           >
             {/* Card header */}
@@ -160,7 +160,7 @@ export default function ResourcesPage() {
             Every resource is included in any JOC Education subscription. Single Teacher Use starts at $18/month.
           </p>
         </div>
-        <Link href="/pricing" style={{ backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
+        <Link href="/pricing" style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
           See plans and pricing →
         </Link>
       </div>

@@ -68,9 +68,9 @@ export function Header() {
                   fontFamily: "var(--font-outfit)",
                   fontWeight: 500,
                   fontSize: "14px",
-                  color: pathname === item.href ? "#1E47B8" : "#10233F",
+                  color: pathname === item.href ? "#2D46AF" : "#10233F",
                   textDecoration: "none",
-                  borderBottom: pathname === item.href ? "2px solid #1E47B8" : "2px solid transparent",
+                  borderBottom: pathname === item.href ? "2px solid #2D46AF" : "2px solid transparent",
                   paddingBottom: "2px",
                   transition: "color .15s",
                 }}
@@ -90,7 +90,7 @@ export function Header() {
                 fontWeight: 700,
                 fontSize: "14px",
                 color: "#10233F",
-                backgroundColor: "#F7941D",
+                backgroundColor: "#FA912D",
                 borderRadius: "9999px",
                 padding: "11px 22px",
                 textDecoration: "none",
@@ -164,10 +164,10 @@ export function Header() {
                     padding: "15px 24px",
                     fontWeight: pathname === item.href ? 700 : 500,
                     fontSize: "16px",
-                    color: pathname === item.href ? "#1E47B8" : "#10233F",
+                    color: pathname === item.href ? "#2D46AF" : "#10233F",
                     textDecoration: "none",
-                    borderLeft: pathname === item.href ? "3px solid #1E47B8" : "3px solid transparent",
-                    backgroundColor: pathname === item.href ? "rgba(30,71,184,.06)" : "transparent",
+                    borderLeft: pathname === item.href ? "3px solid #2D46AF" : "3px solid transparent",
+                    backgroundColor: pathname === item.href ? "rgba(45,70,175,.06)" : "transparent",
                   }}
                 >
                   {item.label}
@@ -179,7 +179,7 @@ export function Header() {
             <div style={{ padding: "20px 24px", borderTop: "1px solid rgba(16,35,63,.1)", display: "flex", flexDirection: "column", gap: "12px" }}>
               <Link
                 href="/pricing"
-                style={{ display: "block", textAlign: "center", backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 24px", textDecoration: "none" }}
+                style={{ display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 24px", textDecoration: "none" }}
               >
                 Bring JOC to your school
               </Link>

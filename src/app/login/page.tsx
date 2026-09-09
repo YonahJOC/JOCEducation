@@ -72,7 +72,7 @@ export default function LoginPage() {
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                 <label style={{ fontWeight: 600, fontSize: "13.5px", color: "#10233F" }}>Password</label>
-                <Link href="/forgot-password" style={{ fontSize: "13px", color: "#1E47B8", textDecoration: "none" }}>Forgot password?</Link>
+                <Link href="/forgot-password" style={{ fontSize: "13px", color: "#2D46AF", textDecoration: "none" }}>Forgot password?</Link>
               </div>
               <input
                 type="password"
@@ -91,7 +91,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ marginTop: "4px", width: "100%", backgroundColor: loading ? "rgba(30,71,184,.6)" : "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", border: "none", cursor: loading ? "default" : "pointer" }}
+              style={{ marginTop: "4px", width: "100%", backgroundColor: loading ? "rgba(45,70,175,.6)" : "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", border: "none", cursor: loading ? "default" : "pointer" }}
             >
               {loading ? "Signing in…" : "Sign in"}
             </button>
@@ -99,7 +99,7 @@ export default function LoginPage() {
 
           <p style={{ marginTop: "22px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.6)" }}>
             Don't have an account?{" "}
-            <Link href="/signup" style={{ color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>Sign up</Link>
+            <Link href="/signup" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>Sign up</Link>
           </p>
         </div>
       </div>

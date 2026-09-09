@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 const SAVED_LESSONS = [
-  { id: 1, title: "Seeing the Person in Front of You", theme: "Bein Adam LaChaveiro", grade: "es", time: 20, color: "#1E47B8" },
-  { id: 5, title: "Who Do You Thank?", theme: "Hakaras Hatov", grade: "es", time: 20, color: "#F7941D" },
+  { id: 1, title: "Seeing the Person in Front of You", theme: "Bein Adam LaChaveiro", grade: "es", time: 20, color: "#2D46AF" },
+  { id: 5, title: "Who Do You Thank?", theme: "Hakaras Hatov", grade: "es", time: 20, color: "#FA912D" },
   { id: 8, title: "Small Acts, Big Difference", theme: "Kindness in Action", grade: "es", time: 60, color: "#2C7AC9" },
 ];
 
@@ -18,8 +18,8 @@ const ACTIVITY_FEED = [
 ];
 
 const ACTIVE_PROGRAMS = [
-  { name: "Bake for Chesed", status: "Active — November cycle", color: "#1E47B8" },
-  { name: "JOC App", status: "42 students enrolled", color: "#F7941D" },
+  { name: "Bake for Chesed", status: "Active — November cycle", color: "#2D46AF" },
+  { name: "JOC App", status: "42 students enrolled", color: "#FA912D" },
 ];
 
 export default function PortalPage() {
@@ -41,7 +41,7 @@ export default function PortalPage() {
           <Link href="/lesson-plans" style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "9999px", padding: "11px 20px", textDecoration: "none" }}>
             Browse lessons
           </Link>
-          <Link href="/board" style={{ display: "inline-block", backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "11px 20px", textDecoration: "none" }}>
+          <Link href="/board" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "11px 20px", textDecoration: "none" }}>
             Teachers' Board
           </Link>
         </div>
@@ -115,7 +115,7 @@ export default function PortalPage() {
                       <p style={{ fontWeight: 600, fontSize: "14.5px", color: "#10233F", margin: "0 0 2px" }}>{p.name}</p>
                       <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: 0 }}>{p.status}</p>
                     </div>
-                    <Link href="/programs" style={{ fontSize: "13px", color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>View →</Link>
+                    <Link href="/programs" style={{ fontSize: "13px", color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>View →</Link>
                   </div>
                 ))}
                 <Link href="/programs" style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: "12px", border: "1.5px dashed rgba(16,35,63,.18)", fontSize: "13.5px", color: "rgba(16,35,63,.55)", textDecoration: "none", fontWeight: 500 }}>
@@ -135,7 +135,7 @@ export default function PortalPage() {
                   { label: "School Shop", href: "/shop", icon: "🛒" },
                 ].map((q) => (
                   <Link key={q.href} href={q.href} style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "16px", backgroundColor: "#fff", borderRadius: "14px", border: "1px solid rgba(16,35,63,.08)", textDecoration: "none", transition: "border-color .15s" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#1E47B8"; }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#2D46AF"; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(16,35,63,.08)"; }}
                   >
                     <span style={{ fontSize: "20px" }}>{q.icon}</span>
@@ -152,14 +152,14 @@ export default function PortalPage() {
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
             <h2 style={{ fontWeight: 700, fontSize: "18px", color: "#10233F" }}>Saved lessons ({SAVED_LESSONS.length})</h2>
-            <Link href="/lesson-plans" style={{ fontSize: "14px", color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>Browse all →</Link>
+            <Link href="/lesson-plans" style={{ fontSize: "14px", color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>Browse all →</Link>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
             {SAVED_LESSONS.map((l) => (
               <Link key={l.id} href={`/lesson-plans/${l.id}`} style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "18px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden" }}>
                 <div style={{ height: "6px", backgroundColor: l.color }} />
                 <div style={{ padding: "18px" }}>
-                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#1E47B8", fontWeight: 700, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "8px" }}>{l.theme}</span>
+                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "8px" }}>{l.theme}</span>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", lineHeight: 1.25, marginBottom: "8px" }}>{l.title}</h3>
                   <p style={{ fontSize: "13px", color: "rgba(16,35,63,.5)" }}>{l.grade === "es" ? "Elementary" : l.grade === "ms" ? "Middle" : "High school"} · {l.time} min</p>
                 </div>
@@ -187,7 +187,7 @@ export default function PortalPage() {
                 </Link>
               </div>
             ))}
-            <Link href="/programs" style={{ display: "block", padding: "20px", borderRadius: "18px", border: "2px dashed rgba(16,35,63,.18)", textAlign: "center", fontSize: "14.5px", color: "#1E47B8", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/programs" style={{ display: "block", padding: "20px", borderRadius: "18px", border: "2px dashed rgba(16,35,63,.18)", textAlign: "center", fontSize: "14.5px", color: "#2D46AF", textDecoration: "none", fontWeight: 600 }}>
               + Add a program
             </Link>
           </div>
@@ -198,13 +198,13 @@ export default function PortalPage() {
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
             <h2 style={{ fontWeight: 700, fontSize: "18px", color: "#10233F" }}>Resources</h2>
-            <Link href="/resources" style={{ fontSize: "14px", color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>Browse library →</Link>
+            <Link href="/resources" style={{ fontSize: "14px", color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>Browse library →</Link>
           </div>
           <div style={{ backgroundColor: "#F4F7FD", borderRadius: "18px", padding: "32px", textAlign: "center" }}>
             <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, marginBottom: "20px" }}>
               Your subscription gives you access to 460+ worksheets, activities, posters, videos, and source sheets.
             </p>
-            <Link href="/resources" style={{ display: "inline-block", backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 26px", textDecoration: "none" }}>
+            <Link href="/resources" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 26px", textDecoration: "none" }}>
               Browse the resource library
             </Link>
           </div>

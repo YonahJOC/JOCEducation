@@ -23,7 +23,7 @@ export const PROGRAMS: Program[] = [
     tagline: "Chesed students can run — and own.",
     description:
       "A JOC-branded station your school sets up at a community event. Students run it, giving out small acts of kindness — handwritten notes, baked goods, personal items — to passersby. JOC provides the full kit, training, and promotional materials.",
-    heroColor: "#1E47B8",
+    heroColor: "#2D46AF",
     meta: "Half-day setup · All grade levels",
     available: ["JOC App + JOC Education", "Full JOC Partnership"],
     howItWorks: [
@@ -53,7 +53,7 @@ export const PROGRAMS: Program[] = [
     tagline: "Monthly cycles. Real deliveries. Real chesed.",
     description:
       "Students bake and deliver goods to local families, hospitals, or shelters. JOC handles all placement partnerships — you just bake. The program runs in monthly cycles so the commitment is predictable and every class can participate.",
-    heroColor: "#F7941D",
+    heroColor: "#FA912D",
     meta: "Monthly cycles · Any scale",
     available: ["JOC Education", "JOC App + JOC Education", "Full JOC Partnership"],
     howItWorks: [

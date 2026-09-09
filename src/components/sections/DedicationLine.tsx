@@ -3,7 +3,7 @@ export function DedicationLine() {
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "28px 26px" }}>
       <div
         style={{
-          borderLeft: "3px solid #F7941D",
+          borderLeft: "3px solid #FA912D",
           paddingLeft: "20px",
           fontFamily: "var(--font-newsreader)",
           fontStyle: "italic",

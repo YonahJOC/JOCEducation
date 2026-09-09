@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
               </p>
               <button
                 onClick={() => { setSent(false); setEmail(""); }}
-                style={{ fontSize: "14px", color: "#1E47B8", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}
+                style={{ fontSize: "14px", color: "#2D46AF", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}
               >
                 Didn't get it? Resend
               </button>
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading || !email}
-                  style={{ width: "100%", backgroundColor: (!loading && email) ? "#1E47B8" : "rgba(30,71,184,.4)", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", border: "none", cursor: (!loading && email) ? "pointer" : "default" }}
+                  style={{ width: "100%", backgroundColor: (!loading && email) ? "#2D46AF" : "rgba(45,70,175,.4)", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", border: "none", cursor: (!loading && email) ? "pointer" : "default" }}
                 >
                   {loading ? "Sending…" : "Send reset link"}
                 </button>
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
           )}
 
           <p style={{ marginTop: "24px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.55)" }}>
-            <Link href="/login" style={{ color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
+            <Link href="/login" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
           </p>
         </div>
       </div>

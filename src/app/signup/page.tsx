@@ -37,7 +37,7 @@ export default function SignupPage() {
             Authentication isn't connected yet, but your account is ready to go once it is.<br /><br />
             We'll let you know when access is live.
           </p>
-          <Link href="/" style={{ display: "inline-block", backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}>
+          <Link href="/" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}>
             Back to home
           </Link>
         </div>
@@ -99,7 +99,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ marginTop: "4px", width: "100%", backgroundColor: loading ? "rgba(30,71,184,.6)" : "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", border: "none", cursor: loading ? "default" : "pointer" }}
+              style={{ marginTop: "4px", width: "100%", backgroundColor: loading ? "rgba(45,70,175,.6)" : "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", border: "none", cursor: loading ? "default" : "pointer" }}
             >
               {loading ? "Creating account…" : "Create account"}
             </button>
@@ -107,7 +107,7 @@ export default function SignupPage() {
 
           <p style={{ marginTop: "22px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.6)" }}>
             Already have an account?{" "}
-            <Link href="/login" style={{ color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
+            <Link href="/login" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
           </p>
         </div>
       </div>

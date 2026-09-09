@@ -4,9 +4,9 @@
   /* Brand colors */
   --color-ink:          #10233F;
   --color-ink-deep:     #0B1A31;
-  --color-blue:         #1E47B8;
+  --color-blue:         #2D46AF;
   --color-blue-light:   #2C7AC9;
-  --color-orange:       #F7941D;
+  --color-orange:       #FA912D;
   --color-orange-text:  #C96C00;
   --color-orange-light: #FFB55E;
   --color-orange-pale:  #FFC98A;
@@ -59,6 +59,11 @@ body {
 
 /* Suppress dark mode — design is light only */
 @media (prefers-color-scheme: dark) {}
+
+/* Educator landing page: nav collapses so the logo and both actions stay on one row */
+@media (max-width: 1040px) {
+  .joc-landing-nav { display: none !important; }
+}
 
 /* Status dot pulse for Chesed Cycles */
 @keyframes jocPulse {

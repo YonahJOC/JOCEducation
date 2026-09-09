@@ -314,4 +314,4 @@ export const TIME_LABELS: Record<string, string> = {
   "90": "90 min+",
 };
 
-export const STRIPE_COLORS = ["#1E47B8", "#F7941D", "#2C7AC9", "#10233F"];
+export const STRIPE_COLORS = ["#2D46AF", "#FA912D", "#2C7AC9", "#10233F"];

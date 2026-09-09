@@ -60,7 +60,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Elul – Tishrei", anchor: "School opening → Yom Kippur",
     range: "Aug 30 – Sep 26",
     startDate: "2026-08-30", endDate: "2026-09-26", weeks: 4,
-    color: "#1E47B8",
+    color: "#2D46AF",
     desc: "The year begins facing inward. Before a student gives anything away, Cycle 1 asks them to take an honest account of how they actually treat the people closest to them — at home, in the classroom, at recess — and to carry that accounting through the Yamim Noraim. Everything the year builds outward starts here.",
     focus: [
       "Daily cheshbon hanefesh journal in every classroom",
@@ -81,7 +81,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Tishrei – Cheshvan", anchor: "Sukkos → early Cheshvan",
     range: "Sep 27 – Oct 24",
     startDate: "2026-09-27", endDate: "2026-10-24", weeks: 4,
-    color: "#F7941D",
+    color: "#FA912D",
     desc: "The first step outward. Having looked honestly at themselves, students open a door — at the sukkah table, at recess, and at the lunch table where the same child sits alone every day. The cycle runs past Simchas Torah into Cheshvan so that welcoming outlasts yom tov.",
     focus: [
       "Sukkah hosting map across partner communities",
@@ -169,7 +169,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Adar", anchor: "Adar / Purim",
     range: "Feb 14 – Mar 27",
     startDate: "2027-02-14", endDate: "2027-03-27", weeks: 6,
-    color: "#F7941D",
+    color: "#FA912D",
     desc: "Mishenichnas Adar marbim b'simcha — and this year there are two Adars to do it in. Cycle 6 treats joy as a chesed: the mishloach manos that reaches the student nobody remembers, the matanos l'evyonim that arrive without a name, the visit that makes someone's Purim. Every student sends, and every student receives.",
     focus: [
       "Mishloach manos matching so no student is missed",
@@ -192,7 +192,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Nisan", anchor: "Nisan / Pesach → Yom HaShoah",
     range: "Mar 28 – May 8",
     startDate: "2027-03-28", endDate: "2027-05-08", weeks: 6,
-    color: "#1E47B8", israel: true,
+    color: "#2D46AF", israel: true,
     desc: "Kol dichfin yeisei v'yeichol — whoever is hungry, come and eat. Cycle 7 runs from maos chittim and seder placement for anyone alone, through Pesach itself, to Yom HaShoah at the month's end, remembering those who were denied every freedom we now take as given. One people, one table.",
     focus: [
       "Maos chittim distribution run by grades",

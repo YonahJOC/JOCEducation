@@ -8,14 +8,14 @@ export function HeroSection() {
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           {/* Eligibility pill */}
           <div style={{ display: "inline-flex", alignItems: "flex-start", gap: "8px", border: "1px solid rgba(16,35,63,.15)", borderRadius: "9999px", padding: "8px 16px", width: "fit-content", backgroundColor: "#fff" }}>
-            <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "#F7941D", flexShrink: 0, marginTop: "7px" }} />
+            <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "#FA912D", flexShrink: 0, marginTop: "7px" }} />
             <span style={{ fontWeight: 500, fontSize: "14px", color: "#10233F" }}>Spreading kindness, to every Jewish student, in every Jewish school, everywhere</span>
           </div>
 
           {/* H1 */}
           <h1 style={{ fontFamily: "var(--font-outfit)", fontWeight: 800, fontSize: "clamp(23px, 3.1vw, 40px)", lineHeight: 1.12, letterSpacing: "-0.035em", margin: 0 }}>
             <span style={{ display: "block", whiteSpace: "nowrap", color: "#10233F" }}>Educating Towards Chesed</span>
-            <span style={{ display: "block", whiteSpace: "nowrap", color: "#1E47B8" }}>Just One Student at a Time</span>
+            <span style={{ display: "block", whiteSpace: "nowrap", color: "#2D46AF" }}>Just One Student at a Time</span>
           </h1>
 
           {/* Body */}
@@ -37,7 +37,7 @@ export function HeroSection() {
         {/* Right — stats cards */}
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {/* Stats card */}
-          <div style={{ backgroundColor: "#1E47B8", borderRadius: "24px", padding: "20px 24px", color: "#fff" }}>
+          <div style={{ backgroundColor: "#2D46AF", borderRadius: "24px", padding: "20px 24px", color: "#fff" }}>
             <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FFC98A", marginBottom: "16px" }}>THIS SCHOOL YEAR</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
               <div>
@@ -51,7 +51,7 @@ export function HeroSection() {
             </div>
             {/* Progress bar */}
             <div style={{ height: "8px", borderRadius: "4px", backgroundColor: "rgba(255,255,255,.26)", overflow: "hidden" }}>
-              <div style={{ height: "100%", width: "62%", backgroundColor: "#F7941D", borderRadius: "4px" }} />
+              <div style={{ height: "100%", width: "62%", backgroundColor: "#FA912D", borderRadius: "4px" }} />
             </div>
           </div>
 
@@ -62,7 +62,7 @@ export function HeroSection() {
             <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.72)", marginBottom: "16px", lineHeight: 1.55 }}>
               Five ready-to-run lessons on hakaras hatov, achdus, and siyum chesed projects — perfect for Elul.
             </p>
-            <span style={{ display: "inline-block", backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 20px", cursor: "pointer" }}>
+            <span style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 20px", cursor: "pointer" }}>
               Open kit
             </span>
           </div>

@@ -48,7 +48,7 @@ const TIERS = [
   },
 ];
 
-const TAB_COLORS = ["#1E47B8", "#F7941D", "#2C7AC9", "#10233F"];
+const TAB_COLORS = ["#2D46AF", "#FA912D", "#2C7AC9", "#10233F"];
 
 export function ProgramsSection() {
   const [active, setActive] = useState(0);
@@ -74,7 +74,7 @@ export function ProgramsSection() {
               padding: "13px 22px",
               borderRadius: "9999px",
               border: active === i ? "none" : "1px solid rgba(16,35,63,.18)",
-              backgroundColor: active === i ? "#1E47B8" : "#fff",
+              backgroundColor: active === i ? "#2D46AF" : "#fff",
               color: active === i ? "#fff" : "#10233F",
               cursor: "pointer",
               transition: "all .15s",
@@ -100,7 +100,7 @@ export function ProgramsSection() {
               </div>
             ))}
           </div>
-          <button style={{ backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", border: "none", cursor: "pointer" }}>
+          <button style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", border: "none", cursor: "pointer" }}>
             Register for {tier.label}
           </button>
         </div>
@@ -111,7 +111,7 @@ export function ProgramsSection() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {tier.included.map((item, i) => (
               <li key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", padding: "12px 0", borderBottom: i < tier.included.length - 1 ? "1px solid rgba(16,35,63,.08)" : "none" }}>
-                <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#F7941D", flexShrink: 0, marginTop: "5px" }} />
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#FA912D", flexShrink: 0, marginTop: "5px" }} />
                 <span style={{ fontSize: "15px", color: "#10233F", lineHeight: 1.5 }}>{item}</span>
               </li>
             ))}

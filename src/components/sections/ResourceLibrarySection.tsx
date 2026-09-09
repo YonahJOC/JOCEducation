@@ -20,10 +20,10 @@ export function ResourceLibrarySection() {
           <div
             key={cat.tag}
             style={{ backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", padding: "24px", transition: "border-color .15s, box-shadow .15s", cursor: "pointer" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "#1E47B8"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 26px rgba(16,35,63,.11)"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "#2D46AF"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 26px rgba(16,35,63,.11)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(16,35,63,.1)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; }}
           >
-            <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#1E47B8", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#2D46AF", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
               <span style={{ color: "#fff", fontWeight: 700, fontSize: "11px", letterSpacing: "0.05em" }}>{cat.tag}</span>
             </div>
             <h3 style={{ fontWeight: 700, fontSize: "18px", color: "#10233F", marginBottom: "8px" }}>{cat.title}</h3>

@@ -39,7 +39,7 @@ export default function ContactPage() {
         <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, marginBottom: "28px" }}>
           Thank you for reaching out. Someone from the JOC Education team will be in touch within one business day.
         </p>
-        <Link href="/" style={{ backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 28px", textDecoration: "none" }}>
+        <Link href="/" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 28px", textDecoration: "none" }}>
           Back to home
         </Link>
       </div>
@@ -143,7 +143,7 @@ export default function ContactPage() {
           <button
             type="submit"
             disabled={state === "submitting"}
-            style={{ backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", border: "none", cursor: state === "submitting" ? "not-allowed" : "pointer", opacity: state === "submitting" ? 0.7 : 1 }}
+            style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", border: "none", cursor: state === "submitting" ? "not-allowed" : "pointer", opacity: state === "submitting" ? 0.7 : 1 }}
           >
             {state === "submitting" ? "Sending…" : "Send message"}
           </button>

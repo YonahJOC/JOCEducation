@@ -52,7 +52,7 @@ export function TeachersBoardSection() {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          style={{ backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+          style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
         >
           {showForm ? "Close" : "+ Share an idea"}
         </button>
@@ -60,7 +60,7 @@ export function TeachersBoardSection() {
 
       {/* Post form */}
       {showForm && (
-        <div style={{ backgroundColor: "#fff", border: "2px solid #F7941D", borderRadius: "20px", padding: "24px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ backgroundColor: "#fff", border: "2px solid #FA912D", borderRadius: "20px", padding: "24px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
           <input value={fTitle} onChange={(e) => setFTitle(e.target.value)} placeholder="Idea title (required)" style={inputStyle} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
             <input value={fSchool} onChange={(e) => setFSchool(e.target.value)} placeholder="School name (optional)" style={inputStyle} />
@@ -99,7 +99,7 @@ export function TeachersBoardSection() {
               <button
                 onClick={() => toggleLike(idea.id, idea.likes)}
                 style={{
-                  fontWeight: 600, fontSize: "13px", padding: "6px 14px", borderRadius: "9999px", cursor: "pointer", border: likes[idea.id] ? "1px solid #F7941D" : "1px solid rgba(16,35,63,.2)",
+                  fontWeight: 600, fontSize: "13px", padding: "6px 14px", borderRadius: "9999px", cursor: "pointer", border: likes[idea.id] ? "1px solid #FA912D" : "1px solid rgba(16,35,63,.2)",
                   backgroundColor: likes[idea.id] ? "#FDEEDA" : "transparent",
                   color: likes[idea.id] ? "#9A5405" : "rgba(16,35,63,.62)",
                 }}

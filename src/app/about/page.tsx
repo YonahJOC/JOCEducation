@@ -44,7 +44,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div style={{ backgroundColor: "#10233F", padding: "68px 26px 60px" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#F7941D", marginBottom: "14px" }}>ABOUT JOC EDUCATION</p>
+          <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginBottom: "14px" }}>ABOUT JOC EDUCATION</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(34px, 4.5vw, 56px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#fff", maxWidth: "18ch", marginBottom: "20px" }}>
             Chesed is a skill. We teach it.
           </h1>
@@ -81,7 +81,7 @@ export default function AboutPage() {
               { number: "1M+", label: "Chesed hours logged", sub: "By students in the JOC App" },
             ].map((stat) => (
               <div key={stat.number} style={{ backgroundColor: "#F4F7FD", borderRadius: "18px", padding: "22px 24px", display: "flex", gap: "20px", alignItems: "center" }}>
-                <div style={{ fontWeight: 800, fontSize: "32px", letterSpacing: "-0.04em", color: "#1E47B8", minWidth: "80px" }}>{stat.number}</div>
+                <div style={{ fontWeight: 800, fontSize: "32px", letterSpacing: "-0.04em", color: "#2D46AF", minWidth: "80px" }}>{stat.number}</div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: "15.5px", color: "#10233F", marginBottom: "3px" }}>{stat.label}</div>
                   <div style={{ fontSize: "13px", color: "rgba(16,35,63,.55)" }}>{stat.sub}</div>
@@ -100,8 +100,8 @@ export default function AboutPage() {
           <div style={{ position: "relative", paddingLeft: "28px", borderLeft: "2px solid rgba(16,35,63,.12)" }}>
             {MILESTONES.map((m, i) => (
               <div key={m.year} style={{ position: "relative", marginBottom: i < MILESTONES.length - 1 ? "28px" : 0 }}>
-                <div style={{ position: "absolute", left: "-37px", width: "16px", height: "16px", borderRadius: "50%", backgroundColor: "#1E47B8", border: "3px solid #F4F7FD" }} />
-                <span style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.1em", color: "#1E47B8", display: "block", marginBottom: "4px" }}>{m.year}</span>
+                <div style={{ position: "absolute", left: "-37px", width: "16px", height: "16px", borderRadius: "50%", backgroundColor: "#2D46AF", border: "3px solid #F4F7FD" }} />
+                <span style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.1em", color: "#2D46AF", display: "block", marginBottom: "4px" }}>{m.year}</span>
                 <p style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.55, margin: 0 }}>{m.text}</p>
               </div>
             ))}
@@ -121,7 +121,7 @@ export default function AboutPage() {
                   <span style={{ fontSize: "22px" }}>👤</span>
                 </div>
                 <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "4px" }}>{person.name}</h3>
-                <p style={{ fontWeight: 600, fontSize: "12.5px", color: "#1E47B8", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>{person.role}</p>
+                <p style={{ fontWeight: 600, fontSize: "12.5px", color: "#2D46AF", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>{person.role}</p>
                 <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6 }}>{person.bio}</p>
               </div>
             ))}
@@ -129,7 +129,7 @@ export default function AboutPage() {
         </div>
 
         {/* CTA */}
-        <div style={{ backgroundColor: "#1E47B8", borderRadius: "26px", padding: "48px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "28px" }}>
+        <div style={{ backgroundColor: "#2D46AF", borderRadius: "26px", padding: "48px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "28px" }}>
           <div>
             <h2 style={{ fontWeight: 800, fontSize: "28px", color: "#fff", marginBottom: "10px" }}>Bring JOC to your school.</h2>
             <p style={{ fontSize: "15.5px", color: "rgba(255,255,255,.72)", maxWidth: "52ch", lineHeight: 1.55 }}>
@@ -137,7 +137,7 @@ export default function AboutPage() {
             </p>
           </div>
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            <Link href="/pricing" style={{ backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
+            <Link href="/pricing" style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
               See pricing →
             </Link>
             <Link href="/contact" style={{ backgroundColor: "rgba(255,255,255,.12)", color: "#fff", fontWeight: 600, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>

@@ -3,7 +3,7 @@ import { CYCLES, type Cycle, getCycleState, getCurrentWeek } from "@/lib/cycles"
 
 function anchorStyle(israel?: boolean): React.CSSProperties {
   return israel
-    ? { background: "#F4F7FD", color: "#1E47B8", border: "1px solid rgba(30,71,184,.25)" }
+    ? { background: "#F4F7FD", color: "#2D46AF", border: "1px solid rgba(45,70,175,.25)" }
     : { background: "rgba(16,35,63,.05)", color: "rgba(16,35,63,.72)", border: "1px solid rgba(16,35,63,.1)" };
 }
 

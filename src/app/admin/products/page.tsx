@@ -22,7 +22,7 @@ export default function AdminProductsPage() {
           <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "6px" }}>Products</h1>
           <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)" }}>Manage shop items and Stripe pricing</p>
         </div>
-        <button style={{ backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", border: "none", cursor: "pointer" }}>
+        <button style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", border: "none", cursor: "pointer" }}>
           + Add product
         </button>
       </div>

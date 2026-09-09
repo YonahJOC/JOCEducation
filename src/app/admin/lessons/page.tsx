@@ -20,7 +20,7 @@ export default function AdminLessonsPage() {
           <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)" }}>{LESSONS.length} lessons · All published</p>
         </div>
         <button
-          style={{ backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", border: "none", cursor: "pointer" }}
+          style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", border: "none", cursor: "pointer" }}
         >
           + Add lesson
         </button>
@@ -56,7 +56,7 @@ export default function AdminLessonsPage() {
                 </span>
               </div>
               <div style={{ display: "flex", gap: "8px" }}>
-                <Link href={`/lesson-plans/${lesson.id}`} style={{ fontSize: "13px", color: "#1E47B8", fontWeight: 600, textDecoration: "none" }}>
+                <Link href={`/lesson-plans/${lesson.id}`} style={{ fontSize: "13px", color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>
                   View
                 </Link>
                 <button style={{ fontSize: "13px", color: "rgba(16,35,63,.5)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>

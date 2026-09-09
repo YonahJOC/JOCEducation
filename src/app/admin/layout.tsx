@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <LogoMark size={32} />
           <div>
             <div style={{ fontWeight: 700, fontSize: "13.5px", color: "#fff", letterSpacing: "-0.02em" }}>JOC Education</div>
-            <div style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.18em", color: "#F7941D", textTransform: "uppercase" }}>ADMIN</div>
+            <div style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.18em", color: "#FA912D", textTransform: "uppercase" }}>ADMIN</div>
           </div>
         </div>
         <nav style={{ flex: 1, padding: "12px 10px" }}>

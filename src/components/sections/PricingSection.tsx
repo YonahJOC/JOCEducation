@@ -76,7 +76,7 @@ export function PricingSection() {
       {/* Full Partnership band */}
       <div style={{ backgroundColor: "#10233F", borderRadius: "26px", padding: "36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "32px", marginBottom: "24px", alignItems: "center" }}>
         <div>
-          <span style={{ display: "inline-block", backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 14px", marginBottom: "12px" }}>ANNUAL PARTNERSHIP</span>
+          <span style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 14px", marginBottom: "12px" }}>ANNUAL PARTNERSHIP</span>
           <h3 style={{ fontWeight: 800, fontSize: "28px", color: "#fff", marginBottom: "4px" }}>Full JOC Partnership</h3>
           <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "4px" }}>
             <span style={{ fontWeight: 800, fontSize: "48px", letterSpacing: "-0.04em", color: "#fff" }}>$3,600</span>
@@ -85,7 +85,7 @@ export function PricingSection() {
           <p style={{ fontSize: "13.5px", color: "rgba(255,255,255,.55)", marginBottom: "20px" }}>Flat rate, any enrollment</p>
           <button
             onClick={() => setPlan(plan === "full" ? "" : "full")}
-            style={{ backgroundColor: plan === "full" ? "transparent" : "#F7941D", color: plan === "full" ? "#fff" : "#10233F", border: plan === "full" ? "2px solid rgba(255,255,255,.4)" : "none", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 26px", cursor: "pointer" }}
+            style={{ backgroundColor: plan === "full" ? "transparent" : "#FA912D", color: plan === "full" ? "#fff" : "#10233F", border: plan === "full" ? "2px solid rgba(255,255,255,.4)" : "none", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 26px", cursor: "pointer" }}
           >
             {plan === "full" ? "Selected ✓" : "Choose this"}
           </button>
@@ -93,7 +93,7 @@ export function PricingSection() {
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
           {["Everything in JOC App + JOC Education", "Kindness Booth included", "Just One Tutor peer placements", "Chesed Match student placements", "Bake for Chesed program", "Dedicated JOC school liaison"].map((f) => (
             <li key={f} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "14.5px", color: "rgba(255,255,255,.8)" }}>
-              <span style={{ color: "#F7941D", flexShrink: 0 }}>✓</span>
+              <span style={{ color: "#FA912D", flexShrink: 0 }}>✓</span>
               {f}
             </li>
           ))}
@@ -139,7 +139,7 @@ export function PricingSection() {
                       ) : tierPrice.included ? (
                         <span style={{ fontSize: "14.5px", fontWeight: 600, color: "#1B7F4B" }}>Included</span>
                       ) : (
-                        <span style={{ fontSize: "14.5px", fontWeight: 600, color: "#1E47B8" }}>${(tierPrice.cents! / 100)}</span>
+                        <span style={{ fontSize: "14.5px", fontWeight: 600, color: "#2D46AF" }}>${(tierPrice.cents! / 100)}</span>
                       )}
                     </td>
                   </tr>
@@ -166,8 +166,8 @@ export function PricingSection() {
 
 function PlanCard({ title, subtitle, monthlyPrice, billing, highlight, badge, features, selected, onSelect }: { title: string; subtitle: string; monthlyPrice: number; billing: Billing; highlight: boolean; badge: string | null; features: string[]; selected: boolean; onSelect: () => void; }) {
   return (
-    <div style={{ backgroundColor: highlight ? "#1E47B8" : "#fff", borderRadius: "24px", border: highlight ? "none" : "1px solid rgba(16,35,63,.1)", padding: "26px", position: "relative", display: "flex", flexDirection: "column" }}>
-      {badge && <span style={{ position: "absolute", top: "20px", right: "20px", backgroundColor: "#F7941D", color: "#10233F", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>{badge}</span>}
+    <div style={{ backgroundColor: highlight ? "#2D46AF" : "#fff", borderRadius: "24px", border: highlight ? "none" : "1px solid rgba(16,35,63,.1)", padding: "26px", position: "relative", display: "flex", flexDirection: "column" }}>
+      {badge && <span style={{ position: "absolute", top: "20px", right: "20px", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>{badge}</span>}
       <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: highlight ? "#FFB55E" : "#C96C00", marginBottom: "6px" }}>{subtitle}</p>
       <h3 style={{ fontWeight: 700, fontSize: "20px", color: highlight ? "#fff" : "#10233F", marginBottom: "16px" }}>{title}</h3>
       <div style={{ marginBottom: "20px" }}>
@@ -177,12 +177,12 @@ function PlanCard({ title, subtitle, monthlyPrice, billing, highlight, badge, fe
       <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
         {features.map((f) => (
           <li key={f} style={{ display: "flex", gap: "8px", fontSize: "14px", color: highlight ? "rgba(255,255,255,.8)" : "rgba(16,35,63,.72)" }}>
-            <span style={{ color: highlight ? "#FFB55E" : "#F7941D", flexShrink: 0 }}>✓</span>
+            <span style={{ color: highlight ? "#FFB55E" : "#FA912D", flexShrink: 0 }}>✓</span>
             {f}
           </li>
         ))}
       </ul>
-      <button onClick={onSelect} style={{ fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px", border: highlight ? "none" : selected ? "2px solid #10233F" : "1.5px solid #F4F7FD", backgroundColor: highlight ? (selected ? "rgba(255,255,255,.2)" : "#F7941D") : selected ? "#10233F" : "#F4F7FD", color: highlight ? (selected ? "#fff" : "#10233F") : selected ? "#fff" : "#10233F", cursor: "pointer", width: "100%" }}>
+      <button onClick={onSelect} style={{ fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px", border: highlight ? "none" : selected ? "2px solid #10233F" : "1.5px solid #F4F7FD", backgroundColor: highlight ? (selected ? "rgba(255,255,255,.2)" : "#FA912D") : selected ? "#10233F" : "#F4F7FD", color: highlight ? (selected ? "#fff" : "#10233F") : selected ? "#fff" : "#10233F", cursor: "pointer", width: "100%" }}>
         {selected ? "Selected ✓" : "Choose this"}
       </button>
     </div>

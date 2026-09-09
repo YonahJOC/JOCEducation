@@ -3,6 +3,7 @@ import { Outfit, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ChromeGate } from "@/components/layout/ChromeGate";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -18,6 +19,9 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL ?? "https://education.justonechesed.org"
+  ),
   title: {
     default: "JOC Education — Educating Towards Chesed",
     template: "%s — JOC Education",
@@ -50,9 +54,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${outfit.variable} ${newsreader.variable}`}>
       <body>
-        <Header />
+        <ChromeGate><Header /></ChromeGate>
         <main className="flex-1">{children}</main>
-        <Footer />
+        <ChromeGate><Footer /></ChromeGate>
       </body>
     </html>
   );

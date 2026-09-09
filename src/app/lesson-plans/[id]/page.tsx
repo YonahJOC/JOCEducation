@@ -14,7 +14,7 @@ export default function LessonDetailPage() {
     return (
       <div style={{ maxWidth: "720px", margin: "80px auto", padding: "0 26px", textAlign: "center" }}>
         <h1 style={{ fontWeight: 800, fontSize: "36px", color: "#10233F", marginBottom: "12px" }}>Lesson not found</h1>
-        <Link href="/lesson-plans" style={{ color: "#1E47B8", fontWeight: 600, fontSize: "16px" }}>← Back to lesson plans</Link>
+        <Link href="/lesson-plans" style={{ color: "#2D46AF", fontWeight: 600, fontSize: "16px" }}>← Back to lesson plans</Link>
       </div>
     );
   }
@@ -59,7 +59,7 @@ export default function LessonDetailPage() {
         {/* Main content */}
         <div>
           {/* Theme pill */}
-          <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#1E47B8", fontWeight: 700, fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "6px 14px", marginBottom: "14px" }}>
+          <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "6px 14px", marginBottom: "14px" }}>
             {lesson.theme}
           </span>
 
@@ -97,7 +97,7 @@ export default function LessonDetailPage() {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
               {lesson.materials.map((m, i) => (
                 <li key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "15px", color: "#10233F", lineHeight: 1.5 }}>
-                  <span style={{ color: "#F7941D", flexShrink: 0, fontSize: "16px", marginTop: "1px" }}>•</span>
+                  <span style={{ color: "#FA912D", flexShrink: 0, fontSize: "16px", marginTop: "1px" }}>•</span>
                   {m}
                 </li>
               ))}
@@ -142,7 +142,7 @@ export default function LessonDetailPage() {
           {/* Extension */}
           {lesson.extension && (
             <Section title="Extension activity">
-              <div style={{ borderLeft: "3px solid #F7941D", paddingLeft: "18px" }}>
+              <div style={{ borderLeft: "3px solid #FA912D", paddingLeft: "18px" }}>
                 <p style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.6, margin: 0 }}>{lesson.extension}</p>
               </div>
             </Section>
@@ -165,7 +165,7 @@ export default function LessonDetailPage() {
                 >
                   <span style={{ fontSize: "18px" }}>📄</span>
                   <span style={{ fontSize: "13.5px", color: "#10233F", fontWeight: 500 }}>{file}</span>
-                  <span style={{ marginLeft: "auto", fontSize: "12px", color: "#1E47B8", fontWeight: 600 }}>↓</span>
+                  <span style={{ marginLeft: "auto", fontSize: "12px", color: "#2D46AF", fontWeight: 600 }}>↓</span>
                 </button>
               ))}
             </div>
@@ -174,7 +174,7 @@ export default function LessonDetailPage() {
             </p>
             <Link
               href="/login"
-              style={{ display: "block", marginTop: "14px", textAlign: "center", backgroundColor: "#1E47B8", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "10px", padding: "12px", textDecoration: "none" }}
+              style={{ display: "block", marginTop: "14px", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "10px", padding: "12px", textDecoration: "none" }}
             >
               Sign in to download
             </Link>
@@ -217,12 +217,12 @@ export default function LessonDetailPage() {
                 key={rel.id}
                 href={`/lesson-plans/${rel.id}`}
                 style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "18px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden", transition: "border-color .15s, box-shadow .15s" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#1E47B8"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(16,35,63,.09)"; }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#2D46AF"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(16,35,63,.09)"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(16,35,63,.1)"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none"; }}
               >
                 <div style={{ height: "6px", backgroundColor: STRIPE_COLORS[(rel.id - 1) % STRIPE_COLORS.length] }} />
                 <div style={{ padding: "18px" }}>
-                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#1E47B8", fontWeight: 700, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
+                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", lineHeight: 1.25, marginBottom: "6px" }}>{rel.title}</h3>
                   <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: 0 }}>{rel.time} min · {rel.prep} prep</p>
                 </div>
