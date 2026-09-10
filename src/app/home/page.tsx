@@ -4,16 +4,6 @@ import { safeAuth, isAuthConfigured } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { PersonalHome, cyclesStartedSince, type HomeData } from "@/components/sections/PersonalHome";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { CycleStripSection } from "@/components/sections/CycleStripSection";
-import { ProgramsSection } from "@/components/sections/ProgramsSection";
-import { LessonPlansSection } from "@/components/sections/LessonPlansSection";
-import { ResourceLibrarySection } from "@/components/sections/ResourceLibrarySection";
-import { TeachersBoardSection } from "@/components/sections/TeachersBoardSection";
-import { ShopSection } from "@/components/sections/ShopSection";
-import { PricingSection } from "@/components/sections/PricingSection";
-import { PortalSection } from "@/components/sections/PortalSection";
-import { ClosingCTA } from "@/components/sections/ClosingCTA";
 
 export const metadata: Metadata = {
   title: "JOC Education",
@@ -25,8 +15,7 @@ export const metadata: Metadata = {
  * lessons, and a read-only view of their school.
  *
  * Signed out — only possible while the gate is off, before sign-in is
- * configured — it falls back to the full marketing page so the site is not
- * a blank wall during setup.
+ * configured — it sends them to the public landing page.
  */
 export default async function HomePage() {
   const session = isAuthConfigured ? await safeAuth() : null;
@@ -39,20 +28,10 @@ export default async function HomePage() {
     return <PersonalHome data={await loadHome(session.user)} />;
   }
 
-  return (
-    <>
-      <HeroSection />
-      <CycleStripSection />
-      <ProgramsSection />
-      <LessonPlansSection />
-      <ResourceLibrarySection />
-      <TeachersBoardSection />
-      <ShopSection />
-      <PricingSection />
-      <PortalSection />
-      <ClosingCTA />
-    </>
-  );
+  // Only reachable before sign-in is configured. The landing page at "/" is
+  // public and is the marketing site, so send them there rather than keeping
+  // a second copy of it here.
+  redirect("/");
 }
 
 type SessionUser = {

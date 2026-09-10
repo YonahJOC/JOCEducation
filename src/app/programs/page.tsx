@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { PROGRAMS } from "@/lib/programs";
 
 const TIERS = [
   {
@@ -51,59 +52,6 @@ const TIERS = [
     blurb: "JOC connects your students to real community chesed opportunities — hospital visits, food drives, elderly companion programs — and handles all the logistics.",
     included: ["Vetted community partner network", "Placement matching and scheduling", "Volunteer hour logging for each student", "Risk management and supervision protocols", "Chesed Match integration for peer tutoring"],
     color: "#10233F",
-  },
-];
-
-const JOC_PROGRAMS = [
-  {
-    key: "kindness-booth",
-    name: "Kindness Booth",
-    tag: "Event",
-    description: "A JOC-branded station your school sets up at a community event. Students run it, giving out small acts of kindness. JOC provides the full kit, training, and promotional materials.",
-    meta: "Half-day setup · All grade levels",
-    available: ["JOC App + JOC Education", "Full JOC Partnership"],
-  },
-  {
-    key: "bake-for-chesed",
-    name: "Bake for Chesed",
-    tag: "Ongoing",
-    description: "Students bake and deliver goods to local families, hospitals, or shelters. JOC handles placement partnerships and provides the full program guide.",
-    meta: "Monthly cycles · Any scale",
-    available: ["JOC Education", "JOC App + JOC Education", "Full JOC Partnership"],
-  },
-  {
-    key: "just-one-tutor",
-    name: "Just One Tutor",
-    tag: "Ongoing",
-    description: "Peer tutoring with a chesed framing. Older students tutor younger ones — JOC provides matching, training, and tracking tools.",
-    meta: "In-school or cross-school",
-    available: ["JOC App + JOC Education", "Full JOC Partnership"],
-  },
-  {
-    key: "chesed-match",
-    name: "Chesed Match",
-    tag: "Platform",
-    description: "Connects your students to vetted community chesed opportunities — elderly companions, hospital visits, food distribution, and more.",
-    meta: "Links to chesedmatch.org",
-    available: ["JOC App + JOC Education", "Full JOC Partnership"],
-    external: true,
-    href: "https://chesedmatch.org",
-  },
-  {
-    key: "assembly-event",
-    name: "Assembly or Launch Event",
-    tag: "One-time",
-    description: "A JOC presenter comes to your school for a full-school assembly, grade-level program launch, or teacher training day. Booked directly with JOC.",
-    meta: "Scheduled with JOC team",
-    available: ["All subscriptions (per-event pricing)"],
-  },
-  {
-    key: "joc-center-trip",
-    name: "JOC Center Trip (Israel)",
-    tag: "Trip",
-    description: "A guided trip to the JOC Center in Israel for high school groups. Full partnership schools receive an included trip each year.",
-    meta: "High school · Annual",
-    available: ["Full JOC Partnership"],
   },
 ];
 
@@ -188,8 +136,8 @@ export default function ProgramsPage() {
             Beyond the in-class curriculum, JOC runs a set of organized programs your school can register for. Availability depends on your subscription level.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "18px" }}>
-            {JOC_PROGRAMS.map((p) => (
-              <div key={p.key} style={{ backgroundColor: "#fff", borderRadius: "22px", border: "1px solid rgba(16,35,63,.1)", padding: "26px", display: "flex", flexDirection: "column" }}>
+            {PROGRAMS.map((p) => (
+              <div key={p.slug} style={{ backgroundColor: "#fff", borderRadius: "22px", border: "1px solid rgba(16,35,63,.1)", padding: "26px", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
                   <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>{p.tag}</span>
                 </div>
@@ -200,11 +148,11 @@ export default function ProgramsPage() {
                   <span style={{ fontWeight: 600 }}>Included with: </span>{p.available.join(", ")}
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <Link href={`/programs/${p.key}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                  <Link href={`/programs/${p.slug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
                     Learn more
                   </Link>
                   {p.external ? (
-                    <a href={p.href} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                    <a href={p.externalHref} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
                       Visit ↗
                     </a>
                   ) : (

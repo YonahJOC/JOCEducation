@@ -9,6 +9,8 @@ export type Program = {
   available: string[];
   howItWorks: { step: string; title: string; description: string }[];
   whatsIncluded: string[];
+  /** A real quote from a real school. Never a written one — the five that
+   *  used to sit here were invented and attributed to named rebbeim. */
   testimonial?: { quote: string; attribution: string };
   cta: string;
   external?: boolean;
@@ -40,10 +42,6 @@ export const PROGRAMS: Program[] = [
       "Post-event reflection activity",
       "JOC App integration for hour logging",
     ],
-    testimonial: {
-      quote: "The students took over completely. By the end of the event they were approaching people we would never have thought of. The ownership they felt was remarkable.",
-      attribution: "Morah Raizel Goldstein, Beis Yaakov of Brooklyn",
-    },
     cta: "Register your school",
   },
   {
@@ -70,10 +68,6 @@ export const PROGRAMS: Program[] = [
       "Guided classroom debrief activity",
       "JOC App integration for chesed hour logging",
     ],
-    testimonial: {
-      quote: "We've been running Bake for Chesed every November for three years. The families at the shelter have started to expect us — and the kids know it. That continuity matters.",
-      attribution: "Rabbi Shlomo Feuerstein, Yeshiva Darchei Torah",
-    },
     cta: "Register your school",
   },
   {
@@ -100,10 +94,6 @@ export const PROGRAMS: Program[] = [
       "Certificates for tutors at semester end",
       "JOC App hour tracking integration",
     ],
-    testimonial: {
-      quote: "We expected academic improvement. What we didn't expect was how much it changed the tutors. They started showing up differently — more patient in the classroom, more aware of who around them needed help.",
-      attribution: "Rebbetzin Devorah Katz, Sha'arei Torah High School",
-    },
     cta: "Register your school",
   },
   {
@@ -158,10 +148,6 @@ export const PROGRAMS: Program[] = [
       "Teacher discussion and follow-up guide",
       "Post-event Q&A with school leadership (optional)",
     ],
-    testimonial: {
-      quote: "The kickoff assembly set the tone for everything that followed. Students were talking about it for weeks. It gave us something real to refer back to all year.",
-      attribution: "Principal Yitzchak Stern, Or Chaim Day School, Toronto",
-    },
     cta: "Request a booking",
   },
   {
@@ -188,10 +174,6 @@ export const PROGRAMS: Program[] = [
       "Program coordinator on-site throughout",
       "Post-trip reflection and classroom debrief guide",
     ],
-    testimonial: {
-      quote: "This isn't a tourist trip. Students come back different — not because of what they saw, but because of what they did. That's what makes it matter.",
-      attribution: "Rav Avrohom Neuberger, Yeshivat Shaalvim",
-    },
     cta: "Contact your JOC liaison",
   },
 ];
