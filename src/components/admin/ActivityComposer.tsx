@@ -6,12 +6,13 @@ import { addSchoolNote } from "@/app/actions/admin";
 const INK = "#10233F";
 const RULE = "rgba(16,35,63,.15)";
 
+/** Kind, label, and a prompt that suits that kind of interaction. */
 const TYPES = [
-  ["CALL", "Call"],
-  ["EMAIL", "Email"],
-  ["MEETING", "Meeting"],
-  ["DEMO", "Demo"],
-  ["NOTE", "Note"],
+  ["CALL", "Call", "Who you spoke to and what they said"],
+  ["EMAIL", "Email", "What you wrote, or what came back"],
+  ["MEETING", "Meeting", "Who was in the room and what was decided"],
+  ["DEMO", "Demo", "What you showed and how it landed"],
+  ["NOTE", "Note", "Anything worth knowing next time"],
 ] as const;
 
 const field: React.CSSProperties = {
@@ -80,7 +81,8 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
         value={detail}
         onChange={(e) => setDetail(e.target.value)}
         rows={3}
-        placeholder="Anything worth remembering next time (optional)"
+        /* The prompt changes with the kind, so it asks for the right thing */
+        placeholder={TYPES.find(([v]) => v === type)?.[2] ?? "Anything worth remembering"}
         style={{ ...field, resize: "vertical", marginBottom: "9px" }}
       />
       <div style={{ display: "flex", gap: "9px", alignItems: "center", flexWrap: "wrap" }}>
