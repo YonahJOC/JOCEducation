@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { sendDemoRequestEmails } from "@/lib/notify";
 
 /**
  * Demo requests from the landing page scheduler.
@@ -53,7 +54,17 @@ export async function POST(req: Request) {
 
   try {
     const created = await prisma.demoRequest.create({ data: record });
-    return NextResponse.json({ ok: true, stored: true, id: created.id });
+    // Confirm to the school and tell JOC. A failure here must not lose the
+    // request — it is already saved, and the console shows it.
+    const emailed = await sendDemoRequestEmails({
+      name,
+      email,
+      schoolName: record.schoolName ?? "their school",
+      phone: record.phone,
+      message: record.message,
+      preferred: body.requestedFor ?? null,
+    });
+    return NextResponse.json({ ok: true, stored: true, emailed, id: created.id });
   } catch (err) {
     console.error("[demo-request] failed to store:", err);
     // The person booking should not see a failure for our storage problem —

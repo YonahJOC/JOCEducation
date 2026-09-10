@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { sendInvitation } from "@/lib/notify";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canManageAccounts, canManageRoles } from "@/lib/access";
@@ -213,9 +214,24 @@ export async function inviteToSchool(input: {
       data: { schoolId: input.schoolId, email, role: input.role as never, expiresAt, invitedById: me?.id ?? null },
     });
     await log(input.schoolId, "ACCESS_GRANTED", `Invited ${email} as ${input.role}`, null, me?.id ?? null);
-    // TODO: send the invitation email once Resend is configured (tech plan Phase 5).
+
+    const school = await prisma.school.findUnique({
+      where: { id: input.schoolId },
+      select: { name: true },
+    });
+    const emailed = await sendInvitation({
+      to: email,
+      schoolName: school?.name ?? "your school",
+      invitedBy: me?.name ?? me?.email ?? null,
+      role: input.role,
+    });
+
     revalidatePath(`/admin/schools/${input.schoolId}`);
-    return { ok: true };
+    // The invitation is real either way; whoever invited them needs to know
+    // whether to pass the link on themselves.
+    return emailed
+      ? { ok: true }
+      : { ok: false, error: `Invitation created, but no email was sent — mail is not switched on yet. Send ${email} the sign-up link yourself.` };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
@@ -641,6 +657,18 @@ export async function convertDemoToSchool(demoId: string): Promise<Result & { id
     revalidatePath("/admin/demos");
     revalidatePath("/admin/schools");
     return { ok: true, id: school.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/** Mark a contact-form message dealt with, or put it back. */
+export async function setMessageHandled(id: string, handled: boolean): Promise<Result> {
+  try {
+    await requireAccountManager();
+    await prisma.contactMessage.update({ where: { id }, data: { handled } });
+    revalidatePath("/admin/demos");
+    return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }

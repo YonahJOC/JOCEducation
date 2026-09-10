@@ -752,3 +752,26 @@ model ProgramStep {
 
   @@index([programId])
 }
+
+// ─── Contact form ─────────────────────────────────────────────────────────────
+// The contact route used to validate a message and throw it away. Stored here
+// so nothing a school writes is lost, whether or not mail is switched on.
+
+model ContactMessage {
+  id         String  @id @default(cuid())
+  name       String
+  email      String
+  schoolName String?
+  role       String?
+  subject    String?
+  message    String  @db.Text
+
+  /// Set once someone at JOC has dealt with it.
+  handled   Boolean @default(false)
+  /// Whether the notification email actually went out.
+  emailed   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([handled, createdAt])
+}

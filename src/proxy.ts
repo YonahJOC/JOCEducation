@@ -27,6 +27,7 @@ const PUBLIC_PATHS = new Set([
   "/login",
   "/signup",
   "/forgot-password",
+  "/reset-password",
   "/privacy",
   "/terms",
   "/no-access",

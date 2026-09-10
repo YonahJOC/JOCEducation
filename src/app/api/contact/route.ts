@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { sendContactMessage } from "@/lib/notify";
 
-// Wire to an email service (Resend, SendGrid, etc.) once credentials are available.
-// For now, validates and returns success so the UI flow is complete.
+/**
+ * The contact form.
+ *
+ * This route used to validate a message, log the sender's address, and
+ * return success — the message itself went nowhere. Now it is stored first,
+ * so nothing a school writes is lost, and emailed as well when mail is
+ * switched on.
+ */
 
 type ContactPayload = {
   name?: string;
   school?: string;
-  email: string;
+  email?: string;
   role?: string;
   subject?: string;
-  message: string;
+  message?: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -20,22 +28,44 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (!body.email?.includes("@")) {
+  const email = (body.email ?? "").trim();
+  const message = (body.message ?? "").trim();
+  const name = (body.name ?? "").trim() || "Someone";
+
+  if (!email.includes("@")) {
     return NextResponse.json({ error: "Valid email required" }, { status: 400 });
   }
-  if (!body.message?.trim()) {
+  if (!message) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
   }
 
-  // TODO: send email via Resend / SendGrid
-  // await resend.emails.send({
-  //   from: "noreply@education.justonechesed.org",
-  //   to: ["info@justonechesed.org"],
-  //   subject: `JOC Education contact: ${body.subject ?? "general"}`,
-  //   html: `<p>From: ${body.name} &lt;${body.email}&gt;</p><p>School: ${body.school}</p><p>Role: ${body.role}</p><p>${body.message}</p>`,
-  // });
+  const emailed = await sendContactMessage({
+    name,
+    email,
+    subject: body.subject ?? null,
+    message,
+  });
 
-  console.log("[contact]", { email: body.email, subject: body.subject });
+  if (!isDatabaseConfigured()) {
+    console.warn("[contact] no database — message not stored:", { email, subject: body.subject });
+    return NextResponse.json({ ok: true, stored: false, emailed });
+  }
 
-  return NextResponse.json({ ok: true });
+  try {
+    await prisma.contactMessage.create({
+      data: {
+        name,
+        email,
+        schoolName: (body.school ?? "").trim() || null,
+        role: (body.role ?? "").trim() || null,
+        subject: (body.subject ?? "").trim() || null,
+        message,
+        emailed,
+      },
+    });
+    return NextResponse.json({ ok: true, stored: true, emailed });
+  } catch (err) {
+    console.error("[contact] failed to store:", err);
+    return NextResponse.json({ ok: true, stored: false, emailed });
+  }
 }

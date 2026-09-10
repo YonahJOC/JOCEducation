@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { sendInvitation } from "@/lib/notify";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canRunOwnSchool, scopedSchoolId } from "@/lib/access";
@@ -56,9 +57,17 @@ export async function inviteTeacher(email: string, role: "TEACHER" | "SCHOOL_ADM
         invitedById: userId,
       },
     });
-    // TODO: send the invitation email once Resend is configured.
+    const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { name: true } });
+    const emailed = await sendInvitation({
+      to: clean,
+      schoolName: school?.name ?? "your school",
+      role,
+    });
+
     revalidatePath("/school/teachers");
-    return { ok: true };
+    return emailed
+      ? { ok: true }
+      : { ok: false, error: `Added to your team, but no email was sent — JOC has not switched on mail yet. Tell ${clean} to sign up at the site with this address.` };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
