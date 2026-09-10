@@ -60,6 +60,12 @@ body {
 /* Suppress dark mode — design is light only */
 @media (prefers-color-scheme: dark) {}
 
+/* Lesson editor: the guiding-question rail drops below the form on narrow screens */
+@media (max-width: 1040px) {
+  .joc-lesson-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .joc-lesson-rail { position: static !important; }
+}
+
 /* School admin portal: light sidebar becomes a top bar on phones */
 @media (max-width: 860px) {
   .joc-school-sidebar { width: 100% !important; border-right: none !important;

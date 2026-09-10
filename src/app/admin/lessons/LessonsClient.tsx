@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LessonEditor, EMPTY_LESSON, type LessonDraft } from "@/components/admin/LessonEditor";
+import { LessonEditor, EMPTY_LESSON, type LessonDraft, type CycleRef } from "@/components/admin/LessonEditor";
+import { BulkImport } from "@/components/admin/BulkImport";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -15,7 +16,7 @@ export function LessonsClient({
   lessons, cycles, disabled,
 }: {
   lessons: LessonRow[];
-  cycles: { slug: string; theme: string; num: number }[];
+  cycles: CycleRef[];
   disabled?: boolean;
 }) {
   const [editing, setEditing] = useState<LessonDraft | null>(null);
@@ -60,9 +61,13 @@ export function LessonsClient({
           + New lesson
         </button>
       </div>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 22px" }}>
+      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 12px" }}>
         {lessons.length} lessons. Tag each one to a Chesed Cycle so it appears during those weeks.
       </p>
+
+      <div style={{ marginBottom: "16px" }}>
+        <BulkImport cycles={cycles} disabled={disabled} />
+      </div>
 
       <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
         {lessons.length === 0 ? (

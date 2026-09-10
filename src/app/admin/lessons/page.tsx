@@ -60,7 +60,9 @@ async function getLessons(): Promise<LessonRow[]> {
 
 export default async function AdminLessonsPage() {
   const lessons = await getLessons();
-  const cycles = CYCLES.map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
+  const cycles = CYCLES.map((c) => ({
+    slug: c.slug, theme: c.theme, num: c.num, question: c.question, color: c.color,
+  }));
 
   return (
     <LessonsClient
