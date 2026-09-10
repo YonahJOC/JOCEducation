@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { createAccount } from "@/app/actions/signup";
 import { LogoMark } from "@/components/ui/LogoMark";
 
 const ROLES = [
@@ -12,19 +13,31 @@ const ROLES = [
 
 export default function SignupPage() {
   const [form, setForm] = useState({ firstName: "", lastName: "", school: "", role: "teacher", email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [loading, start] = useTransition();
+  const [done, setDone] = useState<{ schoolName: string | null } | null>(null);
   const [error, setError] = useState("");
 
   function set(key: string, val: string) { setForm((f) => ({ ...f, [key]: val })); }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.firstName || !form.email || !form.password || !form.school) { setError("Please fill in all required fields."); return; }
-    if (form.password.length < 8) { setError("Password must be at least 8 characters."); return; }
+    if (!form.firstName || !form.email || !form.password || !form.school) {
+      setError("Please fill in all required fields.");
+      return;
+    }
     setError("");
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setDone(true); }, 1000);
+    start(async () => {
+      const r = await createAccount({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+        schoolName: form.school,
+        role: form.role,
+      });
+      if (r.ok) setDone({ schoolName: r.schoolName });
+      else setError(r.error);
+    });
   }
 
   if (done) {
@@ -32,13 +45,14 @@ export default function SignupPage() {
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px", backgroundColor: "#FBF9F4" }}>
         <div style={{ maxWidth: "420px", textAlign: "center" }}>
           <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#ECFDF5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "28px" }}>✓</div>
-          <h2 style={{ fontWeight: 800, fontSize: "26px", color: "#10233F", marginBottom: "10px" }}>Account created!</h2>
+          <h2 style={{ fontWeight: 800, fontSize: "26px", color: "#10233F", marginBottom: "10px" }}>Your account is ready</h2>
           <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", lineHeight: 1.6, marginBottom: "28px" }}>
-            Authentication isn't connected yet, but your account is ready to go once it is.<br /><br />
-            We'll let you know when access is live.
+            {done.schoolName
+              ? `You have been matched to ${done.schoolName}. Sign in and everything your school has access to is there.`
+              : "Sign in with the address and password you just chose. If your school has a JOC account, use your school email address to be matched to it."}
           </p>
-          <Link href="/" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}>
-            Back to home
+          <Link href="/login" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}>
+            Sign in
           </Link>
         </div>
       </div>
@@ -74,7 +88,7 @@ export default function SignupPage() {
 
             <div>
               <label style={labelStyle}>School <Required /></label>
-              <input value={form.school} onChange={(e) => set("school", e.target.value)} placeholder="Beis Yaakov of Brooklyn" style={inputStyle} />
+              <input value={form.school} onChange={(e) => set("school", e.target.value)} placeholder="Your school's name" style={inputStyle} />
             </div>
 
             <div>
@@ -91,7 +105,7 @@ export default function SignupPage() {
 
             <div>
               <label style={labelStyle}>Password <Required /></label>
-              <input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" style={inputStyle} />
+              <input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="At least 10 characters" autoComplete="new-password" style={inputStyle} />
             </div>
 
             {error && <p style={{ fontSize: "13.5px", color: "#B91C1C", backgroundColor: "#FEF2F2", borderRadius: "10px", padding: "10px 14px" }}>{error}</p>}
