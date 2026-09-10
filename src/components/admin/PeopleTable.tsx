@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { setUserRole, setUserActive } from "@/app/actions/admin";
+import { setUserRole, setUserActive, assignUserToSchool, resetUserPassword } from "@/app/actions/admin";
 import { ROLE_LABELS, ROLE_DESCRIPTIONS, ASSIGNABLE_ROLES, type Role } from "@/lib/access";
 
 const INK = "#10233F";
+const BLUE = "#2D46AF";
 const RULE = "rgba(16,35,63,.15)";
 
 export const ROLE_COLOR: Record<string, string> = {
@@ -20,7 +21,11 @@ export type PersonRow = {
   active: boolean;
   lastSeenAt: Date | string | null;
   schoolName: string | null;
+  schoolId?: string | null;
+  hasPassword?: boolean;
 };
+
+export type SchoolRef = { id: string; name: string };
 
 function ago(d: Date | string | null) {
   if (!d) return "never";
@@ -41,13 +46,14 @@ const td: React.CSSProperties = {
 };
 
 export function PeopleTable({
-  title, people, showSchool, canEditRoles, disabled,
+  title, people, showSchool, canEditRoles, disabled, schools = [],
 }: {
   title: string;
   people: PersonRow[];
   showSchool: boolean;
   canEditRoles: boolean;
   disabled?: boolean;
+  schools?: SchoolRef[];
 }) {
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
@@ -70,7 +76,7 @@ export function PeopleTable({
             </thead>
             <tbody>
               {people.map((p) => (
-                <Row key={p.id} person={p} showSchool={showSchool} canEditRoles={canEditRoles} disabled={disabled} />
+                <Row key={p.id} person={p} showSchool={showSchool} canEditRoles={canEditRoles} disabled={disabled} schools={schools} />
               ))}
             </tbody>
           </table>
@@ -81,17 +87,40 @@ export function PeopleTable({
 }
 
 function Row({
-  person, showSchool, canEditRoles, disabled,
+  person, showSchool, canEditRoles, disabled, schools,
 }: {
   person: PersonRow;
   showSchool: boolean;
   canEditRoles: boolean;
   disabled?: boolean;
+  schools: SchoolRef[];
 }) {
   const [role, setRole] = useState(person.role);
   const [active, setActive] = useState(person.active);
+  const [schoolId, setSchoolId] = useState(person.schoolId ?? "");
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState<string | null>(null);
+
+  function changeSchool(next: string) {
+    const prev = schoolId;
+    setSchoolId(next);
+    setMsg(null);
+    start(async () => {
+      const r = await assignUserToSchool(person.id, next || null);
+      if (!r.ok) { setSchoolId(prev); setMsg(r.error); }
+    });
+  }
+
+  function resetPassword() {
+    if (!window.confirm(`Issue a new password for ${person.email}? Their current one stops working.`)) return;
+    setMsg(null);
+    start(async () => {
+      const r = await resetUserPassword(person.id);
+      if (r.ok && r.password) setNewPassword(r.password);
+      else if (!r.ok) setMsg(r.error);
+    });
+  }
 
   function changeRole(next: string) {
     const prev = role;
@@ -120,11 +149,41 @@ function Row({
         <span style={{ fontWeight: 600, color: INK, display: "block" }}>{person.name ?? "—"}</span>
         <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", wordBreak: "break-all" }}>{person.email}</span>
         {msg && <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "3px" }}>{msg}</span>}
+        {newPassword && (
+          <span style={{ display: "block", marginTop: "6px", backgroundColor: "#F4F7FD", borderRadius: "8px", padding: "7px 10px" }}>
+            <span style={{ display: "block", fontSize: "11px", color: "rgba(16,35,63,.55)" }}>
+              New password — shown once
+            </span>
+            <span style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "14px", fontWeight: 700, color: BLUE }}>
+              {newPassword}
+            </span>
+          </span>
+        )}
       </td>
 
       {showSchool && (
-        <td style={{ ...td, color: "rgba(16,35,63,.75)" }}>
-          {person.schoolName ?? <span style={{ color: "#C96C00" }}>no school</span>}
+        <td style={{ ...td }}>
+          {canEditRoles && schools.length > 0 ? (
+            <select
+              value={schoolId}
+              onChange={(e) => changeSchool(e.target.value)}
+              disabled={disabled || pending}
+              style={{
+                fontFamily: "var(--font-outfit)", fontSize: "13px",
+                color: schoolId ? INK : "#C96C00", backgroundColor: "#fff",
+                border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
+                minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                maxWidth: "180px",
+              }}
+            >
+              <option value="">No school</option>
+              {schools.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          ) : (
+            <span style={{ color: "rgba(16,35,63,.75)" }}>
+              {person.schoolName ?? <span style={{ color: "#C96C00" }}>no school</span>}
+            </span>
+          )}
         </td>
       )}
 
@@ -161,17 +220,31 @@ function Row({
 
       <td style={{ ...td, whiteSpace: "nowrap", textAlign: "right" }}>
         {canEditRoles && (
-          <button
-            onClick={toggleActive}
-            disabled={disabled || pending}
-            style={{
-              fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-              color: active ? "#B8321E" : "#1B7F4B", background: "none", border: "none",
-              cursor: disabled ? "not-allowed" : "pointer", padding: "6px 0", minHeight: "38px",
-            }}
-          >
-            {active ? "Suspend" : "Restore"}
-          </button>
+          <span style={{ display: "inline-flex", gap: "14px", alignItems: "center" }}>
+            <button
+              onClick={resetPassword}
+              disabled={disabled || pending}
+              title="Issue a new password and show it once"
+              style={{
+                fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                color: "#2D46AF", background: "none", border: "none",
+                cursor: disabled ? "not-allowed" : "pointer", padding: "6px 0", minHeight: "38px",
+              }}
+            >
+              Reset password
+            </button>
+            <button
+              onClick={toggleActive}
+              disabled={disabled || pending}
+              style={{
+                fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                color: active ? "#B8321E" : "#1B7F4B", background: "none", border: "none",
+                cursor: disabled ? "not-allowed" : "pointer", padding: "6px 0", minHeight: "38px",
+              }}
+            >
+              {active ? "Suspend" : "Restore"}
+            </button>
+          </span>
         )}
       </td>
     </tr>

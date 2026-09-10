@@ -6,6 +6,8 @@ import {
 import { PlanPanel } from "@/components/admin/PlanPanel";
 import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { InvitePanel } from "@/components/admin/InvitePanel";
+import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
+import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 
 const INK = "#10233F";
 const CARD: React.CSSProperties = {
@@ -28,6 +30,14 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
   if (!data) notFound();
 
   const { school: s, members, contacts, activities, invitations } = data;
+  const details = (data as { details?: {
+    city: string | null; region: string | null; website: string | null;
+    type: string; enrollment: string; studentCount: number | null; emailDomains: string[];
+  } }).details;
+  const planRequests = (data as { planRequests?: {
+    id: string; message: string; status: string; response: string | null;
+    createdAt: Date; from: string;
+  }[] }).planRequests ?? [];
 
   return (
     <div>
@@ -139,6 +149,23 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
 
         {/* Right column — the relationship */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <PlanRequestsPanel requests={planRequests} disabled={usingSampleData} />
+
+          {details && (
+            <SchoolDetailsPanel
+              schoolId={s.id}
+              name={s.name}
+              city={details.city}
+              region={details.region}
+              website={details.website}
+              type={details.type}
+              enrollment={details.enrollment}
+              studentCount={details.studentCount}
+              emailDomains={details.emailDomains}
+              disabled={usingSampleData}
+            />
+          )}
+
           <ActivityComposer schoolId={s.id} disabled={usingSampleData} />
 
           <div style={CARD}>

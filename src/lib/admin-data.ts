@@ -166,12 +166,26 @@ export async function getSchool(id: string) {
       invitations: [
         { id: "i1", email: "newstaff@example.org", role: "TEACHER", status: "PENDING", expiresAt: d(-5) },
       ],
+      details: {
+        city: s.city, region: s.region, website: null,
+        type: "DAY_SCHOOL", enrollment: s.enrollment,
+        studentCount: s.studentCount, emailDomains: [] as string[],
+      },
+      planRequests: [] as {
+        id: string; message: string; status: string;
+        response: string | null; createdAt: Date; from: string;
+      }[],
     };
   }
 
   const s = await prisma.school.findUnique({
     where: { id },
     include: {
+      planRequests: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: { requestedBy: { select: { name: true, email: true } } },
+      },
       subscription: { include: { grantedBy: { select: { name: true, email: true } } } },
       accountManager: { select: { name: true, email: true } },
       contacts: { orderBy: { isPrimary: "desc" } },
@@ -213,6 +227,23 @@ export async function getSchool(id: string) {
       accountManager: s.accountManager?.name ?? s.accountManager?.email ?? null,
       lastActivityAt: s.activities[0]?.occurredAt ?? null,
     } satisfies SchoolRow,
+    details: {
+      city: s.city,
+      region: s.region,
+      website: s.website,
+      type: s.type as string,
+      enrollment: s.enrollment as string,
+      studentCount: s.studentCount,
+      emailDomains: s.emailDomains,
+    },
+    planRequests: s.planRequests.map((r) => ({
+      id: r.id,
+      message: r.message,
+      status: r.status as string,
+      response: r.response,
+      createdAt: r.createdAt,
+      from: r.requestedBy?.name ?? r.requestedBy?.email ?? "Someone at the school",
+    })),
     members: s.members,
     contacts: s.contacts,
     activities: s.activities.map((a) => ({

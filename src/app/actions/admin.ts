@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canManageAccounts, canManageRoles } from "@/lib/access";
+import { hashPassword, passwordProblem, generateTempPassword } from "@/lib/password";
 import { isAuthConfigured } from "@/auth";
 
 /**
@@ -262,6 +263,289 @@ export async function createSchool(input: {
     await log(school.id, "NOTE", "School added to the console", null, me?.id ?? null);
     revalidatePath("/admin/schools");
     return { ok: true, id: school.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/**
+ * Edit a school's own details.
+ *
+ * `emailDomains` is the important one: a teacher signing in with an address
+ * on one of these joins the school automatically, which is what makes
+ * onboarding a school something other than inviting people one at a time.
+ */
+export async function updateSchoolDetails(input: {
+  schoolId: string;
+  name: string;
+  city?: string;
+  region?: string;
+  website?: string;
+  type: string;
+  enrollment: string;
+  studentCount?: number | null;
+  /** Comma or space separated; stored lowercased with any @ stripped. */
+  emailDomains: string;
+}): Promise<Result> {
+  try {
+    const me = await requireAccountManager();
+    const name = input.name.trim();
+    if (!name) return { ok: false, error: "A school name is required" };
+
+    const domains = input.emailDomains
+      .split(/[\s,]+/)
+      .map((d) => d.trim().toLowerCase().replace(/^@/, ""))
+      .filter((d) => d.includes("."));
+
+    // A domain may only belong to one school, or sign-in becomes ambiguous.
+    if (domains.length > 0) {
+      const clash = await prisma.school.findFirst({
+        where: { id: { not: input.schoolId }, emailDomains: { hasSome: domains } },
+        select: { name: true, emailDomains: true },
+      });
+      if (clash) {
+        const overlap = domains.filter((d) => clash.emailDomains.includes(d));
+        return { ok: false, error: `${overlap.join(", ")} already belongs to ${clash.name}` };
+      }
+    }
+
+    const before = await prisma.school.findUnique({
+      where: { id: input.schoolId },
+      select: { emailDomains: true },
+    });
+
+    await prisma.school.update({
+      where: { id: input.schoolId },
+      data: {
+        name,
+        city: input.city?.trim() || null,
+        region: input.region?.trim() || null,
+        website: input.website?.trim() || null,
+        type: input.type as never,
+        enrollment: input.enrollment as never,
+        studentCount: input.studentCount ?? null,
+        emailDomains: domains,
+      },
+    });
+
+    const added = domains.filter((d) => !(before?.emailDomains ?? []).includes(d));
+    if (added.length > 0) {
+      await log(
+        input.schoolId,
+        "NOTE",
+        `Email domain${added.length === 1 ? "" : "s"} added: ${added.join(", ")}`,
+        "Anyone signing in with an address on these joins this school automatically.",
+        me?.id ?? null
+      );
+    }
+
+    revalidatePath(`/admin/schools/${input.schoolId}`);
+    revalidatePath("/admin/schools");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/** Add or update a contact at a school. */
+export async function saveSchoolContact(input: {
+  id?: string;
+  schoolId: string;
+  name: string;
+  title?: string;
+  email?: string;
+  phone?: string;
+  isPrimary: boolean;
+}): Promise<Result> {
+  try {
+    await requireAccountManager();
+    const name = input.name.trim();
+    if (!name) return { ok: false, error: "A name is required" };
+
+    // Only one primary contact per school.
+    if (input.isPrimary) {
+      await prisma.schoolContact.updateMany({
+        where: { schoolId: input.schoolId, ...(input.id ? { id: { not: input.id } } : {}) },
+        data: { isPrimary: false },
+      });
+    }
+
+    const data = {
+      schoolId: input.schoolId,
+      name,
+      title: input.title?.trim() || null,
+      email: input.email?.trim() || null,
+      phone: input.phone?.trim() || null,
+      isPrimary: input.isPrimary,
+    };
+
+    if (input.id) await prisma.schoolContact.update({ where: { id: input.id }, data });
+    else await prisma.schoolContact.create({ data });
+
+    revalidatePath(`/admin/schools/${input.schoolId}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+export async function deleteSchoolContact(id: string, schoolId: string): Promise<Result> {
+  try {
+    await requireAccountManager();
+    await prisma.schoolContact.delete({ where: { id } });
+    revalidatePath(`/admin/schools/${schoolId}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/**
+ * Answer a school's plan change request. Without this the school admin sends
+ * a message into nowhere, which is worse than not offering the button.
+ */
+export async function respondToPlanRequest(input: {
+  requestId: string;
+  response: string;
+  status: "ANSWERED" | "ACTIONED" | "DECLINED";
+}): Promise<Result> {
+  try {
+    const me = await requireAccountManager();
+    const response = input.response.trim();
+    if (!response) return { ok: false, error: "Write a reply first" };
+
+    const req = await prisma.planChangeRequest.update({
+      where: { id: input.requestId },
+      data: {
+        response,
+        status: input.status as never,
+        respondedById: me?.id ?? null,
+        respondedAt: new Date(),
+      },
+      select: { schoolId: true },
+    });
+
+    await log(
+      req.schoolId,
+      "NOTE",
+      `Replied to the school's plan request (${input.status.toLowerCase()})`,
+      response,
+      me?.id ?? null
+    );
+
+    revalidatePath(`/admin/schools/${req.schoolId}`);
+    revalidatePath("/school/plan");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/** Attach a user to a school, and optionally make them its administrator. */
+export async function assignUserToSchool(
+  userId: string,
+  schoolId: string | null,
+  makeSchoolAdmin = false
+): Promise<Result> {
+  try {
+    const me = await requireAccountManager();
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        schoolId,
+        ...(makeSchoolAdmin && schoolId ? { role: "SCHOOL_ADMIN" as never } : {}),
+      },
+    });
+    if (schoolId) {
+      const u = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+      await log(
+        schoolId,
+        "ACCESS_GRANTED",
+        makeSchoolAdmin
+          ? `${u?.email ?? "A user"} made school administrator`
+          : `${u?.email ?? "A user"} added to the school`,
+        null,
+        me?.id ?? null
+      );
+    }
+    revalidatePath("/admin/users");
+    if (schoolId) revalidatePath(`/admin/schools/${schoolId}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/**
+ * Create an account directly, with a password, and hand the password over.
+ *
+ * This is how people get in before Google sign-in exists. The password is
+ * returned once so it can be given to the person; it is never stored in
+ * readable form and cannot be retrieved again.
+ */
+export async function createUserAccount(input: {
+  email: string;
+  name?: string;
+  role: string;
+  schoolId?: string | null;
+  /** Leave empty to have one generated. */
+  password?: string;
+}): Promise<Result & { password?: string; id?: string }> {
+  try {
+    const me = await requireAccountManager();
+    const email = input.email.trim().toLowerCase();
+    if (!email.includes("@")) return { ok: false, error: "Enter a valid email address" };
+
+    const existing = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+    if (existing) return { ok: false, error: "An account with that email already exists" };
+
+    const password = input.password?.trim() || generateTempPassword();
+    const problem = input.password?.trim() ? passwordProblem(password) : null;
+    if (problem) return { ok: false, error: problem };
+
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name: input.name?.trim() || null,
+        role: input.role as never,
+        schoolId: input.schoolId || null,
+        passwordHash: await hashPassword(password),
+        // They should choose their own once they are in.
+        mustChangePassword: true,
+        active: true,
+      },
+    });
+
+    if (input.schoolId) {
+      await log(
+        input.schoolId,
+        "ACCESS_GRANTED",
+        `Account created for ${email}`,
+        `Role: ${input.role.replace(/_/g, " ").toLowerCase()}.`,
+        me?.id ?? null
+      );
+    }
+
+    revalidatePath("/admin/users");
+    if (input.schoolId) revalidatePath(`/admin/schools/${input.schoolId}`);
+    // Returned once, so it can be handed over.
+    return { ok: true, password, id: user.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
+
+/** Issue a new password for someone who cannot get in. Shown once. */
+export async function resetUserPassword(userId: string): Promise<Result & { password?: string }> {
+  try {
+    await requireAccountManager();
+    const password = generateTempPassword();
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash: await hashPassword(password), mustChangePassword: true },
+    });
+    revalidatePath("/admin/users");
+    return { ok: true, password };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
