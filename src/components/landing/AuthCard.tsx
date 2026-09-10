@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useActionState } from "react";
 import Link from "next/link";
-import { signInWithGoogle } from "@/app/actions/auth";
+import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -31,14 +31,18 @@ const labelStyle: React.CSSProperties = {
 export function AuthCard({
   defaultTab = "login",
   googleEnabled = false,
+  passwordEnabled = false,
 }: {
   defaultTab?: "login" | "signup";
   googleEnabled?: boolean;
+  /** Email + password sign-in is live (interim, until Google is configured). */
+  passwordEnabled?: boolean;
 }) {
   const [tab, setTab] = useState<"login" | "signup">(defaultTab);
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const [signInState, signInAction, signingIn] = useActionState(signInWithPassword, {});
 
   // Header "Sign in" focuses the email field via #auth
   useEffect(() => {
@@ -163,7 +167,12 @@ export function AuthCard({
         <span style={{ flex: 1, height: "1px", backgroundColor: RULE }} />
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+      <form
+        {...(passwordEnabled && tab === "login"
+          ? { action: signInAction }
+          : { onSubmit: handleSubmit })}
+        style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+      >
         {tab === "signup" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
             <div>
@@ -213,7 +222,7 @@ export function AuthCard({
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || signingIn}
           style={{
             width: "100%",
             fontFamily: "var(--font-outfit)",
@@ -225,13 +234,26 @@ export function AuthCard({
             borderRadius: "9999px",
             padding: "14px 20px",
             minHeight: "44px",
-            cursor: submitting ? "default" : "pointer",
-            opacity: submitting ? 0.7 : 1,
+            cursor: submitting || signingIn ? "default" : "pointer",
+            opacity: submitting || signingIn ? 0.7 : 1,
             marginTop: "2px",
           }}
         >
-          {submitting ? "One moment…" : tab === "login" ? "Sign in" : "Create account"}
+          {submitting || signingIn ? "One moment…" : tab === "login" ? "Sign in" : "Create account"}
         </button>
+
+        {signInState?.error && (
+          <p
+            role="alert"
+            style={{
+              fontSize: "13px", lineHeight: 1.5, color: "#B8321E",
+              backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px",
+              padding: "11px 14px", margin: 0,
+            }}
+          >
+            {signInState.error}
+          </p>
+        )}
 
         {notice && (
           <p

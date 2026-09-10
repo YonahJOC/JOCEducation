@@ -161,6 +161,13 @@ model User {
   active Boolean  @default(true)
   lastSeenAt DateTime?
 
+  /// scrypt hash for email+password sign-in. Interim, until Google OAuth is
+  /// live — see src/lib/password.ts. Null means this account can only sign in
+  /// with Google.
+  passwordHash String?
+  /// Forces a password change on next sign-in (set when an admin issues one)
+  mustChangePassword Boolean @default(false)
+
   accounts     Account[]
   sessions     Session[]
   savedLessons SavedLesson[]
@@ -170,6 +177,8 @@ model User {
   managedSchools   School[]         @relation("AccountManager")
   loggedActivities SchoolActivity[] @relation("ActivityAuthor")
   sentInvitations  Invitation[]     @relation("Inviter")
+  editedFields     SiteField[]        @relation("FieldEditor")
+  publishedFields  SiteFieldHistory[] @relation("FieldPublisher")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -418,6 +427,74 @@ model Product {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ─── Editable site content ───────────────────────────────────────────────────
+// Every string, number, image path and link on the public site reads from a
+// SiteField rather than a literal in a component, so the Education Team can
+// change the site without a deploy.
+//
+// Draft/publish: edits write `valueDraft`. Nothing public changes until a
+// publish copies draft → published and writes a SiteFieldHistory row, which
+// is what makes rollback possible.
+
+model SiteField {
+  id      String @id @default(cuid())
+  /// Which public page this belongs to, e.g. "landing", "cycles"
+  page    String
+  /// Section within the page, e.g. "hero", "demo"
+  section String
+  /// Stable identifier within the section, e.g. "headline"
+  key     String
+  /// Human label shown in the editor
+  label   String
+  type    SiteFieldType @default(SHORT_TEXT)
+  /// Optional guidance shown under the input
+  help    String?
+
+  /// Live value. JSON-encoded for REPEATABLE, plain string otherwise.
+  valuePublished String? @db.Text
+  /// Pending edit. Null means no unpublished change.
+  valueDraft     String? @db.Text
+
+  sort Int @default(0)
+
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+  updatedBy   User?    @relation("FieldEditor", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  history SiteFieldHistory[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([page, section, key])
+  @@index([page, sort])
+}
+
+model SiteFieldHistory {
+  id      String @id @default(cuid())
+  fieldId String
+  /// The value that was live after this publish
+  value   String? @db.Text
+
+  publishedAt   DateTime @default(now())
+  publishedById String?
+  publishedBy   User?    @relation("FieldPublisher", fields: [publishedById], references: [id], onDelete: SetNull)
+
+  field SiteField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([fieldId, publishedAt])
+}
+
+enum SiteFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  URL
+  EMAIL
+  NUMBER
+  IMAGE
+  /// Ordered array of small objects, stored as JSON
+  REPEATABLE
 }
 
 // ─── Site statistics ──────────────────────────────────────────────────────────

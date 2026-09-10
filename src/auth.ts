@@ -1,78 +1,146 @@
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { verifyPassword } from "@/lib/password";
 import {
   initialRoleFor, isStaffEmail, isSuperAdminEmail,
   emailDomain, isConsumerEmail,
 } from "@/lib/access";
 
 /**
- * Google sign-in.
+ * Two ways in.
  *
- * Everything degrades gracefully: with no AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET
- * / DATABASE_URL the app still builds and runs, `auth()` simply returns null
- * and the sign-in card explains that sign-in is not switched on yet.
+ *   Google      — the intended long-term method. Needs AUTH_GOOGLE_ID and
+ *                 AUTH_GOOGLE_SECRET; absent those it simply is not offered.
+ *   Password    — interim, so the JOC team can use the site before Google
+ *                 Cloud is set up. Accounts are created by a super admin;
+ *                 there is no public password signup, because without email
+ *                 verification anyone could otherwise claim a JOC address.
  *
- * Anyone signing in with a @justonechesed.org address is JOC staff — created
- * as ADMIN (or SUPER_ADMIN if listed in SUPER_ADMIN_EMAILS) and given full
- * access to the whole site with no subscription. See src/lib/access.ts.
+ * Sessions are JWT rather than database-backed: the Credentials provider
+ * requires it. Role and school are refreshed from the database periodically
+ * so a role change takes effect without signing out.
+ *
+ * Anyone with a @justonechesed.org address is JOC staff — full free access to
+ * the site, no ability to change anyone's account. See src/lib/access.ts.
  */
 
 export const isGoogleConfigured = Boolean(
   process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
 );
 
-export const isAuthConfigured = Boolean(
+/** Password sign-in needs only a database and a signing secret. */
+export const isPasswordConfigured = Boolean(
+  isDatabaseConfigured() && process.env.AUTH_SECRET
+);
+
+export const isAuthConfigured = isPasswordConfigured || Boolean(
   isGoogleConfigured && process.env.AUTH_SECRET && isDatabaseConfigured()
 );
 
+/** How long before the JWT re-reads role and school from the database. */
+const REFRESH_MS = 5 * 60 * 1000;
+
+const providers: NextAuthConfig["providers"] = [];
+
+if (isGoogleConfigured) {
+  providers.push(
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
+      authorization: { params: { prompt: "select_account", scope: "openid email profile" } },
+    })
+  );
+}
+
+if (isPasswordConfigured) {
+  providers.push(
+    Credentials({
+      id: "password",
+      name: "Email and password",
+      credentials: { email: {}, password: {} },
+      async authorize(raw) {
+        const email = String(raw?.email ?? "").trim().toLowerCase();
+        const password = String(raw?.password ?? "");
+        if (!email || !password) return null;
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        // Same failure for "no such user" and "wrong password", so the form
+        // cannot be used to discover which addresses have accounts.
+        if (!user || !user.passwordHash || !user.active) return null;
+
+        const ok = await verifyPassword(password, user.passwordHash);
+        if (!ok) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          role: user.role,
+          schoolId: user.schoolId,
+        };
+      },
+    })
+  );
+}
+
 const config: NextAuthConfig = {
-  // The adapter needs a live database; without one, sign-in stays off.
   adapter: isDatabaseConfigured() ? PrismaAdapter(prisma) : undefined,
-  session: { strategy: isDatabaseConfigured() ? "database" : "jwt" },
+  session: { strategy: "jwt" },
   trustHost: true,
-
-  // The educator landing page is the sign-in page.
   pages: { signIn: "/", error: "/" },
-
-  providers: isGoogleConfigured
-    ? [
-        Google({
-          clientId: process.env.AUTH_GOOGLE_ID,
-          clientSecret: process.env.AUTH_GOOGLE_SECRET,
-          // Google verifies the address, so linking to an existing user with
-          // the same email is safe and avoids duplicate accounts.
-          allowDangerousEmailAccountLinking: true,
-          authorization: {
-            params: { prompt: "select_account", scope: "openid email profile" },
-          },
-        }),
-      ]
-    : [],
+  providers,
 
   callbacks: {
-    async session({ session, user }) {
+    async jwt({ token, user, trigger }) {
+      if (user) {
+        token.uid = user.id;
+        token.role = (user as { role?: string }).role ?? "TEACHER";
+        token.schoolId = (user as { schoolId?: string | null }).schoolId ?? null;
+        token.refreshedAt = Date.now();
+      }
+
+      const stale = Date.now() - Number(token.refreshedAt ?? 0) > REFRESH_MS;
+      if ((stale || trigger === "update") && token.uid && isDatabaseConfigured()) {
+        try {
+          const fresh = await prisma.user.findUnique({
+            where: { id: String(token.uid) },
+            select: { role: true, schoolId: true, active: true, mustChangePassword: true },
+          });
+          if (fresh) {
+            token.role = fresh.role;
+            token.schoolId = fresh.schoolId;
+            token.mustChangePassword = fresh.mustChangePassword;
+            token.suspended = !fresh.active;
+          }
+          token.refreshedAt = Date.now();
+        } catch {
+          // Keep the existing claims rather than signing someone out.
+        }
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
       if (!session.user) return session;
 
-      // Database strategy hands us the persisted user; that role is the truth.
-      if (user) {
-        session.user.id = user.id;
-        session.user.role = (user as { role?: string }).role ?? "TEACHER";
-        session.user.schoolId = (user as { schoolId?: string | null }).schoolId ?? null;
-      }
+      session.user.id = String(token.uid ?? "");
+      session.user.role = String(token.role ?? "TEACHER");
+      session.user.schoolId = (token.schoolId as string | null) ?? null;
+      session.user.mustChangePassword = Boolean(token.mustChangePassword);
 
       const staffEmail = isStaffEmail(session.user.email);
       session.user.isStaff = staffEmail;
 
-      // A JOC address guarantees STAFF — free access to everything — even if
-      // the stored row is stale or the database is unreachable. It never
-      // grants ADMIN: that is assigned by a super admin, so an existing
-      // higher role is left alone and never downgraded here.
-      if (staffEmail && !session.user.role) session.user.role = "STAFF";
-      if (staffEmail && session.user.role === "TEACHER") session.user.role = "STAFF";
-
-      // Bootstrap: the configured owners are always super admins.
+      // A JOC address always resolves to at least STAFF, even if the stored
+      // row is stale. It never grants ADMIN — that is assigned by hand.
+      if (staffEmail && (!session.user.role || session.user.role === "TEACHER")) {
+        session.user.role = "STAFF";
+      }
       if (isSuperAdminEmail(session.user.email)) session.user.role = "SUPER_ADMIN";
 
       return session;
@@ -81,15 +149,9 @@ const config: NextAuthConfig = {
 
   events: {
     /**
-     * First sign-in. Two things are decided here:
-     *
-     *   Role — a @justonechesed.org address becomes STAFF (free access to
-     *   everything, changes nothing). ADMIN is never automatic. Everyone else
-     *   is a regular TEACHER account.
-     *
-     *   School — if the address is on a domain a school has registered, they
-     *   join that school and inherit its plan. A personal address (gmail and
-     *   the like) never auto-joins anything; an invitation is the way in.
+     * First Google sign-in. Sets the role, and joins the user to a school if
+     * their email domain matches one a school has registered. Password
+     * accounts are created by an admin, so they skip this.
      */
     async createUser({ user }) {
       if (!isDatabaseConfigured()) return;
@@ -106,7 +168,7 @@ const config: NextAuthConfig = {
             });
             schoolId = school?.id ?? null;
           } catch {
-            // Domain matching is a convenience; never block sign-in on it.
+            // Convenience only — never block sign-in on it.
           }
         }
       }
@@ -118,7 +180,7 @@ const config: NextAuthConfig = {
           data: { ...(role !== "TEACHER" ? { role } : {}), ...(schoolId ? { schoolId } : {}) },
         });
       } catch {
-        // Non-fatal: the session callback still resolves staff by email.
+        // The session callback still resolves staff by email.
       }
     },
 
@@ -130,7 +192,7 @@ const config: NextAuthConfig = {
           data: { lastSeenAt: new Date() },
         });
       } catch {
-        // Never block sign-in on a bookkeeping write.
+        // Never block sign-in on bookkeeping.
       }
     },
   },
@@ -143,8 +205,8 @@ export const { GET, POST } = nextAuth.handlers;
 
 /**
  * `auth()` throws when AUTH_SECRET is missing, which is the normal state
- * before credentials are configured. Callers that just want "who is signed in,
- * if anyone" should use this instead.
+ * before credentials are configured. Use this for "who is signed in, if
+ * anyone" reads that must not blow up.
  */
 export async function safeAuth() {
   if (!isAuthConfigured) return null;

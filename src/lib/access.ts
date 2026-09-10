@@ -5,16 +5,19 @@
  *
  *   TEACHER       A teacher at a partner school. Content access follows their
  *                 school's subscription.
- *   SCHOOL_ADMIN  As above, plus they are the contact for their own school.
+ *   SCHOOL_ADMIN  Runs their own school: invites and removes its teachers,
+ *                 sees its plan and seat usage. Scoped strictly to their own
+ *                 school — never sees another school, and never the JOC
+ *                 console.
  *   STAFF         Anyone at Just One Chesed. Free access to the whole site,
  *                 all materials and all programs — but cannot change anything
  *                 or see anyone else's account. This is what a
  *                 @justonechesed.org address gets automatically.
- *   ADMIN         The JOC educational team. Everything STAFF has, plus the
+ *   ADMIN         The JOC Education Team. Everything STAFF has, plus the
  *                 content console: upload and edit lesson plans, resources,
  *                 products and the Teachers' Board.
- *   SUPER_ADMIN   Everything. School accounts, plans, discounts and free
- *                 access, user records, and granting roles to others.
+ *   SUPER_ADMIN   Everything above, plus school accounts, plans, discounts
+ *                 and free access, user records, and granting roles.
  *
  * Only SUPER_ADMIN can hand out ADMIN or SUPER_ADMIN — nobody is promoted
  * automatically by their email domain beyond STAFF.
