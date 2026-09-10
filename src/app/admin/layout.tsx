@@ -3,6 +3,7 @@ import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { canAccessConsole, canManageAccounts, ROLE_LABELS, type Role } from "@/lib/access";
 import { usingSampleData } from "@/lib/admin-data";
+import { signOutAction } from "@/app/actions/auth";
 
 export const metadata = { title: "JOC Console", robots: { index: false, follow: false } };
 
@@ -101,9 +102,19 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               {ROLE_LABELS[role] ?? role.replace("_", " ")}
             </p>
           )}
-          <Link href="/home" style={{ fontSize: "12.5px", color: "rgba(255,255,255,.6)", textDecoration: "none" }}>
+          <Link href="/home" style={{ fontSize: "12.5px", color: "rgba(255,255,255,.6)", textDecoration: "none", display: "block", marginBottom: "8px" }}>
             ← Back to site
           </Link>
+          {who && (
+            <form action={signOutAction}>
+              <button
+                type="submit"
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: "rgba(255,255,255,.6)", background: "none", border: "none", padding: 0, cursor: "pointer", minHeight: "36px", textAlign: "left" }}
+              >
+                Sign out
+              </button>
+            </form>
+          )}
         </div>
       </aside>
 

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { canRunOwnSchool } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { signOutAction } from "@/app/actions/auth";
 
 export const metadata = { title: "Your school — JOC Education", robots: { index: false, follow: false } };
 
@@ -128,9 +129,19 @@ export default async function SchoolLayout({ children }: { children: React.React
               {session.user.email}
             </p>
           )}
-          <Link href="/home" style={{ fontSize: "12.5px", color: BLUE, textDecoration: "none", fontWeight: 600 }}>
+          <Link href="/home" style={{ fontSize: "12.5px", color: BLUE, textDecoration: "none", fontWeight: 600, display: "block", marginBottom: "8px" }}>
             ← Back to the site
           </Link>
+          {session?.user?.email && (
+            <form action={signOutAction}>
+              <button
+                type="submit"
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", padding: 0, cursor: "pointer", minHeight: "36px", textAlign: "left" }}
+              >
+                Sign out
+              </button>
+            </form>
+          )}
         </div>
       </aside>
 
