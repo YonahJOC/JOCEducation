@@ -1,5 +1,6 @@
 import { AccountsGuard } from "@/components/admin/AccountsGuard";
-import { getSchools, STATUS_LABELS, STATUS_COLORS, type SchoolStatus } from "@/lib/admin-data";
+import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
+import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
 import { SchoolTable } from "../page";
 
 const INK = "#10233F";
@@ -38,6 +39,7 @@ async function Inner(searchParams: Search) {
         <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>
           Schools
         </h1>
+        <NewSchoolForm disabled={usingSampleData} />
       </div>
       <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
         {all.length} accounts. Click a school to manage its plan, people and history.

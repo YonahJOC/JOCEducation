@@ -267,3 +267,58 @@ export async function setDemoStatus(id: string, status: string): Promise<Result>
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
 }
+
+/**
+ * Turn a demo request into a real school account, carrying the requester
+ * across as the first contact and logging where the account came from.
+ */
+export async function convertDemoToSchool(demoId: string): Promise<Result & { id?: string }> {
+  try {
+    const me = await requireAccountManager();
+    const demo = await prisma.demoRequest.findUnique({ where: { id: demoId } });
+    if (!demo) return { ok: false, error: "Demo request not found" };
+    if (demo.schoolId) return { ok: false, error: "Already converted" };
+
+    const name = (demo.schoolName || demo.name).trim();
+    const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+    let slug = base || "school";
+    let n = 1;
+    while (await prisma.school.findUnique({ where: { slug } })) slug = `${base}-${++n}`;
+
+    const school = await prisma.school.create({
+      data: {
+        name,
+        slug,
+        status: "DEMO_SCHEDULED",
+        accountManagerId: me?.id ?? null,
+        contacts: {
+          create: {
+            name: demo.name,
+            email: demo.email,
+            phone: demo.phone,
+            isPrimary: true,
+          },
+        },
+      },
+    });
+
+    await prisma.demoRequest.update({
+      where: { id: demoId },
+      data: { status: "CONVERTED", schoolId: school.id },
+    });
+
+    await log(
+      school.id,
+      "DEMO",
+      `Created from a demo request by ${demo.name}`,
+      demo.message,
+      me?.id ?? null
+    );
+
+    revalidatePath("/admin/demos");
+    revalidatePath("/admin/schools");
+    return { ok: true, id: school.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Failed" };
+  }
+}
