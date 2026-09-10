@@ -19,9 +19,10 @@ function isoFor(day: DemoDay, slot: string): string {
   return new Date(y, mo - 1, d, hour, Number(m[2])).toISOString();
 }
 
-// Slots that are already taken. TODO: replace with real availability
-// (Calendly / Google Calendar) once the JOC team picks a scheduler.
-const TAKEN = new Set(["1-10:00 AM", "1-2:30 PM", "2-11:30 AM", "3-9:30 AM", "4-1:00 PM"]);
+// Every slot is offered. Five were marked "taken" here — invented scarcity
+// shown to a school choosing a time. JOC confirms the time by hand anyway,
+// so until a real calendar is connected the honest answer is that all of
+// them are open.
 const SLOTS = ["9:30 AM", "10:00 AM", "11:30 AM", "1:00 PM", "2:30 PM", "3:30 PM"];
 
 const inputStyle: React.CSSProperties = {
@@ -171,22 +172,19 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
       {/* Time slots */}
       <div role="group" aria-label="Choose a time" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))", gap: "7px", marginBottom: "20px" }}>
         {SLOTS.map((s) => {
-          const taken = TAKEN.has(`${dayIdx}-${s}`);
           const on = slot === s;
           return (
             <button
               key={s}
               type="button"
-              disabled={taken}
               onClick={() => { setSlot(s); setError(null); }}
               aria-pressed={on}
               style={{
                 fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
-                padding: "12px 8px", minHeight: "44px", borderRadius: "11px", cursor: taken ? "not-allowed" : "pointer",
+                padding: "12px 8px", minHeight: "44px", borderRadius: "11px", cursor: "pointer",
                 border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
-                backgroundColor: on ? "rgba(45,70,175,.08)" : taken ? "rgba(16,35,63,.03)" : "#fff",
-                color: taken ? "rgba(16,35,63,.3)" : on ? BLUE : INK,
-                textDecoration: taken ? "line-through" : "none",
+                backgroundColor: on ? "rgba(45,70,175,.08)" : "#fff",
+                color: on ? BLUE : INK,
               }}
             >
               {s}
