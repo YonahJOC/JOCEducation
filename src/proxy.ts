@@ -1,17 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * Hard gate — the educator landing page at `/` is the only public route.
+ * The login gate.
  *
- * This runs on the edge, where Prisma cannot, so it only checks for the
- * presence of a session cookie and redirects when there isn't one. Real
- * authorization (roles, subscription, staff status) is enforced server-side
- * in the page and layout components via `auth()`.
+ * The educator landing page at `/` is the only public route. Everything else
+ * — the site, the portal, the console — requires an account.
  *
- * DISABLED BY DEFAULT. Set GATE_ENABLED=true in Vercel once Google sign-in is
- * live — turning it on before then locks everybody out, JOC team included.
+ * The gate switches itself on as soon as signing in is actually possible,
+ * which is a database plus a signing secret. Before that it stays open, so a
+ * site with no working login can never lock everybody out. Set
+ * GATE_DISABLED=true to force it open (useful for a staging deploy).
+ *
+ * This runs on the edge where Prisma cannot, so it only checks for the
+ * presence of a session cookie. Real authorization — roles, subscription,
+ * staff status, school scoping — is enforced server-side in the pages
+ * themselves via `auth()`. A forged cookie gets past this and then hits a
+ * real check on the other side.
  */
 
+const canSignIn = Boolean(process.env.AUTH_SECRET && process.env.DATABASE_URL);
+const gateOn = canSignIn && process.env.GATE_DISABLED !== "true";
+
+/** Reachable without an account. */
 const PUBLIC_PATHS = new Set([
   "/",
   "/login",
@@ -32,7 +42,7 @@ const PUBLIC_FILES = new Set([
   "/opengraph-image",
 ]);
 
-// Auth.js v5 cookie names (the __Secure- prefix is used over HTTPS).
+// Auth.js v5 cookie names. The __Secure- prefix is used over HTTPS.
 const SESSION_COOKIES = [
   "authjs.session-token",
   "__Secure-authjs.session-token",
@@ -40,23 +50,36 @@ const SESSION_COOKIES = [
 
 function isPublic(pathname: string): boolean {
   if (PUBLIC_PATHS.has(pathname) || PUBLIC_FILES.has(pathname)) return true;
-  return PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
+  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return true;
+  // Files served from /public — logos, images, fonts.
+  return /\.(png|jpe?g|svg|webp|avif|ico|gif|mp4|webm|woff2?|ttf|txt|xml|pdf)$/i.test(pathname);
 }
 
-function hasSessionCookie(req: NextRequest): boolean {
+function signedIn(req: NextRequest): boolean {
   return SESSION_COOKIES.some((name) => Boolean(req.cookies.get(name)?.value));
 }
 
 export function proxy(req: NextRequest) {
-  if (process.env.GATE_ENABLED !== "true") return NextResponse.next();
+  if (!gateOn) return NextResponse.next();
 
   const { pathname } = req.nextUrl;
-  if (isPublic(pathname)) return NextResponse.next();
-  if (hasSessionCookie(req)) return NextResponse.next();
+  const hasSession = signedIn(req);
 
+  // Someone already signed in has no use for the landing page.
+  if (hasSession && pathname === "/") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/home";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  if (isPublic(pathname)) return NextResponse.next();
+  if (hasSession) return NextResponse.next();
+
+  // Send them to the landing page, remembering where they were headed.
   const url = req.nextUrl.clone();
   url.pathname = "/";
-  url.search = "";
+  url.search = pathname === "/home" ? "" : `?next=${encodeURIComponent(pathname)}`;
   return NextResponse.redirect(url);
 }
 

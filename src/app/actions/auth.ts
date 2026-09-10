@@ -3,8 +3,14 @@
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-export async function signInWithGoogle() {
-  await signIn("google", { redirectTo: "/home" });
+/** Only ever redirect within this site — never to a URL someone supplied. */
+function safeNext(next: FormDataEntryValue | null): string {
+  const s = typeof next === "string" ? next : "";
+  return s.startsWith("/") && !s.startsWith("//") ? s : "/home";
+}
+
+export async function signInWithGoogle(formData?: FormData) {
+  await signIn("google", { redirectTo: safeNext(formData?.get("next") ?? null) });
 }
 
 export async function signOutAction() {
@@ -29,7 +35,7 @@ export async function signInWithPassword(
   if (!email || !password) return { error: "Enter your email and password." };
 
   try {
-    await signIn("password", { email, password, redirectTo: "/home" });
+    await signIn("password", { email, password, redirectTo: safeNext(formData.get("next")) });
     return {};
   } catch (err) {
     // A successful sign-in redirects by throwing NEXT_REDIRECT — let it pass.

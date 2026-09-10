@@ -75,9 +75,11 @@ function nextSchoolDays(count = 5): DemoDay[] {
 export default async function EducatorLanding({
   searchParams,
 }: {
-  searchParams: Promise<{ signin?: string }>;
+  searchParams: Promise<{ signin?: string; next?: string }>;
 }) {
-  const { signin } = await searchParams;
+  const { signin, next } = await searchParams;
+  // Only ever an in-site path — never a URL a visitor supplied.
+  const nextPath = next && next.startsWith("/") && !next.startsWith("//") ? next : undefined;
   // Everything the Education Team can edit at /admin/site, with the current
   // hardcoded wording as the fallback.
   const c = await siteContent("landing");
@@ -219,6 +221,19 @@ export default async function EducatorLanding({
           </div>
 
           <div>
+            {nextPath && (
+              <div
+                role="status"
+                style={{
+                  backgroundColor: PANEL, border: `1px solid ${RULE}`,
+                  borderRadius: "14px", padding: "13px 16px", marginBottom: "12px",
+                }}
+              >
+                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: INK, margin: 0 }}>
+                  Sign in to continue. We&rsquo;ll take you where you were going.
+                </p>
+              </div>
+            )}
             {signin === "no-access" && (
               <div
                 role="status"
@@ -233,7 +248,11 @@ export default async function EducatorLanding({
                 </p>
               </div>
             )}
-            <AuthCard googleEnabled={isGoogleConfigured} passwordEnabled={isPasswordConfigured} />
+            <AuthCard
+              googleEnabled={isGoogleConfigured}
+              passwordEnabled={isPasswordConfigured}
+              next={nextPath}
+            />
           </div>
         </div>
       </section>

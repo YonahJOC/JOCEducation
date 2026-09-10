@@ -32,11 +32,14 @@ export function AuthCard({
   defaultTab = "login",
   googleEnabled = false,
   passwordEnabled = false,
+  next,
 }: {
   defaultTab?: "login" | "signup";
   googleEnabled?: boolean;
   /** Email + password sign-in is live (interim, until Google is configured). */
   passwordEnabled?: boolean;
+  /** Where the gate was sending them before it asked them to sign in. */
+  next?: string;
 }) {
   const [tab, setTab] = useState<"login" | "signup">(defaultTab);
   const [submitting, setSubmitting] = useState(false);
@@ -173,6 +176,7 @@ export function AuthCard({
           : { onSubmit: handleSubmit })}
         style={{ display: "flex", flexDirection: "column", gap: "14px" }}
       >
+        {next && <input type="hidden" name="next" value={next} />}
         {tab === "signup" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
             <div>
