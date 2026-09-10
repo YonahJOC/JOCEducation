@@ -2,6 +2,7 @@
 
 import { CrudShell, crudField, crudLabel } from "@/components/admin/SimpleCrud";
 import { saveResource, deleteResource } from "@/app/actions/content";
+import { FilePicker } from "@/components/admin/FilePicker";
 
 const INK = "#10233F";
 
@@ -74,11 +75,11 @@ export function ResourcesClient({
             <textarea value={d.description} onChange={(e) => set({ description: e.target.value })} rows={2} placeholder="When a teacher would reach for this" style={{ ...crudField, resize: "vertical" }} />
           </div>
           <div style={{ marginBottom: "12px" }}>
-            <label style={crudLabel}>File</label>
-            <input value={d.fileUrl ?? ""} onChange={(e) => set({ fileUrl: e.target.value })} placeholder="Path or URL to the PDF or video" style={crudField} />
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
-              File uploads arrive with storage; for now paste a link.
-            </p>
+            <FilePicker
+              value={d.fileUrl}
+              onChange={(url) => set({ fileUrl: url })}
+              disabled={disabled}
+            />
           </div>
           <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
             <input type="checkbox" checked={d.published} onChange={(e) => set({ published: e.target.checked })} style={{ width: "16px", height: "16px" }} />

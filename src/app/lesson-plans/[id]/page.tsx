@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getPublishedLessons } from "@/lib/content";
+import { safeAuth } from "@/auth";
+import { hasSiteAccess } from "@/lib/access";
 import { LessonDetail } from "./LessonDetail";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -12,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function LessonDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const lessons = await getPublishedLessons();
+  const [lessons, session] = await Promise.all([getPublishedLessons(), safeAuth()]);
   const lesson = lessons.find((l) => l.id === Number(id));
 
   if (!lesson) {
@@ -26,5 +28,5 @@ export default async function LessonDetailPage({ params }: { params: Promise<{ i
 
   const related = lessons.filter((l) => l.grade === lesson.grade && l.id !== lesson.id).slice(0, 3);
 
-  return <LessonDetail lesson={lesson} related={related} />;
+  return <LessonDetail lesson={lesson} related={related} canDownload={hasSiteAccess(session?.user)} />;
 }

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { GRADE_LABELS, TIME_LABELS, STRIPE_COLORS, type Lesson } from "@/lib/lessons";
+import { GRADE_LABELS, TIME_LABELS, STRIPE_COLORS } from "@/lib/lessons";
+import type { PublicLesson } from "@/lib/content";
 
 const PREP_LABELS: Record<string, string> = { all: "Any prep", Minimal: "Minimal", Moderate: "Moderate", Substantial: "Substantial" };
 
 /** Search and filtering over whatever lessons the server handed us. */
-export function LessonsBrowser({ lessons }: { lessons: Lesson[] }) {
+export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
   const [grade, setGrade] = useState("all");
   const [time, setTime] = useState("all");
   const [prep, setPrep] = useState("all");
@@ -117,7 +118,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
 
 const GRADE_LABELS_FULL: Record<string, string> = { es: "Elementary", ms: "Middle", hs: "High school" };
 
-function LessonCard({ lesson, colorIndex }: { lesson: Lesson; colorIndex: number }) {
+function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: number }) {
   const prepStyle = lesson.prep === "Minimal"
     ? { bg: "#F4F7FD", text: "#12306F" }
     : lesson.prep === "Moderate"

@@ -21,6 +21,7 @@ const CONTENT_NAV = [
   { label: "Cycle coverage", href: "/admin/coverage" },
   { label: "Lesson plans", href: "/admin/lessons" },
   { label: "Resources", href: "/admin/resources" },
+  { label: "Files", href: "/admin/files" },
   { label: "Teachers' Board", href: "/admin/board" },
   { label: "Products", href: "/admin/products" },
 ];

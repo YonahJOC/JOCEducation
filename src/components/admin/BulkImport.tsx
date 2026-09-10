@@ -134,6 +134,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
           materials: [],
           discussion: [],
           steps: [],
+          files: [],
         });
         if (res.ok) ok++;
         else failures.push(`${r.title}: ${res.error}`);

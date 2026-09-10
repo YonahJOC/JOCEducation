@@ -27,6 +27,7 @@ async function getLessons(): Promise<LessonRow[]> {
       materials: l.materials,
       discussion: l.discussion,
       steps: l.steps.map((s) => ({ duration: s.duration, title: s.title, description: s.description })),
+      files: l.files.map((name) => ({ name, url: "" })),
     }));
   }
 
@@ -37,6 +38,7 @@ async function getLessons(): Promise<LessonRow[]> {
       materials: { orderBy: { order: "asc" } },
       discussion: { orderBy: { order: "asc" } },
       steps: { orderBy: { order: "asc" } },
+      files: { orderBy: { order: "asc" } },
     },
   });
 
@@ -55,6 +57,7 @@ async function getLessons(): Promise<LessonRow[]> {
     materials: l.materials.map((m) => m.text),
     discussion: l.discussion.map((d) => d.text),
     steps: l.steps.map((s) => ({ duration: s.duration, title: s.title, description: s.description })),
+    files: l.files.map((f) => ({ name: f.name, url: f.url })),
   }));
 }
 

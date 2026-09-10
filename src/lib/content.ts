@@ -12,10 +12,20 @@ import { LESSONS, type Lesson } from "@/lib/lessons";
  * database degrades to what the site showed before rather than to nothing.
  */
 
-export type PublicLesson = Lesson & { cycleSlug?: string | null };
+export type LessonFile = { name: string; url: string | null };
+
+/** The static starter set has file names but no files behind them. */
+export type PublicLesson = Omit<Lesson, "files"> & {
+  files: LessonFile[];
+  cycleSlug?: string | null;
+};
+
+function staticLessons(): PublicLesson[] {
+  return LESSONS.map((l) => ({ ...l, files: l.files.map((name) => ({ name, url: null })) }));
+}
 
 export async function getPublishedLessons(): Promise<PublicLesson[]> {
-  if (!isDatabaseConfigured()) return LESSONS;
+  if (!isDatabaseConfigured()) return staticLessons();
   try {
     const rows = await prisma.lessonPlan.findMany({
       where: { published: true },
@@ -29,7 +39,7 @@ export async function getPublishedLessons(): Promise<PublicLesson[]> {
       },
     });
     // Before anything is published, the starter set is better than a blank page.
-    if (rows.length === 0) return LESSONS;
+    if (rows.length === 0) return staticLessons();
 
     return rows.map((l) => ({
       id: l.id,
@@ -39,7 +49,7 @@ export async function getPublishedLessons(): Promise<PublicLesson[]> {
       grade: l.grade as Lesson["grade"],
       time: l.timeMinutes as Lesson["time"],
       prep: l.prep as Lesson["prep"],
-      files: l.files.map((f) => f.name),
+      files: l.files.map((f) => ({ name: f.name, url: f.url })),
       objectives: l.objectives.map((o) => o.text),
       materials: l.materials.map((m) => m.text),
       steps: l.steps.map((s) => ({
@@ -51,7 +61,7 @@ export async function getPublishedLessons(): Promise<PublicLesson[]> {
       cycleSlug: l.cycleSlug,
     }));
   } catch {
-    return LESSONS;
+    return staticLessons();
   }
 }
 

@@ -45,6 +45,7 @@ export async function saveLesson(input: {
   materials: string[];
   discussion: string[];
   steps: { duration: string; title: string; description: string }[];
+  files: { name: string; url: string }[];
 }): Promise<Result> {
   try {
     await requireContentEditor();
@@ -83,6 +84,11 @@ export async function saveLesson(input: {
             order,
           })),
       },
+      files: {
+        create: input.files
+          .filter((f) => f.name.trim() && f.url.trim())
+          .map((f, order) => ({ name: f.name.trim(), url: f.url.trim(), order })),
+      },
     };
 
     let id: number;
@@ -93,6 +99,7 @@ export async function saveLesson(input: {
         prisma.lessonMaterial.deleteMany({ where: { lessonId: input.id } }),
         prisma.lessonDiscussion.deleteMany({ where: { lessonId: input.id } }),
         prisma.lessonStep.deleteMany({ where: { lessonId: input.id } }),
+        prisma.lessonFile.deleteMany({ where: { lessonId: input.id } }),
         prisma.lessonPlan.update({ where: { id: input.id }, data: { ...data, ...children } }),
       ]);
       id = input.id;

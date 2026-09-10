@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveLesson } from "@/app/actions/content";
+import { FilePicker } from "@/components/admin/FilePicker";
 
 const INK = "#10233F";
 const DEEP = "#0B1A31";
@@ -26,6 +27,7 @@ export type LessonDraft = {
   materials: string[];
   discussion: string[];
   steps: { duration: string; title: string; description: string }[];
+  files: { name: string; url: string }[];
 };
 
 export const EMPTY_LESSON: LessonDraft = {
@@ -33,6 +35,7 @@ export const EMPTY_LESSON: LessonDraft = {
   cycleSlug: null, published: false, featured: false,
   objectives: [""], materials: [""], discussion: [""],
   steps: [{ duration: "5", title: "", description: "" }],
+  files: [],
 };
 
 export type CycleRef = { slug: string; theme: string; num: number; question: string; color: string };
@@ -269,6 +272,14 @@ export function LessonEditor({
             <p style={legend}>Discussion questions</p>
             <ListField items={d.discussion} onChange={(v) => set("discussion", v)} placeholder="A question to put to the class" disabled={disabled} />
           </div>
+
+          <div style={card}>
+            <p style={legend}>Printables and handouts</p>
+            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "-6px 0 14px" }}>
+              What a teacher downloads with this lesson. Only signed-in accounts with access can open them.
+            </p>
+            <LessonFiles files={d.files} onChange={(v) => set("files", v)} disabled={disabled} />
+          </div>
         </div>
 
         {/* ── Right rail ────────────────────────────────────────────────── */}
@@ -470,5 +481,67 @@ function Tiny({
     >
       {children}
     </button>
+  );
+}
+
+/** The printables attached to a lesson: a name a teacher recognises, and a file. */
+function LessonFiles({
+  files, onChange, disabled,
+}: {
+  files: { name: string; url: string }[];
+  onChange: (v: { name: string; url: string }[]) => void;
+  disabled?: boolean;
+}) {
+  const patch = (i: number, p: Partial<{ name: string; url: string }>) =>
+    onChange(files.map((f, n) => (n === i ? { ...f, ...p } : f)));
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+      {files.map((f, i) => (
+        <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "14px" }}>
+          <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", marginBottom: "12px" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px" }}>
+                What the teacher sees
+              </label>
+              <input
+                value={f.name}
+                onChange={(e) => patch(i, { name: e.target.value })}
+                placeholder="Reflection cards"
+                disabled={disabled}
+                style={field}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => onChange(files.filter((_, n) => n !== i))}
+              disabled={disabled}
+              style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#B8321E", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "42px" }}
+            >
+              Remove
+            </button>
+          </div>
+          <FilePicker
+            value={f.url || null}
+            onChange={(url) => patch(i, { url: url ?? "" })}
+            disabled={disabled}
+            label="The file itself"
+          />
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={() => onChange([...files, { name: "", url: "" }])}
+        disabled={disabled}
+        style={{
+          alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px",
+          fontWeight: 600, color: disabled ? "rgba(16,35,63,.35)" : BLUE, background: "none",
+          border: "none", padding: 0, minHeight: "42px", cursor: disabled ? "not-allowed" : "pointer",
+        }}
+      >
+        + Add a printable
+      </button>
+    </div>
   );
 }

@@ -214,6 +214,7 @@ model User {
   savedLessons SavedLesson[]
   boardPosts   BoardPost[]
   boardLikes   BoardLike[]
+  uploadedFiles StoredFile[] @relation("UploadedFiles")
 
   managedSchools   School[]         @relation("AccountManager")
   loggedActivities SchoolActivity[] @relation("ActivityAuthor")
@@ -678,4 +679,27 @@ enum SubscriptionStatus {
   PAST_DUE
   CANCELED
   TRIALING
+}
+
+// ─── Uploaded files ───────────────────────────────────────────────────────────
+// Worksheets, source sheets and printables live in the database rather than in
+// object storage. That is a deliberate trade: it needs no second set of
+// credentials, so the education team can upload from the day the database is
+// connected. Files are capped well below the point where this becomes a
+// problem, and moving to object storage later only changes lib/files.ts.
+
+model StoredFile {
+  id       String @id @default(cuid())
+  name     String
+  mimeType String
+  /// Bytes. Enforced against FILE_SIZE_LIMIT before the row is written.
+  size     Int
+  data     Bytes
+
+  uploadedById String?
+  uploadedBy   User?   @relation("UploadedFiles", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }

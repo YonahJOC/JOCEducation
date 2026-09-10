@@ -10,7 +10,7 @@ const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Mid
  * The lesson itself. Everything shown here comes from the server — this
  * component only handles the interactive bits (downloads, copy link).
  */
-export function LessonDetail({ lesson, related }: { lesson: PublicLesson; related: PublicLesson[] }) {
+export function LessonDetail({ lesson, related, canDownload }: { lesson: PublicLesson; related: PublicLesson[]; canDownload: boolean }) {
   const colorIndex = (lesson.id - 1) % STRIPE_COLORS.length;
   const stripeColor = STRIPE_COLORS[colorIndex];
   const prepStyle = lesson.prep === "Minimal"
@@ -148,27 +148,46 @@ export function LessonDetail({ lesson, related }: { lesson: PublicLesson; relate
               Downloads ({lesson.files.length} file{lesson.files.length !== 1 ? "s" : ""})
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {lesson.files.map((file) => (
-                <button
-                  key={file}
-                  style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.15)", backgroundColor: "#F8FAFE", cursor: "pointer", textAlign: "left", width: "100%" }}
-                  onClick={() => alert("Sign in to download lesson plans.")}
-                >
-                  <span style={{ fontSize: "18px" }}>📄</span>
-                  <span style={{ fontSize: "13.5px", color: "#10233F", fontWeight: 500 }}>{file}</span>
-                  <span style={{ marginLeft: "auto", fontSize: "12px", color: "#2D46AF", fontWeight: 600 }}>↓</span>
-                </button>
-              ))}
+              {lesson.files.map((file, i) =>
+                canDownload && file.url ? (
+                  <a
+                    key={i}
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.15)", backgroundColor: "#F8FAFE", textDecoration: "none", width: "100%", boxSizing: "border-box" }}
+                  >
+                    <span style={{ fontSize: "18px" }}>📄</span>
+                    <span style={{ fontSize: "13.5px", color: "#10233F", fontWeight: 500 }}>{file.name}</span>
+                    <span style={{ marginLeft: "auto", fontSize: "12px", color: "#2D46AF", fontWeight: 600 }}>↓</span>
+                  </a>
+                ) : (
+                  <div
+                    key={i}
+                    style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.12)", backgroundColor: "#F8FAFE" }}
+                  >
+                    <span style={{ fontSize: "18px", opacity: 0.5 }}>📄</span>
+                    <span style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", fontWeight: 500 }}>{file.name}</span>
+                    <span style={{ marginLeft: "auto", fontSize: "11.5px", color: "rgba(16,35,63,.45)", fontWeight: 600 }}>
+                      {file.url ? "sign in" : "not yet uploaded"}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
-            <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)", marginTop: "14px" }}>
-              Sign in with a JOC Education account to download.
-            </p>
-            <Link
-              href="/login"
-              style={{ display: "block", marginTop: "14px", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "10px", padding: "12px", textDecoration: "none" }}
-            >
-              Sign in to download
-            </Link>
+            {!canDownload && (
+              <>
+                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)", marginTop: "14px" }}>
+                  Sign in with a JOC Education account to download.
+                </p>
+                <Link
+                  href="/login"
+                  style={{ display: "block", marginTop: "14px", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "10px", padding: "12px", textDecoration: "none" }}
+                >
+                  Sign in to download
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Save lesson */}
