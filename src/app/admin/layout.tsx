@@ -14,8 +14,9 @@ const ACCOUNTS_NAV = [
   { label: "People", href: "/admin/users" },
 ];
 
-/** Content — the educational team's work. */
+/** Content — the JOC Education Team's work. */
 const CONTENT_NAV = [
+  { label: "Site content", href: "/admin/site" },
   { label: "Lesson plans", href: "/admin/lessons" },
   { label: "Resources", href: "/admin/resources" },
   { label: "Teachers' Board", href: "/admin/board" },

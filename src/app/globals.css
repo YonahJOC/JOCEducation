@@ -60,6 +60,13 @@ body {
 /* Suppress dark mode — design is light only */
 @media (prefers-color-scheme: dark) {}
 
+/* Site content editor: three panes side by side, stacking on narrow screens */
+@media (max-width: 1100px) {
+  .joc-site-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .joc-site-grid > nav,
+  .joc-site-grid > aside { position: static !important; }
+}
+
 /* Admin console: the sidebar becomes a top bar with a scrolling nav on phones
    and tablets, so content gets the full width instead of ~80px. */
 @media (max-width: 860px) {

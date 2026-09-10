@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CYCLES, getCurrentCycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
 import { isGoogleConfigured, isPasswordConfigured } from "@/auth";
+import { siteContent } from "@/lib/site-content";
 import { AuthCard } from "@/components/landing/AuthCard";
 import { DemoScheduler, type DemoDay } from "@/components/landing/DemoScheduler";
 
@@ -15,16 +16,30 @@ const PANEL = "#F4F7FD";
 const RULE = "rgba(16,35,63,.12)";
 const WIDTH = "1180px";
 
-// The ten JOC programs schools can run today, while the teaching platform
-// is still being built. TODO: source from src/lib/programs.ts once the real
-// programme copy is written.
-const PROGRAM_COUNT = 10;
+/**
+ * Fallbacks. Every string below is editable at /admin/site — these are what
+ * renders if a field was never edited, or if the database is unreachable.
+ */
+const CARD_COLORS = [BLUE, ORANGE, "#1B7F4B", "#2C7AC9"];
 
-const INSIDE = [
-  { color: BLUE, figure: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion questions. Print and teach." },
-  { color: ORANGE, figure: "5", title: "Resource library", body: "Source sheets, activities, posters and videos, tagged by grade." },
-  { color: "#1B7F4B", figure: "10", title: "Programs for your school", body: "Kindness Booth, Bake for Chesed, Just One Tutor and more — JOC runs the logistics." },
-  { color: "#2C7AC9", figure: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },
+const FALLBACK_INSIDE = [
+  { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion questions. Print and teach." },
+  { value: "5", title: "Resource library", body: "Source sheets, activities, posters and videos, tagged by grade." },
+  { value: "10", title: "Programs for your school", body: "Kindness Booth, Bake for Chesed, Just One Tutor and more — JOC runs the logistics." },
+  { value: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },
+];
+
+const FALLBACK_PROOF = [
+  { title: "300+", body: "partner schools" },
+  { title: "14,000+", body: "teachers with access" },
+  { title: "2.1M", body: "chesed hours logged" },
+];
+
+const FALLBACK_BULLETS = [
+  { body: "We go through the programs — Kindness Booth, Bake for Chesed, Just One Tutor and the rest — and which ones suit your grades." },
+  { body: "You tell us how your year is already structured, and we say honestly which programs fit around it." },
+  { body: "We cover what running one costs, including the scholarship route if the budget is tight." },
+  { body: "We show you where the teaching platform is up to, so you know what is coming and when." },
 ];
 
 export const metadata: Metadata = {
@@ -63,6 +78,12 @@ export default async function EducatorLanding({
   searchParams: Promise<{ signin?: string }>;
 }) {
   const { signin } = await searchParams;
+  // Everything the Education Team can edit at /admin/site, with the current
+  // hardcoded wording as the fallback.
+  const c = await siteContent("landing");
+  const proof = c.list("hero.proof", FALLBACK_PROOF);
+  const insideCards = c.list("inside.cards", FALLBACK_INSIDE);
+  const demoBullets = c.list("demo.bullets", FALLBACK_BULLETS);
   const cycle = getCurrentCycle();
   const state = getCycleState(cycle);
   const week = getCurrentWeek(cycle);
@@ -188,7 +209,7 @@ export default async function EducatorLanding({
               </p>
               <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: 0 }}>
                 The teaching platform is still being built and accounts are not open to schools yet. In the
-                meantime, JOC runs {PROGRAM_COUNT} chesed programs your school can start this year —{" "}
+                meantime, JOC runs 10 chesed programs your school can start this year —{" "}
                 <a href="#demo" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
                   book a walkthrough
                 </a>
@@ -293,24 +314,27 @@ export default async function EducatorLanding({
         </h2>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>
-          {INSIDE.map((c) => (
+          {insideCards.map((card, i) => {
+            const accent = CARD_COLORS[i % CARD_COLORS.length];
+            return (
             <div
-              key={c.title}
+              key={`${card.title}-${i}`}
               style={{
                 backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.09)`,
                 borderRadius: "22px", overflow: "hidden", display: "flex", flexDirection: "column",
               }}
             >
-              <div style={{ height: "4px", backgroundColor: c.color }} />
+              <div style={{ height: "4px", backgroundColor: accent }} />
               <div style={{ padding: "24px" }}>
-                <p style={{ fontWeight: 800, fontSize: "30px", letterSpacing: "-0.035em", color: c.color, lineHeight: 1, margin: "0 0 12px" }}>
-                  {c.figure}
+                <p style={{ fontWeight: 800, fontSize: "30px", letterSpacing: "-0.035em", color: accent, lineHeight: 1, margin: "0 0 12px" }}>
+                  {card.value}
                 </p>
-                <p style={{ fontWeight: 700, fontSize: "16.5px", color: INK, letterSpacing: "-0.02em", margin: "0 0 7px" }}>{c.title}</p>
-                <p style={{ fontSize: "14px", lineHeight: 1.55, color: "rgba(16,35,63,.66)", margin: 0 }}>{c.body}</p>
+                <p style={{ fontWeight: 700, fontSize: "16.5px", color: INK, letterSpacing: "-0.02em", margin: "0 0 7px" }}>{card.title}</p>
+                <p style={{ fontSize: "14px", lineHeight: 1.55, color: "rgba(16,35,63,.66)", margin: 0 }}>{card.body}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
