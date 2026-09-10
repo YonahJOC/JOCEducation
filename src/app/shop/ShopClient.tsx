@@ -28,6 +28,26 @@ export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) 
   const itemCount = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = PRODUCTS.reduce((sum, p) => sum + (cart[p.id] || 0) * p.price, 0);
 
+  // The order as an email a school can send and JOC can invoice against.
+  const orderMailto = useMemo(() => {
+    const lines = PRODUCTS.filter((p) => cart[p.id]).map(
+      (p) => `${cart[p.id]} × ${p.name} ($${p.price} each)`
+    );
+    const body = [
+      "I would like to order the following for my school:",
+      "",
+      ...lines,
+      "",
+      `Subtotal before shipping: $${subtotal}`,
+      "",
+      "School:",
+      "Contact name:",
+      "Delivery address:",
+      "",
+    ].join("\n");
+    return `mailto:education@justonechesed.org?subject=${encodeURIComponent("School shop order")}&body=${encodeURIComponent(body)}`;
+  }, [PRODUCTS, cart, subtotal]);
+
   function addToCart(id: string) { setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 })); }
   function removeFromCart(id: string) { setCart((c) => { const n = { ...c }; if (n[id] > 1) n[id]--; else delete n[id]; return n; }); }
 
@@ -155,15 +175,21 @@ export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) 
                   <span style={{ fontSize: "14px", color: "rgba(16,35,63,.55)" }}>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
                   <span style={{ fontWeight: 700, fontSize: "15px", color: "#10233F" }}>${subtotal}</span>
                 </div>
-                <p style={{ fontSize: "13px", color: "rgba(16,35,63,.45)", marginBottom: "16px" }}>Shipping calculated at checkout.</p>
-                <button
-                  onClick={() => alert("Checkout is coming soon! To pay by PO, contact education@justonechesed.org")}
-                  style={{ width: "100%", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "15px", border: "none", cursor: "pointer" }}
+                <p style={{ fontSize: "13px", color: "rgba(16,35,63,.45)", marginBottom: "16px" }}>
+                  Card payment is not switched on yet. Send the order and JOC will confirm the
+                  total, including shipping, and invoice your school.
+                </p>
+                {/* A "Checkout" button that popped up an alert saying checkout
+                    was coming soon wasted the click. This one actually sends
+                    the order, which is how a school buys today anyway. */}
+                <a
+                  href={orderMailto}
+                  style={{ display: "block", textAlign: "center", width: "100%", boxSizing: "border-box", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "15px", textDecoration: "none" }}
                 >
-                  Checkout — ${subtotal}
-                </button>
+                  Send this order to JOC
+                </a>
                 <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)", textAlign: "center", marginTop: "10px" }}>
-                  Pay by PO? <a href="mailto:education@justonechesed.org" style={{ color: "#2D46AF" }}>Contact us</a>
+                  Opens an email to education@justonechesed.org with your list.
                 </p>
               </div>
             )}

@@ -379,7 +379,9 @@ export default async function EducatorLanding({
               ))}
             </ul>
 
-            {/* TODO: replace with a real educator quote, with permission on file. */}
+            {/* JOC's own line, deliberately unattributed. If this is ever
+                replaced with an educator's words, their permission has to be
+                on file and their name has to go under it. */}
             <p
               style={{
                 fontFamily: "var(--font-newsreader)", fontStyle: "italic",
