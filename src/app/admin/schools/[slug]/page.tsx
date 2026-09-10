@@ -9,6 +9,9 @@ import { InvitePanel } from "@/components/admin/InvitePanel";
 import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 import { ContactsPanel, type ContactRow } from "@/components/admin/ContactsPanel";
+import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { safeAuth, isAuthConfigured } from "@/auth";
+import { canManageAccounts } from "@/lib/access";
 
 const INK = "#10233F";
 const CARD: React.CSSProperties = {
@@ -26,7 +29,20 @@ function fmt(d: Date | null | undefined) {
 }
 
 export default async function SchoolDetail({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+  // A school record is account data — plan, contacts, who has a login. The
+  // list page was guarded and this one was not, so the address of any school
+  // opened it for the education team too.
+  //
+  // Checked before the query rather than around the markup, so a refusal
+  // never reads the school in the first place.
+  const session = await safeAuth();
+  if (isAuthConfigured && !canManageAccounts(session?.user)) {
+    return <AccountsGuard>{null}</AccountsGuard>;
+  }
+  return Inner(await params);
+}
+
+async function Inner({ slug }: { slug: string }) {
   const data = await getSchool(slug);
   if (!data) notFound();
 
