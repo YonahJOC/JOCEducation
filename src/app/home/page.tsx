@@ -33,6 +33,8 @@ export default async function HomePage() {
 
   if (isAuthConfigured) {
     if (!session?.user) redirect("/");
+    // An administrator-issued password has been seen by someone else.
+    if (session.user.mustChangePassword) redirect("/account/password?forced=1");
     if (!hasSiteAccess(session.user)) redirect("/no-access");
     return <PersonalHome data={await loadHome(session.user)} />;
   }

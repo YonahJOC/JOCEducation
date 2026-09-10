@@ -184,6 +184,11 @@ const config: NextAuthConfig = {
       }
     },
 
+    /**
+     * Every sign-in: note when, and consume any invitation waiting for this
+     * address. Without this an invitation is created and then does nothing —
+     * the person signs in and lands nowhere.
+     */
     async signIn({ user }) {
       if (!isDatabaseConfigured() || !user.id) return;
       try {
@@ -193,6 +198,50 @@ const config: NextAuthConfig = {
         });
       } catch {
         // Never block sign-in on bookkeeping.
+      }
+
+      if (!user.email) return;
+      try {
+        const invite = await prisma.invitation.findFirst({
+          where: {
+            email: user.email.toLowerCase(),
+            status: "PENDING",
+            expiresAt: { gt: new Date() },
+          },
+          orderBy: { createdAt: "desc" },
+        });
+        if (!invite) return;
+
+        const current = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { schoolId: true, role: true },
+        });
+        // Never demote someone who already holds a higher role.
+        const keepRole = current?.role === "ADMIN" || current?.role === "SUPER_ADMIN" || current?.role === "STAFF";
+
+        await prisma.$transaction([
+          prisma.user.update({
+            where: { id: user.id },
+            data: {
+              schoolId: current?.schoolId ?? invite.schoolId,
+              ...(keepRole ? {} : { role: invite.role }),
+            },
+          }),
+          prisma.invitation.update({
+            where: { id: invite.id },
+            data: { status: "ACCEPTED", acceptedAt: new Date() },
+          }),
+          prisma.schoolActivity.create({
+            data: {
+              schoolId: invite.schoolId,
+              type: "ACCESS_GRANTED",
+              summary: `${user.email} accepted their invitation`,
+              authorId: null,
+            },
+          }),
+        ]);
+      } catch {
+        // An unconsumed invitation is recoverable; a failed sign-in is not.
       }
     },
   },

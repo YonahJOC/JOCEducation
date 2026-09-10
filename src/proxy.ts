@@ -32,7 +32,9 @@ const PUBLIC_PATHS = new Set([
   "/no-access",
 ]);
 
-const PUBLIC_PREFIXES = ["/api/auth", "/brand", "/_next"];
+// Reachable by anyone signed in, including someone who still has to change
+// an administrator-issued password.
+const PUBLIC_PREFIXES = ["/api/auth", "/brand", "/_next", "/account"];
 
 const PUBLIC_FILES = new Set([
   "/favicon.ico",
