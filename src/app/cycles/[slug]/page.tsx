@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CYCLES, getCycleBySlug, getCycleState } from "@/lib/cycles";
+import { getCycleContent, type PublicLesson, type PublicResource } from "@/lib/content";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -29,6 +30,7 @@ export default async function CycleDetailPage({ params }: Props) {
   if (!cycle) notFound();
 
   const state = getCycleState(cycle);
+  const { lessons, resources } = await getCycleContent(cycle.slug);
   const nextCycle = CYCLES[cycle.num] ?? null; // cycle.num is 1-based; CYCLES[cycle.num] is next
 
   return (
@@ -230,6 +232,8 @@ export default async function CycleDetailPage({ params }: Props) {
                 </li>
               ))}
             </ol>
+
+            <CycleMaterials lessons={lessons} resources={resources} color={cycle.color} />
           </div>
 
           {/* Right: cards */}
@@ -416,5 +420,78 @@ export default async function CycleDetailPage({ params }: Props) {
         </div>
       </div>
     </main>
+  );
+}
+
+/**
+ * Everything the education team has tagged to this cycle. Silent when there
+ * is nothing yet — an empty heading is worse than no heading.
+ */
+function CycleMaterials({
+  lessons, resources, color,
+}: {
+  lessons: PublicLesson[];
+  resources: PublicResource[];
+  color: string;
+}) {
+  if (lessons.length === 0 && resources.length === 0) return null;
+
+  return (
+    <div style={{ marginTop: "12px", paddingTop: "28px", borderTop: "1px solid rgba(16,35,63,.1)" }}>
+      <h2
+        style={{
+          fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em",
+          textTransform: "uppercase", color, marginBottom: "18px",
+        }}
+      >
+        MATERIALS FOR THIS CYCLE
+      </h2>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {lessons.map((l) => (
+          <Link
+            key={`l-${l.id}`}
+            href={`/lesson-plans/${l.id}`}
+            style={{
+              display: "flex", gap: "14px", alignItems: "center", textDecoration: "none",
+              backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+              borderRadius: "14px", padding: "14px 18px",
+            }}
+          >
+            <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", color: "#fff", backgroundColor: color, borderRadius: "6px", padding: "4px 7px", flexShrink: 0 }}>
+              PLAN
+            </span>
+            <span style={{ minWidth: 0, flex: 1 }}>
+              <span style={{ display: "block", fontWeight: 700, fontSize: "15px", color: "#10233F", lineHeight: 1.3 }}>{l.title}</span>
+              <span style={{ display: "block", fontSize: "13px", color: "rgba(16,35,63,.55)", marginTop: "2px" }}>
+                {l.grade === "es" ? "Elementary" : l.grade === "ms" ? "Middle" : "High school"} · {l.time} min
+              </span>
+            </span>
+            <span style={{ color, fontWeight: 700, fontSize: "15px", flexShrink: 0 }}>›</span>
+          </Link>
+        ))}
+
+        {resources.map((r) => (
+          <Link
+            key={`r-${r.id}`}
+            href="/resources"
+            style={{
+              display: "flex", gap: "14px", alignItems: "center", textDecoration: "none",
+              backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+              borderRadius: "14px", padding: "14px 18px",
+            }}
+          >
+            <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", color: "#10233F", backgroundColor: "#F4F7FD", borderRadius: "6px", padding: "4px 7px", flexShrink: 0 }}>
+              {r.tag.replace(/[^a-zA-Z]/g, "").slice(0, 3).toUpperCase()}
+            </span>
+            <span style={{ minWidth: 0, flex: 1 }}>
+              <span style={{ display: "block", fontWeight: 700, fontSize: "15px", color: "#10233F", lineHeight: 1.3 }}>{r.title}</span>
+              <span style={{ display: "block", fontSize: "13px", color: "rgba(16,35,63,.55)", marginTop: "2px" }}>{r.tag}</span>
+            </span>
+            <span style={{ color, fontWeight: 700, fontSize: "15px", flexShrink: 0 }}>›</span>
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }
