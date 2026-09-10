@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProgramBySlug, PROGRAMS } from "@/lib/programs";
+import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
-  return PROGRAMS.map((p) => ({ slug: p.slug }));
-}
+// Programs are editable in the console, so the set of addresses is not known
+// at build time.
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const program = getProgramBySlug(slug);
+  const program = await getPublishedProgram(slug);
   if (!program) return {};
   return {
     title: { absolute: `${program.name} — JOC Education` },
@@ -22,8 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProgramDetailPage({ params }: Props) {
   const { slug } = await params;
-  const program = getProgramBySlug(slug);
+  const all = await getPublishedPrograms();
+  const program = all.find((p) => p.slug === slug);
   if (!program) notFound();
+  const others = all.filter((p) => p.slug !== slug);
 
   const tagColors: Record<string, { bg: string; text: string }> = {
     Event:    { bg: "#EAF0FD", text: "#2D46AF" },
@@ -120,7 +122,7 @@ export default async function ProgramDetailPage({ params }: Props) {
                 Other programs
               </h2>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                {PROGRAMS.filter((p) => p.slug !== program.slug).map((p) => (
+                {others.map((p) => (
                   <Link
                     key={p.slug}
                     href={`/programs/${p.slug}`}

@@ -1,5 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { LESSONS, type Lesson } from "@/lib/lessons";
+import { PROGRAMS, type Program } from "@/lib/programs";
 
 /**
  * What the public site reads.
@@ -174,4 +175,48 @@ export async function getCycleContent(cycleSlug: string) {
     lessons: lessons.filter((l) => l.cycleSlug === cycleSlug),
     resources: resources.filter((r) => r.cycleSlug === cycleSlug),
   };
+}
+
+/**
+ * Programs, from the console when there are any and from the static list
+ * until then. JOC runs programs this repo has never heard of — Boots for
+ * Israel, Run for Chesed, Just One Simcha — and this is how they get added
+ * without a developer.
+ */
+export async function getPublishedPrograms(): Promise<Program[]> {
+  if (!isDatabaseConfigured()) return PROGRAMS;
+  try {
+    const rows = await prisma.programPage.findMany({
+      where: { published: true },
+      orderBy: [{ sort: "asc" }, { id: "asc" }],
+      include: { steps: { orderBy: { order: "asc" } } },
+    });
+    if (rows.length === 0) return PROGRAMS;
+
+    return rows.map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      tag: p.tag as Program["tag"],
+      tagline: p.tagline,
+      description: p.description,
+      heroColor: p.heroColor,
+      meta: p.meta,
+      available: p.available,
+      whatsIncluded: p.whatsIncluded,
+      howItWorks: p.steps.map((s) => ({
+        step: s.step,
+        title: s.title,
+        description: s.description,
+      })),
+      cta: p.cta,
+      external: Boolean(p.externalHref),
+      externalHref: p.externalHref ?? undefined,
+    }));
+  } catch {
+    return PROGRAMS;
+  }
+}
+
+export async function getPublishedProgram(slug: string): Promise<Program | null> {
+  return (await getPublishedPrograms()).find((p) => p.slug === slug) ?? null;
 }

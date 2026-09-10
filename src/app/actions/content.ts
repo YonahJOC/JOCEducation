@@ -266,3 +266,141 @@ export async function deleteBoardPost(id: string): Promise<Result> {
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
 }
+
+// ─── Programs ────────────────────────────────────────────────────────────────
+
+export async function saveProgram(input: {
+  id?: number;
+  slug: string;
+  name: string;
+  tag: string;
+  tagline: string;
+  description: string;
+  heroColor: string;
+  meta: string;
+  available: string[];
+  whatsIncluded: string[];
+  howItWorks: { step: string; title: string; description: string }[];
+  externalHref?: string | null;
+  cta: string;
+  published: boolean;
+  sort: number;
+}): Promise<Result> {
+  try {
+    await requireContentEditor();
+    const name = input.name.trim();
+    if (!name) return { ok: false, error: "A name is required" };
+
+    const slug = (input.slug.trim() || slugify(name)).toLowerCase();
+    const clash = await prisma.programPage.findUnique({ where: { slug }, select: { id: true } });
+    if (clash && clash.id !== input.id) {
+      return { ok: false, error: `Another program already uses the address /programs/${slug}` };
+    }
+
+    const data = {
+      slug,
+      name,
+      tag: input.tag.trim() || "Ongoing",
+      tagline: input.tagline.trim(),
+      description: input.description.trim(),
+      heroColor: input.heroColor.trim() || "#2D46AF",
+      meta: input.meta.trim(),
+      available: input.available.map((a) => a.trim()).filter(Boolean),
+      whatsIncluded: input.whatsIncluded.map((a) => a.trim()).filter(Boolean),
+      externalHref: input.externalHref?.trim() || null,
+      cta: input.cta.trim() || "Register your school",
+      published: input.published,
+      sort: Number(input.sort) || 0,
+    };
+
+    const steps = {
+      create: input.howItWorks
+        .filter((s) => s.title.trim())
+        .map((s, order) => ({
+          step: s.step.trim() || String(order + 1).padStart(2, "0"),
+          title: s.title.trim(),
+          description: s.description.trim(),
+          order,
+        })),
+    };
+
+    let id: number;
+    if (input.id) {
+      await prisma.$transaction([
+        prisma.programStep.deleteMany({ where: { programId: input.id } }),
+        prisma.programPage.update({ where: { id: input.id }, data: { ...data, steps } }),
+      ]);
+      id = input.id;
+    } else {
+      const created = await prisma.programPage.create({ data: { ...data, steps } });
+      id = created.id;
+    }
+
+    revalidatePath("/admin/programs");
+    revalidatePath("/programs");
+    revalidatePath(`/programs/${slug}`);
+    return { ok: true, id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not save that program" };
+  }
+}
+
+export async function deleteProgram(id: number): Promise<Result> {
+  try {
+    await requireContentEditor();
+    await prisma.programPage.delete({ where: { id } });
+    revalidatePath("/admin/programs");
+    revalidatePath("/programs");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not delete that program" };
+  }
+}
+
+/**
+ * Copies the six programs in lib/programs.ts into the database as drafts, so
+ * the team edits real text rather than starting from an empty form. Only ever
+ * adds what is missing.
+ */
+export async function seedProgramsFromStatic(): Promise<Result> {
+  try {
+    await requireContentEditor();
+    const { PROGRAMS } = await import("@/lib/programs");
+    const existing = await prisma.programPage.findMany({ select: { slug: true } });
+    const have = new Set(existing.map((e) => e.slug));
+
+    let added = 0;
+    for (const [i, p] of PROGRAMS.entries()) {
+      if (have.has(p.slug)) continue;
+      await prisma.programPage.create({
+        data: {
+          slug: p.slug,
+          name: p.name,
+          tag: p.tag,
+          tagline: p.tagline,
+          description: p.description,
+          heroColor: p.heroColor,
+          meta: p.meta,
+          available: p.available,
+          whatsIncluded: p.whatsIncluded,
+          externalHref: p.externalHref ?? null,
+          cta: p.cta,
+          published: true,
+          sort: i,
+          steps: {
+            create: p.howItWorks.map((s, order) => ({
+              step: s.step, title: s.title, description: s.description, order,
+            })),
+          },
+        },
+      });
+      added++;
+    }
+
+    revalidatePath("/admin/programs");
+    revalidatePath("/programs");
+    return added > 0 ? { ok: true } : { ok: false, error: "All six are already here." };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not import the programs" };
+  }
+}

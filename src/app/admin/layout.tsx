@@ -19,6 +19,7 @@ const ACCOUNTS_NAV = [
 const CONTENT_NAV = [
   { label: "Site content", href: "/admin/site" },
   { label: "Cycle coverage", href: "/admin/coverage" },
+  { label: "Programs", href: "/admin/programs" },
   { label: "Lesson plans", href: "/admin/lessons" },
   { label: "Resources", href: "/admin/resources" },
   { label: "Files", href: "/admin/files" },
