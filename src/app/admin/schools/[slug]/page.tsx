@@ -8,6 +8,7 @@ import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { InvitePanel } from "@/components/admin/InvitePanel";
 import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
+import { ContactsPanel, type ContactRow } from "@/components/admin/ContactsPanel";
 
 const INK = "#10233F";
 const CARD: React.CSSProperties = {
@@ -118,33 +119,11 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
             <InvitePanel schoolId={s.id} invitations={invitations} disabled={usingSampleData} />
           </div>
 
-          {/* Contacts */}
-          <div style={CARD}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
-              Contacts
-            </p>
-            {contacts.length === 0 ? (
-              <p style={{ fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>No contacts recorded.</p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {contacts.map((c) => (
-                  <div key={c.id}>
-                    <p style={{ fontSize: "14px", fontWeight: 600, color: INK, margin: 0 }}>
-                      {c.name}
-                      {c.isPrimary && (
-                        <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#2D46AF", backgroundColor: "#F4F7FD", padding: "2px 7px", borderRadius: "9999px", marginLeft: "8px", letterSpacing: "0.06em" }}>
-                          PRIMARY
-                        </span>
-                      )}
-                    </p>
-                    <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
-                      {[c.title, c.email, c.phone].filter(Boolean).join(" · ")}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ContactsPanel
+            schoolId={s.id}
+            contacts={contacts as ContactRow[]}
+            disabled={usingSampleData}
+          />
         </div>
 
         {/* Right column — the relationship */}
