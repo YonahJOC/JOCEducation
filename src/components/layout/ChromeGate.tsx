@@ -7,6 +7,7 @@ const OWN_CHROME = ["/", "/privacy", "/terms", "/no-access"];
 
 export function ChromeGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  if (OWN_CHROME.includes(pathname) || pathname.startsWith("/admin")) return null;
+  if (OWN_CHROME.includes(pathname)) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/school")) return null;
   return <>{children}</>;
 }

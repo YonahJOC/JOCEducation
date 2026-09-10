@@ -153,6 +153,38 @@ export function canManageRoles(user: U): boolean {
   return canManageAccounts(user);
 }
 
+// ─── School-scoped ───────────────────────────────────────────────────────────
+
+type SchoolUser = { role?: string | null; schoolId?: string | null; email?: string | null };
+
+/** Reach the school panel at /school — runs their own school's people and plan. */
+export function canRunOwnSchool(user: SchoolUser | null | undefined): boolean {
+  if (!user) return false;
+  return user.role === "SCHOOL_ADMIN" && Boolean(user.schoolId);
+}
+
+/**
+ * The single most important check in the app.
+ *
+ * A school admin may only ever touch their own school. This is enforced by
+ * deriving the school id from the signed-in user rather than accepting one
+ * from the request — no endpoint for this role takes an arbitrary school id.
+ * Super admins are exempt because managing every school is their job.
+ *
+ * Returns the school id the caller is allowed to act on, or null.
+ */
+export function scopedSchoolId(
+  user: SchoolUser | null | undefined,
+  requested?: string | null
+): string | null {
+  if (!user) return null;
+  if (canManageAccounts(user)) return requested ?? user.schoolId ?? null;
+  if (!canRunOwnSchool(user)) return null;
+  // Ignore anything the request asked for; only their own school exists.
+  if (requested && requested !== user.schoolId) return null;
+  return user.schoolId ?? null;
+}
+
 /** Roles a super admin is allowed to assign. */
 export const ASSIGNABLE_ROLES: Role[] = [
   "TEACHER",

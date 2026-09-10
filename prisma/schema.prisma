@@ -49,6 +49,7 @@ model School {
   invitations  Invitation[]
   subscription Subscription?
   boardPosts   BoardPost[]
+  planRequests PlanChangeRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -123,6 +124,46 @@ model Invitation {
   @@index([email])
 }
 
+/// A school admin asking JOC to change their plan or seat count.
+/// Deliberately a request, not a purchase — nothing is charged and nothing
+/// changes until JOC acts on it.
+model PlanChangeRequest {
+  id       String @id @default(cuid())
+  schoolId String
+
+  /// What they are asking for, in their own words
+  message String @db.Text
+  /// Optional structured hint about what they want
+  wantsPlan  String?
+  wantsSeats Int?
+
+  status   PlanRequestStatus @default(OPEN)
+  /// JOC's reply, shown back to the school
+  response String?           @db.Text
+
+  requestedById String?
+  requestedBy   User?   @relation("PlanRequester", fields: [requestedById], references: [id], onDelete: SetNull)
+
+  respondedById String?
+  respondedBy   User?     @relation("PlanResponder", fields: [respondedById], references: [id], onDelete: SetNull)
+  respondedAt   DateTime?
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([schoolId, createdAt])
+  @@index([status])
+}
+
+enum PlanRequestStatus {
+  OPEN
+  ANSWERED
+  ACTIONED
+  DECLINED
+}
+
 /// Demo requests from the educator landing page scheduler — the top of the
 /// sales pipeline, before a School record exists.
 model DemoRequest {
@@ -179,6 +220,8 @@ model User {
   sentInvitations  Invitation[]     @relation("Inviter")
   editedFields     SiteField[]        @relation("FieldEditor")
   publishedFields  SiteFieldHistory[] @relation("FieldPublisher")
+  planRequests     PlanChangeRequest[] @relation("PlanRequester")
+  planResponses    PlanChangeRequest[] @relation("PlanResponder")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
