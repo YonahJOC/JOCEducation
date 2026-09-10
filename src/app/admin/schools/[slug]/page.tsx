@@ -62,6 +62,10 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
             planStatus={s.planStatus}
             seats={s.seats}
             grantedManually={s.grantedManually}
+            grantKind={s.grantKind ?? null}
+            grantNote={s.grantNote ?? null}
+            grantReviewOn={s.grantReviewOn ? new Date(s.grantReviewOn).toISOString().slice(0, 10) : null}
+            grantedBy={s.grantedBy ?? null}
             renewsOn={s.renewsOn ? new Date(s.renewsOn).toISOString().slice(0, 10) : null}
             status={s.status}
             disabled={usingSampleData}

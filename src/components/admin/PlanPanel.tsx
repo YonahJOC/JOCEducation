@@ -13,6 +13,13 @@ const PLANS = [
   ["FULL_PARTNERSHIP", "Full Partnership"],
 ] as const;
 
+/** The three kinds of free access, each with what it means. */
+const GRANT_KINDS: [string, string, string][] = [
+  ["SCHOLARSHIP", "Scholarship", "The school cannot afford it."],
+  ["PILOT", "Pilot", "Trying it with us before committing."],
+  ["COMP", "Comp", "Internal, or a courtesy."],
+];
+
 const STATUSES = [
   ["PROSPECT", "Prospect"],
   ["DEMO_SCHEDULED", "Demo scheduled"],
@@ -34,6 +41,7 @@ const label: React.CSSProperties = {
 
 export function PlanPanel({
   schoolId, plan, planStatus, seats, grantedManually, renewsOn, status, disabled,
+  grantKind = null, grantNote = null, grantReviewOn = null, grantedBy = null,
 }: {
   schoolId: string;
   plan: string | null;
@@ -43,6 +51,10 @@ export function PlanPanel({
   renewsOn: string | null;
   status: string;
   disabled?: boolean;
+  grantKind?: string | null;
+  grantNote?: string | null;
+  grantReviewOn?: string | null;
+  grantedBy?: string | null;
 }) {
   const [editing, setEditing] = useState(false);
   const [pending, start] = useTransition();
@@ -52,7 +64,9 @@ export function PlanPanel({
   const [fSeats, setFSeats] = useState(seats ?? 10);
   const [fInterval, setFInterval] = useState<"MONTHLY" | "ANNUAL">("ANNUAL");
   const [fGranted, setFGranted] = useState(grantedManually);
-  const [fNote, setFNote] = useState("");
+  const [fKind, setFKind] = useState<string>(grantKind ?? "");
+  const [fNote, setFNote] = useState(grantNote ?? "");
+  const [fReview, setFReview] = useState(grantReviewOn ?? "");
   const [fEnd, setFEnd] = useState(renewsOn ?? "");
 
   function save() {
@@ -60,7 +74,11 @@ export function PlanPanel({
     start(async () => {
       const r = await setSchoolPlan({
         schoolId, plan: fPlan, seats: Number(fSeats) || 1, interval: fInterval,
-        grantedManually: fGranted, grantNote: fNote, currentPeriodEnd: fEnd || null,
+        grantedManually: fGranted,
+        grantKind: fGranted ? fKind : null,
+        grantNote: fNote,
+        grantReviewOn: fGranted ? fReview || null : null,
+        currentPeriodEnd: fEnd || null,
       });
       setMsg(r.ok ? "Saved." : r.error);
       if (r.ok) setEditing(false);
@@ -110,9 +128,18 @@ export function PlanPanel({
               <Row k="Seats" v={String(seats ?? "—")} />
               <Row k="Renews" v={renewsOn ? new Date(renewsOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : "—"} />
               {grantedManually && (
-                <p style={{ fontSize: "12.5px", color: "#1B7F4B", backgroundColor: "rgba(27,127,75,.08)", padding: "7px 10px", borderRadius: "8px", margin: "4px 0 0" }}>
-                  Access granted manually — not billed through Stripe.
-                </p>
+                <div style={{ backgroundColor: "rgba(27,127,75,.07)", border: "1px solid rgba(27,127,75,.25)", padding: "11px 13px", borderRadius: "10px", marginTop: "6px" }}>
+                  <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1B7F4B", margin: "0 0 5px" }}>
+                    {(grantKind ?? "granted").toLowerCase()} · free access
+                  </p>
+                  {grantNote && (
+                    <p style={{ fontSize: "13px", lineHeight: 1.5, color: "rgba(16,35,63,.78)", margin: "0 0 4px" }}>{grantNote}</p>
+                  )}
+                  <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+                    {grantedBy ? `Approved by ${grantedBy}` : "Approver not recorded"}
+                    {grantReviewOn ? ` · review ${new Date(grantReviewOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}` : ""}
+                  </p>
+                </div>
               )}
             </div>
           ) : (
@@ -180,21 +207,74 @@ export function PlanPanel({
             <label style={label}>Renews on</label>
             <input type="date" value={fEnd} onChange={(e) => setFEnd(e.target.value)} style={field} />
           </div>
-          <label style={{ display: "flex", gap: "9px", alignItems: "flex-start", cursor: "pointer" }}>
-            <input type="checkbox" checked={fGranted} onChange={(e) => setFGranted(e.target.checked)} style={{ marginTop: "3px", width: "16px", height: "16px" }} />
-            <span style={{ fontSize: "13.5px", color: INK, lineHeight: 1.5 }}>
-              Granted manually
-              <small style={{ display: "block", color: "rgba(16,35,63,.55)", fontSize: "12.5px" }}>
-                Scholarship, pilot or comped — access without a Stripe subscription.
-              </small>
-            </span>
-          </label>
-          {fGranted && (
-            <div>
-              <label style={label}>Why</label>
-              <textarea value={fNote} onChange={(e) => setFNote(e.target.value)} rows={2} placeholder="Recorded on the school's history" style={{ ...field, resize: "vertical" }} />
-            </div>
-          )}
+          {/* Granting free access — three distinct kinds, each with a reason */}
+          <div style={{ border: `1.5px solid ${fGranted ? "#1B7F4B" : RULE}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
+            <label style={{ display: "flex", gap: "9px", alignItems: "flex-start", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={fGranted}
+                onChange={(e) => { setFGranted(e.target.checked); if (!e.target.checked) setFKind(""); }}
+                style={{ marginTop: "3px", width: "16px", height: "16px" }}
+              />
+              <span style={{ fontSize: "13.5px", color: INK, lineHeight: 1.5, fontWeight: 600 }}>
+                Give this school free access
+                <small style={{ display: "block", color: "rgba(16,35,63,.55)", fontSize: "12.5px", fontWeight: 400 }}>
+                  No payment. Recorded on the school&rsquo;s history with who approved it.
+                </small>
+              </span>
+            </label>
+
+            {fGranted && (
+              <div style={{ marginTop: "14px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div>
+                  <label style={label}>What kind</label>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {GRANT_KINDS.map(([v, l, why]) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setFKind(v)}
+                        title={why}
+                        style={{
+                          fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                          padding: "8px 13px", borderRadius: "9999px", minHeight: "40px", cursor: "pointer",
+                          border: fKind === v ? "1.5px solid #1B7F4B" : `1px solid ${RULE}`,
+                          backgroundColor: fKind === v ? "rgba(27,127,75,.1)" : "#fff",
+                          color: fKind === v ? "#1B7F4B" : "rgba(16,35,63,.7)",
+                        }}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                  {fKind && (
+                    <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "7px 0 0" }}>
+                      {GRANT_KINDS.find(([v]) => v === fKind)?.[2]}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label style={label}>Why — required</label>
+                  <textarea
+                    value={fNote}
+                    onChange={(e) => setFNote(e.target.value)}
+                    rows={2}
+                    placeholder="So this is answerable in a year's time"
+                    style={{ ...field, resize: "vertical" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={label}>Review on</label>
+                  <input type="date" value={fReview} onChange={(e) => setFReview(e.target.value)} style={field} />
+                  <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+                    JOC reviews grants each Elul.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
           <div style={{ display: "flex", gap: "8px", marginTop: "2px" }}>
             <button
               onClick={save}

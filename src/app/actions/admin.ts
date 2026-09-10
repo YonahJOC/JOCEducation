@@ -67,15 +67,46 @@ export async function setSchoolPlan(input: {
   seats: number;
   interval: "MONTHLY" | "ANNUAL";
   grantedManually: boolean;
+  /** SCHOLARSHIP | PILOT | COMP — required when granting. */
+  grantKind?: string | null;
   grantNote?: string;
+  grantReviewOn?: string | null;
   currentPeriodEnd?: string | null;
 }): Promise<Result> {
   try {
     const me = await requireAccountManager();
-    const { schoolId, plan, seats, interval, grantedManually, grantNote, currentPeriodEnd } = input;
+    const {
+      schoolId, plan, seats, interval,
+      grantedManually, grantKind, grantNote, grantReviewOn, currentPeriodEnd,
+    } = input;
+
+    // A grant with no stated reason is not answerable later, so refuse it.
+    if (grantedManually) {
+      if (!grantKind) return { ok: false, error: "Choose scholarship, pilot or comp" };
+      if (!grantNote?.trim()) return { ok: false, error: "Say why this access is being granted" };
+    }
 
     const existing = await prisma.subscription.findUnique({ where: { schoolId } });
     const periodEnd = currentPeriodEnd ? new Date(currentPeriodEnd) : null;
+    const reviewOn = grantReviewOn ? new Date(grantReviewOn) : null;
+
+    const grantFields = grantedManually
+      ? {
+          grantedManually: true,
+          grantKind: grantKind as never,
+          grantNote: grantNote!.trim(),
+          grantedById: me?.id ?? null,
+          grantedAt: existing?.grantedAt ?? new Date(),
+          grantReviewOn: reviewOn,
+        }
+      : {
+          grantedManually: false,
+          grantKind: null,
+          grantNote: null,
+          grantedById: null,
+          grantedAt: null,
+          grantReviewOn: null,
+        };
 
     await prisma.subscription.upsert({
       where: { schoolId },
@@ -84,28 +115,36 @@ export async function setSchoolPlan(input: {
         plan: plan as never,
         seats,
         interval: interval as never,
-        grantedManually,
-        grantNote: grantNote || null,
         status: "ACTIVE",
         currentPeriodEnd: periodEnd,
+        ...grantFields,
       },
       update: {
         plan: plan as never,
         seats,
         interval: interval as never,
-        grantedManually,
-        grantNote: grantNote || null,
         currentPeriodEnd: periodEnd,
+        ...grantFields,
       },
     });
 
-    await log(
-      schoolId,
-      existing ? "PLAN_CHANGE" : "ACCESS_GRANTED",
-      existing ? `Plan changed from ${existing.plan} to ${plan}` : `Access granted on ${plan}`,
-      grantedManually ? `Granted manually. ${grantNote ?? ""}`.trim() : null,
-      me?.id ?? null
-    );
+    // The record of generosity: what, why, and who approved it.
+    if (grantedManually) {
+      const kindLabel = String(grantKind).toLowerCase();
+      await log(
+        schoolId,
+        "ACCESS_GRANTED",
+        `${kindLabel.charAt(0).toUpperCase()}${kindLabel.slice(1)} granted on ${plan.replace(/_/g, " ").toLowerCase()}`,
+        [grantNote!.trim(), reviewOn ? `Review on ${reviewOn.toDateString()}.` : null]
+          .filter(Boolean)
+          .join(" "),
+        me?.id ?? null
+      );
+    } else if (existing) {
+      await log(schoolId, "PLAN_CHANGE", `Plan changed from ${existing.plan} to ${plan}`, null, me?.id ?? null);
+    } else {
+      await log(schoolId, "PLAN_CHANGE", `Plan set to ${plan}`, null, me?.id ?? null);
+    }
 
     revalidatePath(`/admin/schools/${schoolId}`);
     revalidatePath("/admin/schools");

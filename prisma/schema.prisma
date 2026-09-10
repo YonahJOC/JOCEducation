@@ -222,6 +222,7 @@ model User {
   publishedFields  SiteFieldHistory[] @relation("FieldPublisher")
   planRequests     PlanChangeRequest[] @relation("PlanRequester")
   planResponses    PlanChangeRequest[] @relation("PlanResponder")
+  accessGrants     Subscription[]      @relation("AccessGranter")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -289,10 +290,19 @@ model Subscription {
   /// Number of staff logins included
   seats Int @default(1)
 
-  /// Access granted manually by JOC (scholarship, pilot, comp) rather than paid
+  /// Access granted manually by JOC rather than paid for
   grantedManually Boolean @default(false)
-  /// Why access was granted or discounted — shown in the admin console
+  /// What kind of grant — scholarship, pilot or comp. Null when paid.
+  grantKind GrantKind?
+  /// Why. Required whenever grantedManually is set, so the record of
+  /// generosity is answerable later: who was given what, why, and by whom.
   grantNote String? @db.Text
+  /// Who approved it
+  grantedById String?
+  grantedBy   User?   @relation("AccessGranter", fields: [grantedById], references: [id], onDelete: SetNull)
+  grantedAt   DateTime?
+  /// When to look at it again — JOC reviews these each Elul
+  grantReviewOn DateTime?
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
@@ -652,6 +662,15 @@ enum Plan {
 enum BillingInterval {
   MONTHLY
   ANNUAL
+}
+
+enum GrantKind {
+  /// The school cannot afford it
+  SCHOLARSHIP
+  /// Trying it with us
+  PILOT
+  /// Internal or a courtesy
+  COMP
 }
 
 enum SubscriptionStatus {

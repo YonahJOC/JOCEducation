@@ -27,6 +27,10 @@ export type SchoolRow = {
   planStatus: string | null;
   seats: number | null;
   grantedManually: boolean;
+  grantKind?: string | null;
+  grantNote?: string | null;
+  grantReviewOn?: Date | null;
+  grantedBy?: string | null;
   renewsOn: Date | null;
   accountManager: string | null;
   lastActivityAt: Date | null;
@@ -168,7 +172,7 @@ export async function getSchool(id: string) {
   const s = await prisma.school.findUnique({
     where: { id },
     include: {
-      subscription: true,
+      subscription: { include: { grantedBy: { select: { name: true, email: true } } } },
       accountManager: { select: { name: true, email: true } },
       contacts: { orderBy: { isPrimary: "desc" } },
       members: {
@@ -201,6 +205,10 @@ export async function getSchool(id: string) {
       planStatus: s.subscription?.status ?? null,
       seats: s.subscription?.seats ?? null,
       grantedManually: s.subscription?.grantedManually ?? false,
+      grantKind: s.subscription?.grantKind ?? null,
+      grantNote: s.subscription?.grantNote ?? null,
+      grantReviewOn: s.subscription?.grantReviewOn ?? null,
+      grantedBy: s.subscription?.grantedBy?.name ?? s.subscription?.grantedBy?.email ?? null,
       renewsOn: s.subscription?.currentPeriodEnd ?? null,
       accountManager: s.accountManager?.name ?? s.accountManager?.email ?? null,
       lastActivityAt: s.activities[0]?.occurredAt ?? null,

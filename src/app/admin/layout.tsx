@@ -17,6 +17,7 @@ const ACCOUNTS_NAV = [
 /** Content — the JOC Education Team's work. */
 const CONTENT_NAV = [
   { label: "Site content", href: "/admin/site" },
+  { label: "Cycle coverage", href: "/admin/coverage" },
   { label: "Lesson plans", href: "/admin/lessons" },
   { label: "Resources", href: "/admin/resources" },
   { label: "Teachers' Board", href: "/admin/board" },
