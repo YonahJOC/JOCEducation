@@ -81,18 +81,6 @@ export const SITE_FIELDS: FieldDef[] = [
   },
   {
     page: "landing", pageLabel: "Educator landing page",
-    section: "hero", sectionLabel: "Hero",
-    key: "proof", label: "Proof numbers", type: "REPEATABLE",
-    help: "Three figures under the introduction. These are currently unverified — replace with real ones.",
-    value: j([
-      { title: "300+", body: "partner schools" },
-      { title: "14,000+", body: "teachers with access" },
-      { title: "2.1M", body: "chesed hours logged" },
-    ]),
-  },
-
-  {
-    page: "landing", pageLabel: "Educator landing page",
     section: "cycle_band", sectionLabel: "Chesed Cycle band",
     key: "explainer", label: "What the Cycles are", type: "LONG_TEXT",
     value:
@@ -180,6 +168,61 @@ export const SITE_FIELDS: FieldDef[] = [
     section: "footer", sectionLabel: "Footer",
     key: "org_line", label: "Organisation line", type: "SHORT_TEXT",
     value: "A 501(c)(3) nonprofit organization",
+  },
+
+  // ─── About ────────────────────────────────────────────────────────────────
+  // The people, history and figures here were placeholder text written to fill
+  // the page. They are seeded empty on purpose: each section only appears once
+  // someone enters something true.
+  {
+    page: "about", pageLabel: "About page",
+    section: "hero", sectionLabel: "Hero",
+    key: "headline", label: "Headline", type: "SHORT_TEXT",
+    value: "Chesed is a skill. We teach it.",
+  },
+  {
+    page: "about", pageLabel: "About page",
+    section: "hero", sectionLabel: "Hero",
+    key: "standfirst", label: "Introduction", type: "LONG_TEXT",
+    value: "JOC Education is the school-facing arm of JustOneChesed — bringing curriculum, programs, and resources to Jewish schools worldwide.",
+  },
+  {
+    page: "about", pageLabel: "About page",
+    section: "mission", sectionLabel: "Mission",
+    key: "heading", label: "Heading", type: "SHORT_TEXT",
+    value: "Just One Student at a Time.",
+  },
+  {
+    page: "about", pageLabel: "About page",
+    section: "mission", sectionLabel: "Mission",
+    key: "body", label: "Mission text", type: "LONG_TEXT",
+    help: "One paragraph per line.",
+    value:
+      "JustOneChesed was founded on a simple premise: the most meaningful acts of chesed happen between one person and one other person — not as programs, but as choices.\n" +
+      "JOC Education brings that conviction into the classroom. We build lesson plans, resources, and programs that help teachers teach chesed as a skill — something that can be practiced, improved, and carried out of school and into a student's life.",
+  },
+  {
+    page: "about", pageLabel: "About page",
+    section: "mission", sectionLabel: "Mission",
+    key: "stats", label: "Figures", type: "REPEATABLE",
+    help:
+      "Each figure: value is the number (\"900+\"), title is the label (\"Schools served\"), " +
+      "body is the line underneath. Empty until someone can stand behind the numbers.",
+    value: j([]),
+  },
+  {
+    page: "about", pageLabel: "About page",
+    section: "history", sectionLabel: "History",
+    key: "items", label: "Milestones", type: "REPEATABLE",
+    help: "Each milestone: value is the year, body is what happened. The section is hidden while this is empty.",
+    value: j([]),
+  },
+  {
+    page: "about", pageLabel: "About page",
+    section: "team", sectionLabel: "Team",
+    key: "members", label: "People", type: "REPEATABLE",
+    help: "Each person: title is their name, value is their role, body is one or two lines about them. The section is hidden while this is empty.",
+    value: j([]),
   },
 ];
 

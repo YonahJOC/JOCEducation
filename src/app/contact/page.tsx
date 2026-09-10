@@ -63,7 +63,7 @@ export default function ContactPage() {
           {[
             { icon: "📋", title: "Pricing & plans", description: "Which subscription is right for your school?", href: "/pricing" },
             { icon: "🎓", title: "Programs overview", description: "What programs JOC runs and how to register", href: "/programs" },
-            { icon: "📚", title: "Resource library", description: "460+ worksheets, videos, and source sheets", href: "/resources" },
+            { icon: "📚", title: "Resource library", description: "Worksheets, videos, and source sheets", href: "/resources" },
           ].map((link) => (
             <Link
               key={link.href}

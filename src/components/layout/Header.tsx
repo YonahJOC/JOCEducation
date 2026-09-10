@@ -15,8 +15,11 @@ const NAV = [
   { label: "Pricing",         href: "/pricing" },
   { label: "Shop",            href: "/shop" },
   { label: "About",           href: "/about" },
-  { label: "JOC Portal",      href: "/portal" },
 ];
+
+/** Only for people who are signed in — it redirects everyone else. */
+const HOME_ITEM = { label: "Your home", href: "/home" };
+
 
 /**
  * Who is signed in, as far as the header needs to know. Resolved on the
@@ -35,6 +38,7 @@ export type HeaderAccount = {
 export function Header({ account = null }: { account?: HeaderAccount }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const nav = account ? [...NAV, HOME_ITEM] : NAV;
 
   useEffect(() => {
     setOpen(false);
@@ -75,7 +79,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-[18px]">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -204,7 +208,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
 
             {/* Nav items */}
             <nav style={{ flex: 1, overflowY: "auto", padding: "12px 0" }}>
-              {NAV.map((item) => (
+              {nav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

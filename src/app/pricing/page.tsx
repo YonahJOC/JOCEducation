@@ -19,15 +19,17 @@ export default function PricingPage() {
           No long-term commitment on monthly plans. Annual saves 15%. No school is turned away on cost — we offer full and partial scholarships.
         </p>
 
-        {/* Trust bar */}
+        {/* What every plan includes. The trust bar that stood here quoted
+            partner-school, teacher and chesed-hour figures nobody had counted;
+            what a school actually gets is both true and more useful. */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "28px", paddingBottom: "48px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
           {[
-            ["300+", "partner schools"],
-            ["14,000+", "teachers with access"],
-            ["2.1M", "chesed hours logged"],
+            ["Every plan", "includes the full resource library"],
+            ["No school turned away", "full and partial scholarships"],
+            ["Monthly or annual", "annual saves 15%"],
           ].map(([stat, label]) => (
             <div key={label}>
-              <div style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.04em", color: "#10233F" }}>{stat}</div>
+              <div style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: "#10233F" }}>{stat}</div>
               <div style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", fontWeight: 500, marginTop: "2px" }}>{label}</div>
             </div>
           ))}

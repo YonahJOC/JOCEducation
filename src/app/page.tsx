@@ -29,11 +29,6 @@ const FALLBACK_INSIDE = [
   { value: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },
 ];
 
-const FALLBACK_PROOF = [
-  { title: "300+", body: "partner schools" },
-  { title: "14,000+", body: "teachers with access" },
-  { title: "2.1M", body: "chesed hours logged" },
-];
 
 const FALLBACK_BULLETS = [
   { body: "We go through the programs — Kindness Booth, Bake for Chesed, Just One Tutor and the rest — and which ones suit your grades." },
@@ -83,7 +78,6 @@ export default async function EducatorLanding({
   // Everything the Education Team can edit at /admin/site, with the current
   // hardcoded wording as the fallback.
   const c = await siteContent("landing");
-  const proof = c.list("hero.proof", FALLBACK_PROOF);
   const insideCards = c.list("inside.cards", FALLBACK_INSIDE);
   const demoBullets = c.list("demo.bullets", FALLBACK_BULLETS);
   const cycle = getCurrentCycle();
