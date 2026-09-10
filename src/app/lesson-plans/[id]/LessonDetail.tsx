@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useTransition } from "react";
 import { STRIPE_COLORS } from "@/lib/lessons";
+import { toggleSavedLesson } from "@/app/actions/saved";
 import type { PublicLesson } from "@/lib/content";
 
 const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Middle school", hs: "High school" };
@@ -10,7 +12,18 @@ const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Mid
  * The lesson itself. Everything shown here comes from the server — this
  * component only handles the interactive bits (downloads, copy link).
  */
-export function LessonDetail({ lesson, related, canDownload }: { lesson: PublicLesson; related: PublicLesson[]; canDownload: boolean }) {
+export function LessonDetail({
+  lesson, related, canDownload, signedIn, initiallySaved,
+}: {
+  lesson: PublicLesson;
+  related: PublicLesson[];
+  canDownload: boolean;
+  signedIn: boolean;
+  initiallySaved: boolean;
+}) {
+  const [saved, setSaved] = useState(initiallySaved);
+  const [saving, startSave] = useTransition();
+  const [saveError, setSaveError] = useState<string | null>(null);
   const colorIndex = (lesson.id - 1) % STRIPE_COLORS.length;
   const stripeColor = STRIPE_COLORS[colorIndex];
   const prepStyle = lesson.prep === "Minimal"
@@ -193,13 +206,40 @@ export function LessonDetail({ lesson, related, canDownload }: { lesson: PublicL
           {/* Save lesson */}
           <div style={{ backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "20px 24px", marginBottom: "20px" }}>
             <p style={{ fontWeight: 600, fontSize: "14px", color: "#10233F", marginBottom: "8px" }}>Save for later</p>
-            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.62)", lineHeight: 1.5, marginBottom: "14px" }}>Sign in to add this lesson to your saved plans.</p>
-            <button
-              onClick={() => alert("Sign in to save lessons.")}
-              style={{ width: "100%", backgroundColor: "#fff", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", border: "1px solid rgba(16,35,63,.2)", cursor: "pointer" }}
-            >
-              ☆ Save this lesson
-            </button>
+            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.62)", lineHeight: 1.5, marginBottom: "14px" }}>
+              {signedIn
+                ? "Saved lessons are waiting for you on your home page."
+                : "Sign in to add this lesson to your saved plans."}
+            </p>
+            {signedIn ? (
+              <>
+                <button
+                  onClick={() => {
+                    setSaveError(null);
+                    const next = !saved;
+                    setSaved(next);
+                    startSave(async () => {
+                      const r = await toggleSavedLesson(lesson.id);
+                      if (!r.ok) { setSaved(!next); setSaveError(r.error); }
+                    });
+                  }}
+                  disabled={saving}
+                  style={{ width: "100%", fontFamily: "var(--font-outfit)", backgroundColor: saved ? "#10233F" : "#fff", color: saved ? "#fff" : "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", minHeight: "44px", border: saved ? "1px solid #10233F" : "1px solid rgba(16,35,63,.2)", cursor: saving ? "wait" : "pointer" }}
+                >
+                  {saved ? "★ Saved" : "☆ Save this lesson"}
+                </button>
+                {saveError && (
+                  <p style={{ fontSize: "12.5px", color: "#B8321E", margin: "8px 0 0" }}>{saveError}</p>
+                )}
+              </>
+            ) : (
+              <Link
+                href="/login"
+                style={{ display: "block", textAlign: "center", backgroundColor: "#fff", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", border: "1px solid rgba(16,35,63,.2)", textDecoration: "none" }}
+              >
+                ☆ Sign in to save
+              </Link>
+            )}
           </div>
 
           {/* Share lesson */}

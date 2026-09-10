@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getPublishedLessons } from "@/lib/content";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
+import { isLessonSaved } from "@/app/actions/saved";
 import { LessonDetail } from "./LessonDetail";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -28,5 +29,13 @@ export default async function LessonDetailPage({ params }: { params: Promise<{ i
 
   const related = lessons.filter((l) => l.grade === lesson.grade && l.id !== lesson.id).slice(0, 3);
 
-  return <LessonDetail lesson={lesson} related={related} canDownload={hasSiteAccess(session?.user)} />;
+  return (
+    <LessonDetail
+      lesson={lesson}
+      related={related}
+      canDownload={hasSiteAccess(session?.user)}
+      signedIn={Boolean(session?.user)}
+      initiallySaved={await isLessonSaved(lesson.id)}
+    />
+  );
 }
