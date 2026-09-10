@@ -28,9 +28,15 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!file) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const body = new Uint8Array(file.data);
+  // Text without a charset is decoded as Latin-1 by browsers, which turns
+  // every em dash in a source sheet into mojibake.
+  const contentType = file.mimeType.startsWith("text/")
+    ? `${file.mimeType}; charset=utf-8`
+    : file.mimeType;
+
   return new NextResponse(body, {
     headers: {
-      "Content-Type": file.mimeType,
+      "Content-Type": contentType,
       "Content-Length": String(file.size),
       // inline so a PDF opens in the browser; the filename is still offered
       // if the teacher chooses to save it.

@@ -78,6 +78,13 @@ export function proxy(req: NextRequest) {
   if (isPublic(pathname)) return NextResponse.next();
   if (hasSession) return NextResponse.next();
 
+  // An API caller wants an answer, not a marketing page. Redirecting one to
+  // the landing page hands it a 200 and a lump of HTML, which reads as
+  // success — say no plainly instead.
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Sign in required." }, { status: 401 });
+  }
+
   // Send them to the landing page, remembering where they were headed.
   const url = req.nextUrl.clone();
   url.pathname = "/";
