@@ -108,7 +108,18 @@ export function LessonsClient({
                         {l.timeMinutes} min
                       </td>
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)" }}>
-                        {cycle ? `${cycle.num}. ${cycle.theme}` : <span style={{ color: "rgba(16,35,63,.35)" }}>—</span>}
+                        {cycle ? (
+                          <>
+                            {cycle.num}. {cycle.theme}
+                            <span style={{ display: "block", fontSize: "12px", color: "rgba(16,35,63,.5)" }}>
+                              {l.cycleWeek
+                                ? `Week ${l.cycleWeek}${cycle.weeks[l.cycleWeek - 1] ? ` — ${cycle.weeks[l.cycleWeek - 1]}` : ""}`
+                                : "any week"}
+                            </span>
+                          </>
+                        ) : (
+                          <span style={{ color: "rgba(16,35,63,.35)" }}>—</span>
+                        )}
                       </td>
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
                         <span style={{

@@ -4,6 +4,7 @@ import { getPublishedLessons, getLessonForPreview } from "@/lib/content";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess, canManageContent } from "@/lib/access";
 import { isLessonSaved } from "@/app/actions/saved";
+import { getCycles } from "@/lib/cycle-data";
 import { LessonDetail } from "./LessonDetail";
 
 type Search = Promise<{ preview?: string }>;
@@ -42,6 +43,17 @@ export default async function LessonDetailPage({
   }
 
   const related = lessons.filter((l) => l.grade === lesson.grade && l.id !== lesson.id).slice(0, 3);
+
+  // Which cycle and week this belongs to, so the lesson points back at it.
+  const c = lesson.cycleSlug
+    ? (await getCycles()).find((x) => x.slug === lesson.cycleSlug)
+    : undefined;
+  const cycle = c
+    ? {
+        slug: c.slug, num: c.num, theme: c.theme, color: c.color,
+        weekTitle: lesson.cycleWeek ? c.weekPlan[lesson.cycleWeek - 1]?.title ?? null : null,
+      }
+    : null;
   const isDraft = previewing && !lessons.some((l) => l.id === lesson.id);
 
   return (
@@ -63,6 +75,7 @@ export default async function LessonDetailPage({
         canDownload={hasSiteAccess(session?.user)}
         signedIn={Boolean(session?.user)}
         initiallySaved={await isLessonSaved(lesson.id)}
+        cycle={cycle}
       />
     </>
   );

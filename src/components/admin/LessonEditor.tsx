@@ -22,6 +22,7 @@ export type LessonDraft = {
   timeMinutes: number;
   prep: "Minimal" | "Moderate" | "Substantial";
   cycleSlug: string | null;
+  cycleWeek: number | null;
   published: boolean;
   featured: boolean;
   objectives: string[];
@@ -33,13 +34,17 @@ export type LessonDraft = {
 
 export const EMPTY_LESSON: LessonDraft = {
   title: "", theme: "", description: "", grade: "es", timeMinutes: 20, prep: "Minimal",
-  cycleSlug: null, published: false, featured: false,
+  cycleSlug: null, cycleWeek: null, published: false, featured: false,
   objectives: [""], materials: [""], discussion: [""],
   steps: [{ duration: "5", title: "", description: "" }],
   files: [],
 };
 
-export type CycleRef = { slug: string; theme: string; num: number; question: string; color: string };
+export type CycleRef = {
+  slug: string; theme: string; num: number; question: string; color: string;
+  /** Week titles in order, so a lesson can be pinned to one of them. */
+  weeks: string[];
+};
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
@@ -128,10 +133,22 @@ export function LessonEditor({
             <Segmented
               label="Chesed Cycle"
               value={d.cycleSlug ?? ""}
-              onChange={(v) => set("cycleSlug", v || null)}
+              onChange={(v) => setD((p) => ({ ...p, cycleSlug: v || null, cycleWeek: null }))}
               options={[["", "None"], ...cycles.map((c) => [c.slug, `${c.num}. ${c.theme}`] as [string, string])]}
               disabled={disabled}
             />
+            {cycle && cycle.weeks.length > 0 && (
+              <Segmented
+                label="Which week"
+                value={d.cycleWeek ? String(d.cycleWeek) : ""}
+                onChange={(v) => set("cycleWeek", v ? Number(v) : null)}
+                options={[
+                  ["", "Any week"],
+                  ...cycle.weeks.map((w, i) => [String(i + 1), `${i + 1}. ${w || "Untitled"}`] as [string, string]),
+                ]}
+                disabled={disabled}
+              />
+            )}
             <Segmented
               label="Grade band"
               value={d.grade}

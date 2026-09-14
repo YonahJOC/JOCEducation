@@ -230,12 +230,17 @@ export default async function CycleDetailPage({ params }: Props) {
                       {w.title}
                     </p>
                     <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6 }}>{w.body}</p>
+                    <WeekLessons lessons={lessons.filter((l) => l.cycleWeek === i + 1)} color={cycle.color} />
                   </div>
                 </li>
               ))}
             </ol>
 
-            <CycleMaterials lessons={lessons} resources={resources} color={cycle.color} />
+            <CycleMaterials
+              lessons={lessons.filter((l) => !l.cycleWeek)}
+              resources={resources}
+              color={cycle.color}
+            />
           </div>
 
           {/* Right: cards */}
@@ -494,6 +499,46 @@ function CycleMaterials({
           </Link>
         ))}
       </div>
+    </div>
+  );
+}
+
+/**
+ * The lesson plans pinned to one week of the cycle, shown under that week.
+ *
+ * The same lessons are on /lesson-plans — this is not a second copy, it is
+ * the same list read from the same place. Tagging a lesson to a week in the
+ * console is what puts it here.
+ */
+function WeekLessons({ lessons, color }: { lessons: PublicLesson[]; color: string }) {
+  if (lessons.length === 0) return null;
+
+  return (
+    <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "7px" }}>
+      {lessons.map((l) => (
+        <Link
+          key={l.id}
+          href={`/lesson-plans/${l.id}`}
+          style={{
+            display: "flex", gap: "10px", alignItems: "center", textDecoration: "none",
+            backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+            borderRadius: "12px", padding: "10px 14px",
+          }}
+        >
+          <span style={{ fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.1em", color: "#fff", backgroundColor: color, borderRadius: "5px", padding: "3px 6px", flexShrink: 0 }}>
+            PLAN
+          </span>
+          <span style={{ minWidth: 0, flex: 1 }}>
+            <span style={{ display: "block", fontWeight: 600, fontSize: "14px", color: "#10233F", lineHeight: 1.3 }}>
+              {l.title}
+            </span>
+            <span style={{ display: "block", fontSize: "12px", color: "rgba(16,35,63,.55)", marginTop: "1px" }}>
+              {l.grade === "es" ? "Elementary" : l.grade === "ms" ? "Middle" : "High school"} · {l.time} min
+            </span>
+          </span>
+          <span style={{ color, fontWeight: 700, fontSize: "14px", flexShrink: 0 }}>›</span>
+        </Link>
+      ))}
     </div>
   );
 }

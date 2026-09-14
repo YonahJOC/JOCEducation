@@ -14,13 +14,15 @@ const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Mid
  * component only handles the interactive bits (downloads, copy link).
  */
 export function LessonDetail({
-  lesson, related, canDownload, signedIn, initiallySaved,
+  lesson, related, canDownload, signedIn, initiallySaved, cycle,
 }: {
   lesson: PublicLesson;
   related: PublicLesson[];
   canDownload: boolean;
   signedIn: boolean;
   initiallySaved: boolean;
+  /** The cycle this belongs to, when it has one. */
+  cycle?: { slug: string; num: number; theme: string; color: string; weekTitle: string | null } | null;
 }) {
   const [saved, setSaved] = useState(initiallySaved);
   const [saving, startSave] = useTransition();
@@ -73,6 +75,22 @@ export function LessonDetail({
           </h1>
 
           {/* Meta */}
+          {cycle && (
+            <p style={{ fontSize: "14px", margin: "0 0 18px" }}>
+              <Link
+                href={`/cycles/${cycle.slug}`}
+                style={{ color: cycle.color, fontWeight: 700, textDecoration: "none" }}
+              >
+                Cycle {cycle.num} · {cycle.theme}
+              </Link>
+              {cycle.weekTitle && (
+                <span style={{ color: "rgba(16,35,63,.55)" }}>
+                  {" — week "}{lesson.cycleWeek}, {cycle.weekTitle}
+                </span>
+              )}
+            </p>
+          )}
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "28px" }}>
             <MetaChip label={GRADE_LABELS[lesson.grade]} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
             <MetaChip label={`${lesson.time} min`} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />

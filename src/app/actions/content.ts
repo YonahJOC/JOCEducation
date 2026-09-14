@@ -39,6 +39,7 @@ export async function saveLesson(input: {
   timeMinutes: number;
   prep: "Minimal" | "Moderate" | "Substantial";
   cycleSlug?: string | null;
+  cycleWeek?: number | null;
   published: boolean;
   featured: boolean;
   objectives: string[];
@@ -60,6 +61,8 @@ export async function saveLesson(input: {
       timeMinutes: Number(input.timeMinutes) || 20,
       prep: input.prep as never,
       cycleSlug: input.cycleSlug || null,
+      // A week only means something inside a cycle.
+      cycleWeek: input.cycleSlug ? (input.cycleWeek ?? null) : null,
       published: input.published,
       featured: input.featured,
     };

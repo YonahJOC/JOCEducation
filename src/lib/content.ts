@@ -19,6 +19,7 @@ export type LessonFile = { name: string; url: string | null };
 export type PublicLesson = Omit<Lesson, "files"> & {
   files: LessonFile[];
   cycleSlug?: string | null;
+  cycleWeek?: number | null;
 };
 
 function staticLessons(): PublicLesson[] {
@@ -60,6 +61,7 @@ export async function getPublishedLessons(): Promise<PublicLesson[]> {
       })),
       discussion: l.discussion.map((d) => d.text),
       cycleSlug: l.cycleSlug,
+      cycleWeek: l.cycleWeek,
     }));
   } catch {
     return staticLessons();
@@ -266,6 +268,7 @@ export async function getLessonForPreview(id: number): Promise<PublicLesson | nu
       steps: l.steps.map((s) => ({ duration: s.duration, title: s.title, description: s.description })),
       discussion: l.discussion.map((d) => d.text),
       cycleSlug: l.cycleSlug,
+      cycleWeek: l.cycleWeek,
     };
   } catch {
     return null;

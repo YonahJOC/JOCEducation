@@ -21,6 +21,7 @@ async function getLessons(): Promise<LessonRow[]> {
       timeMinutes: Number(l.time) || 20,
       prep: l.prep,
       cycleSlug: null,
+      cycleWeek: null,
       published: true,
       featured: false,
       objectives: l.objectives,
@@ -51,6 +52,7 @@ async function getLessons(): Promise<LessonRow[]> {
     timeMinutes: l.timeMinutes,
     prep: l.prep as LessonRow["prep"],
     cycleSlug: l.cycleSlug,
+    cycleWeek: l.cycleWeek,
     published: l.published,
     featured: l.featured,
     objectives: l.objectives.map((o) => o.text),
@@ -65,6 +67,7 @@ export default async function AdminLessonsPage() {
   const lessons = await getLessons();
   const cycles = (await getCycles()).map((c) => ({
     slug: c.slug, theme: c.theme, num: c.num, question: c.question, color: c.color,
+    weeks: c.weekPlan.map((w) => w.title),
   }));
 
   return (
