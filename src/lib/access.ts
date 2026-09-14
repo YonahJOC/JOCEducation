@@ -81,12 +81,19 @@ export function isStaffEmail(email?: string | null): boolean {
  * Bootstrap list. These addresses are SUPER_ADMIN from their first sign-in,
  * so there is somebody who can promote everyone else.
  *
- * Falls back to the founding super admin when SUPER_ADMIN_EMAILS is unset, so
- * the console is never locked with nobody able to open it. Knowing the address
- * grants nothing on its own — access still requires signing in as that Google
- * account. Override with SUPER_ADMIN_EMAILS (comma-separated) in Vercel.
+ * SUPER_ADMIN_EMAILS (comma-separated, in Vercel) *adds* to this list rather
+ * than replacing it. It used to replace it, which meant one stale environment
+ * variable could quietly lock the founders out of their own console — and
+ * nobody would notice until somebody needed it.
+ *
+ * Knowing an address grants nothing on its own: access still requires signing
+ * in as that Google account.
  */
-const DEFAULT_SUPER_ADMINS = ["yonah@justonechesed.org"];
+const DEFAULT_SUPER_ADMINS = [
+  "yonah@justonechesed.org",
+  "jerry@justonechesed.org",
+  "avi@justonechesed.org",
+];
 
 export function isSuperAdminEmail(email?: string | null): boolean {
   if (!email) return false;
@@ -94,8 +101,8 @@ export function isSuperAdminEmail(email?: string | null): boolean {
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
-  const list = configured.length > 0 ? configured : DEFAULT_SUPER_ADMINS;
-  return list.includes(email.trim().toLowerCase());
+  const list = new Set([...DEFAULT_SUPER_ADMINS, ...configured]);
+  return list.has(email.trim().toLowerCase());
 }
 
 /**
