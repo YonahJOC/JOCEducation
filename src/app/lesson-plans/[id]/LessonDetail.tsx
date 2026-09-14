@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { STRIPE_COLORS } from "@/lib/lessons";
 import { toggleSavedLesson } from "@/app/actions/saved";
+import { RichText } from "@/components/ui/RichText";
 import type { PublicLesson } from "@/lib/content";
 
 const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Middle school", hs: "High school" };
@@ -124,7 +125,7 @@ export function LessonDetail({
                       <span style={{ fontWeight: 700, fontSize: "16px", color: "#10233F" }}>{step.title}</span>
                       <span style={{ fontWeight: 600, fontSize: "12.5px", color: stripeColor, backgroundColor: `${stripeColor}18`, padding: "3px 10px", borderRadius: "9999px" }}>{step.duration}</span>
                     </div>
-                    <p style={{ fontSize: "15px", color: "rgba(16,35,63,.72)", lineHeight: 1.6, margin: 0 }}>{step.description}</p>
+                    <RichText text={step.description} style={{ fontSize: "15px", color: "rgba(16,35,63,.72)", lineHeight: 1.6 }} />
                   </div>
                 </div>
               ))}
@@ -147,7 +148,7 @@ export function LessonDetail({
           {lesson.extension && (
             <Section title="Extension activity">
               <div style={{ borderLeft: "3px solid #FA912D", paddingLeft: "18px" }}>
-                <p style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.6, margin: 0 }}>{lesson.extension}</p>
+                <RichText text={lesson.extension} style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.6 }} />
               </div>
             </Section>
           )}

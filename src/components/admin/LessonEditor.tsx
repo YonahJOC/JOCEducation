@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { saveLesson } from "@/app/actions/content";
 import { FilePicker } from "@/components/admin/FilePicker";
+import { RICH_TEXT_HINT } from "@/components/ui/RichText";
 
 const INK = "#10233F";
 const DEEP = "#0B1A31";
@@ -237,6 +238,11 @@ export function LessonEditor({
                       disabled={disabled}
                       style={{ ...field, resize: "vertical", backgroundColor: "#fff" }}
                     />
+                    {i === 0 && (
+                      <p style={{ fontSize: "11.5px", color: "rgba(16,35,63,.5)", margin: "5px 0 0", lineHeight: 1.5 }}>
+                        {RICH_TEXT_HINT}
+                      </p>
+                    )}
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
