@@ -1,4 +1,4 @@
-import { CYCLES } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { RoomsClient, type RoomRow } from "./RoomsClient";
 
@@ -30,6 +30,6 @@ async function getRooms(): Promise<RoomRow[]> {
 
 export default async function AdminRoomsPage() {
   const rooms = await getRooms();
-  const cycles = CYCLES.map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
+  const cycles = (await getCycles()).map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
   return <RoomsClient rooms={rooms} cycles={cycles} disabled={!isDatabaseConfigured()} />;
 }

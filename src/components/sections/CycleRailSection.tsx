@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { CYCLES, getCycleState, getCurrentWeek, type Cycle } from "@/lib/cycles";
+import { getCycleState, getCurrentWeek, type Cycle } from "@/lib/cycles";
 import { CurrentCycleSection } from "./CurrentCycleSection";
 
 const CARD_WIDTH = 300;
@@ -166,7 +166,7 @@ function RailCard({
   );
 }
 
-export function CycleRailSection({ initialIndex }: { initialIndex: number }) {
+export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialIndex: number; cycles: Cycle[] }) {
   const [selected, setSelected] = useState(initialIndex);
   const railRef = useRef<HTMLDivElement>(null);
 
@@ -338,7 +338,7 @@ export function CycleRailSection({ initialIndex }: { initialIndex: number }) {
           marginBottom: "20px",
         }}
       >
-        <CurrentCycleSection cycle={selectedCycle} />
+        <CurrentCycleSection cycle={selectedCycle} nextCycle={CYCLES[selectedCycle.num] ?? null} />
       </div>
 
       {/* Rail controls */}

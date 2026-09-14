@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CYCLES, getCycleBySlug, getCycleState } from "@/lib/cycles";
+import { getCycleState } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { getCycleContent, type PublicLesson, type PublicResource } from "@/lib/content";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
-  return CYCLES.map((c) => ({ slug: c.slug }));
-}
+// Cycles are editable, so their addresses are not known at build time.
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const cycle = getCycleBySlug(slug);
+  const cycle = (await getCycles()).find((c) => c.slug === slug);
   if (!cycle) return {};
   return {
     title: `Cycle ${cycle.num}: ${cycle.theme} — JOC Education`,
@@ -26,12 +26,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CycleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const cycle = getCycleBySlug(slug);
+  const all = await getCycles();
+  const cycle = all.find((c) => c.slug === slug);
   if (!cycle) notFound();
 
   const state = getCycleState(cycle);
   const { lessons, resources } = await getCycleContent(cycle.slug);
-  const nextCycle = CYCLES[cycle.num] ?? null; // cycle.num is 1-based; CYCLES[cycle.num] is next
+  // The next one by number, which is the one after this in the year.
+  const nextCycle = all.find((c) => c.num === cycle.num + 1) ?? null;
 
   return (
     <main>

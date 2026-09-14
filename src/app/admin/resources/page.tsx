@@ -1,4 +1,4 @@
-import { CYCLES } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { ResourcesClient, type ResourceRow } from "./ResourcesClient";
 
@@ -20,7 +20,7 @@ async function getResources(): Promise<ResourceRow[]> {
 
 export default async function AdminResourcesPage() {
   const resources = await getResources();
-  const cycles = CYCLES.map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
+  const cycles = (await getCycles()).map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
   return (
     <ResourcesClient
       resources={resources}

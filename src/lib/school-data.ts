@@ -1,7 +1,8 @@
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canRunOwnSchool, scopedSchoolId } from "@/lib/access";
-import { CYCLES, getCycleState } from "@/lib/cycles";
+import { getCycleState } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 
 /**
  * Reads for the school administrator's area.
@@ -177,7 +178,8 @@ export async function myCycleProgress(): Promise<CycleProgress[] | null> {
   // Network median share, computed across active schools.
   const networkShares = await networkCycleShares();
 
-  return CYCLES.map((c) => {
+  const cycles = await getCycles();
+  return cycles.map((c) => {
     const ours = engaged.get(c.slug)?.size ?? 0;
     return {
       slug: c.slug,
@@ -208,7 +210,7 @@ async function networkCycleShares(): Promise<Map<string, number>> {
       },
     });
 
-    for (const c of CYCLES) {
+    for (const c of await getCycles()) {
       const shares: number[] = [];
       for (const s of schools) {
         const staff = s._count.members;

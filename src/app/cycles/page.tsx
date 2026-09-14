@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { CYCLES, getCycleState } from "@/lib/cycles";
+import { getCycleState } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { CycleRailSection } from "@/components/sections/CycleRailSection";
 
 export const metadata: Metadata = {
@@ -12,13 +13,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CyclesPage() {
-  const initialIndex = CYCLES.findIndex((c) => getCycleState(c) === "current");
+export default async function CyclesPage() {
+  const cycles = await getCycles();
+  const initialIndex = cycles.findIndex((c) => getCycleState(c) === "current");
   const resolvedIndex = initialIndex >= 0 ? initialIndex : 0;
 
   return (
     <main>
-      <CycleRailSection initialIndex={resolvedIndex} />
+      <CycleRailSection initialIndex={resolvedIndex} cycles={cycles} />
     </main>
   );
 }

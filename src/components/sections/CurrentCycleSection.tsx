@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CYCLES, type Cycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
+import { type Cycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
 
 function anchorStyle(israel?: boolean): React.CSSProperties {
   return israel
@@ -7,12 +7,12 @@ function anchorStyle(israel?: boolean): React.CSSProperties {
     : { background: "rgba(16,35,63,.05)", color: "rgba(16,35,63,.72)", border: "1px solid rgba(16,35,63,.1)" };
 }
 
-export function CurrentCycleSection({ cycle }: { cycle: Cycle }) {
+export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCycle: Cycle | null }) {
   const state = getCycleState(cycle);
   const week = getCurrentWeek(cycle);
   const progress = state === "past" ? 100 : state === "upcoming" ? 0 : Math.round((week / cycle.weeks) * 100);
 
-  const nextCycle = CYCLES[cycle.num] ?? null; // cycle.num is 1-based so CYCLES[cycle.num] is next
+
 
   const statusLabel =
     state === "current"

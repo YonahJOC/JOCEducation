@@ -108,7 +108,7 @@ async function loadHome(user: SessionUser): Promise<HomeData> {
       base.newSinceLastVisit = [
         ...lessons.map((l) => ({ title: l.title, kind: "New lesson plan", when: l.updatedAt })),
         ...resources.map((r) => ({ title: r.title, kind: `New ${r.tag.toLowerCase()}`, when: r.updatedAt })),
-        ...cyclesStartedSince(since).map((c) => ({
+        ...(await cyclesStartedSince(since)).map((c) => ({
           title: `${c.theme} began`,
           kind: `Cycle ${c.num} · ${c.hebrew}`,
           when: new Date(c.startDate),

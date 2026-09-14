@@ -1,5 +1,5 @@
 import { mySchool, myActivity } from "@/lib/school-data";
-import { CYCLES } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -18,6 +18,7 @@ function ago(d: Date) {
 }
 
 export default async function SchoolActivityPage() {
+  const cycles = await getCycles();
   const [school, activity] = await Promise.all([mySchool(), myActivity()]);
   if (!school || !activity) {
     return <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)" }}>Could not load your school.</p>;
@@ -94,7 +95,7 @@ export default async function SchoolActivityPage() {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {activity.recent.map((r, i) => {
-              const cycle = CYCLES.find((c) => c.slug === r.cycleSlug);
+              const cycle = cycles.find((c) => c.slug === r.cycleSlug);
               return (
                 <div key={i} style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
                   <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: cycle?.color ?? "rgba(16,35,63,.3)", flexShrink: 0, marginTop: "7px" }} />

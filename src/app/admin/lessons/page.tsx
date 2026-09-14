@@ -1,4 +1,4 @@
-import { CYCLES } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { LESSONS } from "@/lib/lessons";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { LessonsClient, type LessonRow } from "./LessonsClient";
@@ -63,7 +63,7 @@ async function getLessons(): Promise<LessonRow[]> {
 
 export default async function AdminLessonsPage() {
   const lessons = await getLessons();
-  const cycles = CYCLES.map((c) => ({
+  const cycles = (await getCycles()).map((c) => ({
     slug: c.slug, theme: c.theme, num: c.num, question: c.question, color: c.color,
   }));
 

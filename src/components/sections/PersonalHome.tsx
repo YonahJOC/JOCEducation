@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { CYCLES, getCurrentCycle, getCurrentWeek, getCycleState } from "@/lib/cycles";
+import { getCurrentWeek, getCycleState, type Cycle } from "@/lib/cycles";
+import { getCycles, getRunningCycle } from "@/lib/cycle-data";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -26,8 +27,8 @@ const GRADE_LABEL: Record<string, string> = { es: "Elementary", ms: "Middle", hs
  * saved lessons. Plus a read-only view of their school that names the person
  * to ask for anything they cannot do themselves.
  */
-export function PersonalHome({ data }: { data: HomeData }) {
-  const cycle = getCurrentCycle();
+export async function PersonalHome({ data }: { data: HomeData }) {
+  const [cycle, allCycles] = await Promise.all([getRunningCycle(), getCycles()]);
   const week = getCurrentWeek(cycle);
   const pct = Math.round((week / cycle.weeks) * 100);
   const greeting = data.firstName ? `Welcome back, ${data.firstName}.` : "Welcome back.";
@@ -139,7 +140,7 @@ export function PersonalHome({ data }: { data: HomeData }) {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
               {data.savedLessons.map((l) => {
-                const c = CYCLES.find((x) => x.slug === l.cycleSlug);
+                const c = allCycles.find((x) => x.slug === l.cycleSlug);
                 return (
                   <Link key={l.id} href={`/lesson-plans/${l.id}`} style={{ textDecoration: "none" }}>
                     <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>{l.title}</p>
@@ -193,7 +194,7 @@ export function PersonalHome({ data }: { data: HomeData }) {
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px" }}>
           {[
-            { href: "/cycles", title: "The Chesed Cycles", body: `All ${CYCLES.length} across the year` },
+            { href: "/cycles", title: "The Chesed Cycles", body: `All ${allCycles.length} across the year` },
             { href: "/lesson-plans", title: "Lesson plans", body: "Ready to print and teach" },
             { href: "/resources", title: "Resource library", body: "Source sheets and activities" },
             { href: "/board", title: "Teachers' Board", body: "What other schools ran" },
@@ -219,9 +220,10 @@ export function PersonalHome({ data }: { data: HomeData }) {
 }
 
 /** Cycles that started since a given date — used for "new since last visit". */
-export function cyclesStartedSince(since: Date | null) {
+export async function cyclesStartedSince(since: Date | null): Promise<Cycle[]> {
   if (!since) return [];
-  return CYCLES.filter(
+  const all = await getCycles();
+  return all.filter(
     (c) => getCycleState(c) !== "upcoming" && new Date(c.startDate) > since
   );
 }

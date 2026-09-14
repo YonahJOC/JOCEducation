@@ -21,6 +21,7 @@ const ACCOUNTS_NAV: NavItem[] = [
 const CONTENT_NAV: NavItem[] = [
   { label: "Start here", href: "/admin/guide", hint: "What each section does" },
   { label: "Site content", href: "/admin/site", hint: "The words on the public pages" },
+  { label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes and their dates" },
   { label: "Cycle coverage", href: "/admin/coverage", hint: "Which cycles have material" },
   { label: "Programs", href: "/admin/programs", hint: "What JOC runs for schools" },
   { label: "Lesson plans", href: "/admin/lessons", hint: "Write and publish lessons" },

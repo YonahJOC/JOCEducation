@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getPublishedResources } from "@/lib/content";
-import { CYCLES } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { ResourceLibrary } from "./ResourceLibrary";
@@ -15,7 +15,7 @@ export const metadata = { title: "Resources" };
 export default async function ResourcesPage() {
   const [resources, session] = await Promise.all([getPublishedResources(), safeAuth()]);
   const canDownload = hasSiteAccess(session?.user);
-  const cycles = CYCLES.map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
+  const cycles = (await getCycles()).map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
 
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 26px 72px" }}>

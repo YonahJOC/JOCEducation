@@ -938,3 +938,58 @@ model RoomMessage {
   @@index([roomId, createdAt])
   @@index([parentId])
 }
+
+// ─── Chesed Cycles ────────────────────────────────────────────────────────────
+// The eight themes a school year is built around. These lived in lib/cycles.ts
+// as a hardcoded array, which meant the spine of the whole product — including
+// dates nobody had checked against a luach — could only be changed by a
+// developer. The static list stays as the fallback until a cycle is saved here.
+
+model Cycle {
+  id   Int    @id @default(autoincrement())
+  slug String @unique
+  /// 1–8, and the order they run in.
+  num  Int    @unique
+
+  theme    String
+  /// The plain-English line under the theme.
+  gloss    String
+  /// What the cycle asks a student. Shown large on the cycle page.
+  question String
+
+  /// Hebrew month label, e.g. "Elul – Tishrei".
+  hebrew String
+  /// What it is pinned to, e.g. "School opening → Yom Kippur".
+  anchor String
+  /// Human-readable secular range, e.g. "Aug 30 – Sep 26".
+  range  String
+
+  startDate DateTime
+  endDate   DateTime
+  weeks     Int
+
+  color  String  @default("#2D46AF")
+  israel Boolean @default(false)
+
+  desc  String   @db.Text
+  focus String[]
+
+  weekPlan CycleWeek[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([startDate])
+}
+
+model CycleWeek {
+  id      Int    @id @default(autoincrement())
+  cycleId Int
+  title   String
+  body    String @db.Text
+  order   Int    @default(0)
+
+  cycle Cycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  @@index([cycleId])
+}

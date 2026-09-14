@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CYCLES, getCurrentCycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
+import { getCycleState, getCurrentWeek } from "@/lib/cycles";
+import { getCycles, getRunningCycle } from "@/lib/cycle-data";
 import { isGoogleConfigured, isPasswordConfigured } from "@/auth";
 import { siteContent } from "@/lib/site-content";
 import { AuthCard } from "@/components/landing/AuthCard";
@@ -80,7 +81,7 @@ export default async function EducatorLanding({
   const c = await siteContent("landing");
   const insideCards = c.list("inside.cards", FALLBACK_INSIDE);
   const demoBullets = c.list("demo.bullets", FALLBACK_BULLETS);
-  const cycle = getCurrentCycle();
+  const [cycle, allCycles] = await Promise.all([getRunningCycle(), getCycles()]);
   const state = getCycleState(cycle);
   const week = getCurrentWeek(cycle);
   const pct = state === "past" ? 100 : state === "upcoming" ? 0 : Math.round((week / cycle.weeks) * 100);
@@ -180,7 +181,7 @@ export default async function EducatorLanding({
               }}
             >
               <span className="joc-pulse" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0 }} />
-              Cycle {cycle.num} of {CYCLES.length} is running now · week {week} of {cycle.weeks}
+              Cycle {cycle.num} of {allCycles.length} is running now · week {week} of {cycle.weeks}
             </span>
 
             <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.04em", margin: "0 0 20px" }}>
@@ -277,7 +278,7 @@ export default async function EducatorLanding({
 
             <div>
               <p style={{ fontSize: "15.5px", lineHeight: 1.65, color: "rgba(255,255,255,.76)", margin: "0 0 24px" }}>
-                The JOC year runs as {CYCLES.length} consecutive Cycles, from the first week of school through Shavuos. Each one takes a single
+                The JOC year runs as {allCycles.length} consecutive Cycles, from the first week of school through Shavuos. Each one takes a single
                 middah and one guiding question, and every lesson, program and resource for those weeks points at it. The whole school is
                 working on the same thing at the same time.
               </p>
@@ -293,7 +294,7 @@ export default async function EducatorLanding({
               </div>
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: "7px" }}>
-                {CYCLES.map((c) => {
+                {allCycles.map((c) => {
                   const on = c.num === cycle.num;
                   const done = getCycleState(c) === "past";
                   return (

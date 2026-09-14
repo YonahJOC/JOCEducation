@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { CYCLES, getCycleState } from "@/lib/cycles";
+import { getCycleState } from "@/lib/cycles";
+import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 
 const INK = "#10233F";
@@ -55,6 +56,7 @@ export default async function CoveragePage() {
   }
 
   const totalLessons = [...lessonCells.values()].reduce((a, b) => a + b, 0);
+  const CYCLES = await getCycles();
   const emptyCells = CYCLES.length * BANDS.length - lessonCells.size;
 
   return (
