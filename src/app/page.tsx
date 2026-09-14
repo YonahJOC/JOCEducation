@@ -430,7 +430,8 @@ export default async function EducatorLanding({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "13px" }}>
-            <Image src="/brand/joc-icon-orange.png" alt="" width={30} height={30} style={{ height: "30px", width: "auto" }} />
+            {/* The full mark. joc-icon-orange is only the inner ring. */}
+            <Image src="/brand/joc-icon.png" alt="" width={30} height={30} style={{ height: "30px", width: "auto" }} />
             <div>
               <p style={{ fontWeight: 700, fontSize: "14.5px", color: "#fff", margin: 0, letterSpacing: "-0.02em" }}>
                 JustOneChesed <span style={{ color: ORANGE, fontWeight: 700 }}>Education</span>

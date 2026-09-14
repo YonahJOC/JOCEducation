@@ -85,14 +85,38 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         }}
       >
         <div className="joc-admin-brand" style={{ padding: "0 20px 20px", borderBottom: "1px solid rgba(255,255,255,.1)", marginBottom: "16px" }}>
-          <Link href="/admin" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-            <Image src="/brand/joc-icon-orange.png" alt="" width={26} height={26} style={{ height: "26px", width: "auto" }} />
-            <div>
-              <p style={{ fontWeight: 700, fontSize: "14px", color: "#fff", margin: 0, letterSpacing: "-0.02em" }}>JOC Console</p>
-              <p style={{ fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#FA912D", margin: "2px 0 0", fontWeight: 700 }}>
-                Internal
-              </p>
-            </div>
+          {/* The full wordmark, in the version drawn for dark backgrounds.
+              What stood here was joc-icon-orange — the inner ring on its own,
+              which is a piece of the mark rather than the mark. */}
+          <Link href="/admin" style={{ display: "block", textDecoration: "none" }}>
+            <Image
+              src="/brand/joc-wordmark-white.png"
+              alt="JustOneChesed"
+              width={165}
+              height={20}
+              priority
+              style={{ height: "19px", width: "auto", display: "block" }}
+            />
+            <p style={{ fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#FA912D", margin: "7px 0 0", fontWeight: 700 }}>
+              Education Console
+            </p>
+          </Link>
+        </div>
+
+        {/* Leaving the console was a line of small grey text at the very
+            bottom of the sidebar, below everything. It is the way out, so it
+            sits at the top and looks like a button. */}
+        <div style={{ padding: "0 14px 16px" }}>
+          <Link
+            href="/home"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+              backgroundColor: "rgba(255,255,255,.1)", color: "#fff",
+              fontSize: "13.5px", fontWeight: 600, textDecoration: "none",
+              borderRadius: "10px", padding: "11px 14px", minHeight: "44px",
+            }}
+          >
+            ← Back to the site
           </Link>
         </div>
 
@@ -110,9 +134,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               {ROLE_LABELS[role] ?? role.replace("_", " ")}
             </p>
           )}
-          <Link href="/home" style={{ fontSize: "12.5px", color: "rgba(255,255,255,.6)", textDecoration: "none", display: "block", marginBottom: "8px" }}>
-            ← Back to site
-          </Link>
           {who && (
             <form action={signOutAction}>
               <button
