@@ -92,7 +92,7 @@ export function isStaffEmail(email?: string | null): boolean {
 const DEFAULT_SUPER_ADMINS = [
   "yonah@justonechesed.org",
   "jerry@justonechesed.org",
-  "avi@justonechesed.org",
+  "avir@justonechesed.org",
 ];
 
 export function isSuperAdminEmail(email?: string | null): boolean {
