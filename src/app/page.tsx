@@ -430,11 +430,17 @@ export default async function EducatorLanding({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "13px" }}>
-            {/* The full mark. joc-icon-orange is only the inner ring. */}
-            <Image src="/brand/joc-icon.png" alt="" width={30} height={30} style={{ height: "30px", width: "auto" }} />
+            {/* Dark ground — the white wordmark, not the blue mark. */}
             <div>
-              <p style={{ fontWeight: 700, fontSize: "14.5px", color: "#fff", margin: 0, letterSpacing: "-0.02em" }}>
-                JustOneChesed <span style={{ color: ORANGE, fontWeight: 700 }}>Education</span>
+              <Image
+                src="/brand/joc-wordmark-white.png"
+                alt="JustOneChesed"
+                width={170}
+                height={21}
+                style={{ height: "20px", width: "auto", display: "block", marginBottom: "6px" }}
+              />
+              <p style={{ fontWeight: 700, fontSize: "12px", color: ORANGE, margin: 0, letterSpacing: "0.2em", textTransform: "uppercase" }}>
+                Education
               </p>
               <p style={{ fontSize: "12.5px", margin: "3px 0 0" }}>
                 A 501(c)(3) nonprofit organization

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogoMark } from "@/components/ui/LogoMark";
+import Image from "next/image";
 
 const EDUCATION = [
   { label: "Chesed Programs",  href: "/programs" },
@@ -39,15 +39,17 @@ export function Footer() {
       >
         {/* Brand column */}
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <LogoMark size={36} />
-            <div className="leading-none">
-              <div style={{ fontWeight: 700, fontSize: "15px", letterSpacing: "-0.025em", color: "#fff" }}>
-                JustOneChesed
-              </div>
-              <div style={{ fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginTop: "2px" }}>
-                EDUCATION
-              </div>
+          {/* Dark ground, so the white wordmark rather than the blue mark. */}
+          <div>
+            <Image
+              src="/brand/joc-wordmark-white.png"
+              alt="JustOneChesed"
+              width={170}
+              height={21}
+              style={{ height: "20px", width: "auto", display: "block" }}
+            />
+            <div style={{ fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginTop: "7px" }}>
+              EDUCATION
             </div>
           </div>
           <p style={{ fontSize: "13px", color: "rgba(255,255,255,.55)", lineHeight: 1.6 }}>
