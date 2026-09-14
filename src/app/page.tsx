@@ -324,7 +324,7 @@ export default async function EducatorLanding({
           What&rsquo;s inside
         </p>
         <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 34px" }}>
-          Everything a rebbe or morah needs, in one place.
+          Everything your school needs, in one place.
         </h2>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>

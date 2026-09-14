@@ -97,7 +97,7 @@ export const SITE_FIELDS: FieldDef[] = [
     page: "landing", pageLabel: "Educator landing page",
     section: "inside", sectionLabel: "What's inside",
     key: "heading", label: "Heading", type: "SHORT_TEXT",
-    value: "Everything a rebbe or morah needs, in one place.",
+    value: "Everything your school needs, in one place.",
   },
   {
     page: "landing", pageLabel: "Educator landing page",
