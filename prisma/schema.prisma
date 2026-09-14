@@ -333,6 +333,9 @@ model LessonPlan {
   featured    Boolean   @default(false)
   /// Chesed Cycle this lesson belongs to, by slug (see src/lib/cycles.ts)
   cycleSlug   String?
+  /// Which week of that cycle it is for, 1-based. Null means it belongs to
+  /// the cycle generally rather than to one particular week.
+  cycleWeek   Int?
 
   files      LessonFile[]
   objectives LessonObjective[]
@@ -345,6 +348,7 @@ model LessonPlan {
   updatedAt DateTime @updatedAt
 
   @@index([cycleSlug])
+  @@index([cycleSlug, cycleWeek])
 }
 
 model LessonFile {

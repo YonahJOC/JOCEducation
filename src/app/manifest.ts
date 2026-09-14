@@ -12,7 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait",
     categories: ["education", "lifestyle"],
     icons: [
-      { src: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { src: "/icon.png", sizes: "any", type: "image/png" },
+      { src: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
     shortcuts: [
       { name: "Lesson Plans", url: "/lesson-plans", description: "Browse all chesed lesson plans" },
