@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -20,11 +21,14 @@ export const crudLabel: React.CSSProperties = {
  * add/edit form open, runs the save, and renders the rows the caller supplies.
  */
 export function CrudShell<T extends { id: string | number }>({
-  title, subtitle, items, blank, disabled,
+  title, subtitle, steps, note, items, blank, disabled,
   renderForm, renderRow, onSave, onDelete, addLabel,
 }: {
   title: string;
   subtitle: string;
+  /** Numbered instructions, folded away under the title. */
+  steps?: string[];
+  note?: string;
   items: T[];
   blank: T;
   disabled?: boolean;
@@ -61,8 +65,7 @@ export function CrudShell<T extends { id: string | number }>({
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "6px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>{title}</h1>
+      <PageIntro title={title} what={subtitle} steps={steps} note={note}>
         {!draft && (
           <button
             onClick={() => setDraft({ ...blank })}
@@ -77,8 +80,7 @@ export function CrudShell<T extends { id: string | number }>({
             {addLabel}
           </button>
         )}
-      </div>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>{subtitle}</p>
+      </PageIntro>
 
       {draft && (
         <div style={{ backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>

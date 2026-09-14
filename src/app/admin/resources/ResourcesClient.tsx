@@ -32,7 +32,16 @@ export function ResourcesClient({
   return (
     <CrudShell<ResourceRow>
       title="Resources"
-      subtitle={`${resources.length} in the library. Tag each to a Chesed Cycle so it surfaces during those weeks.`}
+      subtitle={`${resources.length} in the library. Everything that is not a full lesson — worksheets, activities, posters, videos, source sheets.`}
+      steps={[
+        "Press “+ New resource”.",
+        "Give it a title and pick the category.",
+        "Write one line saying when a teacher would reach for it — that line is what they read before opening it.",
+        "Tag it to a Chesed Cycle so it appears during those weeks.",
+        "Upload the file, or paste a link if it already lives somewhere else.",
+        "Tick Published, then Save.",
+      ]}
+      note="Leave Published unticked while you are still working on it. Nothing unpublished is visible outside this console."
       addLabel="+ New resource"
       items={resources}
       blank={BLANK}

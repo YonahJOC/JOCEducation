@@ -4,29 +4,31 @@ import { safeAuth, isAuthConfigured } from "@/auth";
 import { canAccessConsole, canManageAccounts, ROLE_LABELS, type Role } from "@/lib/access";
 import { usingSampleData } from "@/lib/admin-data";
 import { signOutAction } from "@/app/actions/auth";
+import { SideNav, type NavItem } from "@/components/admin/SideNav";
 
 export const metadata = { title: "JOC Console", robots: { index: false, follow: false } };
 
 /** Accounts, billing and people — super admins only. */
-const ACCOUNTS_NAV = [
-  { label: "Overview", href: "/admin" },
-  { label: "Schools", href: "/admin/schools" },
-  { label: "Demo requests", href: "/admin/demos" },
-  { label: "Orders", href: "/admin/orders" },
-  { label: "People", href: "/admin/users" },
+const ACCOUNTS_NAV: NavItem[] = [
+  { label: "Overview", href: "/admin", hint: "Where every school stands" },
+  { label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history" },
+  { label: "Demo requests", href: "/admin/demos", hint: "Bookings and contact-form messages" },
+  { label: "Orders", href: "/admin/orders", hint: "What schools have ordered from the shop" },
+  { label: "People", href: "/admin/users", hint: "Accounts, roles and passwords" },
 ];
 
 /** Content — the JOC Education Team's work. */
-const CONTENT_NAV = [
-  { label: "Site content", href: "/admin/site" },
-  { label: "Cycle coverage", href: "/admin/coverage" },
-  { label: "Programs", href: "/admin/programs" },
-  { label: "Lesson plans", href: "/admin/lessons" },
-  { label: "Resources", href: "/admin/resources" },
-  { label: "Files", href: "/admin/files" },
-  { label: "Teachers' Board", href: "/admin/board" },
-  { label: "Discussion rooms", href: "/admin/rooms" },
-  { label: "Products", href: "/admin/products" },
+const CONTENT_NAV: NavItem[] = [
+  { label: "Start here", href: "/admin/guide", hint: "What each section does" },
+  { label: "Site content", href: "/admin/site", hint: "The words on the public pages" },
+  { label: "Cycle coverage", href: "/admin/coverage", hint: "Which cycles have material" },
+  { label: "Programs", href: "/admin/programs", hint: "What JOC runs for schools" },
+  { label: "Lesson plans", href: "/admin/lessons", hint: "Write and publish lessons" },
+  { label: "Resources", href: "/admin/resources", hint: "Worksheets, videos, source sheets" },
+  { label: "Files", href: "/admin/files", hint: "Everything uploaded" },
+  { label: "Teachers' Board", href: "/admin/board", hint: "Approve what teachers post" },
+  { label: "Discussion rooms", href: "/admin/rooms", hint: "Topic rooms in the staff room" },
+  { label: "Products", href: "/admin/products", hint: "The shop catalogue" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -93,8 +95,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
 
         <div className="joc-admin-nav">
-          {showAccounts && <SideGroup label="Accounts" items={ACCOUNTS_NAV} />}
-          <SideGroup label="Content" items={CONTENT_NAV} />
+          {showAccounts && <SideNav label="Accounts" items={ACCOUNTS_NAV} />}
+          <SideNav label="Content" items={CONTENT_NAV} />
         </div>
 
         <div className="joc-admin-who" style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: "1px solid rgba(255,255,255,.1)" }}>
@@ -138,23 +140,3 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   );
 }
 
-function SideGroup({ label, items }: { label: string; items: { label: string; href: string }[] }) {
-  return (
-    <div style={{ marginBottom: "18px" }}>
-      <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,.35)", fontWeight: 700, padding: "0 20px", margin: "0 0 6px" }}>
-        {label}
-      </p>
-      <nav style={{ display: "flex", flexDirection: "column" }}>
-        {items.map((i) => (
-          <Link
-            key={i.href}
-            href={i.href}
-            style={{ padding: "9px 20px", fontSize: "14px", color: "rgba(255,255,255,.8)", textDecoration: "none" }}
-          >
-            {i.label}
-          </Link>
-        ))}
-      </nav>
-    </div>
-  );
-}

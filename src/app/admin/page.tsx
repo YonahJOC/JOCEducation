@@ -1,5 +1,8 @@
 import { AccountsGuard } from "@/components/admin/AccountsGuard";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { safeAuth, isAuthConfigured } from "@/auth";
+import { canManageAccounts } from "@/lib/access";
 import {
   getSchools, getPipeline, getRecentActivity, getDemoRequests,
   STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, type SchoolRow,
@@ -26,7 +29,12 @@ const ACTIVITY_ICON: Record<string, string> = {
 };
 
 export default async function AdminOverview() {
-  return (<AccountsGuard>{await Inner()}</AccountsGuard>);
+  // The overview is account data, so it is super-admin only. Sending the
+  // education team to a locked door as the first thing they see was a poor
+  // welcome — they get the guide instead, which is their actual start.
+  const session = await safeAuth();
+  if (isAuthConfigured && !canManageAccounts(session?.user)) redirect("/admin/guide");
+  return <AccountsGuard>{await Inner()}</AccountsGuard>;
 }
 async function Inner() {
   const schools = await getSchools();
