@@ -3,6 +3,7 @@ import { DemoTable, type DemoRowT } from "@/components/admin/DemoTable";
 import { MessagesPanel, type MessageRow } from "@/components/admin/MessagesPanel";
 import { getDemoRequests, usingSampleData } from "@/lib/admin-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 
@@ -50,17 +51,24 @@ async function Inner() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
-        Demo requests
-      </h1>
+      <PageIntro
+        title="Demo requests"
+        what="Every school that has asked for a walkthrough, and every message sent through the contact form. This is the front door — if somebody is waiting here, nobody at JOC has replied to them yet."
+        steps={[
+          "Read the request. The school, who asked, and what they wrote are all in the row.",
+          "Reply to them yourself, by email or phone — the console does not send the reply for you.",
+          "Change the status to say where it stands: Contacted once you have written back, Booked once a walkthrough is in the diary, Closed if it came to nothing.",
+          "If they are going ahead, press “Create school”. That opens a school account and carries the person who asked across as its first contact, so you do not retype anything.",
+          "Contact-form messages are below. Tick one as handled once it has been answered.",
+        ]}
+        note="Nothing here is visible to the school. Statuses and notes are for the JOC team only."
+      />
       <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
-        Every booking from the landing page.{" "}
         {waiting > 0 ? (
           <strong style={{ color: "#C96C00" }}>{waiting} waiting for a reply.</strong>
         ) : (
           "Nothing waiting for a reply."
-        )}{" "}
-        Creating a school carries the requester across as the first contact.
+        )}
       </p>
 
       <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden", marginBottom: "28px" }}>

@@ -5,6 +5,7 @@ import { usingSampleData } from "@/lib/admin-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { canManageRoles, JOC_STAFF_DOMAIN, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const INTERNAL_ROLES = ["STAFF", "ADMIN", "SUPER_ADMIN"];
@@ -50,12 +51,20 @@ async function Inner() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "6px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>
-          People
-        </h1>
+      <PageIntro
+        title="People"
+        what={`Everyone with an account — the JOC team and every teacher at every school. What somebody can see and do is decided entirely by their role, which is set here.`}
+        steps={[
+          `Most people never need adding. Anyone with a @${JOC_STAFF_DOMAIN} address who signs in with Google gets an account automatically, with free access to the whole site.`,
+          "To change what somebody can do, find their row and pick a new role from the dropdown. It takes effect within five minutes without them signing out.",
+          "To bring in a teacher from a school, use the school's own page instead — invite them from there and they join that school on their first sign-in.",
+          "“Add a person” is for someone who cannot use Google sign-in. It creates a password account and makes them change the password the first time they use it.",
+          "To stop somebody getting in, suspend them. Their account and their work stay; only the login closes.",
+        ]}
+        note="Only a super admin can grant Educational team or Super admin. Give the lowest role that lets the person do their job — it is easy to raise later."
+      >
         {canEditRoles && <CreateUserForm schools={schools} disabled={usingSampleData} />}
-      </div>
+      </PageIntro>
       <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 8px" }}>
         {internal.length} at Just One Chesed, {schoolUsers.length} at schools
         {unassigned > 0 && (

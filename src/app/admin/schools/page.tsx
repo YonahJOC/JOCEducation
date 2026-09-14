@@ -2,6 +2,7 @@ import { AccountsGuard } from "@/components/admin/AccountsGuard";
 import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
 import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
 import { SchoolTable } from "../page";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 
@@ -35,12 +36,20 @@ async function Inner(searchParams: Search) {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px", marginBottom: "6px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>
-          Schools
-        </h1>
+      <PageIntro
+        title="Schools"
+        what="Every school with a JOC Education account. A school's plan is what decides whether its teachers can open the materials, so this page is the difference between a school having access and not."
+        steps={[
+          "Press “Add a school” to open an account. Give it a name and the email domain its staff use — anyone signing in on that domain then joins the school automatically.",
+          "Click a school's name to open it. Everything about that school lives there: its plan, its seats, its people and its history.",
+          "On the school's page, set the plan and the status. Trialing and Active both open the materials; Lapsed and Cancelled close them.",
+          "Invite the school's teachers from the same page. Each one gets an email, and joins that school the first time they sign in.",
+          "Use the search box and the status filters above to find a school once there are more than a screenful.",
+        ]}
+        note="Changing a plan or a status takes effect straight away for every teacher at that school. Nobody is emailed about it — tell them yourself."
+      >
         <NewSchoolForm disabled={usingSampleData} />
-      </div>
+      </PageIntro>
       <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
         {all.length} accounts. Click a school to manage its plan, people and history.
       </p>

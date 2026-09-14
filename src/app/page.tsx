@@ -170,8 +170,9 @@ export default async function EducatorLanding({
       {/* 3 — Hero */}
       <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "44px 26px 52px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "48px", alignItems: "start" }}>
-          {/* Pitch */}
-          <div>
+          {/* Pitch. containerType makes this column the unit the headline
+              below measures itself against, instead of the whole viewport. */}
+          <div style={{ containerType: "inline-size" }}>
             <span
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",
@@ -185,13 +186,23 @@ export default async function EducatorLanding({
             </span>
 
             {/* Each line has to hold on one line — "Educating Towards / Chesed"
-                reads as a mistake. The size is bounded by the longer line's own
-                width rather than the viewport, so it shrinks to fit instead of
-                wrapping, and nowrap catches anything the sizing misses. */}
+                reads as a mistake.
+
+                This was sized in vw, which measures the viewport. The headline
+                does not live in the viewport: it lives in one column of a
+                two-column grid, roughly half as wide. So on a laptop the type
+                grew past its column, and because nowrap will not let it wrap,
+                it ran underneath the sign-in card and the last letters were
+                simply cut off.
+
+                cqw measures the column itself (hence containerType on the
+                wrapper above), so the type now shrinks to fit the space it is
+                actually in. 8.2cqw is the widest setting at which the longer
+                line — "Just One Student at a Time" — still clears its column. */}
             <h1
               style={{
                 fontWeight: 800,
-                fontSize: "clamp(26px, 3.4vw, 52px)",
+                fontSize: "clamp(24px, 8.2cqw, 52px)",
                 lineHeight: 1.08,
                 letterSpacing: "-0.04em",
                 margin: "0 0 20px",
