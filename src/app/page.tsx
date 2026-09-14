@@ -184,9 +184,25 @@ export default async function EducatorLanding({
               Cycle {cycle.num} of {allCycles.length} is running now · week {week} of {cycle.weeks}
             </span>
 
-            <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.04em", margin: "0 0 20px" }}>
-              <span style={{ display: "block", color: INK }}>Educating Towards Chesed</span>
-              <span style={{ display: "block", color: BLUE }}>Just One Student at a Time</span>
+            {/* Each line has to hold on one line — "Educating Towards / Chesed"
+                reads as a mistake. The size is bounded by the longer line's own
+                width rather than the viewport, so it shrinks to fit instead of
+                wrapping, and nowrap catches anything the sizing misses. */}
+            <h1
+              style={{
+                fontWeight: 800,
+                fontSize: "clamp(26px, 3.4vw, 52px)",
+                lineHeight: 1.08,
+                letterSpacing: "-0.04em",
+                margin: "0 0 20px",
+              }}
+            >
+              <span style={{ display: "block", color: INK, whiteSpace: "nowrap" }}>
+                Educating Towards Chesed
+              </span>
+              <span style={{ display: "block", color: BLUE, whiteSpace: "nowrap" }}>
+                Just One Student at a Time
+              </span>
             </h1>
 
             <p style={{ fontSize: "17.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "46ch", margin: "0 0 22px" }}>
