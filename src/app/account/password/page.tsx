@@ -42,7 +42,7 @@ export default async function ChangePasswordPage({
       <header style={{ borderBottom: `1px solid ${RULE}` }}>
         <div style={{ maxWidth: "620px", margin: "0 auto", padding: "16px 26px" }}>
           <Link href="/home" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
-            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={150} height={18} style={{ height: "18px", width: "auto" }} />
+            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={150} height={18} priority style={{ height: "18px", width: "auto" }} />
             <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: RULE }} />
             <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
               Education

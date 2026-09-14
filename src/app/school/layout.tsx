@@ -82,7 +82,7 @@ export default async function SchoolLayout({ children }: { children: React.React
       >
         <div className="joc-school-brand" style={{ padding: "0 20px 18px" }}>
           <Link href="/home" style={{ display: "inline-flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={130} height={16} style={{ height: "16px", width: "auto" }} />
+            <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={130} height={16} priority style={{ height: "16px", width: "auto" }} />
             <span aria-hidden="true" style={{ width: "1px", height: "16px", backgroundColor: RULE }} />
             <span style={{ fontWeight: 700, fontSize: "9.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
               Education
