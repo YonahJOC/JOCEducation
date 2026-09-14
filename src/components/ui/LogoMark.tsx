@@ -1,26 +1,25 @@
-export function LogoMark({ size = 40 }: { size?: number }) {
-  const r = size / 2;
+import Image from "next/image";
+
+/**
+ * The JOC mark.
+ *
+ * This used to be a hand-drawn SVG — a navy disc with a white ring and an
+ * orange arc — which was somebody's approximation of the logo rather than the
+ * logo. The real mark is two broken concentric rings, blue outside and orange
+ * inside, on no background at all.
+ *
+ * Used on the header, the footer, and every sign-in page, so it is the file
+ * itself rather than a redrawing of it.
+ */
+export function LogoMark({ size = 40, white = false }: { size?: number; white?: boolean }) {
   return (
-    <svg
+    <Image
+      src={white ? "/brand/joc-icon-orange.png" : "/brand/joc-icon.png"}
+      alt="JustOneChesed"
       width={size}
       height={size}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="JOC Education logo"
-    >
-      {/* Navy disc */}
-      <circle cx="20" cy="20" r="20" fill="#10233F" />
-      {/* White ring */}
-      <circle cx="20" cy="20" r="13" stroke="white" strokeWidth="3.5" fill="none" />
-      {/* Orange broken arc — top right gap */}
-      <path
-        d="M 20 7 A 13 13 0 1 1 7.5 26.5"
-        stroke="#FA912D"
-        strokeWidth="3.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-    </svg>
+      priority
+      style={{ width: `${size}px`, height: `${size}px`, objectFit: "contain", display: "block" }}
+    />
   );
 }
