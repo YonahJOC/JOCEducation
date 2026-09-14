@@ -108,12 +108,19 @@ export type PublicProduct = {
   price: number;
   unit: string;
   inStock: boolean;
+  category: string;
+  imageUrl: string | null;
+  /** Delivered as a download rather than posted. */
+  isDownload: boolean;
 };
 
 export async function getPublishedProducts(): Promise<PublicProduct[]> {
   if (!isDatabaseConfigured()) return [];
   try {
-    const rows = await prisma.product.findMany({ orderBy: { createdAt: "asc" } });
+    const rows = await prisma.product.findMany({
+      where: { published: true },
+      orderBy: [{ sort: "asc" }, { createdAt: "asc" }],
+    });
     return rows.map((p) => ({
       id: p.id,
       name: p.name,
@@ -121,6 +128,9 @@ export async function getPublishedProducts(): Promise<PublicProduct[]> {
       price: p.price / 100,
       unit: p.unit,
       inStock: p.inStock,
+      category: p.category,
+      imageUrl: p.imageUrl,
+      isDownload: Boolean(p.fileUrl),
     }));
   } catch {
     return [];

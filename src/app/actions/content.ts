@@ -203,18 +203,34 @@ export async function saveProduct(input: {
   priceDollars: number;
   unit: string;
   inStock: boolean;
+  category?: string;
+  imageUrl?: string | null;
+  fileUrl?: string | null;
+  published?: boolean;
+  sort?: number;
 }): Promise<Result> {
   try {
     await requireContentEditor();
     const name = input.name.trim();
     if (!name) return { ok: false, error: "A name is required" };
 
+    const price = Math.round((Number(input.priceDollars) || 0) * 100);
+    // A shop item at $0 is a price nobody has set yet, not a free gift.
+    if (input.published && price <= 0) {
+      return { ok: false, error: "Set a price before publishing this." };
+    }
+
     const data = {
       name,
       description: input.description.trim(),
-      price: Math.round((Number(input.priceDollars) || 0) * 100),
+      price,
       unit: input.unit.trim() || "item",
       inStock: input.inStock,
+      category: input.category?.trim() || "Classroom",
+      imageUrl: input.imageUrl?.trim() || null,
+      fileUrl: input.fileUrl?.trim() || null,
+      published: input.published ?? true,
+      sort: Number(input.sort) || 0,
     };
 
     const row = input.id

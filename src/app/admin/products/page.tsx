@@ -5,7 +5,7 @@ export const metadata = { title: "Products — JOC Console" };
 
 async function getProducts(): Promise<ProductRow[]> {
   if (!isDatabaseConfigured()) return [];
-  const rows = await prisma.product.findMany({ orderBy: { createdAt: "asc" } });
+  const rows = await prisma.product.findMany({ orderBy: [{ sort: "asc" }, { createdAt: "asc" }] });
   return rows.map((p) => ({
     id: p.id,
     name: p.name,
@@ -14,6 +14,11 @@ async function getProducts(): Promise<ProductRow[]> {
     unit: p.unit,
     inStock: p.inStock,
     stripePriceId: p.stripePriceId,
+    category: p.category,
+    imageUrl: p.imageUrl,
+    fileUrl: p.fileUrl,
+    published: p.published,
+    sort: p.sort,
   }));
 }
 

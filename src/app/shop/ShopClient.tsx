@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { OrderForm } from "./OrderForm";
 
 export type ShopProduct = {
   id: string;
@@ -10,6 +11,9 @@ export type ShopProduct = {
   /** Whole dollars. */
   price: number;
   badge: string | null;
+  /** Delivered as a download, so no shipping address is needed. */
+  isDownload: boolean;
+  imageUrl: string | null;
 };
 
 type Cart = Record<string, number>;
@@ -27,26 +31,6 @@ export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) 
   const displayed = activeCategory === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeCategory);
   const itemCount = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = PRODUCTS.reduce((sum, p) => sum + (cart[p.id] || 0) * p.price, 0);
-
-  // The order as an email a school can send and JOC can invoice against.
-  const orderMailto = useMemo(() => {
-    const lines = PRODUCTS.filter((p) => cart[p.id]).map(
-      (p) => `${cart[p.id]} × ${p.name} ($${p.price} each)`
-    );
-    const body = [
-      "I would like to order the following for my school:",
-      "",
-      ...lines,
-      "",
-      `Subtotal before shipping: $${subtotal}`,
-      "",
-      "School:",
-      "Contact name:",
-      "Delivery address:",
-      "",
-    ].join("\n");
-    return `mailto:education@justonechesed.org?subject=${encodeURIComponent("School shop order")}&body=${encodeURIComponent(body)}`;
-  }, [PRODUCTS, cart, subtotal]);
 
   function addToCart(id: string) { setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 })); }
   function removeFromCart(id: string) { setCart((c) => { const n = { ...c }; if (n[id] > 1) n[id]--; else delete n[id]; return n; }); }
@@ -97,9 +81,16 @@ export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) 
             {p.badge && (
               <span style={{ position: "absolute", top: "14px", right: "14px", zIndex: 1, backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.08em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px" }}>{p.badge}</span>
             )}
-            {/* Image slot */}
-            <div style={{ aspectRatio: "4/3", backgroundColor: "#F4F7FD", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: "12px", color: "rgba(16,35,63,.3)", fontWeight: 500 }}>Photo coming soon</span>
+            {/* Photo, when there is one */}
+            <div style={{ aspectRatio: "4/3", backgroundColor: "#F4F7FD", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              {p.imageUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={p.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                <span style={{ fontSize: "12px", color: "rgba(16,35,63,.3)", fontWeight: 500 }}>
+                  {p.isDownload ? "Download" : "Photo coming soon"}
+                </span>
+              )}
             </div>
             <div style={{ padding: "20px" }}>
               <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 600, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "10px" }}>{p.category}</span>
@@ -175,22 +166,12 @@ export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) 
                   <span style={{ fontSize: "14px", color: "rgba(16,35,63,.55)" }}>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
                   <span style={{ fontWeight: 700, fontSize: "15px", color: "#10233F" }}>${subtotal}</span>
                 </div>
-                <p style={{ fontSize: "13px", color: "rgba(16,35,63,.45)", marginBottom: "16px" }}>
-                  Card payment is not switched on yet. Send the order and JOC will confirm the
-                  total, including shipping, and invoice your school.
-                </p>
-                {/* A "Checkout" button that popped up an alert saying checkout
-                    was coming soon wasted the click. This one actually sends
-                    the order, which is how a school buys today anyway. */}
-                <a
-                  href={orderMailto}
-                  style={{ display: "block", textAlign: "center", width: "100%", boxSizing: "border-box", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "15px", textDecoration: "none" }}
-                >
-                  Send this order to JOC
-                </a>
-                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)", textAlign: "center", marginTop: "10px" }}>
-                  Opens an email to education@justonechesed.org with your list.
-                </p>
+                <OrderForm
+                  items={Object.entries(cart).map(([productId, quantity]) => ({ productId, quantity }))}
+                  subtotal={subtotal}
+                  needsAddress={PRODUCTS.some((p) => cart[p.id] && !p.isDownload)}
+                  onPlaced={() => setCart({})}
+                />
               </div>
             )}
           </div>

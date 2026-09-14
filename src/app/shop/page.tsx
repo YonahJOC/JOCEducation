@@ -15,12 +15,12 @@ export default async function ShopPage() {
     .map((p) => ({
       id: p.id,
       name: p.name,
-      // The catalogue has no separate category yet; the unit is the closest
-      // honest grouping until one is added.
-      category: p.unit.charAt(0).toUpperCase() + p.unit.slice(1),
+      category: p.category,
       detail: p.description,
       price: p.price,
       badge: null,
+      isDownload: p.isDownload,
+      imageUrl: p.imageUrl,
     }));
 
   if (products.length === 0) {

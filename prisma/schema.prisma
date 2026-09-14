@@ -54,6 +54,8 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  orders Order[]
+
   @@index([status])
   @@index([accountManagerId])
 }
@@ -215,6 +217,7 @@ model User {
   boardPosts   BoardPost[]
   boardLikes   BoardLike[]
   uploadedFiles StoredFile[] @relation("UploadedFiles")
+  orders        Order[]
 
   managedSchools   School[]         @relation("AccountManager")
   loggedActivities SchoolActivity[] @relation("ActivityAuthor")
@@ -474,10 +477,24 @@ model Product {
   id            String  @id @default(cuid())
   name          String
   description   String  @db.Text
+  /// Cents.
   price         Int
   unit          String  @default("item")
   inStock       Boolean @default(true)
   stripePriceId String?
+
+  /// Shop grouping — "Classroom", "Events", "Books".
+  category String @default("Classroom")
+  /// Picture on the shop card. A /api/files/ id, or any URL.
+  imageUrl String?
+  /// Set for something delivered as a download rather than posted —
+  /// a handbook PDF, for instance. Released once the order is fulfilled.
+  fileUrl  String?
+  /// Off until someone has set a real price.
+  published Boolean @default(true)
+  sort      Int     @default(0)
+
+  orderItems OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -774,4 +791,75 @@ model ContactMessage {
   createdAt DateTime @default(now())
 
   @@index([handled, createdAt])
+}
+
+// ─── Orders ───────────────────────────────────────────────────────────────────
+// A school's order, stored whether or not it is ever paid for online. Card
+// payment is not connected; a purchase order is how schools buy from JOC
+// today, and an order that only exists in somebody's outbox is an order JOC
+// cannot see, chase, or fulfil.
+
+enum OrderStatus {
+  /// Placed on the site, nobody has looked at it yet.
+  NEW
+  /// JOC has confirmed the total and shipping.
+  QUOTED
+  /// Invoice sent, or payment received.
+  INVOICED
+  /// Sent or, for a download, released.
+  FULFILLED
+  CANCELLED
+}
+
+model Order {
+  id     String      @id @default(cuid())
+  status OrderStatus @default(NEW)
+
+  /// Who placed it. Kept as text as well as a relation, so an order survives
+  /// the account being removed.
+  contactName  String
+  contactEmail String
+  phone        String?
+  schoolName   String
+  /// Blank for an order that is all downloads.
+  address      String?
+  /// The school's own purchase order number, when they have one.
+  poNumber     String?
+  notes        String? @db.Text
+
+  userId   String?
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  /// Cents, at the moment the order was placed.
+  subtotal Int
+  /// What JOC wrote back — shipping, a discount, the final figure.
+  response String? @db.Text
+
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  /// Copied, so the line still reads correctly if the product is renamed,
+  /// repriced or deleted.
+  name      String
+  unit      String
+  unitPrice Int
+  quantity  Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
 }

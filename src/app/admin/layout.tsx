@@ -12,6 +12,7 @@ const ACCOUNTS_NAV = [
   { label: "Overview", href: "/admin" },
   { label: "Schools", href: "/admin/schools" },
   { label: "Demo requests", href: "/admin/demos" },
+  { label: "Orders", href: "/admin/orders" },
   { label: "People", href: "/admin/users" },
 ];
 
