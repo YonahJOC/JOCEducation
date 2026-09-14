@@ -19,7 +19,13 @@ export type ShopProduct = {
 type Cart = Record<string, number>;
 
 /** The cart lives in the browser only — nothing is charged until Stripe is wired. */
-export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) {
+export function ShopClient({
+  products: PRODUCTS, headline, standfirst,
+}: {
+  products: ShopProduct[];
+  headline: string;
+  standfirst: string;
+}) {
   const CATEGORIES = useMemo(
     () => ["All", ...Array.from(new Set(PRODUCTS.map((p) => p.category))).sort()],
     [PRODUCTS]
@@ -42,10 +48,10 @@ export function ShopClient({ products: PRODUCTS }: { products: ShopProduct[] }) 
         <div>
           <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>SCHOOL SHOP</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
-            Physical materials for your school.
+            {headline}
           </h1>
           <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "54ch" }}>
-            Printed and shipped directly to your school. Need to pay by purchase order? <a href="mailto:education@justonechesed.org" style={{ color: "#2D46AF", fontWeight: 600 }}>Contact us</a>.
+            {standfirst}
           </p>
         </div>
 

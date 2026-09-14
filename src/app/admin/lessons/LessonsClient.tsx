@@ -126,8 +126,14 @@ export function LessonsClient({
                         >
                           Edit
                         </button>
-                        <Link href={`/lesson-plans/${l.id}`} style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", textDecoration: "none" }}>
-                          View
+                        {/* A draft has no public page, so previewing it needs
+                            to say so — otherwise "View" 404s and looks broken. */}
+                        <Link
+                          href={l.published ? `/lesson-plans/${l.id}` : `/lesson-plans/${l.id}?preview=1`}
+                          target="_blank"
+                          style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", textDecoration: "none" }}
+                        >
+                          {l.published ? "View" : "Preview"}
                         </Link>
                       </td>
                     </tr>

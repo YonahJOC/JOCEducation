@@ -230,3 +230,44 @@ export async function getPublishedPrograms(): Promise<Program[]> {
 export async function getPublishedProgram(slug: string): Promise<Program | null> {
   return (await getPublishedPrograms()).find((p) => p.slug === slug) ?? null;
 }
+
+/**
+ * One lesson, published or not.
+ *
+ * Only ever called after the caller has checked the viewer may see drafts —
+ * this function does no authorization of its own.
+ */
+export async function getLessonForPreview(id: number): Promise<PublicLesson | null> {
+  if (!isDatabaseConfigured()) return null;
+  try {
+    const l = await prisma.lessonPlan.findUnique({
+      where: { id },
+      include: {
+        objectives: { orderBy: { order: "asc" } },
+        materials: { orderBy: { order: "asc" } },
+        discussion: { orderBy: { order: "asc" } },
+        steps: { orderBy: { order: "asc" } },
+        files: { orderBy: { order: "asc" } },
+      },
+    });
+    if (!l) return null;
+
+    return {
+      id: l.id,
+      theme: l.theme,
+      title: l.title,
+      description: l.description,
+      grade: l.grade as Lesson["grade"],
+      time: l.timeMinutes as Lesson["time"],
+      prep: l.prep as Lesson["prep"],
+      files: l.files.map((f) => ({ name: f.name, url: f.url })),
+      objectives: l.objectives.map((o) => o.text),
+      materials: l.materials.map((m) => m.text),
+      steps: l.steps.map((s) => ({ duration: s.duration, title: s.title, description: s.description })),
+      discussion: l.discussion.map((d) => d.text),
+      cycleSlug: l.cycleSlug,
+    };
+  } catch {
+    return null;
+  }
+}

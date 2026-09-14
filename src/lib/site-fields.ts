@@ -224,6 +224,103 @@ export const SITE_FIELDS: FieldDef[] = [
     help: "Each person: title is their name, value is their role, body is one or two lines about them. The section is hidden while this is empty.",
     value: j([]),
   },
+
+  // ─── Resources ────────────────────────────────────────────────────────────
+  {
+    page: "resources", pageLabel: "Resources page",
+    section: "hero", sectionLabel: "Heading",
+    key: "eyebrow", label: "Small line above the title", type: "SHORT_TEXT",
+    value: "RESOURCE LIBRARY",
+  },
+  {
+    page: "resources", pageLabel: "Resources page",
+    section: "hero", sectionLabel: "Heading",
+    key: "headline", label: "Title", type: "SHORT_TEXT",
+    value: "Everything for the classroom, all in one place.",
+  },
+  {
+    page: "resources", pageLabel: "Resources page",
+    section: "hero", sectionLabel: "Heading",
+    key: "standfirst", label: "Line underneath", type: "LONG_TEXT",
+    value: "Worksheets, activities, posters, videos and source sheets — tied to the Chesed Cycles and included with any JOC Education subscription.",
+  },
+  {
+    page: "resources", pageLabel: "Resources page",
+    section: "empty", sectionLabel: "When the library is empty",
+    key: "heading", label: "Heading", type: "SHORT_TEXT",
+    help: "Shown only while nothing has been published.",
+    value: "The library is being built.",
+  },
+  {
+    page: "resources", pageLabel: "Resources page",
+    section: "empty", sectionLabel: "When the library is empty",
+    key: "body", label: "Explanation", type: "LONG_TEXT",
+    value: "The JOC Education team is preparing the first set of worksheets, activities and source sheets. They will appear here as they are published — nothing is hidden behind a paywall that is not yet ready.",
+  },
+
+  // ─── Teachers' Board ──────────────────────────────────────────────────────
+  {
+    page: "board", pageLabel: "Teachers' Board",
+    section: "hero", sectionLabel: "Heading",
+    key: "headline", label: "Title", type: "SHORT_TEXT",
+    value: "What other schools are running.",
+  },
+  {
+    page: "board", pageLabel: "Teachers' Board",
+    section: "hero", sectionLabel: "Heading",
+    key: "standfirst", label: "Line underneath", type: "LONG_TEXT",
+    value: "Teachers share what they actually ran — what worked, what didn't, and what surprised them. Filter by region or grade to find ideas from schools like yours.",
+  },
+
+  // ─── Shop ─────────────────────────────────────────────────────────────────
+  {
+    page: "shop", pageLabel: "Shop",
+    section: "hero", sectionLabel: "Heading",
+    key: "headline", label: "Title", type: "SHORT_TEXT",
+    value: "Physical materials for your school.",
+  },
+  {
+    page: "shop", pageLabel: "Shop",
+    section: "hero", sectionLabel: "Heading",
+    key: "standfirst", label: "Line underneath", type: "LONG_TEXT",
+    value: "Printed and shipped directly to your school. Card payment is not switched on yet — send an order and JOC will confirm the total and invoice.",
+  },
+
+  // ─── Pricing ──────────────────────────────────────────────────────────────
+  // The figures themselves are at /admin/pricing; this is the wording round them.
+  {
+    page: "pricing", pageLabel: "Pricing page",
+    section: "hero", sectionLabel: "Heading",
+    key: "headline", label: "Title", type: "SHORT_TEXT",
+    value: "Simple, transparent pricing.",
+  },
+  {
+    page: "pricing", pageLabel: "Pricing page",
+    section: "hero", sectionLabel: "Heading",
+    key: "standfirst", label: "Line underneath", type: "LONG_TEXT",
+    value: "No long-term commitment on monthly plans. Annual saves 15%. No school is turned away on cost — we offer full and partial scholarships.",
+  },
+  {
+    page: "pricing", pageLabel: "Pricing page",
+    section: "faq", sectionLabel: "Questions and answers",
+    key: "items", label: "Questions", type: "REPEATABLE",
+    help: "Each one: title is the question, body is the answer.",
+    value: j([]),
+  },
+
+  // ─── Programs ─────────────────────────────────────────────────────────────
+  {
+    page: "programs", pageLabel: "Programs page",
+    section: "hero", sectionLabel: "Heading",
+    key: "headline", label: "Title", type: "SHORT_TEXT",
+    value: "Chesed your school can actually run.",
+  },
+  {
+    page: "programs", pageLabel: "Programs page",
+    section: "models", sectionLabel: "The four ways to run it",
+    key: "heading", label: "Section heading", type: "SHORT_TEXT",
+    value: "Four ways schools run chesed with JOC.",
+  },
 ];
 
 /** Pages, in editor order, derived from the registry. */

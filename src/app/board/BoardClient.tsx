@@ -30,12 +30,14 @@ const SORT_OPTIONS = [
 const PER_PAGE = 8;
 
 export function BoardClient({
-  ideas, signedIn, defaultSchool, defaultRegion,
+  ideas, signedIn, defaultSchool, defaultRegion, headline, standfirst,
 }: {
   ideas: BoardIdea[];
   signedIn: boolean;
   defaultSchool: string;
   defaultRegion: string;
+  headline: string;
+  standfirst: string;
 }) {
   const [region, setRegion] = useState("All");
   const [grade, setGrade] = useState("all");
@@ -114,11 +116,10 @@ export function BoardClient({
         <div>
           <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
-            What other schools are running.
+            {headline}
           </h1>
           <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "56ch" }}>
-            Teachers share what they actually ran — what worked, what didn&rsquo;t, and what surprised
-            them. Filter by region or grade to find ideas from schools like yours.
+            {standfirst}
           </p>
         </div>
         {signedIn ? (

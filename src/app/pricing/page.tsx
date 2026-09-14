@@ -1,5 +1,7 @@
 import { PricingSection } from "@/components/sections/PricingSection";
 import { getPlanPricing, getProgramPricing } from "@/lib/pricing";
+import { siteContent, type RepeatItem } from "@/lib/site-content";
+import Link from "next/link";
 
 export const metadata = {
   title: { absolute: "Pricing — JOC Education" },
@@ -7,7 +9,12 @@ export const metadata = {
 };
 
 export default async function PricingPage() {
-  const [plans, programs] = await Promise.all([getPlanPricing(), getProgramPricing()]);
+  const [plans, programs, c] = await Promise.all([
+    getPlanPricing(),
+    getProgramPricing(),
+    siteContent("pricing"),
+  ]);
+  const faq = c.list<RepeatItem>("faq.items", []);
 
   return (
     <div>
@@ -15,10 +22,13 @@ export default async function PricingPage() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "56px 26px 0" }}>
         <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px", maxWidth: "16ch" }}>
-          Simple, transparent pricing.
+          {c.text("hero.headline", "Simple, transparent pricing.")}
         </h1>
         <p style={{ fontSize: "17px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "55ch", marginBottom: "40px" }}>
-          No long-term commitment on monthly plans. Annual saves 15%. No school is turned away on cost — we offer full and partial scholarships.
+          {c.text(
+            "hero.standfirst",
+            "No long-term commitment on monthly plans. Annual saves 15%. No school is turned away on cost — we offer full and partial scholarships."
+          )}
         </p>
 
         {/* What every plan includes. The trust bar that stood here quoted
@@ -45,7 +55,10 @@ export default async function PricingPage() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 26px 72px" }}>
         <h2 style={{ fontWeight: 700, fontSize: "clamp(22px, 3vw, 30px)", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "32px" }}>Frequently asked questions</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2px" }}>
-          {FAQ.map((item, i) => (
+          {(faq.length > 0
+            ? faq.map((f) => ({ q: f.title ?? "", a: f.body ?? "" }))
+            : FAQ
+          ).map((item, i) => (
             <FAQItem key={i} q={item.q} a={item.a} />
           ))}
         </div>

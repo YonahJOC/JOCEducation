@@ -1,5 +1,6 @@
 import { getPublishedProducts } from "@/lib/content";
 import { ShopClient, type ShopProduct } from "./ShopClient";
+import { siteContent } from "@/lib/site-content";
 
 export const metadata = { title: "Shop" };
 
@@ -8,7 +9,7 @@ export const metadata = { title: "Shop" };
  * change is a console edit rather than a deploy.
  */
 export default async function ShopPage() {
-  const rows = await getPublishedProducts();
+  const [rows, c] = await Promise.all([getPublishedProducts(), siteContent("shop")]);
 
   const products: ShopProduct[] = rows
     .filter((p) => p.inStock)
@@ -44,5 +45,14 @@ export default async function ShopPage() {
     );
   }
 
-  return <ShopClient products={products} />;
+  return (
+    <ShopClient
+      products={products}
+      headline={c.text("hero.headline", "Physical materials for your school.")}
+      standfirst={c.text(
+        "hero.standfirst",
+        "Printed and shipped directly to your school. Card payment is not switched on yet — send an order and JOC will confirm the total and invoice."
+      )}
+    />
+  );
 }

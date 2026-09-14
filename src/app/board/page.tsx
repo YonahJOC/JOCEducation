@@ -3,6 +3,7 @@ import { getApprovedBoardPosts } from "@/lib/content";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { BoardClient, type BoardIdea } from "./BoardClient";
+import { siteContent } from "@/lib/site-content";
 
 export const metadata = { title: "Teachers' Board" };
 
@@ -18,7 +19,16 @@ function ago(d: Date) {
 }
 
 export default async function BoardPage() {
-  const [posts, session] = await Promise.all([getApprovedBoardPosts(), safeAuth()]);
+  const [posts, session, c] = await Promise.all([
+    getApprovedBoardPosts(),
+    safeAuth(),
+    siteContent("board"),
+  ]);
+  const headline = c.text("hero.headline", "What other schools are running.");
+  const standfirst = c.text(
+    "hero.standfirst",
+    "Teachers share what they actually ran — what worked, what didn’t, and what surprised them. Filter by region or grade to find ideas from schools like yours."
+  );
   const userId = session?.user?.id ?? null;
 
   // Which of these the reader has already marked useful.
@@ -76,6 +86,8 @@ export default async function BoardPage() {
       signedIn={Boolean(session?.user)}
       defaultSchool=""
       defaultRegion=""
+      headline={headline}
+      standfirst={standfirst}
     />
   );
 }
