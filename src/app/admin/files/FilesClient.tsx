@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { uploadFile, removeFile } from "@/app/actions/files";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -44,8 +45,17 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "6px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>Files</h1>
+      <PageIntro
+        title="Files"
+        what="Every worksheet, source sheet, photo and printable uploaded to JOC. You can attach files while editing a lesson, a resource or a product — this page is for seeing what exists and removing what should not."
+        steps={[
+          "Press “Upload a file” to add one.",
+          "“Copy link” gives you its address, to paste anywhere that asks for one.",
+          "“Open” checks it is the file you think it is.",
+          "Delete only something nothing is using — anything pointing at it will stop working.",
+        ]}
+        note="Downloads are served only to signed-in accounts whose access is live. A link pasted outside the site will not open for a stranger."
+      >
         <input
           ref={input}
           type="file"
@@ -68,13 +78,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
         >
           {pending ? "Uploading…" : "Upload a file"}
         </button>
-      </div>
-
-      <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 20px", maxWidth: "70ch" }}>
-        Every worksheet, source sheet and printable uploaded to JOC. You can attach files directly
-        while editing a lesson or a resource — this page is for seeing what exists, and for
-        removing what should not. Downloads are only served to signed-in accounts with access.
-      </p>
+      </PageIntro>
 
       {error && (
         <p style={{ fontSize: "14px", color: RED, backgroundColor: "rgba(184,50,30,.07)", border: "1px solid rgba(184,50,30,.2)", borderRadius: "12px", padding: "12px 16px" }}>

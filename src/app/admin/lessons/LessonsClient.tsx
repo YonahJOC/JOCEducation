@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { LessonEditor, EMPTY_LESSON, type LessonDraft, type CycleRef } from "@/components/admin/LessonEditor";
 import { BulkImport } from "@/components/admin/BulkImport";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -45,10 +46,18 @@ export function LessonsClient({
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "6px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>
-          Lesson plans
-        </h1>
+      <PageIntro
+        title="Lesson plans"
+        what="The lessons teachers open and teach. Each one carries its objectives, what the teacher needs in hand, timed steps, discussion questions, and the printables that go with it."
+        steps={[
+          "Press “+ New lesson”.",
+          "Write the title, then pick the Chesed Cycle it belongs to, the grade band, how long it runs and how much preparation it needs.",
+          "Fill in the objectives, materials, steps and discussion questions. The panel on the right lists what is still missing and checks the steps add up to the lesson length.",
+          "Under “Printables and handouts”, give each file a name a teacher will recognise, then upload the file.",
+          "Tick Published and Save. It is on the site immediately.",
+        ]}
+        note="Leave Published unticked to keep working on it. Nothing unpublished is visible to anyone outside this console."
+      >
         <button
           onClick={() => setEditing({ ...EMPTY_LESSON })}
           disabled={disabled}
@@ -60,10 +69,7 @@ export function LessonsClient({
         >
           + New lesson
         </button>
-      </div>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 12px" }}>
-        {lessons.length} lessons. Tag each one to a Chesed Cycle so it appears during those weeks.
-      </p>
+      </PageIntro>
 
       <div style={{ marginBottom: "16px" }}>
         <BulkImport cycles={cycles} disabled={disabled} />

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { setBoardPostApproved, deleteBoardPost } from "@/app/actions/content";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 
@@ -30,17 +31,23 @@ export function BoardClient({ posts, disabled }: { posts: BoardRow[]; disabled?:
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
-        Teachers&rsquo; Board
-      </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
-        {pending.length > 0 ? (
-          <strong style={{ color: "#C96C00" }}>{pending.length} waiting for approval.</strong>
-        ) : (
-          "Nothing waiting for approval."
-        )}{" "}
-        {live.length} live on the board. New posts stay hidden until approved.
-      </p>
+      <PageIntro
+        title="Teachers' Board"
+        what={
+          (pending.length > 0
+            ? `${pending.length} waiting for approval. `
+            : "Nothing waiting for approval. ") +
+          `${live.length} live on the board. Teachers write up something they actually ran; ` +
+          `nothing appears publicly until you have read it.`
+        }
+        steps={[
+          "Posts waiting for approval sit at the top.",
+          "Read it. If a student is named or identifiable, remove it rather than approving it.",
+          "Press Approve to put it on the board — it is public to every signed-in teacher straight away.",
+          "Remove takes down something already approved.",
+        ]}
+        note="This is different from the discussion rooms, where nothing waits for approval. The board is for finished write-ups; the rooms are for the conversation."
+      />
 
       {pending.length > 0 && (
         <>

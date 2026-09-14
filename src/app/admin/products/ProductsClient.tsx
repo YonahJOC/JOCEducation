@@ -38,6 +38,14 @@ export function ProductsClient({ products, disabled }: { products: ProductRow[];
         `arrives under Orders for you to quote and invoice. Attach a file to something ` +
         `delivered as a download — a handbook, say — and no delivery address is asked for.`
       }
+      steps={[
+        "Press “+ New product”.",
+        "Set the name, the price, and the unit — “per copy”, “per pack”, “per year”.",
+        "Pick the section it belongs in, and add a photo for the shop card.",
+        "If it is delivered as a download rather than posted, upload the file itself — a school ordering it is then not asked for a delivery address.",
+        "Tick Published, then Save.",
+      ]}
+      note="Publishing something at $0 is refused. A shop item with no price is a price nobody has set."
       addLabel="+ New product"
       items={products}
       blank={BLANK}

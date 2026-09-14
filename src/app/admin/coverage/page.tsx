@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
+import { PageIntro } from "@/components/admin/PageIntro";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 
 const INK = "#10233F";
@@ -61,17 +62,22 @@ export default async function CoveragePage() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
-        Cycle coverage
-      </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
-        {totalLessons} published {totalLessons === 1 ? "lesson" : "lessons"} across {CYCLES.length} Cycles.{" "}
-        {emptyCells > 0 && (
-          <span style={{ color: ORANGE_TEXT }}>
-            {emptyCells} of {CYCLES.length * BANDS.length} slots have nothing yet.
-          </span>
-        )}
-      </p>
+      <PageIntro
+        title="Cycle coverage"
+        what={
+          `${totalLessons} published ${totalLessons === 1 ? "lesson" : "lessons"} across ` +
+          `${CYCLES.length} Cycles. ` +
+          (emptyCells > 0
+            ? `${emptyCells} of ${CYCLES.length * BANDS.length} slots have nothing in them yet.`
+            : "Every slot has something in it.")
+        }
+        steps={[
+          "The Cycles run down the side; the grade bands run across.",
+          "A number means published lessons. A dashed cell means a teacher in that grade has nothing for those weeks.",
+          "Click a dashed cell to start writing the lesson that fills it.",
+        ]}
+        note="This counts published lessons only. A draft you are still writing will not show here."
+      />
 
       <div style={{ backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.09)`, borderRadius: "16px", overflow: "hidden" }}>
         <div style={{ overflowX: "auto" }}>

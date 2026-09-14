@@ -40,6 +40,14 @@ export function RoomsClient({
         "conversation. You can remove any message; authors can remove their own. Closing a room " +
         "stops new messages but keeps everything readable."
       }
+      steps={[
+        "Press “+ New room”.",
+        "Give it an icon, a name, and one line saying what it is for — that line is what a teacher reads before deciding to follow it.",
+        "Tie it to a Chesed Cycle if it only matters during those weeks.",
+        "Save. It is open immediately.",
+        "To retire a room, tick Closed rather than deleting it — everything in it stays readable.",
+      ]}
+      note="Nothing posted in a room waits for approval. You can remove a single message from inside the room itself."
       addLabel="+ New room"
       items={rooms}
       blank={BLANK}

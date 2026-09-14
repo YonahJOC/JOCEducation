@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveDraft, discardDraft, publishDrafts, setPreview } from "@/app/actions/site";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const DEEP = "#0B1A31";
@@ -97,12 +98,17 @@ export function SiteEditor({
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
-        Site content
-      </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
-        Every word on the public site. Edits become drafts — nothing changes for visitors until you publish.
-      </p>
+      <PageIntro
+        title="Site content"
+        what="The words on the public pages. Nothing you type here reaches a visitor until you press Publish — until then it is a draft only you can see."
+        steps={[
+          "Pick a page on the left, then the section of it you want.",
+          "Change the wording. It saves as a draft as you type; the count of unpublished changes is on the right.",
+          "Press “Preview drafts on the site” and walk the real site to see how it reads. Only you see the drafts.",
+          "When you are happy, press Publish. Everything waiting goes live together.",
+        ]}
+        note="Every field keeps its history, so anything published can be put back the way it was."
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: "16px" }}>
         <div className="joc-site-grid" style={{ display: "grid", gridTemplateColumns: "190px minmax(0,1fr) 280px", gap: "16px", alignItems: "start" }}>

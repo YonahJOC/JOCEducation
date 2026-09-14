@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { updateOrder } from "@/app/actions/orders";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -38,18 +39,21 @@ export function OrdersClient({ orders, disabled }: { orders: OrderRow[]; disable
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
-        Orders
-      </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px", maxWidth: "70ch", lineHeight: 1.55 }}>
-        Everything schools have ordered from the shop.{" "}
-        {waiting > 0 ? (
-          <strong style={{ color: "#C96C00" }}>{waiting} waiting to be quoted.</strong>
-        ) : (
-          "Nothing waiting."
-        )}{" "}
-        Nothing is charged on the site — confirm the total and shipping here, then invoice.
-      </p>
+      <PageIntro
+        title="Orders"
+        what={
+          `Everything schools have ordered from the shop. ` +
+          (waiting > 0 ? `${waiting} waiting to be quoted. ` : "Nothing waiting. ") +
+          `Nothing is charged on the site — you confirm the total and invoice.`
+        }
+        steps={[
+          "Open an order to see what they asked for and where it goes.",
+          "Work out the real total including shipping, and write it in the box — that is what you told them.",
+          "Press Quoted once you have told them, Invoiced when the invoice is out, Fulfilled when it has shipped or the download is released.",
+          "“Reply by email” opens a message to whoever placed it.",
+        ]}
+        note="A school sees no charge and no payment screen. The order reaches you and then it is a conversation, which is how schools buy from JOC today."
+      />
 
       {orders.length === 0 ? (
         <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
