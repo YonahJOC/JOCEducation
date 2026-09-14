@@ -189,7 +189,7 @@ const config: NextAuthConfig = {
      * address. Without this an invitation is created and then does nothing —
      * the person signs in and lands nowhere.
      */
-    async signIn({ user }) {
+    async signIn({ user, account }) {
       if (!isDatabaseConfigured() || !user.id) return;
       try {
         await prisma.user.update({
@@ -202,6 +202,25 @@ const config: NextAuthConfig = {
 
       if (!user.email) return;
       try {
+        // An invitation names an address, so consuming it has to wait until
+        // the address is proven. Otherwise someone who guesses an invited
+        // teacher's address signs up as them and inherits the role.
+        // Google sign-ins arrive verified; a password sign-up does not until
+        // the person follows the confirmation link.
+        const me = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { emailVerified: true },
+        });
+        // An OAuth sign-in is proof in itself — Google will not hand us a
+        // token for an address the person does not control.
+        if (!me?.emailVerified) {
+          if (account?.provider !== "google") return;
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { emailVerified: new Date() },
+          });
+        }
+
         const invite = await prisma.invitation.findFirst({
           where: {
             email: user.email.toLowerCase(),

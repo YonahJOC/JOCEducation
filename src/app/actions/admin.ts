@@ -529,6 +529,9 @@ export async function createUserAccount(input: {
         // They should choose their own once they are in.
         mustChangePassword: true,
         active: true,
+        // A super admin typing the address and handing over the password is
+        // its own proof — this account did not come off the public form.
+        emailVerified: new Date(),
       },
     });
 

@@ -14,7 +14,7 @@ const ROLES = [
 export default function SignupPage() {
   const [form, setForm] = useState({ firstName: "", lastName: "", school: "", role: "teacher", email: "", password: "" });
   const [loading, start] = useTransition();
-  const [done, setDone] = useState<{ schoolName: string | null } | null>(null);
+  const [done, setDone] = useState<{ verificationSent: boolean; willGetAccess: boolean } | null>(null);
   const [error, setError] = useState("");
 
   function set(key: string, val: string) { setForm((f) => ({ ...f, [key]: val })); }
@@ -35,7 +35,7 @@ export default function SignupPage() {
         schoolName: form.school,
         role: form.role,
       });
-      if (r.ok) setDone({ schoolName: r.schoolName });
+      if (r.ok) setDone({ verificationSent: r.verificationSent, willGetAccess: r.willGetAccess });
       else setError(r.error);
     });
   }
@@ -47,9 +47,11 @@ export default function SignupPage() {
           <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#ECFDF5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "28px" }}>✓</div>
           <h2 style={{ fontWeight: 800, fontSize: "26px", color: "#10233F", marginBottom: "10px" }}>Your account is ready</h2>
           <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", lineHeight: 1.6, marginBottom: "28px" }}>
-            {done.schoolName
-              ? `You have been matched to ${done.schoolName}. Sign in and everything your school has access to is there.`
-              : "Sign in with the address and password you just chose. If your school has a JOC account, use your school email address to be matched to it."}
+            {done.verificationSent
+              ? "Check your inbox and confirm your address. Until you do, the account exists but has no access to anything — confirming it is what connects you to your school."
+              : done.willGetAccess
+              ? "Your account is made. It has no access yet: that address should entitle you to more, but JOC cannot send the confirmation email until its mail service is switched on. Write to education@justonechesed.org and someone will open it up."
+              : "Your account is made. It has no access to the library yet — ask Just One Chesed to connect you to your school."}
           </p>
           <Link href="/login" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}>
             Sign in

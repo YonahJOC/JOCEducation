@@ -14,6 +14,7 @@ const OWN_CHROME = [
   "/signup",
   "/forgot-password",
   "/reset-password",
+  "/verify",
 ];
 
 export function ChromeGate({ children }: { children: React.ReactNode }) {
