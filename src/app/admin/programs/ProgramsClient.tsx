@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveProgram, deleteProgram, seedProgramsFromStatic } from "@/app/actions/content";
+import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -92,8 +93,19 @@ export function ProgramsClient({
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "6px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: 0 }}>Programs</h1>
+      <PageIntro
+        title="Programs"
+        what="What JOC actually runs for schools — the Kindness Booth, Bake for Chesed and the rest. This is the list a school reads before deciding to bring one in, so it is worth writing properly."
+        steps={[
+          "If the orange notice below is showing, press the import button in it first. That copies the programs written into the code into this console so you can edit them. Adding a new one before importing would hide all of them.",
+          "Press “+ New program”.",
+          "Give it a name and one line saying what it is. That line is what a school reads on the list before clicking through.",
+          "Write the longer description, then add the steps — what a school actually does, in order, from getting in touch to running it.",
+          "Set the order number to move it up or down the page. Lower numbers come first.",
+          "Tick Published, then Save. It is on /programs immediately.",
+        ]}
+        note="Still to be added: Boots for Israel, The Kind Store for Schools, Run for Chesed, Just One Simcha and the Israel trips."
+      >
         <button
           onClick={() => setEditing({ ...BLANK, sort: programs.length })}
           disabled={disabled}
@@ -105,13 +117,7 @@ export function ProgramsClient({
         >
           + New program
         </button>
-      </div>
-
-      <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 18px", maxWidth: "70ch" }}>
-        What JOC runs for schools. Anything published here replaces the built-in list on{" "}
-        <strong style={{ color: INK }}>/programs</strong> — so this is where Boots for Israel, Run
-        for Chesed, The Kind Store, Just One Simcha and the Israel trips get added.
-      </p>
+      </PageIntro>
 
       {usingStatic && (
         <div style={{ backgroundColor: "#FDEEDA", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>

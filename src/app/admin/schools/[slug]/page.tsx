@@ -8,6 +8,7 @@ import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { InvitePanel } from "@/components/admin/InvitePanel";
 import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
+import { PageIntro } from "@/components/admin/PageIntro";
 import { ContactsPanel, type ContactRow } from "@/components/admin/ContactsPanel";
 import { AccountsGuard } from "@/components/admin/AccountsGuard";
 import { safeAuth, isAuthConfigured } from "@/auth";
@@ -79,6 +80,20 @@ async function Inner({ slug }: { slug: string }) {
           </div>
         </div>
       </div>
+
+      <PageIntro
+        as="h2"
+        title="Running this school"
+        what="Everything about one school in one place — what they pay for, who is on the account, and what has happened between them and JOC."
+        steps={[
+          "The plan panel is the one that matters. What you set there is what decides whether this school's teachers can open the lesson plans at all.",
+          "Set the status to match reality: Trial and Active both open the materials, Lapsed and Cancelled close them. Nobody is emailed about it, so tell the school yourself.",
+          "To give a school free access — a pilot, a hardship case — use the grant control rather than pretending they are paying. Write down why, and set a date to look at it again.",
+          "Invite their teachers by email address. Each one gets a link, and joins this school the first time they sign in. You do not create accounts for them.",
+          "Write down anything worth remembering — a call, a visit, a complaint — in the history at the bottom. It is the only record of this relationship.",
+        ]}
+        note="Seats are what you agreed to, not a hard limit. If a school goes over, the console shows it rather than locking anybody out mid-year."
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))", gap: "16px", alignItems: "start" }}>
         {/* Left column */}

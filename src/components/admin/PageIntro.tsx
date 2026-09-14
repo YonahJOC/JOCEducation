@@ -14,7 +14,7 @@ const BLUE = "#2D46AF";
  * furniture once you know the page, and remembered per page in this browser.
  */
 export function PageIntro({
-  title, what, steps, note, children,
+  title, what, steps, note, children, as: Heading = "h1",
 }: {
   title: string;
   /** One or two sentences: what this page is for. */
@@ -25,6 +25,12 @@ export function PageIntro({
   note?: string;
   /** Buttons that belong beside the title. */
   children?: React.ReactNode;
+  /**
+   * "h2" where this introduces a section rather than the page — a page that
+   * already has its own h1, such as one school's record. A second h1 on a
+   * page tells a screen reader there are two documents here.
+   */
+  as?: "h1" | "h2";
 }) {
   const key = `joc-intro-${title.toLowerCase().replace(/[^a-z]+/g, "-")}`;
   const [open, setOpen] = useState(() => {
@@ -47,9 +53,9 @@ export function PageIntro({
   return (
     <div style={{ marginBottom: "22px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+        <Heading style={{ fontWeight: 800, fontSize: Heading === "h1" ? "26px" : "19px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
           {title}
-        </h1>
+        </Heading>
         {children}
       </div>
 
