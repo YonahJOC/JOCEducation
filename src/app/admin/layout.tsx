@@ -14,6 +14,7 @@ const ACCOUNTS_NAV: NavItem[] = [
   { label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history" },
   { label: "Demo requests", href: "/admin/demos", hint: "Bookings and contact-form messages" },
   { label: "Orders", href: "/admin/orders", hint: "What schools have ordered from the shop" },
+  { label: "Pricing", href: "/admin/pricing", hint: "Plan prices and program prices" },
   { label: "People", href: "/admin/users", hint: "Accounts, roles and passwords" },
 ];
 

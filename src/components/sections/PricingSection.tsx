@@ -1,39 +1,26 @@
 "use client";
 import { useState } from "react";
+import {
+  ANNUAL_DISCOUNT, ENROLLMENT_LABELS, PRICE_TIER_LABELS,
+  type PlanPricing, type ProgramPricing, type PriceTier, type Size,
+} from "@/lib/pricing";
 
 type Billing = "monthly" | "annual";
-type Size = "s" | "m" | "l";
 type Plan = "" | "teacher" | "staff" | "app" | "full";
 
-const ENROLLMENT_LABELS: Record<Size, string> = { s: "Under 150 students", m: "150–400", l: "400+" };
+/**
+ * Every figure here comes from the database. It used to be written into this
+ * file, which made a price change a deploy.
+ */
+export function PricingSection({ plans, programs }: { plans: PlanPricing[]; programs: ProgramPricing[] }) {
+  const PROGRAMS = programs;
 
-const BASE_PRICES: Record<string, Record<Size, number>> = {
-  teacher: { s: 18, m: 18, l: 18 },
-  staff:   { s: 180, m: 290, l: 420 },
-  app:     { s: 295, m: 440, l: 610 },
-};
+  function price(key: string, size: Size, billing: Billing) {
+    const plan = plans.find((p) => p.key === key);
+    const monthly = plan ? plan.prices[size] : 0;
+    return billing === "annual" ? Math.round(monthly * (1 - ANNUAL_DISCOUNT)) : monthly;
+  }
 
-function price(key: "teacher" | "staff" | "app", size: Size, billing: Billing) {
-  const monthly = BASE_PRICES[key][size];
-  return billing === "annual" ? Math.round(monthly * 0.85) : monthly;
-}
-
-type PriceTier = "none" | "teacher" | "staff" | "app" | "full";
-
-const PROGRAMS: { label: string; prices: Record<PriceTier, { cents?: number; included?: boolean; na?: boolean }> }[] = [
-  { label: "Kindness Booth", prices: { none: { cents: 249 * 100 }, teacher: { cents: 199 * 100 }, staff: { cents: 149 * 100 }, app: { included: true }, full: { included: true } } },
-  { label: "Bake for Chesed", prices: { none: { cents: 150 * 100 }, teacher: { cents: 120 * 100 }, staff: { included: true }, app: { included: true }, full: { included: true } } },
-  { label: "Just One Tutor", prices: { none: { cents: 200 * 100 }, teacher: { na: true }, staff: { cents: 150 * 100 }, app: { included: true }, full: { included: true } } },
-  { label: "Chesed Match placements", prices: { none: { cents: 100 * 100 }, teacher: { na: true }, staff: { na: true }, app: { cents: 75 * 100 }, full: { included: true } } },
-  { label: "JOC Center trip (Israel)", prices: { none: { cents: 350 * 100 }, teacher: { na: true }, staff: { na: true }, app: { na: true }, full: { included: true } } },
-  { label: "Assembly or launch event", prices: { none: { cents: 500 * 100 }, teacher: { cents: 400 * 100 }, staff: { cents: 300 * 100 }, app: { cents: 200 * 100 }, full: { included: true } } },
-];
-
-const PRICE_TIER_LABELS: Record<PriceTier, string> = {
-  none: "No subscription", teacher: "Single Teacher Use", staff: "JOC Education", app: "JOC App + JOC Education", full: "Full JOC Partnership",
-};
-
-export function PricingSection() {
   const [billing, setBilling] = useState<Billing>("monthly");
   const [sizeKey, setSizeKey] = useState<Size>("s");
   const [plan, setPlan] = useState<Plan>("");

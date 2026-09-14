@@ -1,12 +1,14 @@
 import { PricingSection } from "@/components/sections/PricingSection";
-import Link from "next/link";
+import { getPlanPricing, getProgramPricing } from "@/lib/pricing";
 
 export const metadata = {
   title: { absolute: "Pricing — JOC Education" },
   description: "Simple, transparent membership for schools. Annual and monthly plans with no long-term contracts.",
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const [plans, programs] = await Promise.all([getPlanPricing(), getProgramPricing()]);
+
   return (
     <div>
       {/* Page hero */}
@@ -37,7 +39,7 @@ export default function PricingPage() {
       </div>
 
       {/* Main pricing section */}
-      <PricingSection />
+      <PricingSection plans={plans} programs={programs} />
 
       {/* FAQ */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 26px 72px" }}>
@@ -76,8 +78,8 @@ const FAQ = [
   { q: "What does 'unlimited staff' mean?", a: "Every teacher and administrator in your school gets their own login. No per-seat counting." },
   { q: "Is there a free trial?", a: "Yes — single teachers get a 14-day free trial. For full school subscriptions, we offer a 30-minute onboarding demo instead." },
   { q: "What is the JOC App exactly?", a: "A mobile app (iOS + Android) for students to log chesed hours, complete challenges, and track their school's collective impact." },
-  { q: "Do you offer scholarships?", a: "Yes. No school is turned away on cost. Apply using the scholarship button on this page and we'll respond within 48 hours." },
-  { q: "What happens to our data if we cancel?", a: "You can export all student data and lesson saves before your subscription ends. We delete school data 90 days after cancellation." },
+  { q: "Do you offer scholarships?", a: "Yes. No school is turned away on cost — write to education@justonechesed.org and tell us what your school can manage." },
+  { q: "What happens to our data if we cancel?", a: "We hold no student data at all — this site is for teachers. Your school's account details and what your teachers wrote stay until you ask us to remove them, and we will remove them whenever you ask." },
   { q: "Can we pay by purchase order?", a: "Yes. Contact us at education@justonechesed.org and we'll send an invoice for annual plans." },
   { q: "Is there a setup fee?", a: "No setup fee on any plan. Annual full partnerships include a paid onboarding call with a JOC Education specialist." },
 ];

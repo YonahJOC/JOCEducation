@@ -18,22 +18,22 @@ datasource db {
 // relationship through the internal admin console.
 
 model School {
-  id       String  @id @default(cuid())
-  name     String
-  slug     String  @unique
+  id      String  @id @default(cuid())
+  name    String
+  slug    String  @unique
   /// Free-text region used for the Teachers' Board filter (e.g. "Brooklyn", "Lakewood")
-  region   String?
-  city     String?
-  country  String? @default("United States")
-  website  String?
+  region  String?
+  city    String?
+  country String? @default("United States")
+  website String?
 
   /// Email domains belonging to this school, e.g. ["darcheitorah.org"].
   /// Someone signing in with an address on one of these joins the school
   /// automatically. Consumer domains (gmail.com and the like) are ignored.
   emailDomains String[] @default([])
 
-  type       SchoolType     @default(DAY_SCHOOL)
-  enrollment EnrollmentBand @default(MEDIUM)
+  type         SchoolType     @default(DAY_SCHOOL)
+  enrollment   EnrollmentBand @default(MEDIUM)
   /// Actual enrollment where known — `enrollment` is the pricing band
   studentCount Int?
 
@@ -43,7 +43,7 @@ model School {
   accountManagerId String?
   accountManager   User?   @relation("AccountManager", fields: [accountManagerId], references: [id], onDelete: SetNull)
 
-  members      User[]         @relation("SchoolMembers")
+  members      User[]              @relation("SchoolMembers")
   contacts     SchoolContact[]
   activities   SchoolActivity[]
   invitations  Invitation[]
@@ -63,14 +63,14 @@ model School {
 /// A person at the school. May or may not have a login — a principal who signs
 /// the contract but never uses the site still needs to be reachable.
 model SchoolContact {
-  id       String  @id @default(cuid())
-  schoolId String
-  name     String
-  title    String?
-  email    String?
-  phone    String?
+  id        String  @id @default(cuid())
+  schoolId  String
+  name      String
+  title     String?
+  email     String?
+  phone     String?
   isPrimary Boolean @default(false)
-  notes    String? @db.Text
+  notes     String? @db.Text
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
@@ -83,17 +83,17 @@ model SchoolContact {
 /// Relationship timeline: calls, emails, meetings and demos logged by hand,
 /// plus an automatic audit trail of plan changes and access grants.
 model SchoolActivity {
-  id       String       @id @default(cuid())
-  schoolId String
-  type     ActivityType @default(NOTE)
-  summary  String
-  detail   String?      @db.Text
+  id         String       @id @default(cuid())
+  schoolId   String
+  type       ActivityType @default(NOTE)
+  summary    String
+  detail     String?      @db.Text
   /// When the call/meeting actually happened — may differ from createdAt
-  occurredAt DateTime   @default(now())
+  occurredAt DateTime     @default(now())
 
   /// JOC staff member who logged it (null for system-generated entries)
   authorId String?
-  author   User?  @relation("ActivityAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  author   User?   @relation("ActivityAuthor", fields: [authorId], references: [id], onDelete: SetNull)
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
@@ -105,13 +105,13 @@ model SchoolActivity {
 /// Granting access. A JOC admin invites an email to a school; the invite is
 /// consumed on first sign-in.
 model Invitation {
-  id       String           @id @default(cuid())
-  email    String
-  schoolId String
-  role     Role             @default(TEACHER)
-  token    String           @unique @default(cuid())
-  status   InvitationStatus @default(PENDING)
-  expiresAt DateTime
+  id         String           @id @default(cuid())
+  email      String
+  schoolId   String
+  role       Role             @default(TEACHER)
+  token      String           @unique @default(cuid())
+  status     InvitationStatus @default(PENDING)
+  expiresAt  DateTime
   acceptedAt DateTime?
 
   invitedById String?
@@ -134,7 +134,7 @@ model PlanChangeRequest {
   schoolId String
 
   /// What they are asking for, in their own words
-  message String @db.Text
+  message    String  @db.Text
   /// Optional structured hint about what they want
   wantsPlan  String?
   wantsSeats Int?
@@ -169,17 +169,17 @@ enum PlanRequestStatus {
 /// Demo requests from the educator landing page scheduler — the top of the
 /// sales pipeline, before a School record exists.
 model DemoRequest {
-  id         String            @id @default(cuid())
-  name       String
-  email      String
-  schoolName String?
-  phone      String?
+  id           String            @id @default(cuid())
+  name         String
+  email        String
+  schoolName   String?
+  phone        String?
   /// Requested slot, as chosen on the landing page
   requestedFor DateTime?
-  message    String?           @db.Text
-  status     DemoRequestStatus @default(NEW)
+  message      String?           @db.Text
+  status       DemoRequestStatus @default(NEW)
   /// Set once the request is converted into a School record
-  schoolId   String?
+  schoolId     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -201,31 +201,31 @@ model User {
   school   School? @relation("SchoolMembers", fields: [schoolId], references: [id], onDelete: SetNull)
 
   /// Set false to suspend a login without deleting the account
-  active Boolean  @default(true)
+  active     Boolean   @default(true)
   lastSeenAt DateTime?
 
   /// scrypt hash for email+password sign-in. Interim, until Google OAuth is
   /// live — see src/lib/password.ts. Null means this account can only sign in
   /// with Google.
-  passwordHash String?
+  passwordHash       String?
   /// Forces a password change on next sign-in (set when an admin issues one)
   mustChangePassword Boolean @default(false)
 
-  accounts     Account[]
-  sessions     Session[]
-  savedLessons SavedLesson[]
-  boardPosts   BoardPost[]
-  boardLikes   BoardLike[]
-  uploadedFiles StoredFile[] @relation("UploadedFiles")
+  accounts      Account[]
+  sessions      Session[]
+  savedLessons  SavedLesson[]
+  boardPosts    BoardPost[]
+  boardLikes    BoardLike[]
+  uploadedFiles StoredFile[]  @relation("UploadedFiles")
   orders        Order[]
   roomMessages  RoomMessage[]
   roomMembers   RoomMember[]
 
-  managedSchools   School[]         @relation("AccountManager")
-  loggedActivities SchoolActivity[] @relation("ActivityAuthor")
-  sentInvitations  Invitation[]     @relation("Inviter")
-  editedFields     SiteField[]        @relation("FieldEditor")
-  publishedFields  SiteFieldHistory[] @relation("FieldPublisher")
+  managedSchools   School[]            @relation("AccountManager")
+  loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
+  sentInvitations  Invitation[]        @relation("Inviter")
+  editedFields     SiteField[]         @relation("FieldEditor")
+  publishedFields  SiteFieldHistory[]  @relation("FieldPublisher")
   planRequests     PlanChangeRequest[] @relation("PlanRequester")
   planResponses    PlanChangeRequest[] @relation("PlanResponder")
   accessGrants     Subscription[]      @relation("AccessGranter")
@@ -284,10 +284,10 @@ model Subscription {
   id       String @id @default(cuid())
   schoolId String @unique
 
-  plan   Plan
-  status SubscriptionStatus @default(ACTIVE)
+  plan     Plan
+  status   SubscriptionStatus @default(ACTIVE)
   /// Monthly or annual billing
-  interval BillingInterval @default(ANNUAL)
+  interval BillingInterval    @default(ANNUAL)
 
   stripeCustomerId String?   @unique
   stripeSubId      String?   @unique
@@ -297,18 +297,18 @@ model Subscription {
   seats Int @default(1)
 
   /// Access granted manually by JOC rather than paid for
-  grantedManually Boolean @default(false)
+  grantedManually Boolean    @default(false)
   /// What kind of grant — scholarship, pilot or comp. Null when paid.
-  grantKind GrantKind?
+  grantKind       GrantKind?
   /// Why. Required whenever grantedManually is set, so the record of
   /// generosity is answerable later: who was given what, why, and by whom.
-  grantNote String? @db.Text
+  grantNote       String?    @db.Text
   /// Who approved it
-  grantedById String?
-  grantedBy   User?   @relation("AccessGranter", fields: [grantedById], references: [id], onDelete: SetNull)
-  grantedAt   DateTime?
+  grantedById     String?
+  grantedBy       User?      @relation("AccessGranter", fields: [grantedById], references: [id], onDelete: SetNull)
+  grantedAt       DateTime?
   /// When to look at it again — JOC reviews these each Elul
-  grantReviewOn DateTime?
+  grantReviewOn   DateTime?
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
@@ -437,16 +437,16 @@ model Resource {
 // ─── Teachers' Board ──────────────────────────────────────────────────────────
 
 model BoardPost {
-  id     String  @id @default(cuid())
-  userId String
-  title  String
-  body   String  @db.Text
-  grade  Grade
-  likes  Int     @default(0)
+  id       String  @id @default(cuid())
+  userId   String
+  title    String
+  body     String  @db.Text
+  grade    Grade
+  likes    Int     @default(0)
   approved Boolean @default(false)
 
-  schoolId String?
-  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  schoolId   String?
+  school     School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
   /// Denormalised for display and for posts whose school record was removed
   region     String
   schoolName String
@@ -486,12 +486,12 @@ model Product {
   stripePriceId String?
 
   /// Shop grouping — "Classroom", "Events", "Books".
-  category String @default("Classroom")
+  category  String  @default("Classroom")
   /// Picture on the shop card. A /api/files/ id, or any URL.
-  imageUrl String?
+  imageUrl  String?
   /// Set for something delivered as a download rather than posted —
   /// a handbook PDF, for instance. Released once the order is fulfilled.
-  fileUrl  String?
+  fileUrl   String?
   /// Off until someone has set a real price.
   published Boolean @default(true)
   sort      Int     @default(0)
@@ -512,7 +512,7 @@ model Product {
 // is what makes rollback possible.
 
 model SiteField {
-  id      String @id @default(cuid())
+  id      String        @id @default(cuid())
   /// Which public page this belongs to, e.g. "landing", "cycles"
   page    String
   /// Section within the page, e.g. "hero", "demo"
@@ -545,7 +545,7 @@ model SiteField {
 }
 
 model SiteFieldHistory {
-  id      String @id @default(cuid())
+  id      String  @id @default(cuid())
   fieldId String
   /// The value that was live after this publish
   value   String? @db.Text
@@ -575,14 +575,14 @@ enum SiteFieldType {
 // so nothing on the site is a figure nobody can account for.
 
 model Stat {
-  id     String  @id @default(cuid())
-  key    String  @unique
-  label  String
-  value  String
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  value     String
   /// Where the number came from: JOC App export, manual count, CRM
-  source String?
-  asOf   DateTime
-  published Boolean @default(false)
+  source    String?
+  asOf      DateTime
+  published Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -786,9 +786,9 @@ model ContactMessage {
   message    String  @db.Text
 
   /// Set once someone at JOC has dealt with it.
-  handled   Boolean @default(false)
+  handled Boolean @default(false)
   /// Whether the notification email actually went out.
-  emailed   Boolean @default(false)
+  emailed Boolean @default(false)
 
   createdAt DateTime @default(now())
 
@@ -992,4 +992,41 @@ model CycleWeek {
   cycle Cycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
 
   @@index([cycleId])
+}
+
+// ─── Pricing ──────────────────────────────────────────────────────────────────
+// Every price on /pricing was written into the component, so changing one
+// meant a deploy — on the page a menahel reads before deciding. These are the
+// two tables that page renders.
+
+model PricingPlan {
+  id    Int    @id @default(autoincrement())
+  /// "teacher", "staff", "app" — matches the column keys on the page.
+  key   String @unique
+  label String
+
+  /// Monthly, in whole dollars, by school size.
+  priceSmall  Int
+  priceMedium Int
+  priceLarge  Int
+
+  sort Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// What each program costs at each subscription tier.
+model ProgramPrice {
+  id    Int    @id @default(autoincrement())
+  label String
+  sort  Int    @default(0)
+
+  /// Keyed by tier — none, teacher, staff, app, full. Each value is one of
+  /// { cents: n }, { included: true } or { na: true }, which is exactly the
+  /// shape the pricing table renders.
+  tiers Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
