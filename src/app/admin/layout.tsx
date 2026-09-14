@@ -25,6 +25,7 @@ const CONTENT_NAV = [
   { label: "Resources", href: "/admin/resources" },
   { label: "Files", href: "/admin/files" },
   { label: "Teachers' Board", href: "/admin/board" },
+  { label: "Discussion rooms", href: "/admin/rooms" },
   { label: "Products", href: "/admin/products" },
 ];
 

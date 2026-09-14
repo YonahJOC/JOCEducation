@@ -12,6 +12,7 @@ const NAV = [
   { label: "Lesson Plans",    href: "/lesson-plans" },
   { label: "Resources",       href: "/resources" },
   { label: "Teachers' Board", href: "/board" },
+  { label: "Staff Room",      href: "/rooms" },
   { label: "Pricing",         href: "/pricing" },
   { label: "Shop",            href: "/shop" },
   { label: "About",           href: "/about" },

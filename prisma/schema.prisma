@@ -218,6 +218,8 @@ model User {
   boardLikes   BoardLike[]
   uploadedFiles StoredFile[] @relation("UploadedFiles")
   orders        Order[]
+  roomMessages  RoomMessage[]
+  roomMembers   RoomMember[]
 
   managedSchools   School[]         @relation("AccountManager")
   loggedActivities SchoolActivity[] @relation("ActivityAuthor")
@@ -862,4 +864,77 @@ model OrderItem {
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
+}
+
+// ─── Staff room ───────────────────────────────────────────────────────────────
+// Topic rooms where educators talk to each other. The Teachers' Board is for
+// finished write-ups of something a school ran; this is the conversation —
+// a question on a Tuesday, four answers by Thursday.
+//
+// Rooms are open to anyone signed in with live access. Nothing is approved in
+// advance: a moderated conversation is not a conversation. The education team
+// can remove a message, and any author can remove their own.
+
+model Room {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String
+  /// An emoji, shown beside the name.
+  icon        String  @default("💬")
+  sort        Int     @default(0)
+  /// Closed to new messages, kept readable.
+  archived    Boolean @default(false)
+
+  /// Set to tie a room to one Chesed Cycle's weeks.
+  cycleSlug String?
+
+  messages RoomMessage[]
+  members  RoomMember[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([archived, sort])
+}
+
+/// Who is following a room, and how much of it they have read.
+model RoomMember {
+  userId String
+  roomId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  lastReadAt DateTime @default(now())
+  joinedAt   DateTime @default(now())
+
+  @@id([userId, roomId])
+  @@index([roomId])
+}
+
+model RoomMessage {
+  id     String @id @default(cuid())
+  roomId String
+  userId String
+
+  body String @db.Text
+
+  /// Set on a reply. One level only — a thread, not a tree.
+  parentId String?
+  parent   RoomMessage?  @relation("Thread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  RoomMessage[] @relation("Thread")
+
+  /// Kept rather than deleted, so a thread does not lose its shape.
+  removed   Boolean @default(false)
+  removedBy String?
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId, createdAt])
+  @@index([parentId])
 }
