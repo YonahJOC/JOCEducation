@@ -1,6 +1,7 @@
 import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { RoomsClient, type RoomRow } from "./RoomsClient";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Discussion rooms — JOC Console" };
 
@@ -28,8 +29,12 @@ async function getRooms(): Promise<RoomRow[]> {
   }
 }
 
-export default async function AdminRoomsPage() {
+async function Inner() {
   const rooms = await getRooms();
   const cycles = (await getCycles()).map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
   return <RoomsClient rooms={rooms} cycles={cycles} disabled={!isDatabaseConfigured()} />;
+}
+
+export default async function AdminRoomsPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

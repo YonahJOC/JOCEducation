@@ -1,6 +1,7 @@
 import { isDatabaseConfigured } from "@/lib/prisma";
 import { listFiles, humanSize, fileUrl } from "@/lib/files";
 import { FilesClient, type FileRow } from "./FilesClient";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Files — JOC Console" };
 
@@ -8,7 +9,7 @@ function when(d: Date) {
   return new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export default async function AdminFilesPage() {
+async function Inner() {
   const rows = await listFiles();
   const files: FileRow[] = rows.map((f) => ({
     id: f.id,
@@ -21,4 +22,8 @@ export default async function AdminFilesPage() {
   }));
 
   return <FilesClient files={files} disabled={!isDatabaseConfigured()} />;
+}
+
+export default async function AdminFilesPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

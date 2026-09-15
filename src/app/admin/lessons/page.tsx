@@ -2,6 +2,7 @@ import { getCycles } from "@/lib/cycle-data";
 import { LESSONS } from "@/lib/lessons";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { LessonsClient, type LessonRow } from "./LessonsClient";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Lesson plans — JOC Console" };
 
@@ -63,7 +64,7 @@ async function getLessons(): Promise<LessonRow[]> {
   }));
 }
 
-export default async function AdminLessonsPage() {
+async function Inner() {
   const lessons = await getLessons();
   const cycles = (await getCycles()).map((c) => ({
     slug: c.slug, theme: c.theme, num: c.num, question: c.question, color: c.color,
@@ -77,4 +78,8 @@ export default async function AdminLessonsPage() {
       disabled={!isDatabaseConfigured()}
     />
   );
+}
+
+export default async function AdminLessonsPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

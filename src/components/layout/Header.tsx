@@ -8,6 +8,7 @@ import { signOutAction } from "@/app/actions/auth";
 
 const NAV = [
   { label: "Programs",        href: "/programs" },
+  { label: "Programming",     href: "/programming" },
   { label: "Chesed Cycles",  href: "/cycles" },
   { label: "Lesson Plans",    href: "/lesson-plans" },
   { label: "Resources",       href: "/resources" },
@@ -79,7 +80,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-[18px]">
+          <nav className="hidden xl:flex items-center gap-[18px]">
             {nav.map((item) => (
               <Link
                 key={item.href}
@@ -106,7 +107,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                 {account.console && (
                   <Link
                     href="/admin"
-                    className="hidden lg:inline-flex"
+                    className="hidden xl:inline-flex"
                     style={{
                       fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
                       color: "#fff", backgroundColor: "#0B1A31", borderRadius: "9999px",
@@ -119,7 +120,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                 {account.school && (
                   <Link
                     href="/school"
-                    className="hidden lg:inline-flex"
+                    className="hidden xl:inline-flex"
                     style={{
                       fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
                       color: "#10233F", backgroundColor: "#F4F7FD", borderRadius: "9999px",
@@ -136,7 +137,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                 {/* Desktop CTA */}
                 <Link
                   href="/pricing"
-                  className="hidden lg:inline-flex"
+                  className="hidden xl:inline-flex"
                   style={{
                     fontFamily: "var(--font-outfit)",
                     fontWeight: 700,
@@ -155,7 +156,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                 {/* Login link */}
                 <Link
                   href="/login"
-                  className="hidden lg:inline-flex"
+                  className="hidden xl:inline-flex"
                   style={{ fontFamily: "var(--font-outfit)", fontWeight: 500, fontSize: "14px", color: "#10233F", textDecoration: "none", opacity: 0.65 }}
                 >
                   Sign in
@@ -165,7 +166,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
 
             {/* Hamburger */}
             <button
-              className="lg:hidden flex flex-col justify-center items-center gap-[5px]"
+              className="xl:hidden flex flex-col justify-center items-center gap-[5px]"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
               style={{ width: "40px", height: "40px", border: "none", background: "none", cursor: "pointer", padding: "8px" }}
@@ -181,7 +182,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
       {/* Mobile drawer overlay */}
       {open && (
         <div
-          className="lg:hidden fixed inset-0 z-50"
+          className="xl:hidden fixed inset-0 z-50"
           style={{ backgroundColor: "rgba(16,35,63,.35)" }}
           onClick={() => setOpen(false)}
         >
@@ -308,7 +309,7 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
   const initial = (account.name ?? account.email).trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <div ref={box} className="hidden lg:block" style={{ position: "relative" }}>
+    <div ref={box} className="hidden xl:block" style={{ position: "relative" }}>
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Your account"

@@ -1,5 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { ProgramsClient, type ProgramRow } from "./ProgramsClient";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Programs — JOC Console" };
 
@@ -32,7 +33,7 @@ async function getPrograms(): Promise<ProgramRow[]> {
   }
 }
 
-export default async function AdminProgramsPage() {
+async function Inner() {
   const programs = await getPrograms();
   // The public site only switches over once something here is published.
   const usingStatic = programs.filter((p) => p.published).length === 0;
@@ -44,4 +45,8 @@ export default async function AdminProgramsPage() {
       disabled={!isDatabaseConfigured()}
     />
   );
+}
+
+export default async function AdminProgramsPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

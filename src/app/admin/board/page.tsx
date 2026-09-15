@@ -1,5 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { BoardClient, type BoardRow } from "./BoardClient";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Teachers' Board — JOC Console" };
 
@@ -22,7 +23,11 @@ async function getPosts(): Promise<BoardRow[]> {
   }));
 }
 
-export default async function AdminBoardPage() {
+async function Inner() {
   const posts = await getPosts();
   return <BoardClient posts={posts} disabled={!isDatabaseConfigured()} />;
+}
+
+export default async function AdminBoardPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

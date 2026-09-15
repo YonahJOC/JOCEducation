@@ -2,6 +2,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isPreviewing } from "@/lib/site-content";
 import { SITE_FIELDS, sitePages } from "@/lib/site-fields";
 import { SiteEditor, type EditorField, type EditorPage } from "./SiteEditor";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Site content — JOC Console" };
 
@@ -38,7 +39,7 @@ async function ensureFields() {
   }
 }
 
-export default async function SiteContentPage() {
+async function Inner() {
   await ensureFields();
 
   const previewing = await isPreviewing();
@@ -89,4 +90,8 @@ export default async function SiteContentPage() {
   }));
 
   return <SiteEditor pages={pages} fields={fields} previewing={previewing} />;
+}
+
+export default async function SiteContentPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

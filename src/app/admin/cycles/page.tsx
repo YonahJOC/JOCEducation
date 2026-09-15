@@ -1,5 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { CyclesClient, type CycleRow } from "./CyclesClient";
+import { CalendarGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Chesed Cycles — JOC Console" };
 
@@ -53,7 +54,7 @@ async function getCycles(): Promise<CycleRow[]> {
   }
 }
 
-export default async function AdminCyclesPage() {
+async function Inner() {
   const cycles = await getCycles();
   return (
     <CyclesClient
@@ -62,4 +63,8 @@ export default async function AdminCyclesPage() {
       disabled={!isDatabaseConfigured()}
     />
   );
+}
+
+export default async function AdminCyclesPage() {
+  return <CalendarGuard>{await Inner()}</CalendarGuard>;
 }

@@ -5,7 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
 import {
-  initialRoleFor, isStaffEmail, isSuperAdminEmail,
+  initialRoleFor, isStaffEmail, isSuperAdminEmail, isProgramStaffEmail,
   emailDomain, isConsumerEmail,
 } from "@/lib/access";
 
@@ -141,6 +141,15 @@ const config: NextAuthConfig = {
       if (staffEmail && (!session.user.role || session.user.role === "TEACHER")) {
         session.user.role = "STAFF";
       }
+      // The programming team, by address. A floor rather than an override: if
+      // somebody on that list has since been given a different role by hand,
+      // this must not quietly drag them back down to it.
+      if (
+        isProgramStaffEmail(session.user.email) &&
+        (session.user.role === "TEACHER" || session.user.role === "STAFF")
+      ) {
+        session.user.role = "PROGRAM_STAFF";
+      }
       if (isSuperAdminEmail(session.user.email)) session.user.role = "SUPER_ADMIN";
 
       return session;
@@ -235,8 +244,14 @@ const config: NextAuthConfig = {
           where: { id: user.id },
           select: { schoolId: true, role: true },
         });
-        // Never demote someone who already holds a higher role.
-        const keepRole = current?.role === "ADMIN" || current?.role === "SUPER_ADMIN" || current?.role === "STAFF";
+        // Never demote someone who already holds a JOC role. An invitation
+        // names a school and a teacher role; accepting one must not cost
+        // somebody their place on the education or programming team.
+        const keepRole =
+          current?.role === "ADMIN" ||
+          current?.role === "SUPER_ADMIN" ||
+          current?.role === "PROGRAM_STAFF" ||
+          current?.role === "STAFF";
 
         await prisma.$transaction([
           prisma.user.update({

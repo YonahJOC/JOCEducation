@@ -55,11 +55,25 @@ const CONTENT: Section[] = [
     note: "Every field keeps its history, so anything published can be rolled back.",
   },
   {
+    href: "/admin/programming",
+    title: "Programming",
+    what: "The calendar of what JOC is actually running, and where — the booths, the bake sales, the trips, the collections. Separate from the Chesed Cycles: the cycles say what every school is learning this month, this says what is happening.",
+    steps: [
+      "Press “+ New event”, name it, and give it a date.",
+      "Pick the school, or leave it on “Every school” for something the whole network joins.",
+      "Link it to one of JOC’s programs and the public page points at that program’s page.",
+      "Set the status — Planned while it is pencilled in, Confirmed once the school has agreed.",
+      "Tick Published when the school should see it on the Programming page.",
+    ],
+    note: "To call something off, use Cancel rather than Delete. A school that was told it was happening needs to see that it is not.",
+  },
+  {
     href: "/admin/cycles",
     title: "Chesed Cycles",
     what: "The eight themes the year is built around — the dates, the guiding question, and the week-by-week plan.",
     steps: [
       "Open a cycle to change its theme, dates, question or weekly plan.",
+      "The cycles are one chain: change a cycle’s last day and every later cycle shifts to follow, keeping its own length. You never edit the others to make room.",
       "Everything published on the site for those weeks points at whichever cycle is running.",
     ],
     note: "The dates were generated and have never been checked against a luach. Check them before the year begins.",

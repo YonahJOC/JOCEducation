@@ -50,6 +50,7 @@ model School {
   subscription Subscription?
   boardPosts   BoardPost[]
   planRequests PlanChangeRequest[]
+  events       ProgramEvent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -602,6 +603,10 @@ enum Role {
   /// Anyone at Just One Chesed. Free access to everything, changes nothing.
   /// This is what a @justonechesed.org address gets automatically.
   STAFF
+  /// JOC programming team — runs the calendar of events and the school
+  /// accounts behind them. Deliberately cannot touch educational material:
+  /// lessons, resources, the shop or the Teachers' Board.
+  PROGRAM_STAFF
   /// JOC educational team — uploads and edits lessons, resources and content
   ADMIN
   /// Full control: school accounts, plans, discounts, users and roles
@@ -757,6 +762,7 @@ model ProgramPage {
   sort      Int     @default(0)
 
   steps ProgramStep[]
+  events ProgramEvent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1033,4 +1039,62 @@ model ProgramPrice {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+/// One thing happening, on a date, at a school.
+///
+/// The Chesed Cycles say what the whole network is learning this month;
+/// this says what is actually being *run* and when — a Kindness Booth at
+/// one school on the 14th, a Bake for Chesed across every school in Adar.
+/// It is the programming team's calendar, and the public Programming page
+/// is a read-only view of whatever is published here.
+model ProgramEvent {
+  id    Int    @id @default(autoincrement())
+  slug  String @unique
+  title String
+
+  /// Which JOC program this is a running of, where it is one of ours.
+  /// Null for a one-off that is not in the catalogue.
+  programId Int?
+  program   ProgramPage? @relation(fields: [programId], references: [id], onDelete: SetNull)
+
+  /// The school it runs at. Null means open to every school.
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  /// Stored as a plain day when allDay, so it never shifts across timezones.
+  startsAt DateTime
+  /// Null for a single-day event.
+  endsAt   DateTime?
+  allDay   Boolean   @default(true)
+
+  location String?
+  /// "Grades 3–5", "Whole school", "Staff only".
+  audience String?
+  detail   String  @db.Text @default("")
+  /// Who at JOC is running it.
+  lead     String?
+
+  status    EventStatus @default(PLANNED)
+  /// Unpublished events are the programming team's working calendar and are
+  /// never visible outside the console.
+  published Boolean     @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([startsAt])
+  @@index([schoolId])
+  @@index([published, startsAt])
+}
+
+enum EventStatus {
+  /// Pencilled in.
+  PLANNED
+  /// Agreed with the school.
+  CONFIRMED
+  /// Happened.
+  DONE
+  /// Called off. Kept, so the history is honest.
+  CANCELLED
 }

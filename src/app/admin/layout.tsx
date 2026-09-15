@@ -1,28 +1,44 @@
 import Link from "next/link";
 import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { canAccessConsole, canManageAccounts, ROLE_LABELS, type Role } from "@/lib/access";
+import {
+  canAccessConsole, canManageAccounts, canManageCalendar, canManageContent,
+  canManageUsers, ROLE_LABELS, type Role,
+} from "@/lib/access";
 import { usingSampleData } from "@/lib/admin-data";
 import { signOutAction } from "@/app/actions/auth";
 import { SideNav, type NavItem } from "@/components/admin/SideNav";
 
 export const metadata = { title: "JOC Console", robots: { index: false, follow: false } };
 
-/** Accounts, billing and people — super admins only. */
+/** School accounts, billing and the sales pipeline. */
 const ACCOUNTS_NAV: NavItem[] = [
   { label: "Overview", href: "/admin", hint: "Where every school stands" },
   { label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history" },
   { label: "Demo requests", href: "/admin/demos", hint: "Bookings and contact-form messages" },
   { label: "Orders", href: "/admin/orders", hint: "What schools have ordered from the shop" },
   { label: "Pricing", href: "/admin/pricing", hint: "Plan prices and program prices" },
+];
+
+/** Accounts, roles and passwords — super admins only, separate on purpose. */
+const PEOPLE_NAV: NavItem[] = [
   { label: "People", href: "/admin/users", hint: "Accounts, roles and passwords" },
 ];
 
-/** Content — the JOC Education Team's work. */
-const CONTENT_NAV: NavItem[] = [
-  { label: "Start here", href: "/admin/guide", hint: "What each section does" },
-  { label: "Site content", href: "/admin/site", hint: "The words on the public pages" },
+/** The calendar — what runs when. Programming and education both need it. */
+const CALENDAR_NAV: NavItem[] = [
+  { label: "Programming", href: "/admin/programming", hint: "What is running, and where" },
   { label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes and their dates" },
+];
+
+/** Shown to anyone who can open the console at all. */
+const START_NAV: NavItem[] = [
+  { label: "Start here", href: "/admin/guide", hint: "What each section does" },
+];
+
+/** Educational material — the JOC Education Team's work. */
+const CONTENT_NAV: NavItem[] = [
+  { label: "Site content", href: "/admin/site", hint: "The words on the public pages" },
   { label: "Cycle coverage", href: "/admin/coverage", hint: "Which cycles have material" },
   { label: "Programs", href: "/admin/programs", hint: "What JOC runs for schools" },
   { label: "Lesson plans", href: "/admin/lessons", hint: "Write and publish lessons" },
@@ -51,7 +67,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {signedIn ? (
               <>
                 Your account has full access to the site, materials and programs — but the console is
-                limited to the educational team. Ask a super admin if you need to manage content.
+                for the educational and programming teams. Ask a super admin if you need to work in it.
               </>
             ) : (
               <>Sign in with your <strong style={{ color: "#10233F" }}>@justonechesed.org</strong> account.</>
@@ -72,7 +88,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const role = (session?.user?.role ?? null) as Role | null;
   // Before auth is configured the console is open so it can be reviewed;
   // treat that as full access rather than hiding half the navigation.
-  const showAccounts = !isAuthConfigured || canManageAccounts(session?.user);
+  const open = !isAuthConfigured;
+  const showAccounts = open || canManageAccounts(session?.user);
+  const showPeople = open || canManageUsers(session?.user);
+  const showCalendar = open || canManageCalendar(session?.user);
+  const showContent = open || canManageContent(session?.user);
 
   return (
     <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
@@ -120,9 +140,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
         </div>
 
+        {/* Only what this person can actually open. A link to a page that
+            refuses you is worse than no link — it reads as something broken
+            rather than something not yours. */}
         <div className="joc-admin-nav">
+          <SideNav label="" items={START_NAV} />
           {showAccounts && <SideNav label="Accounts" items={ACCOUNTS_NAV} />}
-          <SideNav label="Content" items={CONTENT_NAV} />
+          {showCalendar && <SideNav label="Calendar" items={CALENDAR_NAV} />}
+          {showContent && <SideNav label="Content" items={CONTENT_NAV} />}
+          {showPeople && <SideNav label="Access" items={PEOPLE_NAV} />}
         </div>
 
         <div className="joc-admin-who" style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: "1px solid rgba(255,255,255,.1)" }}>

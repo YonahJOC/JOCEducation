@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageContent } from "@/lib/access";
+import { canManageCalendar } from "@/lib/access";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
 
 /**
@@ -101,8 +101,8 @@ export async function saveCycle(input: {
   weekPlan: { title: string; body: string }[];
 }): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageContent(session?.user)) {
-    return { ok: false, error: "You need educational team access to change the cycles." };
+  if (!canManageCalendar(session?.user)) {
+    return { ok: false, error: "You need calendar access to change the cycles." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };
 
@@ -186,8 +186,8 @@ export async function saveCycle(input: {
 
 export async function deleteCycle(id: number): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageContent(session?.user)) {
-    return { ok: false, error: "You need educational team access to remove a cycle." };
+  if (!canManageCalendar(session?.user)) {
+    return { ok: false, error: "You need calendar access to remove a cycle." };
   }
   try {
     await prisma.cycle.delete({ where: { id } });
@@ -207,7 +207,7 @@ export async function deleteCycle(id: number): Promise<Result> {
  */
 export async function importStaticCycles(): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageContent(session?.user)) {
+  if (!canManageCalendar(session?.user)) {
     return { ok: false, error: "You need educational team access to do that." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };

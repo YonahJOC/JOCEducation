@@ -3,6 +3,7 @@ import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { ContentGuard } from "@/components/admin/Guard";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -25,7 +26,7 @@ const BANDS = [
  * to write the first one. One glance shows which weeks of the year have
  * nothing behind them.
  */
-export default async function CoveragePage() {
+async function Inner() {
   const connected = isDatabaseConfigured();
 
   let lessonCells = new Map<string, number>();
@@ -169,3 +170,7 @@ const th: React.CSSProperties = {
 const td: React.CSSProperties = {
   padding: "12px 16px", borderBottom: "1px solid rgba(16,35,63,.05)", verticalAlign: "middle",
 };
+
+export default async function CoveragePage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
+}

@@ -1,6 +1,7 @@
 import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { ResourcesClient, type ResourceRow } from "./ResourcesClient";
+import { ContentGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Resources — JOC Console" };
 
@@ -18,7 +19,7 @@ async function getResources(): Promise<ResourceRow[]> {
   }));
 }
 
-export default async function AdminResourcesPage() {
+async function Inner() {
   const resources = await getResources();
   const cycles = (await getCycles()).map((c) => ({ slug: c.slug, theme: c.theme, num: c.num }));
   return (
@@ -28,4 +29,8 @@ export default async function AdminResourcesPage() {
       disabled={!isDatabaseConfigured()}
     />
   );
+}
+
+export default async function AdminResourcesPage() {
+  return <ContentGuard>{await Inner()}</ContentGuard>;
 }

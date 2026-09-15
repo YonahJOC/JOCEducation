@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { sendInvitation } from "@/lib/notify";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageAccounts, canManageRoles } from "@/lib/access";
+import { canManageAccounts, canManageRoles, canManageUsers } from "@/lib/access";
 import { hashPassword, passwordProblem, generateTempPassword } from "@/lib/password";
 import { isAuthConfigured } from "@/auth";
 
@@ -26,7 +26,25 @@ async function requireAccountManager() {
   // Before auth is configured there is nobody to authorize, and the database
   // check below stops anything from actually being written.
   if (isAuthConfigured && !canManageAccounts(session?.user)) {
-    throw new Error("Only a super admin can change accounts");
+    throw new Error("You cannot change school accounts");
+  }
+  if (!isDatabaseConfigured()) throw new Error("Database not connected");
+  return session?.user ?? null;
+}
+
+/**
+ * Stricter than the above, for anything that creates a login, issues a
+ * password or closes an account.
+ *
+ * Running a school's plan and deciding who may sign in to JOC are different
+ * jobs. The programming team does the first; only a super admin does the
+ * second. They used to share one guard, so widening that guard to include the
+ * programming team would have handed them password resets as a side effect.
+ */
+async function requireUserManager() {
+  const session = await safeAuth();
+  if (isAuthConfigured && !canManageUsers(session?.user)) {
+    throw new Error("Only a super admin can change who has an account");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   return session?.user ?? null;
@@ -508,7 +526,7 @@ export async function createUserAccount(input: {
   password?: string;
 }): Promise<Result & { password?: string; id?: string }> {
   try {
-    const me = await requireAccountManager();
+    const me = await requireUserManager();
     const email = input.email.trim().toLowerCase();
     if (!email.includes("@")) return { ok: false, error: "Enter a valid email address" };
 
@@ -557,7 +575,7 @@ export async function createUserAccount(input: {
 /** Issue a new password for someone who cannot get in. Shown once. */
 export async function resetUserPassword(userId: string): Promise<Result & { password?: string }> {
   try {
-    await requireAccountManager();
+    await requireUserManager();
     const password = generateTempPassword();
     await prisma.user.update({
       where: { id: userId },
@@ -573,7 +591,7 @@ export async function resetUserPassword(userId: string): Promise<Result & { pass
 /** Suspend or restore a single login without deleting the account. */
 export async function setUserActive(userId: string, active: boolean): Promise<Result> {
   try {
-    await requireAccountManager();
+    await requireUserManager();
     await prisma.user.update({ where: { id: userId }, data: { active } });
     revalidatePath("/admin/users");
     return { ok: true };
