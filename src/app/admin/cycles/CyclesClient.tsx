@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { saveCycle, deleteCycle, importStaticCycles } from "@/app/actions/cycles";
+import { formatCycleRange } from "@/lib/cycles";
 import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
@@ -200,13 +201,15 @@ function CycleForm({
 
   const set = <K extends keyof CycleRow>(k: K, v: CycleRow[K]) => setD((p) => ({ ...p, [k]: v }));
 
-  // Shown live so the weeks and the dates can never disagree.
+  // Both shown live, so neither can disagree with the dates.
   const derivedWeeks = (() => {
     const s = new Date(d.startDate).getTime();
     const e = new Date(d.endDate).getTime();
     if (Number.isNaN(s) || Number.isNaN(e) || e <= s) return null;
     return Math.max(1, Math.round((e - s) / (7 * 86_400_000)));
   })();
+
+  const derivedRange = d.startDate && d.endDate ? formatCycleRange(d.startDate, d.endDate) : "";
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -217,7 +220,7 @@ function CycleForm({
         num: d.num,
         slug: d.slug || undefined,
         theme: d.theme, gloss: d.gloss, question: d.question,
-        hebrew: d.hebrew, anchor: d.anchor, range: d.range,
+        hebrew: d.hebrew, anchor: d.anchor,
         startDate: d.startDate, endDate: d.endDate,
         color: d.color, israel: d.israel, desc: d.desc,
         focus: d.focus, weekPlan: d.weekPlan,
@@ -311,7 +314,12 @@ function CycleForm({
           </div>
           <div>
             <label style={label}>Dates as written on the site</label>
-            <input value={d.range} onChange={(e) => set("range", e.target.value)} placeholder="Nov 29 – Dec 26" disabled={disabled} style={field} />
+            {/* This is the line every public page shows. It used to be typed
+                here by hand, which meant you could change the two dates above
+                and the whole site would carry on showing the old ones. */}
+            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#F7F8FB", color: derivedRange ? INK : "rgba(16,35,63,.45)", margin: 0 }}>
+              {derivedRange || "set both dates"}
+            </p>
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canManageContent } from "@/lib/access";
+import { formatCycleRange } from "@/lib/cycles";
 
 /**
  * Editing the Chesed Cycles.
@@ -35,7 +36,7 @@ export async function saveCycle(input: {
   question: string;
   hebrew: string;
   anchor: string;
-  range: string;
+  // No `range` — it is derived from the dates below. See formatCycleRange.
   startDate: string;
   endDate: string;
   color: string;
@@ -97,10 +98,12 @@ export async function saveCycle(input: {
       question: input.question.trim(),
       hebrew: input.hebrew.trim(),
       anchor: input.anchor.trim(),
-      range: input.range.trim(),
       startDate: start,
       endDate: end,
-      // Derived, so it can never disagree with the dates.
+      // Both derived, so neither can disagree with the dates. `range` is the
+      // string every public page renders — it was typed by hand, so changing
+      // the dates used to change nothing anybody could see.
+      range: formatCycleRange(start, end),
       weeks: weeksBetween(start, end),
       color: input.color.trim() || "#2D46AF",
       israel: input.israel,
@@ -177,7 +180,7 @@ export async function importStaticCycles(): Promise<Result> {
           question: c.question,
           hebrew: c.hebrew,
           anchor: c.anchor,
-          range: c.range,
+          range: formatCycleRange(c.startDate, c.endDate),
           startDate: new Date(c.startDate),
           endDate: new Date(c.endDate),
           weeks: c.weeks,

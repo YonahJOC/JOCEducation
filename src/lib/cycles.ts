@@ -25,6 +25,28 @@ export type Cycle = {
   stats?: { value: string; label: string; people: string; peopleLabel: string };
 };
 
+/**
+ * "Aug 30 – Oct 24" — the dates as the site writes them.
+ *
+ * This used to be typed by hand in the console, in a box beside the two date
+ * pickers, and it is what every page on the site actually renders: the cycle
+ * page, the rail, the landing page, the personal home. So changing a cycle's
+ * dates changed nothing anybody could see unless you also remembered to retype
+ * this sentence to match. Deriving it means the two can never drift apart.
+ *
+ * Formatted in UTC on purpose. The dates are stored as plain days at UTC
+ * midnight, so formatting them in a timezone west of London would render every
+ * cycle as starting the day before.
+ */
+export function formatCycleRange(start: Date | string, end: Date | string): string {
+  const s = start instanceof Date ? start : new Date(start);
+  const e = end instanceof Date ? end : new Date(end);
+  if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime())) return "";
+  const day = (d: Date) =>
+    d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  return `${day(s)} – ${day(e)}`;
+}
+
 export function getCycleState(cycle: Cycle): CycleState {
   const now = new Date();
   const start = new Date(cycle.startDate);
