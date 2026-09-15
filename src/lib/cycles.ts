@@ -25,6 +25,53 @@ export type Cycle = {
   stats?: { value: string; label: string; people: string; peopleLabel: string };
 };
 
+const DAY = 86_400_000;
+
+/** A plain YYYY-MM-DD. The cycles are days, not moments. */
+function isoDay(ms: number): string {
+  return new Date(ms).toISOString().slice(0, 10);
+}
+
+export type CycleDates = { startDate: string; endDate: string };
+
+/**
+ * The cycles are one chain, not eight independent pairs of dates: each one
+ * begins the day after the one before it ends. That is how a school year
+ * works, and it is what the site assumes when it asks "which cycle is running
+ * now" — a question that has to have exactly one answer.
+ *
+ * The console used to pretend otherwise. It offered two free date pickers per
+ * cycle and then refused any combination that overlapped a neighbour, which
+ * meant extending Cycle 1 by four weeks required editing Cycle 3 first, then
+ * Cycle 2, then Cycle 1, in that order — get it wrong and every save was
+ * rejected. Nobody should have to work that out.
+ *
+ * So the chain is now the model. Only the first cycle's start is a real
+ * choice; every later one follows from the cycle before it. Each cycle keeps
+ * its own length, so moving one shifts the rest of the year rather than
+ * squashing it.
+ *
+ * Give it the cycles in order, with whatever edit you are about to make
+ * already substituted in, and it returns where they all actually land.
+ * Overlaps and gaps stop being possible rather than being caught.
+ */
+export function relinkCycles<T extends CycleDates>(ordered: T[]): T[] {
+  let prevEnd: number | null = null;
+  return ordered.map((c) => {
+    const start0 = Date.parse(c.startDate);
+    const end0 = Date.parse(c.endDate);
+    // Leave anything unreadable exactly as it is; a half-typed date in the
+    // console should not silently rewrite the rest of the year.
+    if (Number.isNaN(start0) || Number.isNaN(end0)) return c;
+
+    const span = Math.max(DAY, end0 - start0);
+    const start = prevEnd === null ? start0 : prevEnd + DAY;
+    const end = start + span;
+    prevEnd = end;
+    return { ...c, startDate: isoDay(start), endDate: isoDay(end) };
+  });
+}
+
 /**
  * "Aug 30 – Oct 24" — the dates as the site writes them.
  *

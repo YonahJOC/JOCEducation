@@ -4,15 +4,19 @@ import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canManageContent } from "@/lib/access";
-import { formatCycleRange } from "@/lib/cycles";
+import { formatCycleRange, relinkCycles } from "@/lib/cycles";
 
 /**
  * Editing the Chesed Cycles.
  *
- * These decide what the whole site shows each week, so the guards are a
- * little tighter than elsewhere: a cycle cannot end before it starts, two
- * cycles cannot claim the same weeks, and the number of weeks has to match
- * the dates rather than be asserted separately.
+ * These decide what the whole site shows each week, so rather than validating
+ * hard and refusing, the shape of the year is kept correct by construction:
+ * the cycles are a chain, each beginning the day after the one before it
+ * ends, and every save pulls that chain back together. Overlaps and gaps
+ * cannot be expressed, so they never have to be rejected.
+ *
+ * The length and the written-out date range are both derived from the two
+ * dates, so neither can drift away from them.
  */
 
 type Result = { ok: true } | { ok: false; error: string };
@@ -25,6 +29,57 @@ function slugify(s: string) {
 function weeksBetween(start: Date, end: Date): number {
   const ms = end.getTime() - start.getTime();
   return Math.max(1, Math.round(ms / (7 * 86_400_000)));
+}
+
+const isoDay = (d: Date) => d.toISOString().slice(0, 10);
+
+/**
+ * Pull the whole year back into one contiguous chain.
+ *
+ * Run after every save and every delete. Each cycle keeps the length it has;
+ * only where it sits moves. The first cycle's start is the one fixed point —
+ * everything else follows from it.
+ *
+ * Writes only the rows that actually changed, so editing the last cycle costs
+ * one update rather than eight.
+ */
+async function relinkAll(): Promise<void> {
+  const rows = await prisma.cycle.findMany({
+    orderBy: { num: "asc" },
+    select: { id: true, startDate: true, endDate: true, range: true, weeks: true },
+  });
+
+  const linked = relinkCycles(
+    rows.map((r) => ({
+      id: r.id,
+      startDate: isoDay(r.startDate),
+      endDate: isoDay(r.endDate),
+      was: r,
+    }))
+  );
+
+  const edits = linked.flatMap((c) => {
+    const start = new Date(`${c.startDate}T00:00:00.000Z`);
+    const end = new Date(`${c.endDate}T00:00:00.000Z`);
+    const range = formatCycleRange(start, end);
+    const weeks = weeksBetween(start, end);
+
+    const same =
+      isoDay(c.was.startDate) === c.startDate &&
+      isoDay(c.was.endDate) === c.endDate &&
+      c.was.range === range &&
+      c.was.weeks === weeks;
+    if (same) return [];
+
+    return [
+      prisma.cycle.update({
+        where: { id: c.id },
+        data: { startDate: start, endDate: end, range, weeks },
+      }),
+    ];
+  });
+
+  if (edits.length > 0) await prisma.$transaction(edits);
 }
 
 export async function saveCycle(input: {
@@ -64,22 +119,9 @@ export async function saveCycle(input: {
   try {
     const slug = (input.slug?.trim() || slugify(theme)).toLowerCase();
 
-    // Two cycles running the same weeks would make "what is running now"
-    // ambiguous for the entire site.
-    const overlapping = await prisma.cycle.findFirst({
-      where: {
-        id: input.id ? { not: input.id } : undefined,
-        startDate: { lte: end },
-        endDate: { gte: start },
-      },
-      select: { num: true, theme: true },
-    });
-    if (overlapping) {
-      return {
-        ok: false,
-        error: `Those dates overlap Cycle ${overlapping.num} (${overlapping.theme}). Two cycles cannot run at once.`,
-      };
-    }
+    // No overlap check. Overlapping used to be refused, which pushed the work
+    // of untangling the year onto whoever was editing it — see relinkCycles.
+    // The cycles after this one are moved to fit instead.
 
     const clashSlug = await prisma.cycle.findUnique({ where: { slug }, select: { id: true } });
     if (clashSlug && clashSlug.id !== input.id) {
@@ -126,6 +168,11 @@ export async function saveCycle(input: {
       await prisma.cycle.create({ data: { ...data, weekPlan } });
     }
 
+    // Close the chain back up. Whatever this edit did to the shape of the
+    // year, the cycles after it move to stay contiguous, each keeping its own
+    // length. This is what makes a single date change a single action.
+    await relinkAll();
+
     revalidatePath("/cycles");
     revalidatePath(`/cycles/${slug}`);
     revalidatePath("/home");
@@ -144,6 +191,8 @@ export async function deleteCycle(id: number): Promise<Result> {
   }
   try {
     await prisma.cycle.delete({ where: { id } });
+    // A deleted cycle leaves a hole in the year; close it up.
+    await relinkAll();
     revalidatePath("/cycles");
     revalidatePath("/admin/cycles");
     return { ok: true };

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { saveCycle, deleteCycle, importStaticCycles } from "@/app/actions/cycles";
-import { formatCycleRange } from "@/lib/cycles";
+import { formatCycleRange, relinkCycles } from "@/lib/cycles";
 import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
@@ -57,9 +57,11 @@ const card: React.CSSProperties = {
 
 const STEPS = [
   "Open a cycle to change it. Everything the site shows during those weeks follows what is here.",
-  "Check the dates first — they were generated and have never been checked against a luach.",
+  "To make a cycle longer or shorter, change its last day. Everything after it shifts to follow, keeping its own length — you never have to edit the other cycles to make room.",
+  "To move the whole year, change the first day of Cycle 1. Only Cycle 1 has a first day you can set; every other cycle begins when the one before it ends.",
+  "Before you save, the box under the dates lists exactly which cycles move and where they land. Nothing is hidden until afterwards.",
   "The theme is the name; the line under it is the plain-English meaning; the question is what it asks a student.",
-  "The week-by-week plan is what a teacher reads to see how the four weeks run.",
+  "The week-by-week plan is what a teacher reads to see how the weeks run.",
   "Press Save. It is live immediately — there is no separate publish step for cycles.",
 ];
 
@@ -75,7 +77,7 @@ export function CyclesClient({
   const [msg, setMsg] = useState<string | null>(null);
 
   if (editing) {
-    return <CycleForm initial={editing} disabled={disabled} onDone={() => setEditing(null)} />;
+    return <CycleForm initial={editing} siblings={cycles} disabled={disabled} onDone={() => setEditing(null)} />;
   }
 
   return (
@@ -84,7 +86,7 @@ export function CyclesClient({
         title="Chesed Cycles"
         what="The eight themes the school year is built around. Whichever one today falls inside is the cycle the whole site points at — the home page, the cycle pages, and everything tagged to it."
         steps={STEPS}
-        note="Two cycles cannot run at the same time; overlapping dates are refused, because 'what is running now' has to have one answer."
+        note="The cycles are one continuous chain — each begins the day after the one before it ends, so there can never be a gap or an overlap. Changing one date is always a single action; the console does the rest."
       >
         <button
           onClick={() => setEditing({ ...BLANK, num: cycles.length + 1 })}
@@ -189,9 +191,11 @@ export function CyclesClient({
 }
 
 function CycleForm({
-  initial, disabled, onDone,
+  initial, siblings, disabled, onDone,
 }: {
   initial: CycleRow;
+  /** Every cycle, this one included — needed to work out what a date change moves. */
+  siblings: CycleRow[];
   disabled?: boolean;
   onDone: () => void;
 }) {
@@ -210,6 +214,28 @@ function CycleForm({
   })();
 
   const derivedRange = d.startDate && d.endDate ? formatCycleRange(d.startDate, d.endDate) : "";
+
+  const isFirst = siblings.length === 0 || d.num <= Math.min(...siblings.map((c) => c.num), d.num);
+
+  /**
+   * Where the rest of the year lands if this is saved.
+   *
+   * Moving one cycle moves every cycle after it, which is a big enough
+   * consequence that nobody should have to press Save to discover it.
+   */
+  const knockOn = (() => {
+    if (!d.startDate || !d.endDate) return [];
+    const ordered = [...siblings.filter((c) => c.id !== d.id), { id: d.id, num: d.num, theme: d.theme, startDate: d.startDate, endDate: d.endDate }]
+      .sort((a, b) => a.num - b.num);
+    return relinkCycles(ordered)
+      .map((c) => {
+        const before = siblings.find((s) => s.id === c.id);
+        if (!before || c.id === d.id) return null;
+        if (before.startDate === c.startDate && before.endDate === c.endDate) return null;
+        return { num: c.num, theme: c.theme, from: formatCycleRange(before.startDate, before.endDate), to: formatCycleRange(c.startDate, c.endDate) };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
+  })();
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -289,11 +315,29 @@ function CycleForm({
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px", marginBottom: "12px" }}>
           <div>
             <label style={label}>First day</label>
-            <input type="date" value={d.startDate} onChange={(e) => set("startDate", e.target.value)} disabled={disabled} style={field} />
+            {/* Only the first cycle of the year has a start worth choosing.
+                Every other one begins when the cycle before it finishes —
+                offering a free date picker here is what let the year drift
+                into overlaps and gaps in the first place. */}
+            {isFirst ? (
+              <input type="date" value={d.startDate} onChange={(e) => set("startDate", e.target.value)} disabled={disabled} style={field} />
+            ) : (
+              <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#F7F8FB", color: INK, margin: 0 }}>
+                {d.startDate ? formatCycleRange(d.startDate, d.startDate).split(" – ")[0] : "—"}
+              </p>
+            )}
+            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+              {isFirst
+                ? "The first day of the school year. Everything else follows from here."
+                : `The day after Cycle ${d.num - 1} ends.`}
+            </p>
           </div>
           <div>
             <label style={label}>Last day</label>
             <input type="date" value={d.endDate} onChange={(e) => set("endDate", e.target.value)} disabled={disabled} style={field} />
+            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+              Change this and the later cycles move with it.
+            </p>
           </div>
           <div>
             <label style={label}>Length</label>
@@ -322,6 +366,29 @@ function CycleForm({
             </p>
           </div>
         </div>
+
+        {/* Moving one cycle moves every cycle after it. That is a big enough
+            consequence that it should be visible before Save, not discovered
+            afterwards. */}
+        {knockOn.length > 0 && (
+          <div style={{ backgroundColor: "#F4F7FD", borderRadius: "12px", padding: "14px 16px", marginTop: "14px" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, color: INK, margin: "0 0 8px" }}>
+              Saving this also moves {knockOn.length} later cycle{knockOn.length === 1 ? "" : "s"}:
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              {knockOn.map((k) => (
+                <p key={k.num} style={{ fontSize: "13px", color: "rgba(16,35,63,.72)", margin: 0, lineHeight: 1.5 }}>
+                  <strong style={{ color: INK, fontWeight: 600 }}>Cycle {k.num} — {k.theme}</strong>{" "}
+                  <span style={{ color: "rgba(16,35,63,.45)", textDecoration: "line-through" }}>{k.from}</span>{" "}
+                  → {k.to}
+                </p>
+              ))}
+            </div>
+            <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "9px 0 0", lineHeight: 1.5 }}>
+              Each one keeps its own length. You do not need to edit them yourself.
+            </p>
+          </div>
+        )}
 
         <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK, marginTop: "14px" }}>
           <input type="checkbox" checked={d.israel} onChange={(e) => set("israel", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
