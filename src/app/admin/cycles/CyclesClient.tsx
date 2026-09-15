@@ -66,7 +66,7 @@ const STEPS = [
 ];
 
 /** Starting suggestions only — the real list is whatever JOC has used. */
-const SUGGESTED_TAGS = ["Israel-focused", "Yom tov", "Whole school", "Community-wide"];
+const SUGGESTED_TAGS = ["Yom tov", "Whole school", "Community-wide"];
 
 export function CyclesClient({
   cycles, usingStatic, disabled,

@@ -40,7 +40,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const KIND_LABELS: Record<string, string> = {
-  JOC_EVENT: "Big JOC event",
+  JOC_EVENT: "JOC program",
   SCHOOL_PROGRAM: "Program at a school",
 };
 
@@ -67,10 +67,10 @@ const card: React.CSSProperties = {
 
 const STEPS = [
   "Press “+ New event”.",
-  "Choose which kind it is. A big JOC event is for the whole network — Run for Chesed, a network-wide collection. A program at a school is one program running at one school, and there will be many of those.",
+  "Choose which kind it is. A JOC program runs across the whole network — Run for Chesed, a network-wide collection. A program at a school is one program running at one school, and there will be many of those.",
   "Give it a name a school will recognise — “Kindness Booth at Bnos Chaya” rather than “Booth”.",
   "Pick the date. Leave the finish date empty for something that runs on one day.",
-  "For a program at a school, choose the school — it cannot be saved without one. A JOC event only needs a school if it happens to be hosted at one.",
+  "For a program at a school, choose the school — it cannot be saved without one. A JOC program only needs a school if it happens to be hosted at one.",
   "If it is one of JOC’s programs, link it — the public page then points at that program’s page.",
   "Set the status: Planned while it is pencilled in, Confirmed once the school has agreed.",
   "Tick Published when the school should see it. Until then it is only your working calendar.",
@@ -128,10 +128,10 @@ export function ProgrammingClient({
       </PageIntro>
 
       <Group
-        title={`Big JOC events — coming up (${jocEvents.length})`}
+        title={`JOC programs — coming up (${jocEvents.length})`}
         events={jocEvents}
         onEdit={setEditing}
-        empty="No JOC events scheduled yet."
+        empty="No JOC programs scheduled yet."
       />
       <div style={{ height: "22px" }} />
       <Group

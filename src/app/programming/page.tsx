@@ -153,13 +153,13 @@ export default async function ProgrammingPage() {
       </section>
 
       <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "22px 26px 60px" }}>
-        {/* Two lists, deliberately separate. A big JOC event is the whole
-            network; a school program is one program at one school, and there
-            will be far more of those. Mixed together, the second drowns the
-            first. */}
+        {/* Two lists, deliberately separate. A JOC program runs across the
+            whole network; a school program is one program at one school, and
+            there will be far more of those. Mixed together, the second drowns
+            the first. */}
         <div style={{ marginBottom: "48px" }}>
           <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
-            Big JOC events
+            JOC programs
           </h2>
           <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px" }}>
             Across the whole network — open to every school.

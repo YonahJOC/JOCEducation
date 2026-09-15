@@ -64,7 +64,7 @@ export async function saveEvent(input: {
   // A school program that names no school is not a school program. The two
   // kinds are shown as separate lists, so this is the line between them.
   if (input.kind === "SCHOOL_PROGRAM" && !input.schoolId) {
-    return { ok: false, error: "Choose which school this is running at, or make it a JOC event." };
+    return { ok: false, error: "Choose which school this is running at, or make it a JOC program." };
   }
 
   // Published means a school will read it, so it has to say something.

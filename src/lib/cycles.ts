@@ -262,7 +262,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Nisan", anchor: "Nisan / Pesach → Yom HaShoah",
     range: "Mar 28 – May 8",
     startDate: "2027-03-28", endDate: "2027-05-08", weeks: 6,
-    color: "#2D46AF", tags: ["Israel-focused"],
+    color: "#2D46AF",
     desc: "Kol dichfin yeisei v'yeichol — whoever is hungry, come and eat. Cycle 7 runs from maos chittim and seder placement for anyone alone, through Pesach itself, to Yom HaShoah at the month's end, remembering those who were denied every freedom we now take as given. One people, one table.",
     focus: [
       "Maos chittim distribution run by grades",
@@ -285,7 +285,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Iyar – Sivan", anchor: "Yom HaZikaron · Yom Ha'atzmaut · Yom Yerushalayim → Shavuos",
     range: "May 9 – Jun 12",
     startDate: "2027-05-09", endDate: "2027-06-12", weeks: 5,
-    color: "#10233F", tags: ["Israel-focused"],
+    color: "#10233F",
     desc: "The year closes at its widest. Iyar carries Yom HaZikaron, Yom Ha'atzmaut and Yom Yerushalayim back to back, and Cycle 8 widens the circle from the classroom to a whole people — including those who gave everything so it would exist — before handing every chesed to the grade behind at Shavuos.",
     focus: [
       "Yom HaZikaron letters to bereaved families in Israel",

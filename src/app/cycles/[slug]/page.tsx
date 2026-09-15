@@ -92,7 +92,7 @@ export default async function CycleDetailPage({ params }: Props) {
                   fontWeight: 600,
                 }}
               >
-                {tag === "Israel-focused" ? `🇮🇱 ${tag}` : tag}
+                {tag}
               </span>
             ))}
           </div>
