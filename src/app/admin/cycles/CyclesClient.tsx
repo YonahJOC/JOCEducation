@@ -26,7 +26,7 @@ export type CycleRow = {
   endDate: string;
   weeks: number;
   color: string;
-  israel: boolean;
+  tags: string[];
   desc: string;
   focus: string[];
   weekPlan: { title: string; body: string }[];
@@ -36,7 +36,7 @@ export type CycleRow = {
 const BLANK: CycleRow = {
   id: 0, num: 1, slug: "", theme: "", gloss: "", question: "",
   hebrew: "", anchor: "", range: "", startDate: "", endDate: "",
-  weeks: 4, color: "#2D46AF", israel: false, desc: "", focus: [""],
+  weeks: 4, color: "#2D46AF", tags: [], desc: "", focus: [""],
   weekPlan: [{ title: "", body: "" }], lessonCount: 0,
 };
 
@@ -65,6 +65,9 @@ const STEPS = [
   "Press Save. It is live immediately — there is no separate publish step for cycles.",
 ];
 
+/** Starting suggestions only — the real list is whatever JOC has used. */
+const SUGGESTED_TAGS = ["Israel-focused", "Yom tov", "Whole school", "Community-wide"];
+
 export function CyclesClient({
   cycles, usingStatic, disabled,
 }: {
@@ -73,11 +76,12 @@ export function CyclesClient({
   disabled?: boolean;
 }) {
   const [editing, setEditing] = useState<CycleRow | null>(null);
+  const allTags = [...new Set([...cycles.flatMap((c) => c.tags), ...SUGGESTED_TAGS])].sort();
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
 
   if (editing) {
-    return <CycleForm initial={editing} siblings={cycles} disabled={disabled} onDone={() => setEditing(null)} />;
+    return <CycleForm initial={editing} siblings={cycles} allTags={allTags} disabled={disabled} onDone={() => setEditing(null)} />;
   }
 
   return (
@@ -159,7 +163,18 @@ export function CyclesClient({
                         RUNNING NOW
                       </span>
                     )}
-                    {c.israel && <span style={{ marginLeft: "8px" }} aria-hidden="true">🇮🇱</span>}
+                    {c.tags.map((t) => (
+                      <span
+                        key={t}
+                        style={{
+                          fontSize: "10.5px", fontWeight: 700, color: "rgba(16,35,63,.6)",
+                          backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px",
+                          padding: "2px 8px", marginLeft: "8px", letterSpacing: "0.04em",
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </p>
                   <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
                     {c.range} · {c.weeks} weeks · {c.hebrew} ·{" "}
@@ -191,11 +206,13 @@ export function CyclesClient({
 }
 
 function CycleForm({
-  initial, siblings, disabled, onDone,
+  initial, siblings, allTags, disabled, onDone,
 }: {
   initial: CycleRow;
   /** Every cycle, this one included — needed to work out what a date change moves. */
   siblings: CycleRow[];
+  /** Every label already in use, offered as suggestions. */
+  allTags: string[];
   disabled?: boolean;
   onDone: () => void;
 }) {
@@ -248,7 +265,7 @@ function CycleForm({
         theme: d.theme, gloss: d.gloss, question: d.question,
         hebrew: d.hebrew, anchor: d.anchor,
         startDate: d.startDate, endDate: d.endDate,
-        color: d.color, israel: d.israel, desc: d.desc,
+        color: d.color, tags: d.tags, desc: d.desc,
         focus: d.focus, weekPlan: d.weekPlan,
       });
       if (r.ok) onDone();
@@ -390,10 +407,22 @@ function CycleForm({
           </div>
         )}
 
-        <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK, marginTop: "14px" }}>
-          <input type="checkbox" checked={d.israel} onChange={(e) => set("israel", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
-          Israel-focused
-        </label>
+        {/* This was a single "Israel-focused" checkbox, which meant that was
+            the only label the site could ever show — anything else needed a
+            developer. Cycles now carry as many labels as apply, and the team
+            names them. Suggestions below are a starting point, not the list. */}
+        <div style={{ marginTop: "18px" }}>
+          <p style={{ ...label, marginBottom: "8px" }}>Labels</p>
+          <TagPicker
+            tags={d.tags}
+            onChange={(v) => set("tags", v)}
+            suggestions={allTags}
+            disabled={disabled}
+          />
+          <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "8px 0 0" }}>
+            Shown on the cycle page. Pick as many as apply, or type your own.
+          </p>
+        </div>
       </div>
 
       <div style={card}>
@@ -537,6 +566,106 @@ function Lines({
       >
         + Add
       </button>
+    </div>
+  );
+}
+
+/**
+ * Pick as many labels as apply, and add your own.
+ *
+ * Replaced a single hardcoded "Israel-focused" checkbox. Suggestions are
+ * whatever JOC has already used elsewhere, so the vocabulary grows on its own
+ * rather than needing a developer each time a new one is wanted.
+ */
+function TagPicker({
+  tags, onChange, suggestions, disabled,
+}: {
+  tags: string[];
+  onChange: (v: string[]) => void;
+  suggestions: string[];
+  disabled?: boolean;
+}) {
+  const [draft, setDraft] = useState("");
+
+  const has = (t: string) => tags.some((x) => x.toLowerCase() === t.toLowerCase());
+  const add = (raw: string) => {
+    const t = raw.trim();
+    if (!t || has(t) || tags.length >= 12) return;
+    onChange([...tags, t]);
+    setDraft("");
+  };
+  const toggle = (t: string) =>
+    has(t) ? onChange(tags.filter((x) => x.toLowerCase() !== t.toLowerCase())) : add(t);
+
+  return (
+    <div>
+      {tags.length > 0 && (
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
+          {tags.map((t) => (
+            <span
+              key={t}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "7px",
+                fontSize: "13px", fontWeight: 600, color: BLUE,
+                backgroundColor: "rgba(45,70,175,.08)", border: `1px solid rgba(45,70,175,.25)`,
+                borderRadius: "9999px", padding: "6px 8px 6px 13px",
+              }}
+            >
+              {t}
+              <button
+                type="button"
+                onClick={() => onChange(tags.filter((x) => x !== t))}
+                disabled={disabled}
+                aria-label={`Remove ${t}`}
+                style={{
+                  fontFamily: "var(--font-outfit)", fontSize: "15px", lineHeight: 1,
+                  color: BLUE, background: "none", border: "none", cursor: "pointer",
+                  padding: "0 4px", opacity: 0.7,
+                }}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
+        {suggestions.filter((t) => !has(t)).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => toggle(t)}
+            disabled={disabled}
+            style={{
+              fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 500,
+              color: "rgba(16,35,63,.7)", backgroundColor: "#fff",
+              border: `1px dashed ${RULE}`, borderRadius: "9999px",
+              padding: "6px 13px", minHeight: "36px",
+              cursor: disabled ? "not-allowed" : "pointer",
+            }}
+          >
+            + {t}
+          </button>
+        ))}
+      </div>
+
+      <input
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        // Enter adds the label rather than submitting the whole cycle form,
+        // which is what it would otherwise do.
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === ",") {
+            e.preventDefault();
+            add(draft);
+          }
+        }}
+        onBlur={() => add(draft)}
+        placeholder="Add your own, then press Enter"
+        disabled={disabled || tags.length >= 12}
+        style={{ ...field, maxWidth: "320px" }}
+      />
     </div>
   );
 }

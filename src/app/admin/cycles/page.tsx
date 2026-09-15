@@ -41,7 +41,7 @@ async function getCycles(): Promise<CycleRow[]> {
       endDate: iso(c.endDate),
       weeks: c.weeks,
       color: c.color,
-      israel: c.israel,
+      tags: c.tags ?? [],
       desc: c.desc,
       focus: c.focus.length > 0 ? c.focus : [""],
       weekPlan: c.weekPlan.length > 0

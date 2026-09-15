@@ -978,7 +978,16 @@ model Cycle {
   endDate   DateTime
   weeks     Int
 
-  color  String  @default("#2D46AF")
+  color String @default("#2D46AF")
+
+  /// Labels shown on the cycle. This replaced a single `israel` boolean —
+  /// one hardcoded checkbox meant the education team had to ask a developer
+  /// for any label but that one. Free text on purpose: JOC decides its own
+  /// vocabulary, and can pick as many as apply.
+  tags String[] @default([])
+
+  /// Kept only so the old data is recoverable; nothing reads it. The values
+  /// were copied into `tags` by the 20260915190000_cycle_tags migration.
   israel Boolean @default(false)
 
   desc  String   @db.Text
@@ -1053,6 +1062,13 @@ model ProgramEvent {
   slug  String @unique
   title String
 
+  /// The two things on the calendar are genuinely different, and the
+  /// difference is not "is a school named". A Run for Chesed happens at one
+  /// park and is still a JOC event; a Kindness Booth at one school is a
+  /// school program even though JOC supplies it. Stated outright rather than
+  /// inferred, because the page shows them as two separate lists.
+  kind EventKind @default(SCHOOL_PROGRAM)
+
   /// Which JOC program this is a running of, where it is one of ours.
   /// Null for a one-off that is not in the catalogue.
   programId Int?
@@ -1086,6 +1102,14 @@ model ProgramEvent {
   @@index([startsAt])
   @@index([schoolId])
   @@index([published, startsAt])
+  @@index([kind, startsAt])
+}
+
+enum EventKind {
+  /// A big JOC event — the whole network, or anyone who wants to come.
+  JOC_EVENT
+  /// One program running at one school. There will be many of these.
+  SCHOOL_PROGRAM
 }
 
 enum EventStatus {

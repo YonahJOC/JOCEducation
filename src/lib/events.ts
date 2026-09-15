@@ -8,9 +8,12 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
  * listings, not the whole site.
  */
 
+export type EventKind = "JOC_EVENT" | "SCHOOL_PROGRAM";
+
 export type PublicEvent = {
   id: number;
   slug: string;
+  kind: EventKind;
   title: string;
   startsAt: Date;
   endsAt: Date | null;
@@ -19,6 +22,7 @@ export type PublicEvent = {
   detail: string;
   lead: string | null;
   status: string;
+  schoolId: string | null;
   schoolName: string | null;
   programName: string | null;
   programSlug: string | null;
@@ -26,10 +30,11 @@ export type PublicEvent = {
 };
 
 type Row = {
-  id: number; slug: string; title: string;
+  id: number; slug: string; kind: string; title: string;
   startsAt: Date; endsAt: Date | null;
   location: string | null; audience: string | null; detail: string;
   lead: string | null; status: string;
+  schoolId: string | null;
   school: { name: string } | null;
   program: { name: string; slug: string; heroColor: string } | null;
 };
@@ -37,6 +42,7 @@ type Row = {
 const shape = (e: Row): PublicEvent => ({
   id: e.id,
   slug: e.slug,
+  kind: e.kind as EventKind,
   title: e.title,
   startsAt: e.startsAt,
   endsAt: e.endsAt,
@@ -45,6 +51,7 @@ const shape = (e: Row): PublicEvent => ({
   detail: e.detail,
   lead: e.lead,
   status: String(e.status),
+  schoolId: e.schoolId,
   schoolName: e.school?.name ?? null,
   programName: e.program?.name ?? null,
   programSlug: e.program?.slug ?? null,
@@ -63,7 +70,7 @@ const WITH_NAMES = {
  * A cancelled event stays visible until its date passes, because a school
  * that was told it was happening needs to see that it is not.
  */
-export async function getUpcomingEvents(limit = 60): Promise<PublicEvent[]> {
+export async function getUpcomingEvents(kind?: EventKind, limit = 120): Promise<PublicEvent[]> {
   if (!isDatabaseConfigured()) return [];
   try {
     // Compare against the start of today, not now — an all-day event happening
@@ -74,13 +81,15 @@ export async function getUpcomingEvents(limit = 60): Promise<PublicEvent[]> {
     const rows = await prisma.programEvent.findMany({
       where: {
         published: true,
+        ...(kind ? { kind } : {}),
         OR: [{ endsAt: { gte: today } }, { endsAt: null, startsAt: { gte: today } }],
       },
       orderBy: { startsAt: "asc" },
       take: limit,
       select: {
-        id: true, slug: true, title: true, startsAt: true, endsAt: true,
+        id: true, slug: true, kind: true, title: true, startsAt: true, endsAt: true,
         location: true, audience: true, detail: true, lead: true, status: true,
+        schoolId: true,
         ...WITH_NAMES,
       },
     });
@@ -91,7 +100,7 @@ export async function getUpcomingEvents(limit = 60): Promise<PublicEvent[]> {
 }
 
 /** What has already run. The record of a year, newest first. */
-export async function getPastEvents(limit = 24): Promise<PublicEvent[]> {
+export async function getPastEvents(kind?: EventKind, limit = 24): Promise<PublicEvent[]> {
   if (!isDatabaseConfigured()) return [];
   try {
     const today = new Date();
@@ -100,14 +109,16 @@ export async function getPastEvents(limit = 24): Promise<PublicEvent[]> {
     const rows = await prisma.programEvent.findMany({
       where: {
         published: true,
+        ...(kind ? { kind } : {}),
         status: { not: "CANCELLED" },
         OR: [{ endsAt: { lt: today } }, { endsAt: null, startsAt: { lt: today } }],
       },
       orderBy: { startsAt: "desc" },
       take: limit,
       select: {
-        id: true, slug: true, title: true, startsAt: true, endsAt: true,
+        id: true, slug: true, kind: true, title: true, startsAt: true, endsAt: true,
         location: true, audience: true, detail: true, lead: true, status: true,
+        schoolId: true,
         ...WITH_NAMES,
       },
     });
@@ -128,7 +139,7 @@ export async function getAllEvents(): Promise<(PublicEvent & { published: boolea
       orderBy: { startsAt: "desc" },
       take: 500,
       select: {
-        id: true, slug: true, title: true, startsAt: true, endsAt: true,
+        id: true, slug: true, kind: true, title: true, startsAt: true, endsAt: true,
         location: true, audience: true, detail: true, lead: true, status: true,
         published: true, schoolId: true, programId: true,
         ...WITH_NAMES,

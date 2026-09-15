@@ -27,6 +27,7 @@ async function Inner() {
 
   const rows: EventRow[] = events.map((e) => ({
     id: e.id,
+    kind: e.kind,
     title: e.title,
     programId: e.programId,
     schoolId: e.schoolId,

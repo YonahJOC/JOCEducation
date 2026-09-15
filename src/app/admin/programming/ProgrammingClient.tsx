@@ -11,6 +11,7 @@ const RULE = "rgba(16,35,63,.15)";
 
 export type EventRow = {
   id: number;
+  kind: "JOC_EVENT" | "SCHOOL_PROGRAM";
   title: string;
   programId: number | null;
   schoolId: string | null;
@@ -38,8 +39,13 @@ const STATUS_COLORS: Record<string, string> = {
   PLANNED: "#C96C00", CONFIRMED: "#1B7F4B", DONE: "#2D46AF", CANCELLED: "#B8321E",
 };
 
+const KIND_LABELS: Record<string, string> = {
+  JOC_EVENT: "Big JOC event",
+  SCHOOL_PROGRAM: "Program at a school",
+};
+
 const BLANK: EventRow = {
-  id: 0, title: "", programId: null, schoolId: null,
+  id: 0, kind: "SCHOOL_PROGRAM", title: "", programId: null, schoolId: null,
   startsAt: "", endsAt: "", location: "", audience: "", detail: "", lead: "",
   status: "PLANNED", published: false, schoolName: null, programName: null,
 };
@@ -61,9 +67,10 @@ const card: React.CSSProperties = {
 
 const STEPS = [
   "Press “+ New event”.",
+  "Choose which kind it is. A big JOC event is for the whole network — Run for Chesed, a network-wide collection. A program at a school is one program running at one school, and there will be many of those.",
   "Give it a name a school will recognise — “Kindness Booth at Bnos Chaya” rather than “Booth”.",
   "Pick the date. Leave the finish date empty for something that runs on one day.",
-  "Choose the school. Leave it on “Every school” for something the whole network joins.",
+  "For a program at a school, choose the school — it cannot be saved without one. A JOC event only needs a school if it happens to be hosted at one.",
   "If it is one of JOC’s programs, link it — the public page then points at that program’s page.",
   "Set the status: Planned while it is pencilled in, Confirmed once the school has agreed.",
   "Tick Published when the school should see it. Until then it is only your working calendar.",
@@ -94,6 +101,10 @@ export function ProgrammingClient({
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = events.filter((e) => (e.endsAt || e.startsAt) >= today);
   const past = events.filter((e) => (e.endsAt || e.startsAt) < today);
+  // Split the way the public page splits them, so what you see here is what a
+  // school sees there.
+  const jocEvents = upcoming.filter((e) => e.kind === "JOC_EVENT");
+  const schoolPrograms = upcoming.filter((e) => e.kind === "SCHOOL_PROGRAM");
 
   return (
     <div>
@@ -116,7 +127,19 @@ export function ProgrammingClient({
         </button>
       </PageIntro>
 
-      <Group title={`Coming up (${upcoming.length})`} events={upcoming} onEdit={setEditing} empty="Nothing scheduled yet." />
+      <Group
+        title={`Big JOC events — coming up (${jocEvents.length})`}
+        events={jocEvents}
+        onEdit={setEditing}
+        empty="No JOC events scheduled yet."
+      />
+      <div style={{ height: "22px" }} />
+      <Group
+        title={`Programs at schools — coming up (${schoolPrograms.length})`}
+        events={schoolPrograms}
+        onEdit={setEditing}
+        empty="No school programs scheduled yet."
+      />
       {past.length > 0 && (
         <>
           <div style={{ height: "22px" }} />
@@ -170,7 +193,11 @@ function Group({
                   )}
                 </p>
                 <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
-                  {[e.schoolName ?? "Every school", e.programName, e.audience].filter(Boolean).join(" · ")}
+                  {[
+                    e.schoolName ?? (e.kind === "JOC_EVENT" ? "Whole network" : "No school set"),
+                    e.programName,
+                    e.audience,
+                  ].filter(Boolean).join(" · ")}
                 </p>
               </div>
               <span style={{
@@ -214,6 +241,7 @@ function EventForm({
     start(async () => {
       const r = await saveEvent({
         id: d.id || undefined,
+        kind: d.kind,
         title: d.title,
         programId: d.programId,
         schoolId: d.schoolId,
@@ -263,6 +291,38 @@ function EventForm({
       </h1>
 
       <div style={card}>
+        <p style={{ ...label, marginBottom: "8px" }}>Which kind is this?</p>
+        {/* Asked first because it decides the rest of the form: a school
+            program has to name its school, a JOC event does not. */}
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "16px" }}>
+          {(["JOC_EVENT", "SCHOOL_PROGRAM"] as const).map((k) => {
+            const on = d.kind === k;
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() => set("kind", k)}
+                disabled={disabled}
+                style={{
+                  fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
+                  padding: "10px 16px", borderRadius: "10px", minHeight: "44px",
+                  cursor: disabled ? "not-allowed" : "pointer", textAlign: "left",
+                  border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
+                  backgroundColor: on ? "rgba(45,70,175,.07)" : "#fff",
+                  color: on ? BLUE : "rgba(16,35,63,.7)",
+                }}
+              >
+                {KIND_LABELS[k]}
+                <span style={{ display: "block", fontSize: "12px", fontWeight: 400, color: "rgba(16,35,63,.55)", marginTop: "2px" }}>
+                  {k === "JOC_EVENT"
+                    ? "The whole network, or anyone who wants to come"
+                    : "One program, running at one school"}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
         <div style={{ marginBottom: "12px" }}>
           <label style={label}>What is it called?</label>
           <input
@@ -293,18 +353,27 @@ function EventForm({
       <div style={card}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "12px" }}>
           <div>
-            <label style={label}>Which school?</label>
+            <label style={label}>
+              {d.kind === "SCHOOL_PROGRAM" ? "Which school? (required)" : "Hosted at a school?"}
+            </label>
             <select
               value={d.schoolId ?? ""}
               onChange={(e) => set("schoolId", e.target.value || null)}
               disabled={disabled}
               style={field}
             >
-              <option value="">Every school</option>
+              <option value="">
+                {d.kind === "SCHOOL_PROGRAM" ? "Choose a school…" : "No single school"}
+              </option>
               {schools.map((s) => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
             </select>
+            {schools.length === 0 && (
+              <p style={{ fontSize: "12px", color: "#9A5405", margin: "5px 0 0" }}>
+                No schools on the system yet. Add one under Schools first.
+              </p>
+            )}
           </div>
           <div>
             <label style={label}>Which JOC program?</label>

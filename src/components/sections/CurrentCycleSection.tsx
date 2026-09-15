@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { type Cycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
 
-function anchorStyle(israel?: boolean): React.CSSProperties {
-  return israel
+function anchorStyle(tagged?: boolean): React.CSSProperties {
+  return tagged
     ? { background: "#F4F7FD", color: "#2D46AF", border: "1px solid rgba(45,70,175,.25)" }
     : { background: "rgba(16,35,63,.05)", color: "rgba(16,35,63,.72)", border: "1px solid rgba(16,35,63,.1)" };
 }
@@ -97,7 +97,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               fontWeight: 500,
               padding: "5px 11px",
               borderRadius: "9999px",
-              ...anchorStyle(cycle.israel),
+              ...anchorStyle((cycle.tags ?? []).length > 0),
             }}
           >
             {cycle.anchor}

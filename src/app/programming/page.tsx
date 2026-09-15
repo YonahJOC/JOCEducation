@@ -4,6 +4,8 @@ import {
   getUpcomingEvents, getPastEvents, formatEventDate, type PublicEvent,
 } from "@/lib/events";
 import { getRunningCycle } from "@/lib/cycle-data";
+import { safeAuth } from "@/auth";
+import { isInternal } from "@/lib/access";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -60,7 +62,7 @@ function EventRow({ e }: { e: PublicEvent }) {
           {e.title}
         </p>
         <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", margin: "0 0 8px" }}>
-          {[e.schoolName ?? "Open to every school", e.audience, e.location]
+          {[e.schoolName ?? (e.kind === "JOC_EVENT" ? "Open to every school" : null), e.audience, e.location]
             .filter(Boolean)
             .join(" · ")}
         </p>
@@ -82,14 +84,52 @@ function EventRow({ e }: { e: PublicEvent }) {
   );
 }
 
+function Months({ months }: { months: { label: string; events: PublicEvent[] }[] }) {
+  return (
+    <>
+      {months.map((m) => (
+        <div key={m.label} style={{ marginBottom: "34px" }}>
+          <h3 style={{ fontWeight: 800, fontSize: "13px", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+            {m.label}
+          </h3>
+          {m.events.map((e) => (
+            <EventRow key={e.id} e={e} />
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function Empty({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "18px", padding: "32px 26px" }}>
+      <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.6)", margin: 0, maxWidth: "52ch" }}>
+        {children}
+      </p>
+    </div>
+  );
+}
+
 export default async function ProgrammingPage() {
-  const [upcoming, past, cycle] = await Promise.all([
-    getUpcomingEvents(),
-    getPastEvents(12),
+  const [jocEvents, allSchoolPrograms, past, cycle, session] = await Promise.all([
+    getUpcomingEvents("JOC_EVENT"),
+    getUpcomingEvents("SCHOOL_PROGRAM"),
+    getPastEvents(undefined, 12),
     getRunningCycle(),
+    safeAuth(),
   ]);
 
-  const months = byMonth(upcoming);
+  // A teacher wants their own school's programs, not a list of forty schools'.
+  // JOC's own people see every school, because that is their job.
+  const mySchoolId = session?.user?.schoolId ?? null;
+  const seesEverySchool = isInternal(session?.user) || !mySchoolId;
+  const schoolPrograms = seesEverySchool
+    ? allSchoolPrograms
+    : allSchoolPrograms.filter((e) => e.schoolId === mySchoolId);
+
+  const jocMonths = byMonth(jocEvents);
+  const schoolMonths = byMonth(schoolPrograms);
 
   return (
     <div style={{ backgroundColor: PAPER, minHeight: "70vh" }}>
@@ -113,31 +153,49 @@ export default async function ProgrammingPage() {
       </section>
 
       <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "22px 26px 60px" }}>
-        {months.length === 0 ? (
-          <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "18px", padding: "44px 26px", textAlign: "center" }}>
-            <p style={{ fontSize: "16px", fontWeight: 700, color: INK, margin: "0 0 6px" }}>
-              Nothing on the calendar yet.
-            </p>
-            <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.6)", margin: 0, maxWidth: "46ch", marginInline: "auto" }}>
-              The programming team is putting this year together. In the meantime,{" "}
+        {/* Two lists, deliberately separate. A big JOC event is the whole
+            network; a school program is one program at one school, and there
+            will be far more of those. Mixed together, the second drowns the
+            first. */}
+        <div style={{ marginBottom: "48px" }}>
+          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+            Big JOC events
+          </h2>
+          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px" }}>
+            Across the whole network — open to every school.
+          </p>
+          {jocMonths.length === 0 ? (
+            <Empty>
+              Nothing on the network calendar yet. In the meantime,{" "}
               <Link href="/programs" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
                 see what JOC runs for schools
               </Link>
               .
-            </p>
-          </div>
-        ) : (
-          months.map((m) => (
-            <div key={m.label} style={{ marginBottom: "38px" }}>
-              <h2 style={{ fontWeight: 800, fontSize: "13px", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
-                {m.label}
-              </h2>
-              {m.events.map((e) => (
-                <EventRow key={e.id} e={e} />
-              ))}
-            </div>
-          ))
-        )}
+            </Empty>
+          ) : (
+            <Months months={jocMonths} />
+          )}
+        </div>
+
+        <div style={{ paddingTop: "34px", borderTop: `2px solid ${RULE}` }}>
+          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+            {seesEverySchool ? "Programs at schools" : "Running at your school"}
+          </h2>
+          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px" }}>
+            {seesEverySchool
+              ? "Each program, at each school that is running it."
+              : "What your school has on this year."}
+          </p>
+          {schoolMonths.length === 0 ? (
+            <Empty>
+              {seesEverySchool
+                ? "No school programs scheduled yet."
+                : "Nothing scheduled at your school yet. Your JOC contact can add it."}
+            </Empty>
+          ) : (
+            <Months months={schoolMonths} />
+          )}
+        </div>
 
         {past.length > 0 && (
           <div style={{ marginTop: "46px", paddingTop: "30px", borderTop: `2px solid ${RULE}` }}>

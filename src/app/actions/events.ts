@@ -30,6 +30,7 @@ function plainDay(value: string): Date | null {
 
 export async function saveEvent(input: {
   id?: number;
+  kind: string;
   title: string;
   programId?: number | null;
   schoolId?: string | null;
@@ -60,6 +61,12 @@ export async function saveEvent(input: {
     return { ok: false, error: "An event cannot finish before it starts." };
   }
 
+  // A school program that names no school is not a school program. The two
+  // kinds are shown as separate lists, so this is the line between them.
+  if (input.kind === "SCHOOL_PROGRAM" && !input.schoolId) {
+    return { ok: false, error: "Choose which school this is running at, or make it a JOC event." };
+  }
+
   // Published means a school will read it, so it has to say something.
   if (input.published && !input.detail?.trim()) {
     return { ok: false, error: "Write a line about what this is before publishing it." };
@@ -74,6 +81,7 @@ export async function saveEvent(input: {
     }
 
     const data = {
+      kind: input.kind as never,
       title,
       programId: input.programId ?? null,
       schoolId: input.schoolId || null,

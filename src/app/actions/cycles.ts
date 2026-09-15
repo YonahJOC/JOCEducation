@@ -95,7 +95,7 @@ export async function saveCycle(input: {
   startDate: string;
   endDate: string;
   color: string;
-  israel: boolean;
+  tags: string[];
   desc: string;
   focus: string[];
   weekPlan: { title: string; body: string }[];
@@ -148,7 +148,7 @@ export async function saveCycle(input: {
       range: formatCycleRange(start, end),
       weeks: weeksBetween(start, end),
       color: input.color.trim() || "#2D46AF",
-      israel: input.israel,
+      tags: input.tags.map((t) => t.trim()).filter(Boolean).slice(0, 12),
       desc: input.desc.trim(),
       focus: input.focus.map((f) => f.trim()).filter(Boolean),
     };
@@ -234,7 +234,7 @@ export async function importStaticCycles(): Promise<Result> {
           endDate: new Date(c.endDate),
           weeks: c.weeks,
           color: c.color,
-          israel: Boolean(c.israel),
+          tags: c.tags ?? [],
           desc: c.desc,
           focus: c.focus,
           weekPlan: {

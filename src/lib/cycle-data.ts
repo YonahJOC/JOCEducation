@@ -36,7 +36,7 @@ export async function getCycles(): Promise<Cycle[]> {
       endDate: iso(c.endDate),
       weeks: c.weeks,
       color: c.color,
-      israel: c.israel,
+      tags: c.tags,
       desc: c.desc,
       focus: c.focus,
       weekPlan: c.weekPlan.map((w) => ({ title: w.title, body: w.body })),

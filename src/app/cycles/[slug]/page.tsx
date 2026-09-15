@@ -78,8 +78,9 @@ export default async function CycleDetailPage({ params }: Props) {
             >
               {cycle.anchor}
             </span>
-            {cycle.israel && (
+            {(cycle.tags ?? []).map((tag) => (
               <span
+                key={tag}
                 style={{
                   display: "inline-block",
                   marginLeft: "8px",
@@ -91,9 +92,9 @@ export default async function CycleDetailPage({ params }: Props) {
                   fontWeight: 600,
                 }}
               >
-                🇮🇱 Israel-focused
+                {tag === "Israel-focused" ? `🇮🇱 ${tag}` : tag}
               </span>
-            )}
+            ))}
           </div>
 
           {/* Hebrew + theme */}
