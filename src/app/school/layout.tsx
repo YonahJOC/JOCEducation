@@ -5,7 +5,7 @@ import { canRunOwnSchool } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
 
-export const metadata = { title: "Your school — JOC Education", robots: { index: false, follow: false } };
+export const metadata = { title: "Your school", robots: { index: false, follow: false } };
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";

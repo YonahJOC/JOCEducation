@@ -61,7 +61,7 @@ const STEPS = [
   "To move the whole year, change the first day of Cycle 1. Only Cycle 1 has a first day you can set; every other cycle begins when the one before it ends.",
   "Before you save, the box under the dates lists exactly which cycles move and where they land. Nothing is hidden until afterwards.",
   "The theme is the name; the line under it is the plain-English meaning; the question is what it asks a student.",
-  "The week-by-week plan is what a teacher reads to see how the weeks run.",
+  "The lesson plan breakdown is the stages the cycle moves through — it is what a teacher reads to see how it runs. There is no need for one per week.",
   "Press Save. It is live immediately — there is no separate publish step for cycles.",
 ];
 
@@ -408,12 +408,18 @@ function CycleForm({
 
       <div style={card}>
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
-          Week by week
+          Lesson plan breakdown
         </p>
+        {/* This used to read "The dates give 8 weeks. You have written 4.",
+            which stated a rule that was never true: the breakdown is the
+            stages a cycle moves through, not one entry per week. Cycle 1 runs
+            eight weeks in four stages on purpose. It says what it is now, and
+            stops telling anybody off. */}
         <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55 }}>
+          The stages this cycle moves through, in order — what a teacher reads to see how it runs.
           {derivedWeeks
-            ? `The dates give ${derivedWeeks} week${derivedWeeks === 1 ? "" : "s"}. You have written ${d.weekPlan.length}.`
-            : "Set the dates above and this will tell you how many weeks to write."}
+            ? ` These ${d.weekPlan.length} stage${d.weekPlan.length === 1 ? "" : "s"} spread across ${derivedWeeks} week${derivedWeeks === 1 ? "" : "s"}; there is no need for one each.`
+            : ""}
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -421,12 +427,12 @@ function CycleForm({
             <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "12px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(16,35,63,.45)", flexShrink: 0, minWidth: "54px" }}>
-                  WEEK {i + 1}
+                  STEP {i + 1}
                 </span>
                 <input
                   value={w.title}
                   onChange={(e) => set("weekPlan", d.weekPlan.map((x, n) => n === i ? { ...x, title: e.target.value } : x))}
-                  placeholder="What this week is called"
+                  placeholder="What this stage is called"
                   disabled={disabled}
                   style={field}
                 />

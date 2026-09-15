@@ -321,6 +321,64 @@ export const SITE_FIELDS: FieldDef[] = [
     key: "heading", label: "Section heading", type: "SHORT_TEXT",
     value: "Four ways schools run chesed with JOC.",
   },
+
+  // ─── Chesed Cycle pages ───────────────────────────────────────────────────
+  // The headings on every individual cycle page — /cycles/cheshbon-hanefesh
+  // and its seven siblings. One edit here changes all eight, which is the
+  // point: they are one page rendered eight times, not eight pages.
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "plan", label: "The breakdown list", type: "SHORT_TEXT",
+    help: "Above the numbered list on the left. This used to read “Week by week”, which was wrong — the list has four entries whether the cycle runs four weeks or eight.",
+    value: "Lesson plan breakdown",
+  },
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "about", label: "The description panel", type: "SHORT_TEXT",
+    value: "About this cycle",
+  },
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "focus", label: "The bullet list panel", type: "SHORT_TEXT",
+    help: "The list of what the weeks focus on. Called “Programming” until now, which now reads as the events calendar — rename it to whatever the team actually calls it.",
+    value: "Programming",
+  },
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "calendar", label: "The dates panel", type: "SHORT_TEXT",
+    value: "Calendar",
+  },
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "next", label: "The next-cycle panel", type: "SHORT_TEXT",
+    value: "Up next",
+  },
+  // The button wording depends on whether the cycle has started, so all three
+  // are here — otherwise editing the one on screen leaves the other two
+  // hardcoded and they drift apart.
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "cta", sectionLabel: "The button at the bottom",
+    key: "join_current", label: "While the cycle is running", type: "SHORT_TEXT",
+    value: "Join this Cycle",
+  },
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "cta", sectionLabel: "The button at the bottom",
+    key: "join_upcoming", label: "Before it starts", type: "SHORT_TEXT",
+    value: "Get notified when it starts",
+  },
+  {
+    page: "cycle", pageLabel: "Chesed Cycle pages",
+    section: "cta", sectionLabel: "The button at the bottom",
+    key: "join_past", label: "After it has finished", type: "SHORT_TEXT",
+    value: "See next year's program",
+  },
 ];
 
 /** Pages, in editor order, derived from the registry. */

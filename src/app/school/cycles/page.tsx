@@ -5,7 +5,7 @@ const BLUE = "#2D46AF";
 const ORANGE_TEXT = "#C96C00";
 const RULE = "rgba(16,35,63,.14)";
 
-export const metadata = { title: "Cycle progress — JOC Education" };
+export const metadata = { title: "Cycle progress" };
 
 export default async function SchoolCyclesPage() {
   const [school, cycles] = await Promise.all([mySchool(), myCycleProgress()]);

@@ -11,7 +11,7 @@ const ORANGE_TEXT = "#C96C00";
 const RULE = "rgba(16,35,63,.12)";
 
 export const metadata: Metadata = {
-  title: "Your school isn't set up yet — JOC Education",
+  title: "Your school isn't set up yet",
   robots: { index: false, follow: false },
 };
 

@@ -4,7 +4,7 @@ import { getCycles } from "@/lib/cycle-data";
 import { CycleRailSection } from "@/components/sections/CycleRailSection";
 
 export const metadata: Metadata = {
-  title: "Chesed Cycles — JOC Education",
+  title: "Chesed Cycles",
   description:
     "The Just One Chesed year in eight consecutive cycles — one middah, one guiding question, four to six weeks each. From school opening through Shavuos.",
   openGraph: {

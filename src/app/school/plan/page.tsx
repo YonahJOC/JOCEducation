@@ -1,7 +1,7 @@
 import { mySchool, myPlanRequests } from "@/lib/school-data";
 import { SchoolPlanPanel } from "@/components/school/PlanPanel";
 
-export const metadata = { title: "Plan & seats — JOC Education" };
+export const metadata = { title: "Plan & seats" };
 
 export default async function SchoolPlanPage() {
   const [school, requests] = await Promise.all([mySchool(), myPlanRequests()]);

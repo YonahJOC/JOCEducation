@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { getCycleContent, type PublicLesson, type PublicResource } from "@/lib/content";
+import { siteContent } from "@/lib/site-content";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cycle = (await getCycles()).find((c) => c.slug === slug);
   if (!cycle) return {};
   return {
-    title: `Cycle ${cycle.num}: ${cycle.theme} — JOC Education`,
+    title: `Cycle ${cycle.num}: ${cycle.theme}`,
     description: cycle.desc,
     openGraph: {
       title: `Cycle ${cycle.num}: ${cycle.theme}`,
@@ -31,7 +32,13 @@ export default async function CycleDetailPage({ params }: Props) {
   if (!cycle) notFound();
 
   const state = getCycleState(cycle);
-  const { lessons, resources } = await getCycleContent(cycle.slug);
+  // The headings on this page are editable at /admin/site -> Chesed Cycle
+  // pages. One edit changes all eight cycles, because this is one page
+  // rendered eight times.
+  const [{ lessons, resources }, c] = await Promise.all([
+    getCycleContent(cycle.slug),
+    siteContent("cycle"),
+  ]);
   // The next one by number, which is the one after this in the year.
   const nextCycle = all.find((c) => c.num === cycle.num + 1) ?? null;
 
@@ -171,7 +178,7 @@ export default async function CycleDetailPage({ params }: Props) {
                 marginBottom: "18px",
               }}
             >
-              WEEK BY WEEK
+              {c.text("headings.plan", "Lesson plan breakdown")}
             </h2>
             <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0" }}>
               {cycle.weekPlan.map((w, i) => (
@@ -263,7 +270,7 @@ export default async function CycleDetailPage({ params }: Props) {
                   marginBottom: "12px",
                 }}
               >
-                ABOUT THIS CYCLE
+                {c.text("headings.about", "About this cycle")}
               </p>
               <p style={{ fontSize: "15px", color: "rgba(16,35,63,.8)", lineHeight: 1.65 }}>{cycle.desc}</p>
             </div>
@@ -287,7 +294,7 @@ export default async function CycleDetailPage({ params }: Props) {
                   marginBottom: "14px",
                 }}
               >
-                PROGRAMMING
+                {c.text("headings.focus", "Programming")}
               </p>
               <ul
                 style={{
@@ -336,7 +343,7 @@ export default async function CycleDetailPage({ params }: Props) {
                   marginBottom: "14px",
                 }}
               >
-                CALENDAR
+                {c.text("headings.calendar", "Calendar")}
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {[
@@ -372,7 +379,7 @@ export default async function CycleDetailPage({ params }: Props) {
                     marginBottom: "10px",
                   }}
                 >
-                  UP NEXT
+                  {c.text("headings.next", "Up next")}
                 </p>
                 <p
                   style={{
@@ -421,7 +428,11 @@ export default async function CycleDetailPage({ params }: Props) {
                 textDecoration: "none",
               }}
             >
-              {state === "current" ? "Join this Cycle" : state === "past" ? "See next year's program" : "Get notified when it starts"}
+              {state === "current"
+                ? c.text("cta.join_current", "Join this Cycle")
+                : state === "past"
+                  ? c.text("cta.join_past", "See next year's program")
+                  : c.text("cta.join_upcoming", "Get notified when it starts")}
             </Link>
           </div>
         </div>

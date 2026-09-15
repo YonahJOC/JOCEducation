@@ -5,7 +5,7 @@ const INK = "#10233F";
 const BLUE = "#2D46AF";
 const RULE = "rgba(16,35,63,.14)";
 
-export const metadata = { title: "Chesed activity — JOC Education" };
+export const metadata = { title: "Chesed activity" };
 
 const GRADE_LABEL: Record<string, string> = { es: "Elementary", ms: "Middle", hs: "High school" };
 

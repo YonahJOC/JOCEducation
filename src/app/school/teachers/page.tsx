@@ -2,7 +2,7 @@ import { safeAuth } from "@/auth";
 import { mySchool } from "@/lib/school-data";
 import { TeachersPanel } from "@/components/school/TeachersPanel";
 
-export const metadata = { title: "Your teachers — JOC Education" };
+export const metadata = { title: "Your teachers" };
 
 export default async function SchoolTeachersPage() {
   const [school, session] = await Promise.all([mySchool(), safeAuth()]);
