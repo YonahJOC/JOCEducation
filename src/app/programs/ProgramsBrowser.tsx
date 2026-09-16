@@ -43,6 +43,9 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
               <div key={p.slug} style={{ backgroundColor: "#fff", borderRadius: "22px", border: "1px solid rgba(16,35,63,.1)", padding: "26px", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
                   <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>{p.tag}</span>
+                  {p.comingSoon && (
+                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#9A5405", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>Coming soon</span>
+                  )}
                 </div>
                 <h3 style={{ fontWeight: 700, fontSize: "21px", color: "#10233F", marginBottom: "10px" }}>{p.name}</h3>
                 <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6, marginBottom: "12px", flex: 1 }}>{p.description}</p>
@@ -52,9 +55,9 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>
                   <Link href={`/programs/${p.slug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
-                    Learn more
+                    {p.comingSoon ? "Read more" : "Learn more"}
                   </Link>
-                  {p.external ? (
+                  {p.comingSoon ? null : p.external ? (
                     <a href={p.externalHref} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
                       Visit ↗
                     </a>

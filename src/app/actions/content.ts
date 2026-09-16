@@ -303,6 +303,7 @@ export async function saveProgram(input: {
   externalHref?: string | null;
   cta: string;
   published: boolean;
+  comingSoon: boolean;
   sort: number;
 }): Promise<Result> {
   try {

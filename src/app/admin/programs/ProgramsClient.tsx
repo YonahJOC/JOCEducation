@@ -25,6 +25,7 @@ export type ProgramRow = {
   externalHref: string | null;
   cta: string;
   published: boolean;
+  comingSoon: boolean;
   sort: number;
 };
 
@@ -40,7 +41,7 @@ const BLANK: ProgramRow = {
   id: 0, slug: "", name: "", tag: "Ongoing", tagline: "", description: "",
   heroColor: "#2D46AF", meta: "", available: [], whatsIncluded: [""],
   howItWorks: [{ step: "01", title: "", description: "" }],
-  externalHref: null, cta: "Register your school", published: false, sort: 0,
+  externalHref: null, cta: "Register your school", published: false, comingSoon: false, sort: 0,
 };
 
 const field: React.CSSProperties = {
@@ -163,7 +164,7 @@ export function ProgramsClient({
                 <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>{p.name}</p>
                 <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
                   {p.tag} · /programs/{p.slug}
-                  {p.published ? "" : " · draft"}
+                  {p.published ? "" : " · draft"}{p.comingSoon ? " · coming soon" : ""}
                 </p>
               </div>
               <button
@@ -214,6 +215,7 @@ function ProgramForm({
         externalHref: d.externalHref,
         cta: d.cta,
         published: d.published,
+        comingSoon: d.comingSoon,
         sort: d.sort,
       });
       if (r.ok) onDone();
@@ -400,6 +402,14 @@ function ProgramForm({
         <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
           <input type="checkbox" checked={d.published} onChange={(e) => set("published", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
           Published — visible on the site
+        </label>
+        {/* Announced, but not open yet. The card keeps its place on the page
+            and wears a "Coming soon" badge instead of a Register button —
+            inviting a school to sign up for something that does not run yet
+            is how you lose them. */}
+        <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+          <input type="checkbox" checked={d.comingSoon} onChange={(e) => set("comingSoon", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
+          Coming soon — no Register button yet
         </label>
         <button
           type="submit"

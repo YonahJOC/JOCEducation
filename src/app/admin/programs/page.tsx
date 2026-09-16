@@ -26,6 +26,7 @@ async function getPrograms(): Promise<ProgramRow[]> {
       externalHref: p.externalHref,
       cta: p.cta,
       published: p.published,
+    comingSoon: p.comingSoon,
       sort: p.sort,
     }));
   } catch {

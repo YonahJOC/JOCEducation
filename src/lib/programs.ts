@@ -13,6 +13,8 @@ export type Program = {
    *  used to sit here were invented and attributed to named rebbeim. */
   testimonial?: { quote: string; attribution: string };
   cta: string;
+  /** Announced but not running yet: badge instead of a Register button. */
+  comingSoon?: boolean;
   external?: boolean;
   externalHref?: string;
 };

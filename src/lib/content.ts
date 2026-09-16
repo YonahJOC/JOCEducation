@@ -215,6 +215,7 @@ export async function getPublishedPrograms(): Promise<Program[]> {
       meta: p.meta,
       available: p.available,
       whatsIncluded: p.whatsIncluded,
+      comingSoon: p.comingSoon,
       howItWorks: p.steps.map((s) => ({
         step: s.step,
         title: s.title,

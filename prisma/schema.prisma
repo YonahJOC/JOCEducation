@@ -759,7 +759,13 @@ model ProgramPage {
   cta          String  @default("Register your school")
 
   published Boolean @default(false)
-  sort      Int     @default(0)
+
+  /// Announced but not running yet. Shown on the site with a "Coming soon"
+  /// badge and no Register button — telling a school to register for
+  /// something that does not exist yet is how you lose them.
+  comingSoon Boolean @default(false)
+
+  sort Int @default(0)
 
   steps ProgramStep[]
   events ProgramEvent[]
