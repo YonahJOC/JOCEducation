@@ -317,9 +317,15 @@ export const SITE_FIELDS: FieldDef[] = [
   },
   {
     page: "programs", pageLabel: "Programs page",
-    section: "models", sectionLabel: "The four ways to run it",
-    key: "heading", label: "Section heading", type: "SHORT_TEXT",
-    value: "Four ways schools run chesed with JOC.",
+    section: "hero", sectionLabel: "Heading",
+    key: "intro", label: "Line under the title", type: "LONG_TEXT",
+    value: "Organized chesed programs your school can register for. JOC handles the logistics; your students do the chesed.",
+  },
+  {
+    page: "programs", pageLabel: "Programs page",
+    section: "list", sectionLabel: "The list of programs",
+    key: "intro", label: "Line above the cards", type: "LONG_TEXT",
+    value: "Each one is run by JOC — we bring the materials, the training and the logistics. Availability depends on your subscription level.",
   },
 
   // ─── Chesed Cycle pages ───────────────────────────────────────────────────
