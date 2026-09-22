@@ -396,6 +396,12 @@ function ProgramForm({
 
       <div style={card}>
         <label style={label}>Runs on another JOC site</label>
+        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
+          For a program that does not sign up here — Chesed Match, for instance, which runs on
+          chesedmatch.org. The orange button on the card and the page opens that address in a new
+          tab instead of sending the school to pricing. Leave it empty for anything JOC runs on
+          this site.
+        </p>
         <input
           value={d.externalHref ?? ""}
           onChange={(e) => set("externalHref", e.target.value || null)}
@@ -403,6 +409,13 @@ function ProgramForm({
           disabled={disabled}
           style={field}
         />
+        {/* Both can be set, and the form wins. Saying so here is the whole
+            point — otherwise the address sits in the box looking active
+            while nobody can work out why nothing links to it. */}
+        <p style={{ fontSize: "13px", color: "rgba(16,35,63,.5)", lineHeight: 1.5, margin: "10px 0 0", maxWidth: "64ch" }}>
+          If this program also has a sign-up form, the form is what people are sent to and this
+          address is ignored.
+        </p>
       </div>
 
       <div style={{ ...card, display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>

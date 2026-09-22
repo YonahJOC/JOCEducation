@@ -57,7 +57,15 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
                   <Link href={`/programs/${p.slug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
                     {p.comingSoon ? "Read more" : "Learn more"}
                   </Link>
-                  {p.comingSoon ? null : p.external ? (
+                  {/* Same order as the program's own page: its own sign-up
+                      form first, then another JOC site, then pricing. A card
+                      that said Register while the page said Sign up would be
+                      two answers to the same question. */}
+                  {p.comingSoon ? null : p.formSlug ? (
+                    <Link href={`/forms/${p.formSlug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                      Sign up
+                    </Link>
+                  ) : p.external ? (
                     <a href={p.externalHref} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
                       Visit ↗
                     </a>
