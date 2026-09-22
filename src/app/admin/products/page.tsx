@@ -1,6 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { ProductsClient, type ProductRow } from "./ProductsClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { ShopGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Products — JOC Console" };
 
@@ -29,5 +29,5 @@ async function Inner() {
 }
 
 export default async function AdminProductsPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <ShopGuard>{await Inner()}</ShopGuard>;
 }

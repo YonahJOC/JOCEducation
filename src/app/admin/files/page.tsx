@@ -1,7 +1,7 @@
 import { isDatabaseConfigured } from "@/lib/prisma";
 import { listFiles, humanSize, fileUrl } from "@/lib/files";
 import { FilesClient, type FileRow } from "./FilesClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { ResourcesGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Files — JOC Console" };
 
@@ -25,5 +25,5 @@ async function Inner() {
 }
 
 export default async function AdminFilesPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <ResourcesGuard>{await Inner()}</ResourcesGuard>;
 }

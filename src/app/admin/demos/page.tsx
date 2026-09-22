@@ -1,4 +1,4 @@
-import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { DemosGuard } from "@/components/admin/Guard";
 import { DemoTable, type DemoRowT } from "@/components/admin/DemoTable";
 import { MessagesPanel, type MessageRow } from "@/components/admin/MessagesPanel";
 import { getDemoRequests, usingSampleData } from "@/lib/admin-data";
@@ -38,7 +38,7 @@ async function getMessages(): Promise<MessageRow[]> {
 }
 
 export default async function DemosPage() {
-  return <AccountsGuard>{await Inner()}</AccountsGuard>;
+  return <DemosGuard>{await Inner()}</DemosGuard>;
 }
 
 async function Inner() {

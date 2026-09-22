@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { hasSiteAccess, canManageContent } from "@/lib/access";
+import { hasSiteAccess, can } from "@/lib/access";
 
 /**
  * The staff room.
@@ -88,7 +88,7 @@ export async function removeMessage(messageId: string): Promise<Result> {
     if (!message) return { ok: false, error: "That message is already gone." };
 
     const mine = message.userId === user.id;
-    if (!mine && !canManageContent(user)) {
+    if (!mine && !can(user, "rooms")) {
       return { ok: false, error: "You can only remove your own messages." };
     }
 
@@ -162,7 +162,7 @@ export async function saveRoom(input: {
   sort: number;
 }): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageContent(session?.user)) {
+  if (!can(session?.user, "rooms")) {
     return { ok: false, error: "You need educational team access to change the rooms." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };
@@ -200,7 +200,7 @@ export async function saveRoom(input: {
 
 export async function deleteRoom(id: string): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageContent(session?.user)) {
+  if (!can(session?.user, "rooms")) {
     return { ok: false, error: "You need educational team access to remove a room." };
   }
   try {

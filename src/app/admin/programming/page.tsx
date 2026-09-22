@@ -1,12 +1,12 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getAllEvents } from "@/lib/events";
-import { CalendarGuard } from "@/components/admin/Guard";
+import { ProgrammingGuard } from "@/components/admin/Guard";
 import { ProgrammingClient, type EventRow } from "./ProgrammingClient";
 
 export const metadata = { title: "Programming — JOC Console" };
 
 export default async function AdminProgrammingPage() {
-  return <CalendarGuard>{await Inner()}</CalendarGuard>;
+  return <ProgrammingGuard>{await Inner()}</ProgrammingGuard>;
 }
 
 async function Inner() {

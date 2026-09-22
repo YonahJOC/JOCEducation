@@ -1,7 +1,7 @@
 import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { ResourcesClient, type ResourceRow } from "./ResourcesClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { ResourcesGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Resources — JOC Console" };
 
@@ -32,5 +32,5 @@ async function Inner() {
 }
 
 export default async function AdminResourcesPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <ResourcesGuard>{await Inner()}</ResourcesGuard>;
 }

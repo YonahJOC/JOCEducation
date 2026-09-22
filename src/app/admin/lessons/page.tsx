@@ -2,7 +2,7 @@ import { getCycles } from "@/lib/cycle-data";
 import { LESSONS } from "@/lib/lessons";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { LessonsClient, type LessonRow } from "./LessonsClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { LessonsGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Lesson plans — JOC Console" };
 
@@ -81,5 +81,5 @@ async function Inner() {
 }
 
 export default async function AdminLessonsPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <LessonsGuard>{await Inner()}</LessonsGuard>;
 }

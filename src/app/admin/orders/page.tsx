@@ -1,4 +1,4 @@
-import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { OrdersGuard } from "@/components/admin/Guard";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { OrdersClient, type OrderRow } from "./OrdersClient";
 
@@ -42,7 +42,7 @@ async function getOrders(): Promise<OrderRow[]> {
 }
 
 export default async function AdminOrdersPage() {
-  return <AccountsGuard>{await Inner()}</AccountsGuard>;
+  return <OrdersGuard>{await Inner()}</OrdersGuard>;
 }
 
 async function Inner() {

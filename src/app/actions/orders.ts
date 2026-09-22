@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageAccounts } from "@/lib/access";
+import { can } from "@/lib/access";
 import { sendEmail, emailShell, siteUrl } from "@/lib/email";
 import { JOC_INBOX } from "@/lib/notify";
 
@@ -154,7 +154,7 @@ export async function updateOrder(input: {
   response?: string;
 }): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageAccounts(session?.user)) {
+  if (!can(session?.user, "orders")) {
     return { ok: false, error: "Only super admins can handle orders." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected." };

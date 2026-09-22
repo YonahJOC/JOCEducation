@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageAccounts } from "@/lib/access";
+import { can } from "@/lib/access";
 import { FALLBACK_PLANS, FALLBACK_PROGRAMS, type TierPrice } from "@/lib/pricing";
 
 /**
@@ -15,7 +15,7 @@ type Result = { ok: true } | { ok: false; error: string };
 
 async function requirePricer() {
   const session = await safeAuth();
-  if (!canManageAccounts(session?.user)) return false;
+  if (!can(session?.user, "pricing")) return false;
   return isDatabaseConfigured();
 }
 

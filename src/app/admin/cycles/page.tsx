@@ -1,6 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { CyclesClient, type CycleRow } from "./CyclesClient";
-import { CalendarGuard } from "@/components/admin/Guard";
+import { CyclesGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Chesed Cycles — JOC Console" };
 
@@ -66,5 +66,5 @@ async function Inner() {
 }
 
 export default async function AdminCyclesPage() {
-  return <CalendarGuard>{await Inner()}</CalendarGuard>;
+  return <CyclesGuard>{await Inner()}</CyclesGuard>;
 }

@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { canManageContent } from "@/lib/access";
+import { can } from "@/lib/access";
 import { putFile, deleteFile, FILE_SIZE_LIMIT } from "@/lib/files";
 
 /** Uploading is the education team's job — ADMIN and above. */
 async function requireUploader() {
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageContent(session?.user)) {
+  if (isAuthConfigured && !can(session?.user, "resources")) {
     return null;
   }
   return session?.user ?? null;

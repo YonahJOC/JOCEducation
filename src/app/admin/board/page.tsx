@@ -1,6 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { BoardClient, type BoardRow } from "./BoardClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { BoardGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Teachers' Board — JOC Console" };
 
@@ -29,5 +29,5 @@ async function Inner() {
 }
 
 export default async function AdminBoardPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <BoardGuard>{await Inner()}</BoardGuard>;
 }

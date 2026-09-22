@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { saveAdminRole, deleteAdminRole } from "@/app/actions/admin-roles";
 import { PageIntro } from "@/components/admin/PageIntro";
 import {
-  CAPABILITIES, CAPABILITY_LABELS, CAPABILITY_DESCRIPTIONS, type Capability,
+  CAPABILITY_GROUPS, CAPABILITY_LABELS, CAPABILITY_DESCRIPTIONS,
+  type Capability,
 } from "@/lib/access";
 import type { AdminRoleRow } from "@/lib/admin-roles";
 
@@ -31,8 +32,9 @@ const BLANK: AdminRoleRow = {
 
 const STEPS = [
   "Each row is an admin type — a named set of things somebody is allowed to do.",
-  "Tick the permissions that type should have. A tick is the whole of it: somebody with “Educational material” can edit lessons, resources, the shop and the Teachers’ Board; somebody without it cannot open those pages at all.",
-  "Press “+ New admin type” to make your own — a shop manager, a trips coordinator, whatever the work needs.",
+  "There are fourteen permissions, one for each thing in the console. Tick the ones that type should have; anything unticked is not just hidden, those pages refuse to open.",
+  "They are grouped under the four headings the sidebar uses, and each group has a “Tick all” if you want the whole heading.",
+  "Press “+ New admin type” to make your own — someone who only runs the shop, someone who only keeps the calendar.",
   "To give somebody a type, go to People and pick it from their row.",
   "A change takes effect for that person within five minutes. They do not need to sign out.",
 ];
@@ -75,13 +77,12 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
               <th style={{ textAlign: "left", padding: "12px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD" }}>
                 Admin type
               </th>
-              {CAPABILITIES.map((c) => (
+              {CAPABILITY_GROUPS.map((g) => (
                 <th
-                  key={c}
-                  title={CAPABILITY_DESCRIPTIONS[c]}
+                  key={g.label}
                   style={{ textAlign: "center", padding: "12px 14px", fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}
                 >
-                  {CAPABILITY_LABELS[c]}
+                  {g.label}
                 </th>
               ))}
               <th style={{ borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD" }} />
@@ -110,15 +111,33 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
                       : `${r.memberCount} ${r.memberCount === 1 ? "person" : "people"}`}
                   </span>
                 </td>
-                {CAPABILITIES.map((c) => (
-                  <td key={c} style={{ textAlign: "center", padding: "13px 14px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                    {r.capabilities.includes(c) ? (
-                      <span aria-label="yes" style={{ color: "#1B7F4B", fontWeight: 700, fontSize: "16px" }}>✓</span>
-                    ) : (
-                      <span aria-label="no" style={{ color: "rgba(16,35,63,.22)", fontSize: "16px" }}>·</span>
-                    )}
-                  </td>
-                ))}
+                {/* "3 of 7" rather than a tick: with fourteen permissions,
+                    a tick would have to mean "some of these", which is the
+                    kind of half-truth that gets somebody the wrong access. */}
+                {CAPABILITY_GROUPS.map((g) => {
+                  const held = g.capabilities.filter((c) => r.capabilities.includes(c));
+                  const all = held.length === g.capabilities.length;
+                  const none = held.length === 0;
+                  return (
+                    <td
+                      key={g.label}
+                      title={held.map((c) => CAPABILITY_LABELS[c]).join(", ") || "none"}
+                      style={{ textAlign: "center", padding: "13px 14px", borderBottom: "1px solid rgba(16,35,63,.05)" }}
+                    >
+                      {none ? (
+                        <span style={{ color: "rgba(16,35,63,.22)", fontSize: "16px" }}>·</span>
+                      ) : (
+                        <span style={{
+                          fontSize: "12px", fontWeight: 700, borderRadius: "9999px", padding: "3px 9px",
+                          color: all ? "#1B7F4B" : "#C96C00",
+                          backgroundColor: all ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
+                        }}>
+                          {all ? "all" : `${held.length} of ${g.capabilities.length}`}
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
                 <td style={{ padding: "13px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", textAlign: "right", whiteSpace: "nowrap" }}>
                   <button
                     onClick={() => setEditing(r)}
@@ -138,13 +157,20 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.5)", margin: "0 0 10px" }}>
           What each permission covers
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px 20px" }}>
-          {CAPABILITIES.map((c) => (
-            <div key={c}>
-              <p style={{ fontSize: "13.5px", fontWeight: 700, color: INK, margin: "0 0 2px" }}>{CAPABILITY_LABELS[c]}</p>
-              <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "rgba(16,35,63,.62)", margin: 0 }}>
-                {CAPABILITY_DESCRIPTIONS[c]}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px 24px" }}>
+          {CAPABILITY_GROUPS.map((g) => (
+            <div key={g.label}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+                {g.label}
               </p>
+              {g.capabilities.map((c) => (
+                <div key={c} style={{ marginBottom: "6px" }}>
+                  <p style={{ fontSize: "13px", fontWeight: 600, color: INK, margin: 0 }}>{CAPABILITY_LABELS[c]}</p>
+                  <p style={{ fontSize: "12.5px", lineHeight: 1.45, color: "rgba(16,35,63,.6)", margin: 0 }}>
+                    {CAPABILITY_DESCRIPTIONS[c]}
+                  </p>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -252,8 +278,35 @@ function RoleForm({
             : "Anything not ticked is not just hidden: those pages refuse to open."}
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {CAPABILITIES.map((c) => {
+        {CAPABILITY_GROUPS.map((g) => {
+          const held = g.capabilities.filter((c) => d.capabilities.includes(c));
+          const allOn = held.length === g.capabilities.length;
+          return (
+            <div key={g.label} style={{ marginBottom: "18px" }}>
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px", marginBottom: "8px" }}>
+                <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+                  {g.label}
+                </p>
+                {!locked && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setD((p) => ({
+                        ...p,
+                        capabilities: allOn
+                          ? p.capabilities.filter((x) => !g.capabilities.includes(x))
+                          : [...new Set([...p.capabilities, ...g.capabilities])],
+                      }))
+                    }
+                    disabled={disabled}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                  >
+                    {allOn ? "Clear all" : "Tick all"}
+                  </button>
+                )}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {g.capabilities.map((c) => {
             const on = d.capabilities.includes(c);
             return (
               <label
@@ -285,7 +338,10 @@ function RoleForm({
               </label>
             );
           })}
-        </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>

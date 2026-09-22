@@ -3,7 +3,7 @@ import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { ContentGuard } from "@/components/admin/Guard";
+import { LessonsGuard } from "@/components/admin/Guard";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -172,5 +172,5 @@ const td: React.CSSProperties = {
 };
 
 export default async function CoveragePage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <LessonsGuard>{await Inner()}</LessonsGuard>;
 }

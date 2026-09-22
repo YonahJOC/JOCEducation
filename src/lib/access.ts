@@ -195,39 +195,93 @@ export function isInternal(user: U): boolean {
  * ignored rather than trusted. Adding a new one means adding it here, giving
  * it a guard, and it appears in the console for JOC to assign.
  */
-export const CAPABILITIES = ["content", "calendar", "accounts", "users"] as const;
+export const CAPABILITIES = [
+  // Educational material
+  "lessons", "resources", "programs", "board", "rooms", "shop", "site",
+  // The calendar
+  "programming", "cycles",
+  // School accounts
+  "schools", "demos", "orders", "pricing",
+  // Access
+  "users",
+] as const;
 export type Capability = (typeof CAPABILITIES)[number];
 
+/**
+ * The four headings the console is organised under. A permission belongs to
+ * exactly one, so fourteen tickboxes read as four short lists rather than a
+ * wall — and the sidebar can show a section when somebody can do anything
+ * inside it.
+ */
+export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] = [
+  {
+    label: "Educational material",
+    capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site"],
+  },
+  { label: "The calendar", capabilities: ["programming", "cycles"] },
+  { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing"] },
+  { label: "Access", capabilities: ["users"] },
+];
+
 export const CAPABILITY_LABELS: Record<Capability, string> = {
-  content: "Educational material",
-  calendar: "The calendar",
-  accounts: "School accounts",
+  lessons: "Lesson plans",
+  resources: "Resources and files",
+  programs: "Programs",
+  board: "Teachers' Board",
+  rooms: "Discussion rooms",
+  shop: "The shop catalogue",
+  site: "Words on the public pages",
+  programming: "Programming calendar",
+  cycles: "Chesed Cycle dates",
+  schools: "Schools and plans",
+  demos: "Demo requests",
+  orders: "Orders",
+  pricing: "Pricing",
   users: "People and access",
 };
 
 export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
-  content: "Lesson plans, resources, the shop, the Teachers' Board, discussion rooms and the words on the public pages.",
-  calendar: "The programming calendar and the Chesed Cycle dates.",
-  accounts: "Schools, plans, seats, discounts, demo requests, orders and pricing.",
+  lessons: "Write, edit and publish lesson plans, and see which cycles have material.",
+  resources: "Worksheets, videos and source sheets, and everything uploaded.",
+  programs: "What JOC runs for schools — the catalogue a school reads before booking.",
+  board: "Approve or remove what teachers post to the Teachers' Board.",
+  rooms: "The topic rooms in the staff room.",
+  shop: "The products a school can order.",
+  site: "The wording on the public pages, with drafts and history.",
+  programming: "What is running and where — the events at each school.",
+  cycles: "The eight Chesed Cycles, their dates and their weekly plan.",
+  schools: "School accounts, plans, seats, discounts, contacts and history.",
+  demos: "Bookings from the landing page and contact-form messages.",
+  orders: "What schools have ordered from the shop.",
+  pricing: "What a plan or a program costs.",
   users: "Who has an account, what they can do, and passwords. The keys to everything else.",
 };
 
 /**
  * What each built-in role can do when nobody has said otherwise.
  *
- * These are the fallback, not the rule: once somebody holds an admin role,
- * that role's capabilities are what count. Keeping them here means the
- * console still works correctly before any role has been assigned, and if the
+ * These are the fallback, not the rule: once somebody holds an admin type,
+ * that type's permissions are what count. Keeping them here means the console
+ * still works correctly before any type has been assigned, and if the
  * AdminRole table were ever emptied nobody would be locked out.
  */
+const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site"];
+const CALENDAR: Capability[] = ["programming", "cycles"];
+const ACCOUNTS: Capability[] = ["schools", "demos", "orders", "pricing"];
+
 export const DEFAULT_CAPABILITIES: Record<Role, Capability[]> = {
   TEACHER: [],
   SCHOOL_ADMIN: [],
   STAFF: [],
-  PROGRAM_STAFF: ["calendar", "accounts"],
-  ADMIN: ["content", "calendar"],
+  PROGRAM_STAFF: [...CALENDAR, ...ACCOUNTS],
+  ADMIN: [...CONTENT, ...CALENDAR],
   SUPER_ADMIN: [...CAPABILITIES],
 };
+
+/** Everything under one heading — used for the sidebar and the old helpers. */
+function anyOf(user: U, caps: Capability[]): boolean {
+  return caps.some((c) => can(user, c));
+}
 
 function isCapability(v: string): v is Capability {
   return (CAPABILITIES as readonly string[]).includes(v);
@@ -263,7 +317,7 @@ export function can(user: U, capability: Capability): boolean {
  * the role.
  */
 export function canManageContent(user: U): boolean {
-  return can(user, "content");
+  return anyOf(user, CONTENT);
 }
 
 /**
@@ -274,12 +328,12 @@ export function canManageContent(user: U): boolean {
  * so they need to see and adjust when those cycles fall.
  */
 export function canManageCalendar(user: U): boolean {
-  return can(user, "calendar");
+  return anyOf(user, CALENDAR);
 }
 
 /** School accounts, plans, seats, discounts, free access, demo pipeline. */
 export function canManageAccounts(user: U): boolean {
-  return can(user, "accounts");
+  return anyOf(user, ACCOUNTS);
 }
 
 /**

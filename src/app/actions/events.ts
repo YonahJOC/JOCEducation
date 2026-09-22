@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageCalendar } from "@/lib/access";
+import { can } from "@/lib/access";
 
 /**
  * The programming calendar — what is actually being run, and when.
@@ -12,8 +12,9 @@ import { canManageCalendar } from "@/lib/access";
  * *learning* this month. This says what is *happening*: a Kindness Booth at
  * one school on the 14th, a Bake for Chesed across every school in Adar.
  *
- * Owned by the programming team. Deliberately not tied to canManageContent —
- * running events and writing lessons are different jobs.
+ * Owned by the programming team. Its own permission, deliberately separate
+ * from the cycle dates and from anything educational — running events and
+ * writing lessons are different jobs.
  */
 
 type Result = { ok: true; id?: number } | { ok: false; error: string };
@@ -44,7 +45,7 @@ export async function saveEvent(input: {
   published: boolean;
 }): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageCalendar(session?.user)) {
+  if (!can(session?.user, "programming")) {
     return { ok: false, error: "You need calendar access to change the programming." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };
@@ -110,7 +111,7 @@ export async function saveEvent(input: {
 
 export async function deleteEvent(id: number): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageCalendar(session?.user)) {
+  if (!can(session?.user, "programming")) {
     return { ok: false, error: "You need calendar access to remove an event." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };
@@ -132,7 +133,7 @@ export async function deleteEvent(id: number): Promise<Result> {
  */
 export async function cancelEvent(id: number): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageCalendar(session?.user)) {
+  if (!can(session?.user, "programming")) {
     return { ok: false, error: "You need calendar access to cancel an event." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };

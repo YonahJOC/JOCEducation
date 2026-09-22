@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { sendInvitation } from "@/lib/notify";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageAccounts, canManageRoles, canManageUsers } from "@/lib/access";
+import { can, canManageRoles, canManageUsers } from "@/lib/access";
 import { hashPassword, passwordProblem, generateTempPassword } from "@/lib/password";
 import { isAuthConfigured } from "@/auth";
 
@@ -25,8 +25,8 @@ async function requireAccountManager() {
   const session = await safeAuth();
   // Before auth is configured there is nobody to authorize, and the database
   // check below stops anything from actually being written.
-  if (isAuthConfigured && !canManageAccounts(session?.user)) {
-    throw new Error("You cannot change school accounts");
+  if (isAuthConfigured && !can(session?.user, "schools")) {
+    throw new Error("Your admin type does not include Schools and plans");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   return session?.user ?? null;
@@ -45,6 +45,26 @@ async function requireUserManager() {
   const session = await safeAuth();
   if (isAuthConfigured && !canManageUsers(session?.user)) {
     throw new Error("Only a super admin can change who has an account");
+  }
+  if (!isDatabaseConfigured()) throw new Error("Database not connected");
+  return session?.user ?? null;
+}
+
+/** The demo pipeline is its own job — answering enquiries, not running plans. */
+async function requireDemoManager() {
+  const session = await safeAuth();
+  if (isAuthConfigured && !can(session?.user, "demos")) {
+    throw new Error("Your admin type does not include Demo requests");
+  }
+  if (!isDatabaseConfigured()) throw new Error("Database not connected");
+  return session?.user ?? null;
+}
+
+/** Turning an enquiry into a school account touches both. */
+async function requireDemoAndSchools() {
+  const session = await safeAuth();
+  if (isAuthConfigured && !(can(session?.user, "demos") && can(session?.user, "schools"))) {
+    throw new Error("Creating a school from an enquiry needs both Demo requests and Schools and plans");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   return session?.user ?? null;
@@ -618,7 +638,7 @@ export async function setUserRole(userId: string, role: string): Promise<Result>
 
 export async function setDemoStatus(id: string, status: string): Promise<Result> {
   try {
-    await requireAccountManager();
+    await requireDemoManager();
     await prisma.demoRequest.update({ where: { id }, data: { status: status as never } });
     revalidatePath("/admin/demos");
     revalidatePath("/admin");
@@ -634,7 +654,7 @@ export async function setDemoStatus(id: string, status: string): Promise<Result>
  */
 export async function convertDemoToSchool(demoId: string): Promise<Result & { id?: string }> {
   try {
-    const me = await requireAccountManager();
+    const me = await requireDemoAndSchools();
     const demo = await prisma.demoRequest.findUnique({ where: { id: demoId } });
     if (!demo) return { ok: false, error: "Demo request not found" };
     if (demo.schoolId) return { ok: false, error: "Already converted" };
@@ -686,7 +706,7 @@ export async function convertDemoToSchool(demoId: string): Promise<Result & { id
 /** Mark a contact-form message dealt with, or put it back. */
 export async function setMessageHandled(id: string, handled: boolean): Promise<Result> {
   try {
-    await requireAccountManager();
+    await requireDemoManager();
     await prisma.contactMessage.update({ where: { id }, data: { handled } });
     revalidatePath("/admin/demos");
     return { ok: true };

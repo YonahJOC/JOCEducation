@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageContent } from "@/lib/access";
+import { can } from "@/lib/access";
 import { SITE_FIELDS } from "@/lib/site-fields";
 import { PREVIEW_COOKIE } from "@/lib/site-content";
 
@@ -22,7 +22,7 @@ type Result = { ok: true } | { ok: false; error: string };
 
 async function requireEditor() {
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageContent(session?.user)) {
+  if (isAuthConfigured && !can(session?.user, "site")) {
     throw new Error("You need JOC Education Team access to edit the site");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");

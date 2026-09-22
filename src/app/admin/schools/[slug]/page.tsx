@@ -10,7 +10,7 @@ import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { ContactsPanel, type ContactRow } from "@/components/admin/ContactsPanel";
-import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { SchoolsGuard } from "@/components/admin/Guard";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
@@ -38,7 +38,7 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
   // never reads the school in the first place.
   const session = await safeAuth();
   if (isAuthConfigured && !canManageAccounts(session?.user)) {
-    return <AccountsGuard>{null}</AccountsGuard>;
+    return <SchoolsGuard>{null}</SchoolsGuard>;
   }
   return Inner(await params);
 }

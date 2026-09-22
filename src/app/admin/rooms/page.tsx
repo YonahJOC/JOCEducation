@@ -1,7 +1,7 @@
 import { getCycles } from "@/lib/cycle-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { RoomsClient, type RoomRow } from "./RoomsClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { RoomsGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Discussion rooms — JOC Console" };
 
@@ -36,5 +36,5 @@ async function Inner() {
 }
 
 export default async function AdminRoomsPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <RoomsGuard>{await Inner()}</RoomsGuard>;
 }

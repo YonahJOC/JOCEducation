@@ -1,6 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { ProgramsClient, type ProgramRow } from "./ProgramsClient";
-import { ContentGuard } from "@/components/admin/Guard";
+import { ProgramsGuard } from "@/components/admin/Guard";
 
 export const metadata = { title: "Programs — JOC Console" };
 
@@ -49,5 +49,5 @@ async function Inner() {
 }
 
 export default async function AdminProgramsPage() {
-  return <ContentGuard>{await Inner()}</ContentGuard>;
+  return <ProgramsGuard>{await Inner()}</ProgramsGuard>;
 }

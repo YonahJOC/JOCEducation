@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageCalendar } from "@/lib/access";
+import { can } from "@/lib/access";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
 
 /**
@@ -101,7 +101,7 @@ export async function saveCycle(input: {
   weekPlan: { title: string; body: string }[];
 }): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageCalendar(session?.user)) {
+  if (!can(session?.user, "cycles")) {
     return { ok: false, error: "You need calendar access to change the cycles." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };
@@ -186,7 +186,7 @@ export async function saveCycle(input: {
 
 export async function deleteCycle(id: number): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageCalendar(session?.user)) {
+  if (!can(session?.user, "cycles")) {
     return { ok: false, error: "You need calendar access to remove a cycle." };
   }
   try {
@@ -207,7 +207,7 @@ export async function deleteCycle(id: number): Promise<Result> {
  */
 export async function importStaticCycles(): Promise<Result> {
   const session = await safeAuth();
-  if (!canManageCalendar(session?.user)) {
+  if (!can(session?.user, "cycles")) {
     return { ok: false, error: "You need educational team access to do that." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "Not connected yet." };

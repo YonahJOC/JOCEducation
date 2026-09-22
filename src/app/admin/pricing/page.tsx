@@ -1,4 +1,4 @@
-import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { PricingGuard } from "@/components/admin/Guard";
 import { isDatabaseConfigured } from "@/lib/prisma";
 import { getPlanPricing, getProgramPricing, pricingIsSet } from "@/lib/pricing";
 import { PricingClient } from "./PricingClient";
@@ -6,7 +6,7 @@ import { PricingClient } from "./PricingClient";
 export const metadata = { title: "Pricing — JOC Console" };
 
 export default async function AdminPricingPage() {
-  return <AccountsGuard>{await Inner()}</AccountsGuard>;
+  return <PricingGuard>{await Inner()}</PricingGuard>;
 }
 
 async function Inner() {

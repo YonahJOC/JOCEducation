@@ -1,4 +1,4 @@
-import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { SchoolsGuard } from "@/components/admin/Guard";
 import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
 import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
 import { SchoolTable } from "../page";
@@ -11,7 +11,7 @@ export const metadata = { title: "Schools — JOC Console" };
 type Search = Promise<{ status?: string; q?: string }>;
 
 export default async function SchoolsPage({ searchParams }: { searchParams: Search }) {
-  return <AccountsGuard>{await Inner(searchParams)}</AccountsGuard>;
+  return <SchoolsGuard>{await Inner(searchParams)}</SchoolsGuard>;
 }
 
 async function Inner(searchParams: Search) {

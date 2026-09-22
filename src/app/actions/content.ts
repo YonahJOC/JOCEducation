@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canManageContent } from "@/lib/access";
+import { can, CAPABILITY_LABELS, type Capability } from "@/lib/access";
 
 /**
  * Content management for the JOC educational team (ADMIN and above).
@@ -15,10 +15,15 @@ import { canManageContent } from "@/lib/access";
 
 type Result = { ok: true; id?: string | number } | { ok: false; error: string };
 
-async function requireContentEditor() {
+/**
+ * This file edits several different things, so the guard takes the subject
+ * rather than asking one broad question. Somebody who runs the shop can save
+ * a product without also being able to rewrite a lesson plan.
+ */
+async function requireContentEditor(need: Capability) {
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageContent(session?.user)) {
-    throw new Error("You need educational team access to change content");
+  if (isAuthConfigured && !can(session?.user, need)) {
+    throw new Error(`Your admin type does not include ${CAPABILITY_LABELS[need]}`);
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   return session?.user ?? null;
@@ -49,7 +54,7 @@ export async function saveLesson(input: {
   files: { name: string; url: string }[];
 }): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("lessons");
     const title = input.title.trim();
     if (!title) return { ok: false, error: "A title is required" };
 
@@ -125,7 +130,7 @@ export async function saveLesson(input: {
 
 export async function setLessonPublished(id: number, published: boolean): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("lessons");
     await prisma.lessonPlan.update({ where: { id }, data: { published } });
     revalidatePath("/admin/lessons");
     revalidatePath("/lesson-plans");
@@ -137,7 +142,7 @@ export async function setLessonPublished(id: number, published: boolean): Promis
 
 export async function deleteLesson(id: number): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("lessons");
     await prisma.lessonPlan.delete({ where: { id } });
     revalidatePath("/admin/lessons");
     revalidatePath("/lesson-plans");
@@ -159,7 +164,7 @@ export async function saveResource(input: {
   published: boolean;
 }): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("resources");
     const title = input.title.trim();
     if (!title) return { ok: false, error: "A title is required" };
 
@@ -186,7 +191,7 @@ export async function saveResource(input: {
 
 export async function deleteResource(id: number): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("resources");
     await prisma.resource.delete({ where: { id } });
     revalidatePath("/admin/resources");
     revalidatePath("/resources");
@@ -213,7 +218,7 @@ export async function saveProduct(input: {
   sort?: number;
 }): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("shop");
     const name = input.name.trim();
     if (!name) return { ok: false, error: "A name is required" };
 
@@ -250,7 +255,7 @@ export async function saveProduct(input: {
 
 export async function deleteProduct(id: string): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("shop");
     await prisma.product.delete({ where: { id } });
     revalidatePath("/admin/products");
     revalidatePath("/shop");
@@ -264,7 +269,7 @@ export async function deleteProduct(id: string): Promise<Result> {
 
 export async function setBoardPostApproved(id: string, approved: boolean): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("board");
     await prisma.boardPost.update({ where: { id }, data: { approved } });
     revalidatePath("/admin/board");
     revalidatePath("/board");
@@ -276,7 +281,7 @@ export async function setBoardPostApproved(id: string, approved: boolean): Promi
 
 export async function deleteBoardPost(id: string): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("board");
     await prisma.boardPost.delete({ where: { id } });
     revalidatePath("/admin/board");
     revalidatePath("/board");
@@ -307,7 +312,7 @@ export async function saveProgram(input: {
   sort: number;
 }): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("programs");
     const name = input.name.trim();
     if (!name) return { ok: false, error: "A name is required" };
 
@@ -367,7 +372,7 @@ export async function saveProgram(input: {
 
 export async function deleteProgram(id: number): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("programs");
     await prisma.programPage.delete({ where: { id } });
     revalidatePath("/admin/programs");
     revalidatePath("/programs");
@@ -384,7 +389,7 @@ export async function deleteProgram(id: number): Promise<Result> {
  */
 export async function seedProgramsFromStatic(): Promise<Result> {
   try {
-    await requireContentEditor();
+    await requireContentEditor("programs");
     const { PROGRAMS } = await import("@/lib/programs");
     const existing = await prisma.programPage.findMany({ select: { slug: true } });
     const have = new Set(existing.map((e) => e.slug));

@@ -1,4 +1,4 @@
-import { AccountsGuard } from "@/components/admin/AccountsGuard";
+import { SchoolsGuard } from "@/components/admin/Guard";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { safeAuth, isAuthConfigured } from "@/auth";
@@ -34,7 +34,7 @@ export default async function AdminOverview() {
   // welcome — they get the guide instead, which is their actual start.
   const session = await safeAuth();
   if (isAuthConfigured && !canManageAccounts(session?.user)) redirect("/admin/guide");
-  return <AccountsGuard>{await Inner()}</AccountsGuard>;
+  return <SchoolsGuard>{await Inner()}</SchoolsGuard>;
 }
 async function Inner() {
   const schools = await getSchools();
