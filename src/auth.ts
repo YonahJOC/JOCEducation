@@ -8,6 +8,7 @@ import {
   initialRoleFor, isStaffEmail, isSuperAdminEmail, isProgramStaffEmail,
   emailDomain, isConsumerEmail,
 } from "@/lib/access";
+import { capabilitiesForUser } from "@/lib/admin-roles";
 
 /**
  * Two ways in.
@@ -117,6 +118,10 @@ const config: NextAuthConfig = {
             token.mustChangePassword = fresh.mustChangePassword;
             token.suspended = !fresh.active;
           }
+          // What their admin role lets them do, refreshed on the same cycle
+          // as the role itself — so a permissions change takes effect within
+          // five minutes without anybody having to sign out.
+          token.capabilities = await capabilitiesForUser(String(token.uid));
           token.refreshedAt = Date.now();
         } catch {
           // Keep the existing claims rather than signing someone out.
@@ -132,6 +137,9 @@ const config: NextAuthConfig = {
       session.user.role = String(token.role ?? "TEACHER");
       session.user.schoolId = (token.schoolId as string | null) ?? null;
       session.user.mustChangePassword = Boolean(token.mustChangePassword);
+      // Null means "no admin role held" — access.ts then falls back to the
+      // built-in default for their role.
+      session.user.capabilities = (token.capabilities as string[] | null) ?? null;
 
       const staffEmail = isStaffEmail(session.user.email);
       session.user.isStaff = staffEmail;

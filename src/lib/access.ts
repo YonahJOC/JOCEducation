@@ -88,7 +88,17 @@ export type Plan =
 
 export type AccessLevel = "none" | "subscriber" | "internal";
 
-type U = { email?: string | null; role?: string | null } | null | undefined;
+type U = {
+  email?: string | null;
+  role?: string | null;
+  /**
+   * What this person may do, resolved from the admin role they hold and
+   * carried on the session. Absent means "fall back to the built-in default
+   * for their role" — which is what every teacher and school admin does, and
+   * what everyone does before any admin role has been assigned.
+   */
+  capabilities?: string[] | null;
+} | null | undefined;
 
 /** True for any @justonechesed.org address. */
 export function isStaffEmail(email?: string | null): boolean {
@@ -177,10 +187,72 @@ export function isInternal(user: U): boolean {
 
 // ─── Capabilities ────────────────────────────────────────────────────────────
 
-/** True if the signed-in user holds any of these roles. */
-function has(user: U, ...roles: Role[]): boolean {
-  const r = user?.role as Role | undefined;
-  return r !== undefined && roles.includes(r);
+/**
+ * The things somebody can be allowed to do in the console.
+ *
+ * This list is the contract: an admin role stores these keys, every console
+ * page names one in its guard, and anything stored that is not in here is
+ * ignored rather than trusted. Adding a new one means adding it here, giving
+ * it a guard, and it appears in the console for JOC to assign.
+ */
+export const CAPABILITIES = ["content", "calendar", "accounts", "users"] as const;
+export type Capability = (typeof CAPABILITIES)[number];
+
+export const CAPABILITY_LABELS: Record<Capability, string> = {
+  content: "Educational material",
+  calendar: "The calendar",
+  accounts: "School accounts",
+  users: "People and access",
+};
+
+export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
+  content: "Lesson plans, resources, the shop, the Teachers' Board, discussion rooms and the words on the public pages.",
+  calendar: "The programming calendar and the Chesed Cycle dates.",
+  accounts: "Schools, plans, seats, discounts, demo requests, orders and pricing.",
+  users: "Who has an account, what they can do, and passwords. The keys to everything else.",
+};
+
+/**
+ * What each built-in role can do when nobody has said otherwise.
+ *
+ * These are the fallback, not the rule: once somebody holds an admin role,
+ * that role's capabilities are what count. Keeping them here means the
+ * console still works correctly before any role has been assigned, and if the
+ * AdminRole table were ever emptied nobody would be locked out.
+ */
+export const DEFAULT_CAPABILITIES: Record<Role, Capability[]> = {
+  TEACHER: [],
+  SCHOOL_ADMIN: [],
+  STAFF: [],
+  PROGRAM_STAFF: ["calendar", "accounts"],
+  ADMIN: ["content", "calendar"],
+  SUPER_ADMIN: [...CAPABILITIES],
+};
+
+function isCapability(v: string): v is Capability {
+  return (CAPABILITIES as readonly string[]).includes(v);
+}
+
+/**
+ * Does this person hold this capability?
+ *
+ * Their admin role decides it where they have one; otherwise the built-in
+ * default for their role does. A founding super admin address always holds
+ * everything, so there is always somebody who can undo a mistake here.
+ */
+export function can(user: U, capability: Capability): boolean {
+  if (!user) return false;
+  if (isSuperAdminEmail(user.email)) return true;
+
+  // An empty list means "nothing", not "fall back" — otherwise a role with
+  // no capabilities would silently inherit the defaults for its rank.
+  const assigned = user.capabilities;
+  if (Array.isArray(assigned)) {
+    return assigned.filter(isCapability).includes(capability);
+  }
+
+  const role = (user.role as Role | undefined) ?? "TEACHER";
+  return (DEFAULT_CAPABILITIES[role] ?? []).includes(capability);
 }
 
 /**
@@ -191,7 +263,7 @@ function has(user: U, ...roles: Role[]): boolean {
  * the role.
  */
 export function canManageContent(user: U): boolean {
-  return has(user, "ADMIN", "SUPER_ADMIN");
+  return can(user, "content");
 }
 
 /**
@@ -202,12 +274,12 @@ export function canManageContent(user: U): boolean {
  * so they need to see and adjust when those cycles fall.
  */
 export function canManageCalendar(user: U): boolean {
-  return has(user, "PROGRAM_STAFF", "ADMIN", "SUPER_ADMIN");
+  return can(user, "calendar");
 }
 
 /** School accounts, plans, seats, discounts, free access, demo pipeline. */
 export function canManageAccounts(user: U): boolean {
-  return has(user, "PROGRAM_STAFF", "SUPER_ADMIN") || isSuperAdminEmail(user?.email);
+  return can(user, "accounts");
 }
 
 /**
@@ -217,7 +289,7 @@ export function canManageAccounts(user: U): boolean {
  * who can sign in to JOC is not, and the two are worth keeping apart.
  */
 export function canManageUsers(user: U): boolean {
-  return has(user, "SUPER_ADMIN") || isSuperAdminEmail(user?.email);
+  return can(user, "users");
 }
 
 /** Grant or remove any role. Super admins only — this is how roles stay honest. */

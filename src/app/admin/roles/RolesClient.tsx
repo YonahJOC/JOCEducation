@@ -1,0 +1,319 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { saveAdminRole, deleteAdminRole } from "@/app/actions/admin-roles";
+import { PageIntro } from "@/components/admin/PageIntro";
+import {
+  CAPABILITIES, CAPABILITY_LABELS, CAPABILITY_DESCRIPTIONS, type Capability,
+} from "@/lib/access";
+import type { AdminRoleRow } from "@/lib/admin-roles";
+
+const INK = "#10233F";
+const BLUE = "#2D46AF";
+const RED = "#B8321E";
+const RULE = "rgba(16,35,63,.15)";
+
+const field: React.CSSProperties = {
+  width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
+  fontSize: "14px", color: INK, backgroundColor: "#fff",
+  border: `1px solid ${RULE}`, borderRadius: "10px",
+  padding: "10px 12px", minHeight: "42px", outline: "none",
+};
+const label: React.CSSProperties = {
+  display: "block", fontSize: "12px", fontWeight: 600,
+  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+};
+
+const BLANK: AdminRoleRow = {
+  id: "", name: "", description: null, capabilities: [],
+  builtIn: false, isSuperAdmin: false, sort: 0, memberCount: 0,
+};
+
+const STEPS = [
+  "Each row is an admin type — a named set of things somebody is allowed to do.",
+  "Tick the permissions that type should have. A tick is the whole of it: somebody with “Educational material” can edit lessons, resources, the shop and the Teachers’ Board; somebody without it cannot open those pages at all.",
+  "Press “+ New admin type” to make your own — a shop manager, a trips coordinator, whatever the work needs.",
+  "To give somebody a type, go to People and pick it from their row.",
+  "A change takes effect for that person within five minutes. They do not need to sign out.",
+];
+
+export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabled?: boolean }) {
+  const [editing, setEditing] = useState<AdminRoleRow | null>(null);
+
+  if (editing) {
+    return <RoleForm initial={editing} disabled={disabled} onDone={() => setEditing(null)} />;
+  }
+
+  return (
+    <div>
+      <PageIntro
+        title="Admin types"
+        what="Who can do what in the console. Each type is a named set of permissions; every person on the JOC side holds one."
+        steps={STEPS}
+        note="Super admin always keeps every permission — it is what lets you undo anything else done here. You also cannot remove your own access to this page."
+      >
+        <button
+          onClick={() => setEditing({ ...BLANK })}
+          disabled={disabled}
+          style={{
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
+          }}
+        >
+          + New admin type
+        </button>
+      </PageIntro>
+
+      {/* The whole picture in one grid: every type down the side, every
+          permission across. This is the question people actually ask —
+          "who can do X" — and a list of cards cannot answer it. */}
+      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "760px" }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: "left", padding: "12px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD" }}>
+                Admin type
+              </th>
+              {CAPABILITIES.map((c) => (
+                <th
+                  key={c}
+                  title={CAPABILITY_DESCRIPTIONS[c]}
+                  style={{ textAlign: "center", padding: "12px 14px", fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}
+                >
+                  {CAPABILITY_LABELS[c]}
+                </th>
+              ))}
+              <th style={{ borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD" }} />
+            </tr>
+          </thead>
+          <tbody>
+            {roles.map((r) => (
+              <tr key={r.id}>
+                <td style={{ padding: "13px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
+                  <span style={{ fontWeight: 600, color: INK, display: "block" }}>
+                    {r.name}
+                    {r.builtIn && (
+                      <span style={{ fontSize: "10.5px", fontWeight: 700, color: "rgba(16,35,63,.45)", backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
+                        built in
+                      </span>
+                    )}
+                  </span>
+                  {r.description && (
+                    <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", display: "block", marginTop: "2px", maxWidth: "46ch" }}>
+                      {r.description}
+                    </span>
+                  )}
+                  <span style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", display: "block", marginTop: "3px" }}>
+                    {r.memberCount === 0
+                      ? "nobody yet"
+                      : `${r.memberCount} ${r.memberCount === 1 ? "person" : "people"}`}
+                  </span>
+                </td>
+                {CAPABILITIES.map((c) => (
+                  <td key={c} style={{ textAlign: "center", padding: "13px 14px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
+                    {r.capabilities.includes(c) ? (
+                      <span aria-label="yes" style={{ color: "#1B7F4B", fontWeight: 700, fontSize: "16px" }}>✓</span>
+                    ) : (
+                      <span aria-label="no" style={{ color: "rgba(16,35,63,.22)", fontSize: "16px" }}>·</span>
+                    )}
+                  </td>
+                ))}
+                <td style={{ padding: "13px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", textAlign: "right", whiteSpace: "nowrap" }}>
+                  <button
+                    onClick={() => setEditing(r)}
+                    disabled={disabled}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", marginTop: "18px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.5)", margin: "0 0 10px" }}>
+          What each permission covers
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px 20px" }}>
+          {CAPABILITIES.map((c) => (
+            <div key={c}>
+              <p style={{ fontSize: "13.5px", fontWeight: 700, color: INK, margin: "0 0 2px" }}>{CAPABILITY_LABELS[c]}</p>
+              <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "rgba(16,35,63,.62)", margin: 0 }}>
+                {CAPABILITY_DESCRIPTIONS[c]}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RoleForm({
+  initial, disabled, onDone,
+}: {
+  initial: AdminRoleRow;
+  disabled?: boolean;
+  onDone: () => void;
+}) {
+  const [d, setD] = useState<AdminRoleRow>(initial);
+  const [pending, start] = useTransition();
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const locked = d.isSuperAdmin;
+
+  function toggle(c: Capability) {
+    if (locked) return;
+    setD((p) => ({
+      ...p,
+      capabilities: p.capabilities.includes(c)
+        ? p.capabilities.filter((x) => x !== c)
+        : [...p.capabilities, c],
+    }));
+  }
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setMsg(null);
+    start(async () => {
+      const r = await saveAdminRole({
+        id: d.id || undefined,
+        name: d.name,
+        description: d.description ?? "",
+        capabilities: d.capabilities,
+      });
+      if (r.ok) onDone();
+      else setMsg(r.error);
+    });
+  }
+
+  function remove() {
+    if (!window.confirm(`Delete the "${d.name}" admin type?`)) return;
+    start(async () => {
+      const r = await deleteAdminRole(d.id);
+      if (r.ok) onDone();
+      else setMsg(r.error);
+    });
+  }
+
+  return (
+    <form onSubmit={submit} style={{ maxWidth: "760px" }}>
+      <button
+        type="button"
+        onClick={onDone}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+      >
+        ← All admin types
+      </button>
+      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+        {d.id ? d.name : "New admin type"}
+      </h1>
+
+      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
+        <div style={{ marginBottom: "12px" }}>
+          <label style={label}>Name</label>
+          <input
+            value={d.name}
+            onChange={(e) => setD((p) => ({ ...p, name: e.target.value }))}
+            placeholder="Shop manager"
+            disabled={disabled || d.builtIn}
+            style={{ ...field, backgroundColor: d.builtIn ? "#F7F8FB" : "#fff" }}
+            autoFocus={!d.id}
+          />
+          {d.builtIn && (
+            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+              Built-in types keep their name. You can still change what this one can do.
+            </p>
+          )}
+        </div>
+        <div>
+          <label style={label}>What is it for?</label>
+          <input
+            value={d.description ?? ""}
+            onChange={(e) => setD((p) => ({ ...p, description: e.target.value }))}
+            placeholder="Runs the shop catalogue and the orders that come in."
+            disabled={disabled}
+            style={field}
+          />
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+          What this type can do
+        </p>
+        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55 }}>
+          {locked
+            ? "Super admin holds every permission and cannot be reduced — it is the way back from any other mistake made on this page."
+            : "Anything not ticked is not just hidden: those pages refuse to open."}
+        </p>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {CAPABILITIES.map((c) => {
+            const on = d.capabilities.includes(c);
+            return (
+              <label
+                key={c}
+                style={{
+                  display: "flex", gap: "12px", alignItems: "flex-start",
+                  border: `1px solid ${on ? "rgba(45,70,175,.3)" : RULE}`,
+                  backgroundColor: on ? "rgba(45,70,175,.04)" : "#fff",
+                  borderRadius: "12px", padding: "13px 15px",
+                  cursor: locked || disabled ? "default" : "pointer",
+                  opacity: locked ? 0.75 : 1,
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={on}
+                  onChange={() => toggle(c)}
+                  disabled={disabled || locked}
+                  style={{ width: "17px", height: "17px", marginTop: "2px", flexShrink: 0 }}
+                />
+                <span>
+                  <span style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: INK }}>
+                    {CAPABILITY_LABELS[c]}
+                  </span>
+                  <span style={{ display: "block", fontSize: "13px", color: "rgba(16,35,63,.62)", lineHeight: 1.5, marginTop: "2px" }}>
+                    {CAPABILITY_DESCRIPTIONS[c]}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+        <button
+          type="submit"
+          disabled={disabled || pending || !d.name.trim()}
+          style={{
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
+          }}
+        >
+          {pending ? "Saving…" : "Save"}
+        </button>
+
+        {d.id && !d.builtIn && (
+          <button
+            type="button"
+            onClick={remove}
+            disabled={disabled || pending}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+          >
+            Delete
+          </button>
+        )}
+
+        {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0, lineHeight: 1.5 }}>{msg}</p>}
+      </div>
+    </form>
+  );
+}

@@ -10,6 +10,11 @@ declare module "next-auth" {
       isStaff: boolean;
       /** Set when an admin issued a temporary password. */
       mustChangePassword: boolean;
+      /**
+       * What their admin role lets them do. Null means they hold no admin
+       * role, and access falls back to the built-in default for their role.
+       */
+      capabilities: string[] | null;
     } & DefaultSession["user"];
   }
 
@@ -26,6 +31,7 @@ declare module "next-auth/jwt" {
     role?: string;
     schoolId?: string | null;
     mustChangePassword?: boolean;
+    capabilities?: string[] | null;
     suspended?: boolean;
     refreshedAt?: number;
   }

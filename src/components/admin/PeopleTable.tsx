@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { setUserAdminRole } from "@/app/actions/admin-roles";
 import { setUserRole, setUserActive, assignUserToSchool, resetUserPassword } from "@/app/actions/admin";
 import { ROLE_LABELS, ROLE_DESCRIPTIONS, ASSIGNABLE_ROLES, type Role } from "@/lib/access";
 
@@ -23,9 +24,12 @@ export type PersonRow = {
   schoolName: string | null;
   schoolId?: string | null;
   hasPassword?: boolean;
+  /** Which admin type they hold, if any. */
+  adminRoleId?: string | null;
 };
 
 export type SchoolRef = { id: string; name: string };
+export type AdminTypeRef = { id: string; name: string };
 
 function ago(d: Date | string | null) {
   if (!d) return "never";
@@ -46,7 +50,7 @@ const td: React.CSSProperties = {
 };
 
 export function PeopleTable({
-  title, people, showSchool, canEditRoles, disabled, schools = [],
+  title, people, showSchool, canEditRoles, disabled, schools = [], adminTypes = [],
 }: {
   title: string;
   people: PersonRow[];
@@ -54,6 +58,8 @@ export function PeopleTable({
   canEditRoles: boolean;
   disabled?: boolean;
   schools?: SchoolRef[];
+  /** Offered on JOC rows only; a teacher has no console access to grant. */
+  adminTypes?: AdminTypeRef[];
 }) {
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
@@ -70,13 +76,14 @@ export function PeopleTable({
                 <th style={th}>Name</th>
                 {showSchool && <th style={th}>School</th>}
                 <th style={th}>Role</th>
+                {adminTypes.length > 0 && <th style={th}>Admin type</th>}
                 <th style={th}>Last seen</th>
                 <th style={th} />
               </tr>
             </thead>
             <tbody>
               {people.map((p) => (
-                <Row key={p.id} person={p} showSchool={showSchool} canEditRoles={canEditRoles} disabled={disabled} schools={schools} />
+                <Row key={p.id} person={p} showSchool={showSchool} canEditRoles={canEditRoles} disabled={disabled} schools={schools} adminTypes={adminTypes} />
               ))}
             </tbody>
           </table>
@@ -87,15 +94,18 @@ export function PeopleTable({
 }
 
 function Row({
-  person, showSchool, canEditRoles, disabled, schools,
+  person, showSchool, canEditRoles, disabled, schools, adminTypes,
 }: {
   person: PersonRow;
   showSchool: boolean;
   canEditRoles: boolean;
   disabled?: boolean;
   schools: SchoolRef[];
+  adminTypes: AdminTypeRef[];
 }) {
   const [role, setRole] = useState(person.role);
+  const [adminType, setAdminType] = useState(person.adminRoleId ?? "");
+  const [typeError, setTypeError] = useState<string | null>(null);
   const [active, setActive] = useState(person.active);
   const [schoolId, setSchoolId] = useState(person.schoolId ?? "");
   const [pending, start] = useTransition();
@@ -215,6 +225,54 @@ function Row({
           </span>
         )}
       </td>
+
+      {adminTypes.length > 0 && (
+        <td style={td}>
+          {canEditRoles ? (
+            <>
+              {/* What they can do in the console. Separate from Role, which
+                  is about who they are to a school. */}
+              <select
+                value={adminType}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  const prev = adminType;
+                  setAdminType(next);
+                  setTypeError(null);
+                  start(async () => {
+                    const r = await setUserAdminRole(person.id, next || null);
+                    if (!r.ok) {
+                      setAdminType(prev);
+                      setTypeError(r.error);
+                    }
+                  });
+                }}
+                disabled={disabled || pending}
+                style={{
+                  fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
+                  color: adminType ? INK : "rgba(16,35,63,.5)", backgroundColor: "#fff",
+                  border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
+                  minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                }}
+              >
+                <option value="">None</option>
+                {adminTypes.map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              </select>
+              {typeError && (
+                <p style={{ fontSize: "12px", color: "#B8321E", margin: "4px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
+                  {typeError}
+                </p>
+              )}
+            </>
+          ) : (
+            <span style={{ fontSize: "13px", color: "rgba(16,35,63,.6)" }}>
+              {adminTypes.find((t) => t.id === adminType)?.name ?? "—"}
+            </span>
+          )}
+        </td>
+      )}
 
       <td style={{ ...td, color: "rgba(16,35,63,.6)", whiteSpace: "nowrap" }}>{ago(person.lastSeenAt)}</td>
 

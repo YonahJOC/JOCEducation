@@ -201,6 +201,12 @@ model User {
   schoolId String?
   school   School? @relation("SchoolMembers", fields: [schoolId], references: [id], onDelete: SetNull)
 
+  /// Which console role this person holds, where they hold one. Null means
+  /// their access follows the built-in default for their `role` — which is
+  /// what every teacher and school admin does.
+  adminRoleId String?
+  adminRole   AdminRole? @relation("AdminRoleMembers", fields: [adminRoleId], references: [id], onDelete: SetNull)
+
   /// Set false to suspend a login without deleting the account
   active     Boolean   @default(true)
   lastSeenAt DateTime?
@@ -1127,4 +1133,42 @@ enum EventStatus {
   DONE
   /// Called off. Kept, so the history is honest.
   CANCELLED
+}
+
+/// A named bundle of things somebody is allowed to do in the console.
+///
+/// The four that ship — JOC staff, Programming team, Educational team, Super
+/// admin — were hardcoded in src/lib/access.ts, which meant a new kind of
+/// admin needed a developer. They are rows now, and JOC can add its own:
+/// a shop manager, an Israel trips coordinator, whatever the work turns out
+/// to need.
+///
+/// `capabilities` holds the keys listed in CAPABILITIES in src/lib/access.ts.
+/// Anything unrecognised is ignored rather than trusted, so a stale row can
+/// never grant something that no longer exists.
+model AdminRole {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  /// One line, shown beside the name so it is obvious who this is for.
+  description String?
+
+  capabilities String[] @default([])
+
+  /// The four that ship. They can be renamed and their capabilities changed,
+  /// but they cannot be deleted — the console would have nobody to run it.
+  builtIn Boolean @default(false)
+
+  /// True for the super admin row only. Always holds every capability, and
+  /// the console refuses to take any away: without this it is possible to
+  /// remove your own access and lock everybody out permanently.
+  isSuperAdmin Boolean @default(false)
+
+  sort Int @default(0)
+
+  members User[] @relation("AdminRoleMembers")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sort])
 }

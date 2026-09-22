@@ -23,6 +23,7 @@ const ACCOUNTS_NAV: NavItem[] = [
 /** Accounts, roles and passwords — super admins only, separate on purpose. */
 const PEOPLE_NAV: NavItem[] = [
   { label: "People", href: "/admin/users", hint: "Accounts, roles and passwords" },
+  { label: "Admin types", href: "/admin/roles", hint: "What each kind of admin can do" },
 ];
 
 /** The calendar — what runs when. Programming and education both need it. */

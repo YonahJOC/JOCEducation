@@ -6,6 +6,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { canManageRoles, JOC_STAFF_DOMAIN, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
 import { PageIntro } from "@/components/admin/PageIntro";
+import { ensureAdminRoles, listAdminRoles } from "@/lib/admin-roles";
 
 const INK = "#10233F";
 const INTERNAL_ROLES = ["STAFF", "PROGRAM_STAFF", "ADMIN", "SUPER_ADMIN"];
@@ -22,6 +23,10 @@ async function Inner() {
 
   let users: PersonRow[] = [];
   let schools: SchoolRef[] = [];
+  // Offered on the JOC rows below, so somebody can be given console access
+  // from the same place their role is set.
+  await ensureAdminRoles();
+  const adminTypes = (await listAdminRoles()).map((r) => ({ id: r.id, name: r.name }));
 
   if (isDatabaseConfigured()) {
     const [rows, schoolRows] = await Promise.all([
@@ -30,7 +35,7 @@ async function Inner() {
         take: 1000,
         select: {
           id: true, name: true, email: true, role: true, active: true,
-          lastSeenAt: true, schoolId: true, passwordHash: true,
+          lastSeenAt: true, schoolId: true, passwordHash: true, adminRoleId: true,
           school: { select: { name: true } },
         },
       }),
@@ -41,6 +46,7 @@ async function Inner() {
       lastSeenAt: u.lastSeenAt, schoolId: u.schoolId,
       schoolName: u.school?.name ?? null,
       hasPassword: Boolean(u.passwordHash),
+      adminRoleId: u.adminRoleId,
     }));
     schools = schoolRows;
   }
@@ -106,6 +112,7 @@ async function Inner() {
         canEditRoles={canEditRoles}
         disabled={usingSampleData}
         schools={schools}
+        adminTypes={adminTypes}
       />
       <div style={{ height: "16px" }} />
       <PeopleTable
