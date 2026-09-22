@@ -24,7 +24,7 @@ const WIDTH = "1180px";
 const CARD_COLORS = [BLUE, ORANGE, "#1B7F4B", "#2C7AC9"];
 
 const FALLBACK_INSIDE = [
-  { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion questions. Print and teach." },
+  { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion points. Print and teach." },
   { value: "5", title: "Resource library", body: "Source sheets, activities, posters and videos, tagged by grade." },
   { value: "10", title: "Programs for your school", body: "Kindness Booth, Bake for Chesed, Just One Tutor and more — JOC runs the logistics." },
   { value: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },

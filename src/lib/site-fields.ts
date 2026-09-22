@@ -105,7 +105,7 @@ export const SITE_FIELDS: FieldDef[] = [
     key: "cards", label: "Cards", type: "REPEATABLE",
     help: "Four cards. Title is the figure, body is the description.",
     value: j([
-      { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion questions. Print and teach." },
+      { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion points. Print and teach." },
       { value: "5", title: "Resource library", body: "Source sheets, activities, posters and videos, tagged by grade." },
       { value: "10", title: "Programs for your school", body: "Kindness Booth, Bake for Chesed, Just One Tutor and more — JOC runs the logistics." },
       { value: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },
@@ -384,6 +384,42 @@ export const SITE_FIELDS: FieldDef[] = [
     section: "cta", sectionLabel: "The button at the bottom",
     key: "join_past", label: "After it has finished", type: "SHORT_TEXT",
     value: "See next year's program",
+  },
+
+  // ─── Lesson pages ─────────────────────────────────────────────────────────
+  // The headings down a lesson — /lesson-plans/3 and every one of its
+  // siblings. One edit here changes all of them, which is the point: they are
+  // one page rendered many times, not many pages.
+  {
+    page: "lesson", pageLabel: "Lesson pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "objectives", label: "The numbered aims", type: "SHORT_TEXT",
+    value: "Learning objectives",
+  },
+  {
+    page: "lesson", pageLabel: "Lesson pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "materials", label: "The materials list", type: "SHORT_TEXT",
+    value: "What you'll need",
+  },
+  {
+    page: "lesson", pageLabel: "Lesson pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "flow", label: "The timed steps", type: "SHORT_TEXT",
+    value: "Lesson flow",
+  },
+  {
+    page: "lesson", pageLabel: "Lesson pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "discussion", label: "The blue panels near the bottom", type: "SHORT_TEXT",
+    help: "This read “Discussion questions” until now, which was wrong — what is written in those panels are statements a teacher makes, not questions a teacher asks. Change it to whatever the education team actually calls them.",
+    value: "Discussion points",
+  },
+  {
+    page: "lesson", pageLabel: "Lesson pages",
+    section: "headings", sectionLabel: "Section headings",
+    key: "extension", label: "The orange-barred panel", type: "SHORT_TEXT",
+    value: "Extension activity",
   },
 ];
 

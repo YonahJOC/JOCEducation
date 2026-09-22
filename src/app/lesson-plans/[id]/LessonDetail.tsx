@@ -13,8 +13,31 @@ const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Mid
  * The lesson itself. Everything shown here comes from the server — this
  * component only handles the interactive bits (downloads, copy link).
  */
+/**
+ * The headings down the page. They come in as a prop rather than being
+ * written here because the education team owns the wording — see
+ * /admin/site → Lesson pages. The defaults are only what shows if the
+ * database is unreachable.
+ */
+export type LessonHeadings = {
+  objectives: string;
+  materials: string;
+  flow: string;
+  discussion: string;
+  extension: string;
+};
+
+const FALLBACK_HEADINGS: LessonHeadings = {
+  objectives: "Learning objectives",
+  materials: "What you'll need",
+  flow: "Lesson flow",
+  discussion: "Discussion points",
+  extension: "Extension activity",
+};
+
 export function LessonDetail({
   lesson, related, canDownload, signedIn, initiallySaved, cycle,
+  headings = FALLBACK_HEADINGS,
 }: {
   lesson: PublicLesson;
   related: PublicLesson[];
@@ -23,6 +46,7 @@ export function LessonDetail({
   initiallySaved: boolean;
   /** The cycle this belongs to, when it has one. */
   cycle?: { slug: string; num: number; theme: string; color: string; weekTitle: string | null } | null;
+  headings?: LessonHeadings;
 }) {
   const [saved, setSaved] = useState(initiallySaved);
   const [saving, startSave] = useTransition();
@@ -102,7 +126,7 @@ export function LessonDetail({
           </p>
 
           {/* Objectives */}
-          <Section title="Learning objectives">
+          <Section title={headings.objectives}>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
               {lesson.objectives.map((obj, i) => (
                 <li key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", fontSize: "15.5px", color: "#10233F", lineHeight: 1.55 }}>
@@ -116,7 +140,7 @@ export function LessonDetail({
           </Section>
 
           {/* Materials */}
-          <Section title="What you'll need">
+          <Section title={headings.materials}>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
               {lesson.materials.map((m, i) => (
                 <li key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "15px", color: "#10233F", lineHeight: 1.5 }}>
@@ -128,7 +152,7 @@ export function LessonDetail({
           </Section>
 
           {/* Lesson steps */}
-          <Section title="Lesson flow">
+          <Section title={headings.flow}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
               {lesson.steps.map((step, i) => (
                 <div key={i} style={{ display: "flex", gap: "20px" }}>
@@ -150,13 +174,16 @@ export function LessonDetail({
             </div>
           </Section>
 
-          {/* Discussion questions */}
-          <Section title="Discussion questions">
+          {/* Discussion points — the heading is the team's to rename */}
+          <Section title={headings.discussion}>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {lesson.discussion.map((q, i) => (
+              {lesson.discussion.map((point, i) => (
                 <div key={i} style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 20px", display: "flex", gap: "14px", alignItems: "flex-start" }}>
-                  <span style={{ fontWeight: 800, fontSize: "14px", color: stripeColor, flexShrink: 0, marginTop: "2px" }}>Q{i + 1}</span>
-                  <p style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.55, margin: 0 }}>{q}</p>
+                  {/* Was "Q1", for question. They are not questions, and the
+                      heading above is now the team's to rename — a plain
+                      number reads correctly whatever they call it. */}
+                  <span style={{ fontWeight: 800, fontSize: "14px", color: stripeColor, flexShrink: 0, marginTop: "2px" }}>{i + 1}.</span>
+                  <p style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.55, margin: 0 }}>{point}</p>
                 </div>
               ))}
             </div>
@@ -164,7 +191,7 @@ export function LessonDetail({
 
           {/* Extension */}
           {lesson.extension && (
-            <Section title="Extension activity">
+            <Section title={headings.extension}>
               <div style={{ borderLeft: "3px solid #FA912D", paddingLeft: "18px" }}>
                 <RichText text={lesson.extension} style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.6 }} />
               </div>

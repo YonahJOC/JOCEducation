@@ -48,11 +48,11 @@ export function LessonsClient({
     <div>
       <PageIntro
         title="Lesson plans"
-        what="The lessons teachers open and teach. Each one carries its objectives, what the teacher needs in hand, timed steps, discussion questions, and the printables that go with it."
+        what="The lessons teachers open and teach. Each one carries its objectives, what the teacher needs in hand, timed steps, discussion points, and the printables that go with it."
         steps={[
           "Press “+ New lesson”.",
           "Write the title, then pick the Chesed Cycle it belongs to, the grade band, how long it runs and how much preparation it needs.",
-          "Fill in the objectives, materials, steps and discussion questions. The panel on the right lists what is still missing and checks the steps add up to the lesson length.",
+          "Fill in the objectives, materials, steps and discussion points. The panel on the right lists what is still missing and checks the steps add up to the lesson length.",
           "Under “Printables and handouts”, give each file a name a teacher will recognise, then upload the file.",
           "Tick Published and Save. It is on the site immediately.",
         ]}

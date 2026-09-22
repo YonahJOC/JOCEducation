@@ -292,8 +292,12 @@ export function LessonEditor({
           </div>
 
           <div style={card}>
-            <p style={legend}>Discussion questions</p>
-            <ListField items={d.discussion} onChange={(v) => set("discussion", v)} placeholder="A question to put to the class" disabled={disabled} />
+            <p style={legend}>Discussion points</p>
+            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "-6px 0 14px" }}>
+              The heading a teacher sees above these is set once for every lesson, under
+              Site → Lesson pages.
+            </p>
+            <ListField items={d.discussion} onChange={(v) => set("discussion", v)} placeholder="A point to draw out with the class" disabled={disabled} />
           </div>
 
           <div style={card}>

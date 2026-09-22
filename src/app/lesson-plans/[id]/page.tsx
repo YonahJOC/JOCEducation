@@ -5,6 +5,7 @@ import { safeAuth } from "@/auth";
 import { hasSiteAccess, canManageContent } from "@/lib/access";
 import { isLessonSaved } from "@/app/actions/saved";
 import { getCycles } from "@/lib/cycle-data";
+import { siteContent } from "@/lib/site-content";
 import { LessonDetail } from "./LessonDetail";
 
 type Search = Promise<{ preview?: string }>;
@@ -56,6 +57,17 @@ export default async function LessonDetailPage({
     : null;
   const isDraft = previewing && !lessons.some((l) => l.id === lesson.id);
 
+  // The headings down the page are the education team's wording, not ours —
+  // one edit at /admin/site changes every lesson at once.
+  const site = await siteContent("lesson");
+  const headings = {
+    objectives: site.text("headings.objectives", "Learning objectives"),
+    materials: site.text("headings.materials", "What you'll need"),
+    flow: site.text("headings.flow", "Lesson flow"),
+    discussion: site.text("headings.discussion", "Discussion points"),
+    extension: site.text("headings.extension", "Extension activity"),
+  };
+
   return (
     <>
       {isDraft && (
@@ -76,6 +88,7 @@ export default async function LessonDetailPage({
         signedIn={Boolean(session?.user)}
         initiallySaved={await isLessonSaved(lesson.id)}
         cycle={cycle}
+        headings={headings}
       />
     </>
   );
