@@ -157,7 +157,17 @@ export default async function ProgramDetailPage({ params }: Props) {
                 </ul>
               </div>
               <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", marginBottom: "16px" }}>{program.meta}</p>
-              {program.external ? (
+              {/* A program with its own sign-up form sends people there
+                  instead of at the pricing page — the thing they came to do
+                  is on the page they are already looking at. */}
+              {program.formSlug ? (
+                <Link
+                  href={`/forms/${program.formSlug}`}
+                  style={{ display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 20px", textDecoration: "none", marginBottom: "10px" }}
+                >
+                  {program.cta}
+                </Link>
+              ) : program.external ? (
                 <a
                   href={program.externalHref}
                   target="_blank"

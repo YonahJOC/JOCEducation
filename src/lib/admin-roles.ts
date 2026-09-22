@@ -68,6 +68,18 @@ const BUILT_IN: {
 export async function ensureAdminRoles(): Promise<void> {
   if (!isDatabaseConfigured()) return;
   try {
+    // Top the super admin row up to everything, every time.
+    //
+    // Adding a capability to the code used to leave this row behind — it
+    // happened with `forms`, and the row said 15 of 16 while the runtime
+    // (which hands super admins the full set regardless) said otherwise. A
+    // stored row that disagrees with the truth is the thing somebody reads
+    // when deciding whether access is right, so it should not be able to lie.
+    await prisma.adminRole.updateMany({
+      where: { isSuperAdmin: true },
+      data: { capabilities: [...CAPABILITIES] },
+    });
+
     const have = new Set((await prisma.adminRole.findMany({ select: { name: true } })).map((r) => r.name));
     const missing = BUILT_IN.filter((b) => !have.has(b.name));
     if (missing.length === 0) return;

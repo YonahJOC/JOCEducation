@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { saveProgram, deleteProgram, seedProgramsFromStatic } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
@@ -167,6 +168,12 @@ export function ProgramsClient({
                   {p.published ? "" : " · draft"}{p.comingSoon ? " · coming soon" : ""}
                 </p>
               </div>
+              <Link
+                href={`/admin/programs/${p.slug}`}
+                style={{ fontSize: "13px", fontWeight: 600, color: INK, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+              >
+                Sign-ups
+              </Link>
               <button
                 onClick={() => setEditing(p)}
                 disabled={disabled}

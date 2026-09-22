@@ -228,6 +228,7 @@ model User {
   roomMessages  RoomMessage[]
   roomMembers   RoomMember[]
   formResponses FormResponse[] @relation("FormResponses")
+  programsLed   ProgramPage[] @relation("ProgramLeads")
 
   managedSchools   School[]            @relation("AccountManager")
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
@@ -772,6 +773,15 @@ model ProgramPage {
   /// something that does not exist yet is how you lose them.
   comingSoon Boolean @default(false)
 
+  /// The form shown on this program's own page — a registration, a sign-up.
+  /// Null means the page keeps its plain Register button.
+  formId String?
+  form   Form?  @relation("ProgramForm", fields: [formId], references: [id], onDelete: SetNull)
+
+  /// Who runs this program. A lead sees this one program's settings and its
+  /// form answers without needing the run of the whole console.
+  leads User[] @relation("ProgramLeads")
+
   sort Int @default(0)
 
   steps ProgramStep[]
@@ -1202,6 +1212,7 @@ model Form {
 
   fields    FormField[]
   responses FormResponse[]
+  programs  ProgramPage[] @relation("ProgramForm")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

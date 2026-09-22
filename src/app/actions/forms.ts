@@ -56,7 +56,22 @@ export async function saveForm(input: {
 }): Promise<Result> {
   try {
     await requireFormEditor();
+    return await saveFormAs(input);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not save that form." };
+  }
+}
 
+/**
+ * The saving itself, with no permission check of its own.
+ *
+ * Two callers reach it: saveForm, for the education team working under
+ * Content → Forms, and saveProgramForm, for whoever runs one program working
+ * on that program's page. Each checks its own way in first; the rules about
+ * what makes a valid form live here, once.
+ */
+async function saveFormAs(input: Parameters<typeof saveForm>[0]): Promise<Result> {
+  try {
     const title = input.title.trim();
     if (!title) return { ok: false, error: "Give the form a name." };
 
@@ -274,5 +289,126 @@ export async function submitForm(input: {
     return { ok: true, thankYou: form.thankYou };
   } catch {
     return { ok: false, error: "Could not send that. Please try again." };
+  }
+}
+
+// ─── A program's own form and people ─────────────────────────────────────────
+
+/**
+ * Attach a form to a program, or detach it with an empty id.
+ *
+ * Changing which program a form belongs to needs the `programs` permission —
+ * a lead may read their own program's answers but not rewire it.
+ */
+export async function setProgramForm(programId: number, formId: string | null): Promise<Result> {
+  try {
+    const session = await safeAuth();
+    if (isAuthConfigured && !can(session?.user, "programs")) {
+      throw new Error("Your admin type does not include Programs");
+    }
+    if (!isDatabaseConfigured()) throw new Error("Database not connected");
+
+    const program = await prisma.programPage.update({
+      where: { id: programId },
+      data: { formId },
+      select: { slug: true },
+    });
+    revalidatePath(`/programs/${program.slug}`);
+    revalidatePath(`/admin/programs/${program.slug}`);
+    revalidatePath("/admin/programs");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not attach that form." };
+  }
+}
+
+/**
+ * Add or remove somebody who runs this program.
+ *
+ * Its own permission, not Programs. Deciding who runs a program is the
+ * programming team's job; writing the page a school reads about it is the
+ * education team's. They were the same check, which meant the people actually
+ * running the programs could not name their own coordinators.
+ */
+export async function setProgramLead(
+  programId: number,
+  userId: string,
+  isLead: boolean
+): Promise<Result> {
+  try {
+    const session = await safeAuth();
+    if (isAuthConfigured && !can(session?.user, "coordinators")) {
+      throw new Error("Your admin type does not include Program coordinators");
+    }
+    if (!isDatabaseConfigured()) throw new Error("Database not connected");
+
+    const program = await prisma.programPage.update({
+      where: { id: programId },
+      data: { leads: isLead ? { connect: { id: userId } } : { disconnect: { id: userId } } },
+      select: { slug: true },
+    });
+    revalidatePath(`/admin/programs/${program.slug}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not change that." };
+  }
+}
+
+/**
+ * Build or edit the form that belongs to one program, from that program's own
+ * page.
+ *
+ * Scoped deliberately. Whoever runs a program can work on its sign-up form
+ * without holding the site-wide Forms permission, which would open every form
+ * there is. The way in is the program: you may edit this form because you may
+ * administer this program, and you reached it through that program's page.
+ */
+export async function saveProgramForm(
+  programId: number,
+  input: Parameters<typeof saveForm>[0]
+): Promise<Result> {
+  try {
+    const session = await safeAuth();
+    const me = session?.user;
+
+    if (!isDatabaseConfigured()) throw new Error("Database not connected");
+
+    const program = await prisma.programPage.findUnique({
+      where: { id: programId },
+      select: { id: true, slug: true, formId: true, leads: { select: { id: true } } },
+    });
+    if (!program) return { ok: false, error: "That program no longer exists." };
+
+    const mayAdminister =
+      !isAuthConfigured ||
+      can(me, "forms") ||
+      can(me, "programs") ||
+      can(me, "coordinators") ||
+      Boolean(me?.id && program.leads.some((l) => l.id === me.id));
+    if (!mayAdminister) {
+      return { ok: false, error: "You are not down as running this program." };
+    }
+
+    // Only this program's own form. Without this check the id in the request
+    // could name any form on the site and this would happily rewrite it.
+    if (input.id && input.id !== program.formId) {
+      return { ok: false, error: "That form does not belong to this program." };
+    }
+
+    const saved = await saveFormAs(input);
+    if (!saved.ok) return saved;
+
+    // A form made here is attached here, in the same breath — otherwise a
+    // failure halfway leaves an orphan nobody can find.
+    if (!input.id && saved.id) {
+      await prisma.programPage.update({ where: { id: programId }, data: { formId: saved.id } });
+    }
+
+    revalidatePath(`/admin/programs/${program.slug}`);
+    revalidatePath(`/programs/${program.slug}`);
+    revalidatePath("/forms");
+    return saved;
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not save that form." };
   }
 }

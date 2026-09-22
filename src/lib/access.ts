@@ -199,7 +199,7 @@ export const CAPABILITIES = [
   // Educational material
   "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
   // The calendar
-  "programming", "cycles",
+  "programming", "cycles", "coordinators",
   // School accounts
   "schools", "demos", "orders", "pricing",
   // Access
@@ -218,7 +218,7 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
     label: "Educational material",
     capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms"],
   },
-  { label: "The calendar", capabilities: ["programming", "cycles"] },
+  { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
   { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing"] },
   { label: "Access", capabilities: ["users"] },
 ];
@@ -234,6 +234,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   forms: "Forms and their answers",
   programming: "Programming calendar",
   cycles: "Chesed Cycle dates",
+  coordinators: "Program coordinators",
   schools: "Schools and plans",
   demos: "Demo requests",
   orders: "Orders",
@@ -252,6 +253,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   forms: "Build forms — registrations, sign-ups, feedback — and read what comes back.",
   programming: "What is running and where — the events at each school.",
   cycles: "The eight Chesed Cycles, their dates and their weekly plan.",
+  coordinators: "Say who runs each program. A coordinator then sees that one program's sign-ups — and nothing else in the console.",
   schools: "School accounts, plans, seats, discounts, contacts and history.",
   demos: "Bookings from the landing page and contact-form messages.",
   orders: "What schools have ordered from the shop.",
@@ -268,7 +270,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
  * AdminRole table were ever emptied nobody would be locked out.
  */
 const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms"];
-const CALENDAR: Capability[] = ["programming", "cycles"];
+const CALENDAR: Capability[] = ["programming", "cycles", "coordinators"];
 const ACCOUNTS: Capability[] = ["schools", "demos", "orders", "pricing"];
 
 export const DEFAULT_CAPABILITIES: Record<Role, Capability[]> = {

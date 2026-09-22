@@ -15,6 +15,8 @@ export type Program = {
   cta: string;
   /** Announced but not running yet: badge instead of a Register button. */
   comingSoon?: boolean;
+  /** The sign-up form shown on this program's page, where one is attached. */
+  formSlug?: string | null;
   external?: boolean;
   externalHref?: string;
 };

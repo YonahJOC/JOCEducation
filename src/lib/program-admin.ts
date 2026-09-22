@@ -1,0 +1,148 @@
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { safeAuth, isAuthConfigured } from "@/auth";
+import { can } from "@/lib/access";
+import { listResponses, type ResponseRow, type PublicField } from "@/lib/forms";
+
+/**
+ * One program's own corner of the console.
+ *
+ * The point of this is narrowness. Whoever runs Boots for Israel needs to see
+ * who has signed up for Boots for Israel — and nothing else. Making that
+ * possible without handing them the whole console is the difference between
+ * a person being useful and a person being a risk.
+ *
+ * Three ways in, checked in this order:
+ *
+ *   1. A lead of this program. Sees this program and no other.
+ *   2. Anyone with the `programs` permission. Sees every program.
+ *   3. Anyone with `forms`. Sees the answers wherever they are.
+ *
+ * A lead is deliberately not given the `forms` permission: that would open
+ * every form on the site, which is the opposite of what is wanted here.
+ */
+
+export type ProgramAdminView = {
+  id: number;
+  slug: string;
+  name: string;
+  published: boolean;
+  comingSoon: boolean;
+  /** The form attached to this program, if any. */
+  form: {
+    id: string;
+    slug: string;
+    title: string;
+    /// Every field the builder edits — anything missing here would be blanked
+    /// the first time somebody saved the form from this page.
+    description: string;
+    thankYou: string;
+    published: boolean;
+    closed: boolean;
+    requiresSignIn: boolean;
+    feeCents: number | null;
+    feeLabel: string | null;
+    fields: PublicField[];
+  } | null;
+  responses: ResponseRow[];
+  leads: { id: string; name: string | null; email: string }[];
+  /** True when this person only got here by being a lead. */
+  asLead: boolean;
+  /** May swap which form this program uses — an education-team job. */
+  canEditProgram: boolean;
+  /** May say who runs it — a programming-team job. */
+  canSetCoordinators: boolean;
+  /**
+   * May build and edit this program's own sign-up form. Scoped to this
+   * program: it does not imply the site-wide Forms permission.
+   */
+  canEditForm: boolean;
+};
+
+export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | null | "denied"> {
+  if (!isDatabaseConfigured()) return null;
+
+  const session = await safeAuth();
+  const me = session?.user;
+
+  try {
+    const p = await prisma.programPage.findUnique({
+      where: { slug },
+      include: {
+        form: { include: { fields: { orderBy: { order: "asc" } } } },
+        leads: { select: { id: true, name: true, email: true } },
+      },
+    });
+    if (!p) return null;
+
+    const isLead = Boolean(me?.id && p.leads.some((l) => l.id === me.id));
+    const managesPrograms = can(me, "programs");
+    const readsForms = can(me, "forms");
+    const namesCoordinators = can(me, "coordinators");
+
+    // Before sign-in is configured the console is open for review.
+    const open = !isAuthConfigured;
+    if (!open && !isLead && !managesPrograms && !readsForms && !namesCoordinators) return "denied";
+
+    return {
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      published: p.published,
+      comingSoon: p.comingSoon,
+      form: p.form
+        ? {
+            id: p.form.id,
+            slug: p.form.slug,
+            title: p.form.title,
+            description: p.form.description,
+            thankYou: p.form.thankYou,
+            published: p.form.published,
+            closed: p.form.closed,
+            requiresSignIn: p.form.requiresSignIn,
+            feeCents: p.form.feeCents,
+            feeLabel: p.form.feeLabel,
+            fields: p.form.fields.map((f) => ({
+              id: f.id, label: f.label, help: f.help,
+              type: f.type as PublicField["type"], required: f.required, options: f.options,
+            })),
+          }
+        : null,
+      responses: p.form ? await listResponses(p.form.id) : [],
+      leads: p.leads,
+      asLead: isLead && !managesPrograms && !readsForms && !namesCoordinators,
+      canEditProgram: open || managesPrograms,
+      canSetCoordinators: open || namesCoordinators,
+      canEditForm: open || isLead || managesPrograms || readsForms || namesCoordinators,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Every program this person may open — for the list page. */
+export async function listProgramsForAdmin(): Promise<
+  { id: number; slug: string; name: string; published: boolean; responseCount: number; formTitle: string | null }[]
+> {
+  if (!isDatabaseConfigured()) return [];
+  const session = await safeAuth();
+  const me = session?.user;
+  const seesAll = !isAuthConfigured || can(me, "programs") || can(me, "forms") || can(me, "coordinators");
+
+  try {
+    const rows = await prisma.programPage.findMany({
+      where: seesAll ? {} : { leads: { some: { id: me?.id ?? "__none__" } } },
+      orderBy: { sort: "asc" },
+      include: { form: { select: { title: true, _count: { select: { responses: true } } } } },
+    });
+    return rows.map((p) => ({
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      published: p.published,
+      responseCount: p.form?._count.responses ?? 0,
+      formTitle: p.form?.title ?? null,
+    }));
+  } catch {
+    return [];
+  }
+}
