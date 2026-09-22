@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { setProgramForm, setProgramLead, saveProgramForm } from "@/app/actions/forms";
+import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
 import type { ProgramAdminView } from "@/lib/program-admin";
 
@@ -242,6 +243,11 @@ export function ProgramAdminClient({
                 : "Attach a form and sign-ups will appear here."
               : `${rows.length} so far${view.form?.feeCents ? ` · ${rows.filter((r) => r.paid).length} paid` : ""}`}
           </p>
+          {rows.length > 0 && view.form && (
+            <div style={{ marginTop: "12px" }}>
+              <Download formId={view.form.id} />
+            </div>
+          )}
         </div>
 
         {rows.length > 0 && (

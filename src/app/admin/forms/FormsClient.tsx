@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { saveForm, deleteForm } from "@/app/actions/forms";
+import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
 import { PageIntro } from "@/components/admin/PageIntro";
 import type { AdminFormRow, ResponseRow } from "@/lib/forms";
@@ -190,6 +191,8 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
         {rows.length} answer{rows.length === 1 ? "" : "s"}
         {form.feeCents ? ` · ${rows.filter((r) => r.paid).length} paid` : ""}
       </p>
+
+      {rows.length > 0 && <Download formId={form.id} />}
 
       <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "760px" }}>
