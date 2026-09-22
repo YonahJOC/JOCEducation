@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { setProgramForm, setProgramLead, saveProgramForm } from "@/app/actions/forms";
 import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
+import { FIELD_TYPE_LABELS } from "@/lib/forms";
 import type { ProgramAdminView } from "@/lib/program-admin";
 
 const INK = "#10233F";
@@ -34,7 +36,7 @@ export function ProgramAdminClient({
   const [msg, setMsg] = useState<string | null>(null);
   const [formId, setFormId] = useState(view.form?.id ?? "");
   const [leads, setLeads] = useState(view.leads.map((l) => l.id));
-  const [building, setBuilding] = useState<Draft | null>(null);
+  const router = useRouter();
 
   // The form itself, edited here rather than somewhere else. Whoever runs
   // this program can work on its sign-up form without being handed every
@@ -57,28 +59,6 @@ export function ProgramAdminClient({
           })),
         }
       : { ...BLANK_FORM, title: `${view.name} sign-up` };
-
-  if (building) {
-    return (
-      <FormBuilder
-        initial={building}
-        paymentsOn={paymentsOn}
-        onSave={(d) =>
-          saveProgramForm(view.id, {
-            id: d.id || undefined, title: d.title, description: d.description,
-            thankYou: d.thankYou, published: d.published, closed: d.closed,
-            requiresSignIn: d.requiresSignIn,
-            feeDollars: d.feeDollars ? Number(d.feeDollars) : null,
-            feeLabel: d.feeLabel, fields: d.fields,
-          })
-        }
-        onDone={() => { setBuilding(null); window.location.reload(); }}
-        heading={view.form ? `${view.name} — sign-up form` : `New form for ${view.name}`}
-        backLabel={`← ${view.name}`}
-      />
-    );
-  }
-
 
   const rows = view.responses;
   // Every label anybody has answered under, so a renamed question still shows.
@@ -110,19 +90,100 @@ export function ProgramAdminClient({
 
       <div style={{ height: "22px" }} />
 
-      {/* ── The form ───────────────────────────────────────────────────── */}
-      <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 12px" }}>
+      {/* ── The form, edited right here ────────────────────────────────── */}
+      <div style={{ marginBottom: "14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
           Sign-up form
         </p>
+        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "64ch" }}>
+          {view.form?.published
+            ? "This is live. What you change here is what a school sees when they press the button on the program page."
+            : "Every program starts with the questions JOC asks any school. Cut what you do not need, add what you do, then tick Published to put it on the program page."}
+        </p>
 
-        {view.canEditProgram ? (
-          <>
-            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 10px", lineHeight: 1.55 }}>
-              Pick a form and it appears on this program&rsquo;s own page, in place of the plain
-              Register button. Build forms under Content → Forms.
+        {view.form && (
+          <p style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", margin: "0 0 14px" }}>
+            {view.form.published ? (
+              <Pill color="#1B7F4B">live on the program page</Pill>
+            ) : view.form.closed ? (
+              <Pill color="#B8321E">closed</Pill>
+            ) : (
+              <Pill color="#C96C00">draft — not on the program page yet</Pill>
+            )}
+            <Link href={`/forms/${view.form.slug}`} target="_blank" style={{ color: BLUE, fontWeight: 600, textDecoration: "none", marginLeft: "10px" }}>
+              /forms/{view.form.slug}
+            </Link>
+            {feeLabel && <span style={{ marginLeft: "10px" }}>· {feeLabel}</span>}
+          </p>
+        )}
+
+        {/* The builder itself, on the page rather than behind a button. The
+            questions are the thing somebody opens this page to work on, so
+            they are what the page shows. */}
+        {view.canEditForm ? (
+          <FormBuilder
+            embedded
+            initial={asDraft()}
+            paymentsOn={paymentsOn}
+            onSave={(d) =>
+              saveProgramForm(view.id, {
+                id: d.id || undefined, title: d.title, description: d.description,
+                thankYou: d.thankYou, published: d.published, closed: d.closed,
+                requiresSignIn: d.requiresSignIn,
+                feeDollars: d.feeDollars ? Number(d.feeDollars) : null,
+                feeLabel: d.feeLabel, fields: d.fields,
+              })
+            }
+            onDone={() => router.refresh()}
+          />
+        ) : view.form ? (
+          <div style={card}>
+            <p style={{ fontSize: "15.5px", fontWeight: 600, color: INK, margin: "0 0 12px" }}>
+              {view.form.title}
             </p>
-            <select
+            <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "1px" }}>
+              {view.form.fields.map((f, i) => (
+                <li
+                  key={f.id}
+                  style={{
+                    display: "flex", gap: "10px", alignItems: "baseline",
+                    padding: "9px 12px", fontSize: "14px", color: INK,
+                    backgroundColor: i % 2 ? "transparent" : "rgba(244,247,253,.75)",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(16,35,63,.35)", minWidth: "16px" }}>{i + 1}</span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    {f.label}
+                    {f.required && <span style={{ color: "#C96C00", marginLeft: "5px" }}>*</span>}
+                  </span>
+                  <span style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", whiteSpace: "nowrap" }}>
+                    {FIELD_TYPE_LABELS[f.type]}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : (
+          <div style={card}>
+            <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", margin: 0 }}>
+              No form on this program yet.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* ── Swapping the form out ──────────────────────────────────────── */}
+      {view.canEditProgram && (
+        <div style={card}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+            Use a different form
+          </p>
+          <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "62ch" }}>
+            Each program has its own form already, so this is only for the case where two programs
+            should share one. Changing it here does not delete the form that was attached before.
+          </p>
+          <select
               value={formId}
               onChange={(e) => {
                 const next = e.target.value;
@@ -141,50 +202,16 @@ export function ProgramAdminClient({
                 padding: "10px 12px", minHeight: "42px", minWidth: "280px", outline: "none",
               }}
             >
-              <option value="">No form — keep the Register button</option>
-              {forms.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.title}
-                  {f.responseCount ? ` (${f.responseCount})` : ""}
-                </option>
-              ))}
-            </select>
-          </>
-        ) : view.form ? (
-          <p style={{ fontSize: "14.5px", color: INK, margin: 0 }}>{view.form.title}</p>
-        ) : (
-          <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", margin: 0 }}>
-            No form on this program yet.
-          </p>
-        )}
-
-        {view.canEditForm && (
-          <button
-            type="button"
-            onClick={() => setBuilding(asDraft())}
-            style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px",
-              color: view.form ? BLUE : "#fff",
-              backgroundColor: view.form ? "rgba(45,70,175,.08)" : BLUE,
-              border: "none", borderRadius: "9999px", padding: "10px 18px",
-              minHeight: "42px", cursor: "pointer", marginTop: "14px", display: "block",
-            }}
-          >
-            {view.form ? "Edit the questions" : "Build a sign-up form"}
-          </button>
-        )}
-
-        {view.form && (
-          <p style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", margin: "10px 0 0" }}>
-            <Link href={`/forms/${view.form.slug}`} target="_blank" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
-              /forms/{view.form.slug}
-            </Link>
-            {!view.form.published && " · draft, so it is not on the page yet"}
-            {view.form.closed && " · closed"}
-            {feeLabel && ` · ${feeLabel}`}
-          </p>
-        )}
-      </div>
+            <option value="">No form — send schools to pricing instead</option>
+            {forms.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.title}
+                {f.responseCount ? ` (${f.responseCount})` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* ── Who runs it ────────────────────────────────────────────────── */}
       {view.canSetCoordinators && (
@@ -288,5 +315,13 @@ export function ProgramAdminClient({
         )}
       </div>
     </div>
+  );
+}
+
+function Pill({ color, children }: { color: string; children: React.ReactNode }) {
+  return (
+    <span style={{ fontSize: "11px", fontWeight: 700, color, backgroundColor: `${color}1f`, borderRadius: "9999px", padding: "3px 9px" }}>
+      {children}
+    </span>
   );
 }

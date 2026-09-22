@@ -46,7 +46,8 @@ export const BLANK_FORM: Draft = {
   fields: [{ label: "", help: "", type: "SHORT_TEXT", required: true, options: [] }],
 };
 
-export type SaveResult = { ok: true } | { ok: false; error: string };
+/** `id` comes back on a create, so an embedded builder can keep editing it. */
+export type SaveResult = { ok: true; id?: string } | { ok: false; error: string };
 
 /**
  * One builder, two homes.
@@ -58,7 +59,7 @@ export type SaveResult = { ok: true } | { ok: false; error: string };
  * decides.
  */
 export function FormBuilder({
-  initial, paymentsOn, disabled, onSave, onDelete, onDone, heading, backLabel,
+  initial, paymentsOn, disabled, onSave, onDelete, onDone, heading, backLabel, embedded,
 }: {
   initial: Draft;
   paymentsOn: boolean;
@@ -68,22 +69,40 @@ export function FormBuilder({
   onDone: () => void;
   heading?: string;
   backLabel?: string;
+  /**
+   * Sitting inside another page rather than replacing it — on a program's own
+   * page, where the form is part of the page rather than somewhere you go.
+   * Drops the back link and the title, which belong to the page around it.
+   */
+  embedded?: boolean;
 }) {
   const [d, setD] = useState<Draft>(initial);
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
+  // Embedded, saving does not take you anywhere, so nothing on screen would
+  // otherwise tell you it worked.
+  const [saved, setSaved] = useState(false);
 
-  const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD((p) => ({ ...p, [k]: v }));
-  const setField = (i: number, patch: Partial<Draft["fields"][number]>) =>
+  const set = <K extends keyof Draft>(k: K, v: Draft[K]) => {
+    setSaved(false);
+    setD((p) => ({ ...p, [k]: v }));
+  };
+  const setField = (i: number, patch: Partial<Draft["fields"][number]>) => {
+    setSaved(false);
     setD((p) => ({ ...p, fields: p.fields.map((f, j) => (j === i ? { ...f, ...patch } : f)) }));
+  };
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setMsg(null);
+    setSaved(false);
     start(async () => {
       const r = await onSave(d);
-      if (r.ok) onDone();
-      else setMsg(r.error);
+      if (!r.ok) { setMsg(r.error); return; }
+      // Embedded, the page stays where it is, so say so. Otherwise the
+      // caller takes over — usually by going back to a list.
+      if (embedded) { setSaved(true); if (r.id && !d.id) setD((p) => ({ ...p, id: r.id! })); }
+      onDone();
     });
   }
 
@@ -97,22 +116,26 @@ export function FormBuilder({
   }
 
   return (
-    <form onSubmit={submit} style={{ maxWidth: "820px" }}>
-      <button
-        type="button"
-        onClick={onDone}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
-      >
-        {backLabel ?? "← All forms"}
-      </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
-        {heading ?? (d.id ? d.title || "Edit form" : "New form")}
-      </h1>
+    <form onSubmit={submit} style={{ maxWidth: embedded ? "none" : "820px" }}>
+      {!embedded && (
+        <>
+          <button
+            type="button"
+            onClick={onDone}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+          >
+            {backLabel ?? "← All forms"}
+          </button>
+          <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+            {heading ?? (d.id ? d.title || "Edit form" : "New form")}
+          </h1>
+        </>
+      )}
 
       <div style={card}>
         <div style={{ marginBottom: "12px" }}>
           <label style={label}>What is it called?</label>
-          <input value={d.title} onChange={(e) => set("title", e.target.value)} placeholder="Israel trip registration" disabled={disabled} style={field} autoFocus />
+          <input value={d.title} onChange={(e) => set("title", e.target.value)} placeholder="Israel trip registration" disabled={disabled} style={field} autoFocus={!embedded} />
         </div>
         <div style={{ marginBottom: "12px" }}>
           <label style={label}>What is it for?</label>
@@ -266,6 +289,9 @@ export function FormBuilder({
           </button>
         )}
         {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
+        {saved && !msg && (
+          <p style={{ fontSize: "13.5px", fontWeight: 600, color: "#1B7F4B", margin: 0 }}>Saved.</p>
+        )}
       </div>
     </form>
   );

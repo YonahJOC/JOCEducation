@@ -2,6 +2,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { can } from "@/lib/access";
 import { listResponses, type ResponseRow, type PublicField } from "@/lib/forms";
+import { ensureProgramForm } from "@/lib/program-forms";
 
 /**
  * One program's own corner of the console.
@@ -65,7 +66,7 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
   const me = session?.user;
 
   try {
-    const p = await prisma.programPage.findUnique({
+    let p = await prisma.programPage.findUnique({
       where: { slug },
       include: {
         form: { include: { fields: { orderBy: { order: "asc" } } } },
@@ -73,6 +74,24 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
       },
     });
     if (!p) return null;
+
+    // Every program has a form. If this one has never had one, it gets the
+    // starter now — a draft, so nothing about the public page changes — and
+    // whoever opened this page finds questions to edit rather than a blank
+    // panel and a decision to make.
+    if (!p.form) {
+      const formId = await ensureProgramForm({ id: p.id, name: p.name, slug: p.slug, formId: p.formId });
+      if (formId) {
+        p =
+          (await prisma.programPage.findUnique({
+            where: { slug },
+            include: {
+              form: { include: { fields: { orderBy: { order: "asc" } } } },
+              leads: { select: { id: true, name: true, email: true } },
+            },
+          })) ?? p;
+      }
+    }
 
     const isLead = Boolean(me?.id && p.leads.some((l) => l.id === me.id));
     const managesPrograms = can(me, "programs");
