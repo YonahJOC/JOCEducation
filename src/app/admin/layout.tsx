@@ -48,6 +48,7 @@ const CONTENT_NAV: NavItem[] = [
   { label: "Teachers' Board", href: "/admin/board", hint: "Approve what teachers post" },
   { label: "Discussion rooms", href: "/admin/rooms", hint: "Topic rooms in the staff room" },
   { label: "Products", href: "/admin/products", hint: "The shop catalogue" },
+  { label: "Forms", href: "/admin/forms", hint: "Registrations, sign-ups and feedback" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

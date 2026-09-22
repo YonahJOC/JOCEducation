@@ -36,7 +36,17 @@ const PUBLIC_PATHS = new Set([
 
 // Reachable by anyone signed in, including someone who still has to change
 // an administrator-issued password.
-const PUBLIC_PREFIXES = ["/api/auth", "/brand", "/_next", "/account"];
+const PUBLIC_PREFIXES = [
+  "/api/auth",
+  // Stripe posts here with no session of its own; the signature is what
+  // authorises it, checked in the route.
+  "/api/stripe",
+  // A form link is meant to be sendable to a parent or a school office.
+  // Whether a particular form needs an account is the form's own setting,
+  // enforced when it is submitted — not something the gate decides.
+  "/forms",
+  "/brand", "/_next", "/account",
+];
 
 const PUBLIC_FILES = new Set([
   "/api/version",

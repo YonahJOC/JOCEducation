@@ -197,7 +197,7 @@ export function isInternal(user: U): boolean {
  */
 export const CAPABILITIES = [
   // Educational material
-  "lessons", "resources", "programs", "board", "rooms", "shop", "site",
+  "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
   // The calendar
   "programming", "cycles",
   // School accounts
@@ -216,7 +216,7 @@ export type Capability = (typeof CAPABILITIES)[number];
 export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] = [
   {
     label: "Educational material",
-    capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site"],
+    capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms"],
   },
   { label: "The calendar", capabilities: ["programming", "cycles"] },
   { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing"] },
@@ -231,6 +231,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   rooms: "Discussion rooms",
   shop: "The shop catalogue",
   site: "Words on the public pages",
+  forms: "Forms and their answers",
   programming: "Programming calendar",
   cycles: "Chesed Cycle dates",
   schools: "Schools and plans",
@@ -248,6 +249,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   rooms: "The topic rooms in the staff room.",
   shop: "The products a school can order.",
   site: "The wording on the public pages, with drafts and history.",
+  forms: "Build forms — registrations, sign-ups, feedback — and read what comes back.",
   programming: "What is running and where — the events at each school.",
   cycles: "The eight Chesed Cycles, their dates and their weekly plan.",
   schools: "School accounts, plans, seats, discounts, contacts and history.",
@@ -265,7 +267,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
  * still works correctly before any type has been assigned, and if the
  * AdminRole table were ever emptied nobody would be locked out.
  */
-const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site"];
+const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms"];
 const CALENDAR: Capability[] = ["programming", "cycles"];
 const ACCOUNTS: Capability[] = ["schools", "demos", "orders", "pricing"];
 

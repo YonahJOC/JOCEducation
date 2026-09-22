@@ -227,6 +227,7 @@ model User {
   orders        Order[]
   roomMessages  RoomMessage[]
   roomMembers   RoomMember[]
+  formResponses FormResponse[] @relation("FormResponses")
 
   managedSchools   School[]            @relation("AccountManager")
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
@@ -1171,4 +1172,103 @@ model AdminRole {
   updatedAt DateTime @updatedAt
 
   @@index([sort])
+}
+
+/// A form the JOC team builds in the console: trip registration, a feedback
+/// round, a sign-up sheet. Fields are rows rather than code, so a new form
+/// never needs a developer.
+model Form {
+  id    String @id @default(cuid())
+  slug  String @unique
+  title String
+
+  /// Shown above the fields.
+  description String @db.Text @default("")
+  /// Shown after somebody submits. Where to say "we will be in touch".
+  thankYou    String @db.Text @default("Thank you — we have your answers.")
+
+  published Boolean @default(false)
+  /// A form that has closed says so, rather than vanishing. Somebody sent a
+  /// link to a school last week and needs to be told it has shut, not shown
+  /// a page that is not found.
+  closed    Boolean @default(false)
+  /// Only signed-in people may submit. Off for anything a parent fills in.
+  requiresSignIn Boolean @default(false)
+
+  /// What it costs to submit, in cents. Null means free. Nothing is charged
+  /// until Stripe is connected — see src/lib/payments.ts.
+  feeCents    Int?
+  feeLabel    String?
+
+  fields    FormField[]
+  responses FormResponse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published])
+}
+
+model FormField {
+  id     String @id @default(cuid())
+  formId String
+
+  label String
+  /// The small grey line under the label.
+  help  String?
+  type  FormFieldType @default(SHORT_TEXT)
+
+  required Boolean  @default(false)
+  /// For CHOICE and CHECKBOXES.
+  options  String[] @default([])
+  order    Int      @default(0)
+
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId, order])
+}
+
+enum FormFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  EMAIL
+  PHONE
+  NUMBER
+  DATE
+  /// One of a list.
+  CHOICE
+  /// Any number of a list.
+  CHECKBOXES
+  YES_NO
+}
+
+/// One submission.
+model FormResponse {
+  id     String @id @default(cuid())
+  formId String
+
+  /// Set when the person was signed in.
+  userId String?
+  user   User?   @relation("FormResponses", fields: [userId], references: [id], onDelete: SetNull)
+
+  /// Always asked for, so JOC can reply to somebody who was not signed in.
+  name  String?
+  email String?
+
+  /// [{ fieldId, label, value }] — the label is snapshotted at submit time on
+  /// purpose. Renaming or deleting a field later must not turn an answer
+  /// somebody already gave into an orphan nobody can read.
+  answers Json
+
+  /// Only meaningful on a form with a fee.
+  paid          Boolean @default(false)
+  paymentRef    String?
+  amountCents   Int?
+
+  createdAt DateTime @default(now())
+
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId, createdAt])
+  @@index([userId])
 }

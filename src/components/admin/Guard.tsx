@@ -42,6 +42,7 @@ export const BoardGuard = guardFor("board");
 export const RoomsGuard = guardFor("rooms");
 export const ShopGuard = guardFor("shop");
 export const SiteGuard = guardFor("site");
+export const FormsGuard = guardFor("forms");
 export const ProgrammingGuard = guardFor("programming");
 export const CyclesGuard = guardFor("cycles");
 export const SchoolsGuard = guardFor("schools");
