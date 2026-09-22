@@ -39,6 +39,7 @@ const PUBLIC_PATHS = new Set([
 const PUBLIC_PREFIXES = ["/api/auth", "/brand", "/_next", "/account"];
 
 const PUBLIC_FILES = new Set([
+  "/api/version",
   "/favicon.ico",
   "/robots.txt",
   "/sitemap.xml",
