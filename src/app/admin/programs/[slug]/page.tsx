@@ -5,6 +5,9 @@ import { listForms } from "@/lib/forms";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { money, isPaymentConfigured } from "@/lib/payments";
 import { ProgramAdminClient } from "./ProgramAdminClient";
+import { getAppActivity } from "@/lib/app-activity";
+import { safeAuth, isAuthConfigured } from "@/auth";
+import { can } from "@/lib/access";
 
 export const metadata = { title: "Program — JOC Console" };
 export const dynamic = "force-dynamic";
@@ -28,6 +31,14 @@ export default async function ProgramAdminPage({ params }: { params: Promise<{ s
       </div>
     );
   }
+
+  // The JOC App is the one program with figures of its own, and they are
+  // behind their own capability — the console is full of schools' data.
+  const session = await safeAuth();
+  const appActivity =
+    slug === "joc-app" && (!isAuthConfigured || can(session?.user, "app_activity"))
+      ? await getAppActivity()
+      : null;
 
   // Only offered to somebody who may actually rewire the program.
   const forms = view.canEditProgram ? await listForms() : [];

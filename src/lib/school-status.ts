@@ -35,15 +35,22 @@ export type SchoolStatusRow = {
   /** 4. The live screen in the building. */
   liveScreenAt: Date | null;
 
-  /** 5. Hours waiting to be approved, and when that was last read. */
-  unapproved: { hours: number | null; checkedAt: Date | null };
+  /**
+   * 5. Hours waiting to be approved.
+   *
+   * From the JOC App where it reports, and from whoever typed it in where it
+   * does not. `synced` is the difference, and the board says which — a figure
+   * read by a machine every 15 minutes and a figure somebody typed in a
+   * fortnight ago should not look the same.
+   */
+  unapproved: { hours: number | null; checkedAt: Date | null; synced: boolean };
 
   /** 6 and 7. Talked to, and gone to. */
   lastConversation: { at: Date; kind: string; summary: string } | null;
   lastVisit: { at: Date; summary: string } | null;
 
   /** 8. The school store. */
-  store: { openedAt: Date | null; orders: number; lastOrderAt: Date | null };
+  store: { openedAt: Date | null; orders: number; lastOrderAt: Date | null; redeemedThisMonth: number | null };
 };
 
 /** A conversation is something a person did, not an audit entry. */
@@ -58,6 +65,7 @@ export async function getSchoolStatus(): Promise<SchoolStatusRow[]> {
       include: {
         subscription: true,
         contacts: { orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }], take: 1 },
+        appStats: { select: { unapprovedMinutes: true, storeRedeemedThisMonth: true, syncedAt: true } },
         activities: {
           where: { type: { in: [...CONVERSATION] } },
           orderBy: { occurredAt: "desc" },
@@ -94,12 +102,18 @@ export async function getSchoolStatus(): Promise<SchoolStatusRow[]> {
         studentListAt: s.studentListAt,
         coordinator: c ? { name: c.name, title: c.title, email: c.email, phone: c.phone } : null,
         liveScreenAt: s.liveScreenAt,
-        unapproved: { hours: s.unapprovedHours, checkedAt: s.unapprovedCheckedAt },
+        // The synced figure wins wherever it exists. Nobody should be
+        // typing a number the app already knows.
+        unapproved: s.appStats
+          ? { hours: Math.round(s.appStats.unapprovedMinutes / 60), checkedAt: s.appStats.syncedAt, synced: true }
+          : { hours: s.unapprovedHours, checkedAt: s.unapprovedCheckedAt, synced: false },
         lastConversation: conversation
           ? { at: conversation.occurredAt, kind: conversation.type, summary: conversation.summary }
           : null,
         lastVisit: visit ? { at: visit.occurredAt, summary: visit.summary } : null,
         store: {
+          // The app answers this too once it reports.
+          redeemedThisMonth: s.appStats?.storeRedeemedThisMonth ?? null,
           openedAt: s.storeOpenAt,
           orders: s.orders.length,
           lastOrderAt: s.orders[0]?.createdAt ?? null,

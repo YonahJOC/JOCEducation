@@ -7,6 +7,8 @@ import { setProgramForm, setProgramLead, saveProgramForm, addProgramCoordinator 
 import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
 import { FIELD_TYPE_LABELS } from "@/lib/forms";
+import { AppActivityPanel } from "@/components/admin/AppActivityPanel";
+import type { AppActivity } from "@/lib/app-activity";
 import type { ProgramAdminView } from "@/lib/program-admin";
 
 const INK = "#10233F";
@@ -24,13 +26,15 @@ const cell: React.CSSProperties = {
 };
 
 export function ProgramAdminClient({
-  view, forms, team, feeLabel, paymentsOn,
+  view, forms, team, feeLabel, paymentsOn, appActivity = null,
 }: {
   view: ProgramAdminView;
   forms: { id: string; title: string; responseCount: number }[];
   team: { id: string; name: string | null; email: string }[];
   feeLabel: string | null;
   paymentsOn: boolean;
+  /** Only the JOC App has these, and only for whoever may see them. */
+  appActivity?: AppActivity | null;
 }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -172,6 +176,8 @@ export function ProgramAdminClient({
           </div>
         )}
       </div>
+
+      {appActivity && <AppActivityPanel data={appActivity} />}
 
       {/* ── Where it is running ────────────────────────────────────────── */}
       <div style={card}>

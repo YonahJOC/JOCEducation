@@ -50,6 +50,8 @@ const PUBLIC_PREFIXES = [
 
 const PUBLIC_FILES = new Set([
   "/api/version",
+  // Authorised by CRON_SECRET in the route, not by a session.
+  "/api/app-sync",
   "/favicon.ico",
   "/robots.txt",
   "/sitemap.xml",

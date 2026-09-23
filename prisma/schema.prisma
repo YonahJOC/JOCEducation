@@ -44,6 +44,12 @@ model School {
   // something has been true. A tick only ever says "yes", and the useful
   // question is almost always "since when".
 
+  /// This school's id inside the JOC App. Set by hand in the console, and
+  /// the only thing the two systems are matched on — never the name.
+  /// "Yeshiva Darchei Torah" and "Darchei Torah" are the same school and
+  /// would never have matched.
+  appSchoolId String? @unique
+
   /// When the school sent the list of students taking part.
   studentListAt DateTime?
   /// When the JOC live screen went up in the building.
@@ -75,6 +81,9 @@ model School {
 
   orders        Order[]
   formResponses FormResponse[]
+  appStats      AppSchoolStats?
+  appChallenges AppChallengeStat[]
+  appMessages   AppSchoolMessage[]
 
   @@index([status])
   @@index([accountManagerId])
@@ -1323,4 +1332,119 @@ model FormResponse {
   @@index([formId, createdAt])
   @@index([schoolId])
   @@index([userId])
+}
+
+
+// ─── JOC App activity ─────────────────────────────────────────────────────────
+//
+// Everything below is written by the sync and read by the console. Nothing in
+// here is edited by a person, and nothing in here is the source of truth — the
+// app is. Each row carries the moment it was read, because a figure with no
+// age goes on looking true long after it is not.
+
+model AppSchoolStats {
+  schoolId String @id
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  /// Chesed hours, in minutes so nothing is lost to rounding on the way in.
+  minutesThisWeek  Int @default(0)
+  minutesThisCycle Int @default(0)
+  minutesThisYear  Int @default(0)
+
+  /// Waiting for a teacher to approve.
+  unapprovedMinutes  Int       @default(0)
+  unapprovedEntries  Int       @default(0)
+  unapprovedStudents Int       @default(0)
+  /// The oldest thing still waiting. This is what the 7-day flag measures.
+  unapprovedOldestAt DateTime?
+  /// Age buckets, so the panel does not have to hold every entry to say
+  /// how bad it is.
+  unapprovedThisWeek Int @default(0)
+  unapprovedOneToTwo Int @default(0)
+  unapprovedOverTwo  Int @default(0)
+
+  /// A student who logged anything in the last 30 days.
+  activeStudents      Int @default(0)
+  activeStudentsLast  Int @default(0)
+
+  opportunitiesOpen      Int @default(0)
+  opportunitiesThisWeek  Int @default(0)
+  opportunitiesThisCycle Int @default(0)
+
+  /// The most recent thing anybody there did, described without a name.
+  lastActivityAt   DateTime?
+  lastActivityText String?
+
+  /// Null means the app cannot answer this yet, which the panel says in
+  /// words. Zero means it answered and the answer was none.
+  storeRedeemedThisMonth Int?
+  storeTopPrize          String?
+  storeLastRedeemedAt    DateTime?
+
+  /// When the sync last read all of this out of the app.
+  syncedAt DateTime
+
+  @@index([syncedAt])
+}
+
+model AppChallengeStat {
+  id       String @id @default(cuid())
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  appChallengeId String
+  title          String
+  /// The Chesed Cycle it belongs to, where the app says so.
+  cycleSlug      String?
+  joined         Int    @default(0)
+  finished       Int    @default(0)
+  running        Boolean @default(true)
+
+  syncedAt DateTime
+
+  @@unique([schoolId, appChallengeId])
+  @@index([schoolId])
+}
+
+model AppSchoolMessage {
+  id       String @id @default(cuid())
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  appMessageId String @unique
+  /// Who at the school wrote it. A name is allowed here because somebody has
+  /// to be rung back; the panel shows no student names anywhere else.
+  fromName  String?
+  body      String   @db.Text
+  sentAt    DateTime
+  /// Answered inside the app. Unanswered is what raises the flag.
+  answered  Boolean  @default(false)
+
+  syncedAt DateTime
+
+  @@index([schoolId, answered])
+}
+
+/// One run of the sync. The console reads the newest successful one to work
+/// out how old everything on the page is.
+model AppSyncRun {
+  id         String        @id @default(cuid())
+  startedAt  DateTime      @default(now())
+  finishedAt DateTime?
+  status     AppSyncStatus @default(RUNNING)
+  /// How many school rows were written.
+  rows       Int           @default(0)
+  /// App records whose school we could not match. Counted here and nowhere
+  /// else: an unattributed record is shown to nobody.
+  unmatched  Int           @default(0)
+  error      String?       @db.Text
+
+  @@index([startedAt])
+  @@index([status, finishedAt])
+}
+
+enum AppSyncStatus {
+  RUNNING
+  OK
+  FAILED
 }

@@ -253,3 +253,15 @@ body {
   .joc-status-grid { grid-template-columns: minmax(0, 1fr); }
   .joc-status-grid > * { border-right: none; }
 }
+
+/* JOC App activity: band, detail, actions. Stacks rather than scrolls — a
+   control off the right edge is a control nobody finds. */
+.joc-app-row { display: grid; grid-template-columns: minmax(0, 1fr); }
+.joc-app-detail { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+@media (min-width: 720px) {
+  .joc-app-row { grid-template-columns: 148px minmax(0, 1fr) auto; align-items: stretch; }
+  .joc-app-detail { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .joc-app-row * { transition: none !important; animation: none !important; }
+}

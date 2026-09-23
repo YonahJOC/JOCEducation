@@ -127,6 +127,11 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
           <Tick on={Boolean(store)} at={store} canEdit={canEdit} pending={pending}
             onChange={(v) => mark("store", v, setStore, store)}
             yes="Open" no="Not open" />
+          {s.store.redeemedThisMonth != null && (
+            <span style={{ display: "block", fontSize: "12.5px", color: MUTED, marginTop: "4px" }}>
+              {s.store.redeemedThisMonth} redeemed this month · from the JOC App
+            </span>
+          )}
           {s.store.orders > 0 && (
             <span style={{ display: "block", fontSize: "12.5px", color: MUTED, marginTop: "4px" }}>
               {s.store.orders} order{s.store.orders === 1 ? "" : "s"} · last {ago(s.store.lastOrderAt)}
@@ -136,7 +141,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
 
         {/* Waiting on somebody */}
         <Cell label="Unapproved hours">
-          <Hours schoolId={s.id} initial={s.unapproved} canEdit={canEdit} />
+          <Hours schoolId={s.id} initial={s.unapproved} canEdit={canEdit && !s.unapproved.synced} />
         </Cell>
 
         {/* Talked to, gone to */}
@@ -229,7 +234,7 @@ function Hours({
   schoolId, initial, canEdit,
 }: {
   schoolId: string;
-  initial: { hours: number | null; checkedAt: Date | null };
+  initial: { hours: number | null; checkedAt: Date | null; synced: boolean };
   canEdit: boolean;
 }) {
   const [value, setValue] = useState(initial.hours === null ? "" : String(initial.hours));
@@ -247,6 +252,22 @@ function Hours({
       if (r.ok) setCheckedAt(n === null ? null : new Date());
       else setErr(r.error);
     });
+  }
+
+  // Read out of the JOC App rather than typed. Said plainly, because a
+  // figure a machine reads every 15 minutes and one somebody typed a
+  // fortnight ago should not look the same.
+  if (initial.synced) {
+    return (
+      <>
+        <span style={{ fontWeight: 600, color: (initial.hours ?? 0) > 0 ? ORANGE_TEXT : INK }}>
+          {initial.hours} hours
+        </span>
+        <span style={{ display: "block", fontSize: "12.5px", color: MUTED }}>
+          from the JOC App · {age.text.replace("checked ", "")}
+        </span>
+      </>
+    );
   }
 
   if (!canEdit) {

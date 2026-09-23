@@ -197,7 +197,7 @@ export function isInternal(user: U): boolean {
  */
 export const CAPABILITIES = [
   // Educational material
-  "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
+  "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity",
   // The calendar
   "programming", "cycles", "coordinators",
   // School accounts
@@ -216,7 +216,7 @@ export type Capability = (typeof CAPABILITIES)[number];
 export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] = [
   {
     label: "Educational material",
-    capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms"],
+    capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity"],
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
   { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing"] },
@@ -232,6 +232,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   shop: "The shop catalogue",
   site: "Words on the public pages",
   forms: "Forms and their answers",
+  app_activity: "JOC App activity",
   programming: "Programming calendar",
   cycles: "Chesed Cycle dates",
   coordinators: "Program coordinators",
@@ -251,6 +252,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   shop: "The products a school can order.",
   site: "The wording on the public pages, with drafts and history.",
   forms: "Build forms — registrations, sign-ups, feedback — and read what comes back.",
+  app_activity: "What every school is doing in the JOC App, and who needs a call about it.",
   programming: "What is running and where — the events at each school.",
   cycles: "The eight Chesed Cycles, their dates and their weekly plan.",
   coordinators: "Say who runs each program. A coordinator then sees that one program's sign-ups — and nothing else in the console.",
@@ -269,7 +271,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
  * still works correctly before any type has been assigned, and if the
  * AdminRole table were ever emptied nobody would be locked out.
  */
-const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms"];
+const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity"];
 const CALENDAR: Capability[] = ["programming", "cycles", "coordinators"];
 const ACCOUNTS: Capability[] = ["schools", "demos", "orders", "pricing"];
 
