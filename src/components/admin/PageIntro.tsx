@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -33,15 +33,24 @@ export function PageIntro({
   as?: "h1" | "h2";
 }) {
   const key = `joc-intro-${title.toLowerCase().replace(/[^a-z]+/g, "-")}`;
-  const [open, setOpen] = useState(() => {
-    if (typeof window === "undefined") return false;
+  // Closed on the first render, always — the server cannot know what is in
+  // this browser's storage, and reading it while hydrating made the server
+  // render "How do I change this?" while the browser rendered "Hide the
+  // steps". That is a hydration mismatch on every page of the console, and it
+  // threw away and rebuilt the whole tree each time.
+  //
+  // So the answer arrives a moment later instead, in an effect, which is the
+  // only honest place for a question only the browser can answer.
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
     try {
-      // Open the first time someone sees this page, closed after that.
-      return window.localStorage.getItem(key) !== "seen";
+      // Open the first time somebody sees this page, closed after that.
+      if (window.localStorage.getItem(key) !== "seen") setOpen(true);
     } catch {
-      return false;
+      // A private window, or storage blocked. Staying closed is fine.
     }
-  });
+  }, [key]);
 
   function toggle() {
     setOpen((v) => {
