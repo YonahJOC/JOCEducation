@@ -66,7 +66,7 @@ export type AppActivity = {
   rows: AppRow[];
   /** How old everything is, and whether to say so loudly. */
   sync: { stale: boolean; text: string; lastOk: Date | null; connected: boolean };
-  /** Schools on the program with no appSchoolId — they can never report. */
+  /** Schools with no appSchoolId. They are not listed here — see the traffic light. */
   unmatchedSchools: number;
   flagged: number;
 };
@@ -102,6 +102,8 @@ export async function getAppActivity(): Promise<AppActivity> {
 
   try {
     const schools = await prisma.school.findMany({
+      // On the app, and only on the app.
+      where: { appSchoolId: { not: null } },
       orderBy: { name: "asc" },
       select: {
         id: true,
@@ -174,10 +176,14 @@ export async function getAppActivity(): Promise<AppActivity> {
 
     rows.sort(compareRows);
 
+    // Counted so the panel can say how many schools are still waiting to be
+    // matched, without giving any of them a row that has nothing in it.
+    const unmatchedSchools = await prisma.school.count({ where: { appSchoolId: null } });
+
     return {
       rows,
       sync,
-      unmatchedSchools: rows.filter((r) => !r.appSchoolId).length,
+      unmatchedSchools,
       flagged: rows.filter((r) => r.flag).length,
     };
   } catch {

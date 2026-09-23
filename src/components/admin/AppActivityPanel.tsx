@@ -4,37 +4,22 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 import { logSchoolTouch } from "@/app/actions/school-status";
 import { syncAppNow } from "@/app/actions/app-sync";
-import { hours, schoolYear, compareRows, type Flag } from "@/lib/app-flags";
+import { hours, schoolYear, compareRows } from "@/lib/app-flags";
+import {
+  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, bandFigure,
+} from "@/lib/joc-tokens";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
 /**
- * All schools, on the JOC App's console.
+ * The JOC App's schools, worst first.
  *
- * The list is the product. A coordinator opens this to find out who to ring,
- * so the schools that need ringing are at the top with the reason in words,
- * and everything else is arrangement below them.
+ * Only schools that are actually on the app. One that is not has no figures,
+ * and a row full of dashes reads as "broken" rather than "not applicable" —
+ * those schools belong in the traffic light instead.
  *
  * No student names anywhere. Aggregates only, except the name of the person
  * at the school who has to be rung back.
  */
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const PAPER = "#FBF9F4";
-const PANEL = "#F4F7FD";
-const GREEN = "#1B7F4B";
-const RED = "#B8321E";
-const MUTED = "rgba(16,35,63,.58)";
-const HAIRLINE = "rgba(16,35,63,.1)";
-
-const FLAG_COLOR: Record<Flag["kind"], string> = {
-  message: RED,
-  hours: ORANGE_TEXT,
-  drop: "#8A4FBF",
-  quiet: "#5A6B86",
-};
 
 const when = (d: Date | string) =>
   new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
@@ -44,72 +29,46 @@ export function AppActivityPanel({ data }: { data: AppActivity }) {
   const { rows, replay, animating } = useRiseToTop(data.rows);
 
   return (
-    <div style={{ marginBottom: "14px" }}>
-      {/* The one sentence the panel exists to say. */}
-      <div style={{ backgroundColor: INK, borderRadius: "16px", padding: "20px 22px", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE, margin: "0 0 6px" }}>
-          Today on the app
-        </p>
-        <p style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 700, letterSpacing: "-0.03em", color: "#fff", margin: "0 0 4px", lineHeight: 1.2 }}>
-          {data.flagged === 0
-            ? "Nothing needs you today"
-            : `${data.flagged} school${data.flagged === 1 ? "" : "s"} need${data.flagged === 1 ? "s" : ""} you today`}
-        </p>
-        <p style={{ fontSize: "13px", color: data.sync.stale ? "#F5A954" : "#C3CCDD", margin: 0 }}>
-          {data.sync.connected ? data.sync.text : "Not reading the JOC App yet"}
-        </p>
-      </div>
+    <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto 16px" }}>
+      <Hero data={data} />
 
-      <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", margin: "0 0 6px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
-          All schools
-        </p>
+      <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", margin: "24px 0 2px" }}>
+        <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: 0 }}>
+          All schools on the app
+        </h2>
         {data.flagged > 0 && (
           <button
             type="button"
             onClick={replay}
             disabled={animating}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: MUTED, background: "none", border: "none", cursor: animating ? "default" : "pointer", minHeight: "36px" }}
+            style={{
+              fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 700, color: C.blue,
+              background: "none", border: "none", textDecoration: "underline",
+              cursor: animating ? "default" : "pointer", minHeight: "44px", padding: 0,
+            }}
           >
             Replay
           </button>
         )}
       </div>
-      <p style={{ fontSize: "13px", color: MUTED, margin: "0 0 12px" }}>
+      <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 16px", maxWidth: "62ch" }}>
         Anything that needs you rises to the top.
       </p>
 
-      {/* How old this is. Said before anything else, because every figure
-          below depends on it. */}
-      {!data.sync.connected ? (
-        <Notice tone="warn" title="The JOC App is not connected yet">
-          Nothing below can be read until the app is joined up. The rows show which schools are
-          matched and ready, and nothing else — no figure here is a guess.
-        </Notice>
-      ) : data.sync.stale ? (
-        <Notice tone="warn" title={data.sync.text}>
-          The app is read every 15 minutes. Three runs have been missed, so treat everything below
-          as out of date until it catches up.
-        </Notice>
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", margin: "0 0 16px" }}>
+        <ReadNow connected={data.sync.connected} />
+        {data.unmatchedSchools > 0 && (
+          <span style={{ fontSize: "14px", color: C.orangeText, lineHeight: 1.5, maxWidth: "52ch" }}>
+            {data.unmatchedSchools} school{data.unmatchedSchools === 1 ? " is" : "s are"} not on the app
+            yet — they are in the traffic light below, not here.
+          </span>
+        )}
+      </div>
+
+      {rows.length === 0 ? (
+        <Empty unmatched={data.unmatchedSchools} />
       ) : (
-        <p style={{ fontSize: "12.5px", color: MUTED, margin: "0 0 14px" }}>{data.sync.text}</p>
-      )}
-
-      <ReadNow connected={data.sync.connected} />
-
-      {data.unmatchedSchools > 0 && (
-        <Notice tone="info" title={`${data.unmatchedSchools} ${data.unmatchedSchools === 1 ? "school is" : "schools are"} not matched to the app`}>
-          A school reports nothing until somebody puts its JOC App id on its record. Matching is by
-          id, never by name — “Yeshiva Darchei Torah” and “Darchei Torah” would never have lined up.
-        </Notice>
-      )}
-
-      {data.rows.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed rgba(16,35,63,.2)`, borderRadius: "16px", padding: "36px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: MUTED, margin: 0 }}>No schools on the system yet.</p>
-        </div>
-      ) : (
-        <div style={{ display: "grid", gap: "8px" }}>
+        <div style={{ display: "grid", gap: "10px" }}>
           {rows.map((r) => (
             <Row key={r.schoolId} row={r} open={open === r.schoolId} onToggle={() => setOpen(open === r.schoolId ? null : r.schoolId)} />
           ))}
@@ -119,17 +78,45 @@ export function AppActivityPanel({ data }: { data: AppActivity }) {
   );
 }
 
-function Notice({ tone, title, children }: { tone: "warn" | "info"; title: string; children: React.ReactNode }) {
-  const warn = tone === "warn";
+/** The one sentence the panel exists to say. */
+function Hero({ data }: { data: AppActivity }) {
   return (
-    <div style={{
-      backgroundColor: warn ? "#FDEEDA" : PANEL,
-      border: `1px solid ${warn ? "rgba(154,84,5,.25)" : "rgba(45,70,175,.18)"}`,
-      borderRadius: "12px", padding: "13px 16px", margin: "0 0 14px",
-    }}>
-      <p style={{ fontSize: "13.5px", fontWeight: 700, color: warn ? "#9A5405" : INK, margin: "0 0 3px" }}>{title}</p>
-      <p style={{ fontSize: "13px", lineHeight: 1.55, color: warn ? "#7C4A00" : MUTED, margin: 0, maxWidth: "70ch" }}>
-        {children}
+    <div style={{ position: "relative", overflow: "hidden", backgroundColor: C.blue, borderRadius: R.hero, padding: "34px 32px" }}>
+      <span aria-hidden="true" style={{ position: "absolute", top: "-90px", right: "-60px", width: "220px", height: "220px", borderRadius: "50%", backgroundColor: C.orange, opacity: 0.9 }} />
+      <span aria-hidden="true" style={{ position: "absolute", bottom: "-28px", right: "128px", width: "90px", height: "90px", borderRadius: "50%", backgroundColor: "#4760C9" }} />
+      <div style={{ position: "relative" }}>
+        <p style={{ ...bandLabel, color: "#FFD8AE", margin: "0 0 10px" }}>Today on the app</p>
+        <p style={{
+          fontFamily: "var(--font-outfit)", fontSize: "clamp(30px, 5vw, 44px)", fontWeight: 800,
+          letterSpacing: "-0.03em", lineHeight: 1.08, color: C.white, margin: "0 0 10px", maxWidth: "18ch",
+        }}>
+          {data.flagged === 0
+            ? "Nothing needs you today"
+            : `${data.flagged} school${data.flagged === 1 ? "" : "s"} need${data.flagged === 1 ? "s" : ""} you today`}
+        </p>
+        <p style={{ fontSize: "15px", color: data.sync.stale ? "#FFD8AE" : "#C6CFF0", margin: 0, lineHeight: 1.5, maxWidth: "48ch" }}>
+          {!data.sync.connected
+            ? "The JOC App is not joined up yet, so nothing below has been read from it."
+            : data.sync.stale
+            ? `${data.sync.text}. Treat every figure below as out of date until it catches up.`
+            : data.sync.text}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Empty({ unmatched }: { unmatched: number }) {
+  return (
+    <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "32px 24px" }}>
+      <p style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 6px" }}>
+        No school is on the JOC App yet
+      </p>
+      <p style={{ fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.6, maxWidth: "62ch" }}>
+        A school appears here once somebody puts its JOC App id on its record. Matching is by id,
+        never by name — &ldquo;Yeshiva Darchei Torah&rdquo; and &ldquo;Darchei Torah&rdquo; would
+        never have lined up.
+        {unmatched > 0 && ` All ${unmatched} schools are waiting for one.`}
       </p>
     </div>
   );
@@ -137,64 +124,56 @@ function Notice({ tone, title, children }: { tone: "warn" | "info"; title: strin
 
 function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: () => void }) {
   const f = row.flag;
-  const colour = f ? FLAG_COLOR[f.kind] : null;
+  // A waiting message is somebody speaking to us, so its band is blue. Orange
+  // is for a thing that has gone wrong on its own.
+  const band = !f
+    ? { bg: C.panel, fg: C.blue }
+    : f.kind === "message"
+    ? { bg: C.blue, fg: C.white }
+    : { bg: C.orange, fg: C.ink };
 
   return (
-    <div data-school={row.schoolId} style={{
-      backgroundColor: "#fff",
-      border: `1px solid ${f ? `${colour}44` : HAIRLINE}`,
-      borderRadius: "14px", overflow: "hidden",
-    }}>
-      <div className="joc-app-row">
-        {/* The band: what is wrong, and the one figure that says how much. */}
+    <div data-school={row.schoolId} style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch" }}>
         <div style={{
-          backgroundColor: f ? `${colour}14` : PANEL,
-          padding: "12px 14px", minWidth: 0,
-          display: "flex", flexDirection: "column", justifyContent: "center", gap: "2px",
+          flex: "1 1 170px", minWidth: 0, padding: "16px 18px",
+          backgroundColor: band.bg, color: band.fg,
+          display: "flex", flexDirection: "column", justifyContent: "center", gap: "3px",
         }}>
-          <span style={{ fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, color: f ? colour! : MUTED }}>
+          <span style={{ ...bandLabel, color: band.fg }}>
             {f ? f.label : "Taken this week"}
           </span>
-          <span style={{ fontSize: "19px", fontWeight: 700, color: f ? colour! : INK, letterSpacing: "-0.02em" }}>
-            {f ? f.figure : row.stats ? String(row.stats.opportunitiesThisWeek) : "—"}
+          <span style={{ ...bandFigure, color: band.fg }}>
+            {f ? f.figure : String(row.stats?.opportunitiesThisWeek ?? 0)}
           </span>
         </div>
 
-        <div style={{ padding: "12px 14px", minWidth: 0 }}>
-          <p style={{ fontSize: "15.5px", fontWeight: 600, color: INK, margin: "0 0 2px" }}>{row.name}</p>
+        <div style={{ flex: "100 1 280px", minWidth: 0, padding: "16px 18px" }}>
+          <p style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 4px" }}>
+            {row.name}
+          </p>
           {f ? (
-            <p style={{ fontSize: "13.5px", color: MUTED, margin: "0 0 6px", lineHeight: 1.45 }}>
+            <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 10px", lineHeight: 1.5 }}>
               {/* For a waiting message, what they actually asked. */}
               {f.kind === "message" && row.message ? row.message.body : f.reason}
-              <span style={{ color: colour! }}>
+              <span style={{ color: C.orangeText, fontWeight: 600 }}>
                 {" · "}true for {f.days === 0 ? "less than a day" : `${f.days} day${f.days === 1 ? "" : "s"}`}
               </span>
             </p>
-          ) : !row.appSchoolId ? (
-            <p style={{ fontSize: "13.5px", color: ORANGE_TEXT, margin: "0 0 6px", fontWeight: 600 }}>
-              Not matched to the JOC App yet
-            </p>
           ) : !row.stats ? (
-            <p style={{ fontSize: "13.5px", color: ORANGE_TEXT, margin: "0 0 6px", fontWeight: 600 }}>
+            <p style={{ fontSize: "15px", color: C.orangeText, fontWeight: 600, margin: "0 0 10px", lineHeight: 1.5 }}>
               The app has not reported this school yet
             </p>
-          ) : null}
-
+          ) : (
+            <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 10px", lineHeight: 1.5 }}>
+              Nothing needs you here.
+            </p>
+          )}
           <Badges row={row} />
         </div>
 
-        <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: "6px", justifyContent: "center", minWidth: 0 }}>
-          <button
-            type="button"
-            onClick={onToggle}
-            style={{
-              fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 700,
-              color: f ? "#fff" : INK, backgroundColor: f ? BLUE : "transparent",
-              border: f ? `1.5px solid ${BLUE}` : `1.5px solid ${HAIRLINE}`,
-              borderRadius: "9999px", padding: "10px 16px", minHeight: "44px",
-              cursor: "pointer", whiteSpace: "nowrap",
-            }}
-          >
+        <div style={{ flex: "1 1 200px", minWidth: 0, padding: "16px 18px", display: "flex", flexDirection: "column", gap: "8px", justifyContent: "center" }}>
+          <button type="button" onClick={onToggle} style={f ? primaryButton : secondaryButton}>
             {open ? "Close" : f ? f.action.label : "Open school"}
           </button>
           <LogCall schoolId={row.schoolId} contact={row.contact} lastCall={row.lastCall} />
@@ -212,44 +191,37 @@ function Badges({ row }: { row: AppRow }) {
   const oldHours =
     st?.unapprovedOldestAt && (Date.now() - new Date(st.unapprovedOldestAt).getTime()) / 86400000 > 7;
 
+  // A payment is for a school year, and saying which one is the difference
+  // between a fact and a vague reassurance.
+  const paid: React.CSSProperties =
+    row.payment.state === "paid" || row.payment.state === "granted"
+      ? { backgroundColor: C.blueTint, color: C.blue }
+      : row.payment.state === "unpaid"
+      ? { backgroundColor: C.redTint, color: C.redText }
+      : { backgroundColor: C.orangeTint, color: C.orangeText };
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-      {/* A payment is for a school year, and saying which one is the
-          difference between a fact and a vague reassurance. */}
-      <Badge
-        tone={row.payment.state === "paid" || row.payment.state === "granted" ? "good" : row.payment.state === "unpaid" ? "bad" : "warn"}
-      >
+      <span style={{ ...chip, ...paid }}>
         {row.payment.state === "unknown" ? row.payment.label : `${row.payment.label} ${schoolYear()}`}
-      </Badge>
+      </span>
 
       {st?.storeRedeemedThisMonth == null ? (
-        <Badge tone="warn">Prize store not open</Badge>
+        <span style={{ ...chip, backgroundColor: C.orangeTint, color: C.orangeText }}>Prize store not open</span>
       ) : (
-        <Badge tone="plain">Prize store · {st.storeRedeemedThisMonth} redeemed this month</Badge>
+        <span style={{ ...chip, backgroundColor: C.panel, color: C.ink }}>
+          Prize store · {st.storeRedeemedThisMonth} redeemed this month
+        </span>
       )}
 
       {!st ? null : st.unapprovedMinutes === 0 ? (
-        <Badge tone="good">All approved</Badge>
+        <span style={{ ...chip, backgroundColor: C.greenTint, color: C.greenText }}>All approved</span>
       ) : (
-        <Badge tone={oldHours ? "warn" : "plain"}>
+        <span style={{ ...chip, ...(oldHours ? { backgroundColor: C.orangeTint, color: C.orangeText } : { backgroundColor: C.panel, color: C.ink }) }}>
           {hours(st.unapprovedMinutes)} h to approve
-        </Badge>
+        </span>
       )}
     </div>
-  );
-}
-
-function Badge({ tone, children }: { tone: "good" | "bad" | "warn" | "plain"; children: React.ReactNode }) {
-  const c =
-    tone === "good" ? GREEN : tone === "bad" ? RED : tone === "warn" ? ORANGE_TEXT : "rgba(16,35,63,.6)";
-  return (
-    <span style={{
-      fontSize: "11.5px", fontWeight: 600, color: c,
-      backgroundColor: tone === "plain" ? "rgba(16,35,63,.05)" : `${c}16`,
-      borderRadius: "9999px", padding: "3px 10px", whiteSpace: "nowrap",
-    }}>
-      {children}
-    </span>
   );
 }
 
@@ -258,28 +230,24 @@ function Detail({ row }: { row: AppRow }) {
   const st = row.stats;
 
   return (
-    <div style={{ borderTop: `1px solid ${HAIRLINE}`, backgroundColor: PAPER, padding: "16px 14px" }}>
+    <div style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px" }}>
       {row.message && (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${RED}33`, borderRadius: "12px", padding: "14px 16px", marginBottom: "14px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: RED, margin: "0 0 6px" }}>
-            Waiting on us
-          </p>
-          <p style={{ fontSize: "14.5px", color: INK, margin: "0 0 8px", lineHeight: 1.55 }}>{row.message.body}</p>
-          <p style={{ fontSize: "12.5px", color: MUTED, margin: "0 0 10px" }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "16px 18px", marginBottom: "14px" }}>
+          <p style={{ ...bandLabel, color: C.blue, margin: "0 0 6px" }}>Waiting on us</p>
+          <p style={{ fontSize: "16px", color: C.ink, margin: "0 0 8px", lineHeight: 1.55 }}>{row.message.body}</p>
+          <p style={{ fontSize: "13px", color: C.muted, margin: "0 0 10px" }}>
             {row.message.fromName ?? "Somebody at the school"} · {when(row.message.sentAt)}
           </p>
           {/* No reply box, on purpose. */}
-          <p style={{ fontSize: "12.5px", color: ORANGE_TEXT, margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: "13px", color: C.orangeText, margin: 0, lineHeight: 1.5 }}>
             Replies can&rsquo;t go out to schools until JOC launches. Call instead, then log it.
           </p>
         </div>
       )}
 
       {!st ? (
-        <p style={{ fontSize: "14px", color: ORANGE_TEXT, fontWeight: 600, margin: 0 }}>
-          {row.appSchoolId
-            ? "The JOC App has not reported this school yet."
-            : "This school is not matched to the JOC App, so it reports nothing."}
+        <p style={{ fontSize: "15px", color: C.orangeText, fontWeight: 600, margin: 0 }}>
+          The JOC App has not reported this school yet.
         </p>
       ) : (
         <div className="joc-app-detail">
@@ -305,8 +273,8 @@ function Detail({ row }: { row: AppRow }) {
           </Cell>
 
           <Cell label="Hours logged">
-            {hours(st.minutesThisWeek)}h this week
-            <Sub>{hours(st.minutesThisCycle)}h this cycle · {hours(st.minutesThisYear)}h this year</Sub>
+            {hours(st.minutesThisWeek)} h this week
+            <Sub>{hours(st.minutesThisCycle)} h this cycle · {hours(st.minutesThisYear)} h this year</Sub>
           </Cell>
 
           <Cell label="Waiting for approval">
@@ -314,7 +282,7 @@ function Detail({ row }: { row: AppRow }) {
               "Nothing waiting"
             ) : (
               <>
-                {hours(st.unapprovedMinutes)}h
+                {hours(st.unapprovedMinutes)} h
                 <Sub>
                   {st.unapprovedEntries} {st.unapprovedEntries === 1 ? "entry" : "entries"} from{" "}
                   {st.unapprovedStudents} {st.unapprovedStudents === 1 ? "student" : "students"}
@@ -322,7 +290,7 @@ function Detail({ row }: { row: AppRow }) {
                 </Sub>
                 <Sub>
                   {st.unapprovedThisWeek} this week · {st.unapprovedOneToTwo} one to two weeks ·{" "}
-                  <span style={{ color: st.unapprovedOverTwo > 0 ? ORANGE_TEXT : undefined, fontWeight: st.unapprovedOverTwo > 0 ? 600 : undefined }}>
+                  <span style={{ color: st.unapprovedOverTwo > 0 ? C.orangeText : undefined, fontWeight: st.unapprovedOverTwo > 0 ? 600 : undefined }}>
                     {st.unapprovedOverTwo} over two weeks
                   </span>
                 </Sub>
@@ -334,8 +302,8 @@ function Detail({ row }: { row: AppRow }) {
             {row.enrolment ? (
               <>
                 {st.activeStudents} of {row.enrolment}
-                <span aria-hidden="true" style={{ display: "block", height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.08)", overflow: "hidden", marginTop: "7px" }}>
-                  <span style={{ display: "block", height: "100%", width: `${Math.min(100, (st.activeStudents / row.enrolment) * 100)}%`, backgroundColor: BLUE }} />
+                <span aria-hidden="true" style={{ display: "block", height: "6px", borderRadius: R.chip, backgroundColor: C.hairline, overflow: "hidden", marginTop: "7px" }}>
+                  <span style={{ display: "block", height: "100%", width: `${Math.min(100, (st.activeStudents / row.enrolment) * 100)}%`, backgroundColor: C.blue }} />
                 </span>
               </>
             ) : (
@@ -344,7 +312,7 @@ function Detail({ row }: { row: AppRow }) {
                 <Sub>
                   <Absent>
                     Enrolment not recorded —{" "}
-                    <Link href={`/admin/schools/${row.schoolId}`} style={{ color: ORANGE_TEXT, fontWeight: 700 }}>
+                    <Link href={`/admin/schools/${row.schoolId}`} style={{ color: C.orangeText, fontWeight: 700 }}>
                       add it
                     </Link>
                   </Absent>
@@ -358,9 +326,9 @@ function Detail({ row }: { row: AppRow }) {
               <Absent>None running</Absent>
             ) : (
               row.challenges.map((c) => (
-                <span key={c.title} style={{ display: "block", fontSize: "13.5px", marginBottom: "3px" }}>
+                <span key={c.title} style={{ display: "block", fontSize: "15px", marginBottom: "3px" }}>
                   {c.title}{" "}
-                  <span style={{ color: MUTED }}>
+                  <span style={{ color: C.muted }}>
                     — {c.joined === 0 ? "nobody joined" : `${Math.round((c.finished / c.joined) * 100)}% finished`}
                   </span>
                 </span>
@@ -386,127 +354,21 @@ function Detail({ row }: { row: AppRow }) {
 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: "12px", padding: "13px 15px", minWidth: 0 }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", margin: "0 0 5px" }}>
-        {label}
-      </p>
-      <div style={{ fontSize: "14.5px", color: INK, lineHeight: 1.5 }}>{children}</div>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "14px 16px", minWidth: 0 }}>
+      <p style={{ ...bandLabel, fontSize: "11px", color: C.muted, margin: "0 0 5px" }}>{label}</p>
+      <div style={{ fontSize: "15px", color: C.ink, lineHeight: 1.5 }}>{children}</div>
     </div>
   );
 }
 
 const Sub = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ display: "block", fontSize: "12.5px", color: MUTED, marginTop: "3px", lineHeight: 1.5 }}>{children}</span>
+  <span style={{ display: "block", fontSize: "13px", color: C.muted, marginTop: "3px", lineHeight: 1.5 }}>{children}</span>
 );
 
-/** Absence in words, in orange — never a dash or a zero standing in for unknown. */
+/** Absence in words — never a dash or a zero standing in for unknown. */
 const Absent = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: ORANGE_TEXT, fontWeight: 600 }}>{children}</span>
+  <span style={{ color: C.orangeText, fontWeight: 600 }}>{children}</span>
 );
-
-function LogCall({
-  schoolId, contact, lastCall,
-}: {
-  schoolId: string;
-  contact: { name: string; phone: string | null } | null;
-  lastCall: { at: Date; summary: string } | null;
-}) {
-  const [open, setOpen] = useState(false);
-  const [outcome, setOutcome] = useState("Spoke to contact");
-  const [note, setNote] = useState("");
-  const [pending, start] = useTransition();
-  const [done, setDone] = useState<string | null>(null);
-  const [err, setErr] = useState<string | null>(null);
-
-  if (done) {
-    return <span style={{ fontSize: "12.5px", color: GREEN, fontWeight: 600, textAlign: "center" }}>{done}</span>;
-  }
-
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        style={{
-          fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE,
-          background: "none", border: "none", cursor: "pointer", minHeight: "40px", whiteSpace: "nowrap",
-        }}
-      >
-        Log a call
-      </button>
-    );
-  }
-
-  return (
-    <div style={{ display: "grid", gap: "6px", minWidth: "200px" }}>
-      {contact && (
-        <p style={{ fontSize: "12.5px", color: MUTED, margin: 0 }}>
-          {contact.name}
-          {contact.phone && (
-            <>
-              {" · "}
-              <a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`} style={{ color: BLUE, fontWeight: 600 }}>
-                {contact.phone}
-              </a>
-            </>
-          )}
-        </p>
-      )}
-      <select
-        value={outcome}
-        onChange={(e) => setOutcome(e.target.value)}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid ${HAIRLINE}`, borderRadius: "8px", padding: "7px 9px", minHeight: "38px", backgroundColor: "#fff", color: INK }}
-      >
-        <option>Spoke to contact</option>
-        <option>Left a message</option>
-        <option>No answer</option>
-      </select>
-      <input
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-        placeholder="Note (optional)"
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid ${HAIRLINE}`, borderRadius: "8px", padding: "7px 9px", minHeight: "38px", backgroundColor: "#fff", color: INK }}
-      />
-      <span style={{ display: "flex", gap: "8px" }}>
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() => {
-            setErr(null);
-            start(async () => {
-              const summary = note.trim() ? `${outcome} — ${note.trim()}` : outcome;
-              const r = await logSchoolTouch(schoolId, "CALL", summary);
-              if (r.ok) {
-                const at = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-                setDone(`Called at ${at} · ${outcome.toLowerCase()}`);
-              } else {
-                setErr(r.error);
-              }
-            });
-          }}
-          style={{
-            fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 700, color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "8px", padding: "8px 14px",
-            minHeight: "38px", cursor: pending ? "wait" : "pointer",
-          }}
-        >
-          {pending ? "Saving…" : "Log it"}
-        </button>
-        <button
-          type="button"
-          onClick={() => { setOpen(false); setErr(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: MUTED, background: "none", border: "none", cursor: "pointer", minHeight: "38px" }}
-        >
-          Cancel
-        </button>
-      </span>
-      {err && <span style={{ fontSize: "12px", color: RED }}>{err}</span>}
-      {lastCall && !err && (
-        <span style={{ fontSize: "11.5px", color: MUTED }}>Last called {when(lastCall.at)}</span>
-      )}
-    </div>
-  );
-}
 
 /**
  * Read the app now.
@@ -520,7 +382,7 @@ function ReadNow({ connected }: { connected: boolean }) {
   const [msg, setMsg] = useState<{ good: boolean; text: string } | null>(null);
 
   return (
-    <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", margin: "0 0 14px" }}>
+    <>
       <button
         type="button"
         disabled={pending}
@@ -542,19 +404,112 @@ function ReadNow({ connected }: { connected: boolean }) {
             );
           });
         }}
-        style={{
-          fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-          color: INK, backgroundColor: "rgba(16,35,63,.06)", border: "none",
-          borderRadius: "9999px", padding: "9px 16px", minHeight: "40px",
-          cursor: pending ? "wait" : "pointer",
-        }}
+        style={{ ...secondaryButton, width: "auto", fontSize: "14px", padding: "11px 18px", minHeight: "44px", cursor: pending ? "wait" : "pointer" }}
       >
         {pending ? "Reading…" : connected ? "Read the app now" : "Test the connection"}
       </button>
       {msg && (
-        <span style={{ fontSize: "12.5px", color: msg.good ? GREEN : ORANGE_TEXT, lineHeight: 1.45, maxWidth: "52ch" }}>
+        <span style={{ fontSize: "14px", color: msg.good ? C.greenText : C.orangeText, lineHeight: 1.45, maxWidth: "52ch" }}>
           {msg.text}
         </span>
+      )}
+    </>
+  );
+}
+
+function LogCall({
+  schoolId, contact, lastCall,
+}: {
+  schoolId: string;
+  contact: { name: string; phone: string | null } | null;
+  lastCall: { at: Date; summary: string } | null;
+}) {
+  const [open, setOpen] = useState(false);
+  const [outcome, setOutcome] = useState("Spoke to contact");
+  const [note, setNote] = useState("");
+  const [pending, start] = useTransition();
+  const [done, setDone] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  const field: React.CSSProperties = {
+    fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: C.white,
+    border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "10px 12px",
+    minHeight: "44px", width: "100%", boxSizing: "border-box",
+  };
+
+  if (done) {
+    return <span style={{ fontSize: "13px", fontWeight: 700, color: C.greenText, textAlign: "center" }}>{done}</span>;
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{
+          fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 700, color: C.blue,
+          background: "none", border: "none", textDecoration: "underline", cursor: "pointer",
+          minHeight: "44px", padding: 0,
+        }}
+      >
+        Log a call
+      </button>
+    );
+  }
+
+  return (
+    <div style={{ display: "grid", gap: "8px" }}>
+      {contact && (
+        <p style={{ fontSize: "13px", color: C.muted, margin: 0, lineHeight: 1.5 }}>
+          {contact.name}
+          {contact.phone && (
+            <>
+              {" · "}
+              <a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`} style={{ color: C.blue, fontWeight: 700 }}>
+                {contact.phone}
+              </a>
+            </>
+          )}
+        </p>
+      )}
+      <select value={outcome} onChange={(e) => setOutcome(e.target.value)} style={field}>
+        <option>Spoke to contact</option>
+        <option>Left a message</option>
+        <option>No answer</option>
+      </select>
+      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional)" style={field} />
+      <div style={{ display: "flex", gap: "8px" }}>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => {
+            setErr(null);
+            start(async () => {
+              const summary = note.trim() ? `${outcome} — ${note.trim()}` : outcome;
+              const r = await logSchoolTouch(schoolId, "CALL", summary);
+              if (r.ok) {
+                const at = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+                setDone(`Called at ${at} · ${outcome.toLowerCase()}`);
+              } else {
+                setErr(r.error);
+              }
+            });
+          }}
+          style={{ ...primaryButton, width: "auto", fontSize: "14px", padding: "10px 16px", minHeight: "44px", cursor: pending ? "wait" : "pointer" }}
+        >
+          {pending ? "Saving…" : "Log it"}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setOpen(false); setErr(null); }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+        >
+          Cancel
+        </button>
+      </div>
+      {err && <span style={{ fontSize: "13px", color: C.redText }}>{err}</span>}
+      {lastCall && !err && (
+        <span style={{ fontSize: "12px", color: C.muted }}>Last called {when(lastCall.at)}</span>
       )}
     </div>
   );
@@ -567,7 +522,7 @@ function ReadNow({ connected }: { connected: boolean }) {
  * then the ones that need somebody move up. Watching them move is what makes
  * the point: these were in the middle of an ordinary list a second ago.
  *
- * FLIP, so the browser animates a transform rather than reflowing 37 rows.
+ * FLIP, so the browser animates a transform rather than reflowing every row.
  * Nothing moves at all where somebody has asked for less motion — the list is
  * simply already sorted, which is the same information without the show.
  */
@@ -612,23 +567,21 @@ function useRiseToTop(sorted: AppRow[]) {
   useLayoutEffect(() => {
     if (order !== "sorted" || positions.current.size === 0) return;
     const after = measure();
-    const els = document.querySelectorAll<HTMLElement>("[data-school]");
-    let longest = 0;
-    els.forEach((el) => {
+    let moved = false;
+    document.querySelectorAll<HTMLElement>("[data-school]").forEach((el) => {
       const id = el.dataset.school!;
       const from = positions.current.get(id);
       const to = after.get(id);
       if (from === undefined || to === undefined || from === to) return;
-      const delta = from - to;
-      longest = 900;
+      moved = true;
       el.animate(
-        [{ transform: `translateY(${delta}px)` }, { transform: "translateY(0)" }],
+        [{ transform: `translateY(${from - to}px)` }, { transform: "translateY(0)" }],
         { duration: 900, easing: "cubic-bezier(.22,1,.36,1)" },
       );
     });
     positions.current = new Map();
-    if (longest) {
-      const t = setTimeout(() => setAnimating(false), longest);
+    if (moved) {
+      const t = setTimeout(() => setAnimating(false), 900);
       return () => clearTimeout(t);
     }
     setAnimating(false);
