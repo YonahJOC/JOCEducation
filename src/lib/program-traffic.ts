@@ -1,6 +1,7 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth } from "@/auth";
 import { ruleLightFor, LIGHT_ORDER, type Light } from "@/lib/program-lights";
+import { schoolsInProgram } from "@/lib/program-enrollment";
 
 /**
  * "Not in <Program> yet" — the list under every program console.
@@ -105,23 +106,10 @@ export async function getProgramTraffic(
     });
     if (!program) return empty;
 
-    // Who is already in. Both ways a school can be: it is on the calendar for
-    // this program, or somebody there filled in its form.
-    const [events, responses] = await Promise.all([
-      prisma.programEvent.findMany({
-        where: { programId, schoolId: { not: null }, status: { not: "CANCELLED" } },
-        select: { schoolId: true },
-      }),
-      program.formId
-        ? prisma.formResponse.findMany({
-            where: { formId: program.formId, schoolId: { not: null } },
-            select: { schoolId: true },
-          })
-        : Promise.resolve([] as { schoolId: string | null }[]),
-    ]);
-    const inProgram = new Set<string>();
-    for (const e of events) if (e.schoolId) inProgram.add(e.schoolId);
-    for (const r of responses) if (r.schoolId) inProgram.add(r.schoolId);
+    // Who is already in. One question, one table — it used to be worked out
+    // here from the calendar and the sign-ups, and worked out again
+    // differently in program-lights.ts.
+    const inProgram = await schoolsInProgram(programId);
 
     const schools = await prisma.school.findMany({
       where: { id: { notIn: [...inProgram] } },

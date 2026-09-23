@@ -112,6 +112,19 @@ export async function reachOut(
       },
     });
 
+    // The school joins this program's list at its first stage. It was on the
+    // "nobody has reached them" list a second ago, and it should not still be
+    // on it after somebody has.
+    await prisma.programEnrollment.upsert({
+      where: { schoolId_programId: { schoolId, programId } },
+      create: {
+        schoolId, programId, stage: "INTRODUCED", stageSince: at,
+        note: `Introduced by ${CHANNEL_WORD[channel]}` + (text ? ` — ${text}` : ""),
+      },
+      // Already somewhere further along; reaching out again does not undo it.
+      update: {},
+    });
+
     // Every other program's console now shows this school as discuss-first,
     // which is the whole point of writing it down.
     await recomputeSchoolLights(schoolId);

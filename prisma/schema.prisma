@@ -87,6 +87,7 @@ model School {
 
   programLights SchoolProgramLight[]
   agendaItems   AdminMeetingItem[]
+  enrollments   ProgramEnrollment[]
 
   @@index([status])
   @@index([accountManagerId])
@@ -105,6 +106,9 @@ model SchoolContact {
   notes     String? @db.Text
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  /// Programs this person runs at their school.
+  enrollments ProgramEnrollment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -829,6 +833,7 @@ model ProgramPage {
   /// Whether each school may be approached about this program, and why.
   lights      SchoolProgramLight[]
   agendaItems AdminMeetingItem[]
+  enrollments ProgramEnrollment[]
 
   /// A promo video for the top of the program page. YouTube, Vimeo or a
   /// direct file — whatever the team has.
@@ -1595,4 +1600,69 @@ enum AgendaOutcome {
   CHANGE_LIGHT
   /// Closed with nothing changed.
   CLOSED
+}
+
+// ─── Which school runs which program ─────────────────────────────────────────
+
+/// One school running one program, and how far along it is.
+///
+/// This was inferred rather than stored: "in the program" meant either a
+/// non-cancelled ProgramEvent or a form response against the program's form,
+/// worked out separately in src/lib/program-traffic.ts and
+/// src/lib/program-lights.ts. Two copies of a rule with no table behind it,
+/// and no way at all to say a school is registered but not trained yet —
+/// which is the question a growing nonprofit asks most.
+model ProgramEnrollment {
+  id        String @id @default(cuid())
+  schoolId  String
+  programId Int
+
+  stage EnrollmentStage @default(INTRODUCED)
+  /// When it reached this stage. A stage with no date cannot answer "how long
+  /// has this school been sitting at registered", which is the useful question.
+  stageSince DateTime @default(now())
+
+  /// The person at the school who runs this program. Their own contact row,
+  /// so the account team and the coordinator are ringing the same person.
+  contactId String?
+  contact   SchoolContact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  /// When it first actually ran there, and when it stopped.
+  startedAt DateTime?
+  endedAt   DateTime?
+
+  note String? @db.Text
+
+  school  School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  program ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([schoolId, programId])
+  @@index([programId, stage])
+  @@index([schoolId])
+}
+
+/// How far a school has got with one program.
+///
+/// Deliberately not the same list as SchoolStatus. That one is about the
+/// account — whether they pay. This is about one program, and a school can be
+/// a paying customer that has never run the Kindness Booth.
+enum EnrollmentStage {
+  /// Somebody reached out. The traffic light's "Reach out" lands here.
+  INTRODUCED
+  MEETING_BOOKED
+  /// Their form is in.
+  REGISTERED
+  MATERIALS_SENT
+  TRAINED
+  /// It has run there once.
+  LAUNCHED
+  /// It runs there as a matter of course.
+  RUNNING
+  /// On hold, expected back.
+  PAUSED
+  /// They stopped. Kept, so the history is honest.
+  ENDED
 }

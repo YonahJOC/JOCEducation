@@ -1,4 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { allEnrolledPairs } from "@/lib/program-enrollment";
 
 /**
  * Whether a coordinator may approach a school about a program.
@@ -161,27 +162,8 @@ export async function recomputeProgramLights(now = new Date()): Promise<Recomput
       return l ? l.name ?? l.email : null;
     };
 
-    // Who is in what. Two queries for the whole grid rather than two per pair.
-    const events = await prisma.programEvent.findMany({
-      where: { schoolId: { not: null }, programId: { not: null }, status: { not: "CANCELLED" } },
-      select: { schoolId: true, programId: true },
-    });
-    const formIds = programs.map((p) => p.formId).filter((f): f is string => Boolean(f));
-    const responses = formIds.length
-      ? await prisma.formResponse.findMany({
-          where: { formId: { in: formIds }, schoolId: { not: null } },
-          select: { schoolId: true, formId: true },
-        })
-      : [];
-    const programOfForm = new Map(programs.filter((p) => p.formId).map((p) => [p.formId!, p.id]));
-
     /** "schoolId:programId" for every pair that is already in. */
-    const inProgram = new Set<string>();
-    for (const e of events) inProgram.add(`${e.schoolId}:${e.programId}`);
-    for (const r of responses) {
-      const pid = programOfForm.get(r.formId);
-      if (pid) inProgram.add(`${r.schoolId}:${pid}`);
-    }
+    const inProgram = await allEnrolledPairs();
 
     // The last time anybody at JOC was in touch, per school.
     const since = new Date(now.getTime() - RECENT_CONTACT_DAYS * 86_400_000);
@@ -277,15 +259,11 @@ export async function recomputeSchoolLights(schoolId: string): Promise<void> {
     });
     if (programs.length === 0) return;
 
-    const formIds = programs.map((p) => p.formId).filter((f): f is string => Boolean(f));
-    const [events, responses, contact, manual] = await Promise.all([
-      prisma.programEvent.findMany({
-        where: { schoolId, programId: { not: null }, status: { not: "CANCELLED" } },
+    const [enrolled, contact, manual] = await Promise.all([
+      prisma.programEnrollment.findMany({
+        where: { schoolId, stage: { in: ["MEETING_BOOKED","REGISTERED","MATERIALS_SENT","TRAINED","LAUNCHED","RUNNING","PAUSED"] } },
         select: { programId: true },
       }),
-      formIds.length
-        ? prisma.formResponse.findMany({ where: { schoolId, formId: { in: formIds } }, select: { formId: true } })
-        : Promise.resolve([] as { formId: string }[]),
       prisma.schoolActivity.findFirst({
         where: {
           schoolId,
@@ -301,13 +279,7 @@ export async function recomputeSchoolLights(schoolId: string): Promise<void> {
       }),
     ]);
 
-    const programOfForm = new Map(programs.filter((p) => p.formId).map((p) => [p.formId!, p.id]));
-    const inProgram = new Set<number>();
-    for (const e of events) if (e.programId) inProgram.add(e.programId);
-    for (const r of responses) {
-      const pid = programOfForm.get(r.formId);
-      if (pid) inProgram.add(pid);
-    }
+    const inProgram = new Set(enrolled.map((e) => e.programId));
     const untouchable = new Set(manual.map((m) => m.programId));
 
     const lastContact = contact

@@ -6,6 +6,7 @@ import { money, isPaymentConfigured } from "@/lib/payments";
 import { ProgramAdminClient } from "./ProgramAdminClient";
 import { getAppActivity } from "@/lib/app-activity";
 import { getProgramTraffic } from "@/lib/program-traffic";
+import { enrolledSchools } from "@/lib/program-enrollment";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 
@@ -55,6 +56,10 @@ export default async function ProgramAdminPage({
     canSetLight: !asCoordinator && (openForReview || can(session?.user, "set_program_light")),
   });
 
+  // Who already runs it, and how far along each one is. A coordinator moves
+  // their own program's schools on — it is the work, not an admin job.
+  const enrolled = await enrolledSchools(view.id);
+
   // Only offered to somebody who may actually rewire the program.
   const forms = view.canEditProgram ? await listForms() : [];
   const team = view.canSetCoordinators && isDatabaseConfigured()
@@ -75,6 +80,7 @@ export default async function ProgramAdminPage({
       asCoordinator={asCoordinator}
       appActivity={asCoordinator ? null : appActivity}
       traffic={traffic}
+      enrolled={enrolled}
     />
   );
 }

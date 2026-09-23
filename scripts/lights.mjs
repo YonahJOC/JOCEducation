@@ -34,24 +34,14 @@ const programs = await prisma.programPage.findMany({
 });
 const schools = await prisma.school.findMany({ select: { id: true } });
 
-const events = await prisma.programEvent.findMany({
-  where: { schoolId: { not: null }, programId: { not: null }, status: { not: "CANCELLED" } },
+// Who is in what — from ProgramEnrollment, the one table that answers it.
+// Being merely introduced to a program is not being in it.
+const IN = ["MEETING_BOOKED","REGISTERED","MATERIALS_SENT","TRAINED","LAUNCHED","RUNNING","PAUSED"];
+const enrolled = await prisma.programEnrollment.findMany({
+  where: { stage: { in: IN } },
   select: { schoolId: true, programId: true },
 });
-const formIds = programs.map((p) => p.formId).filter(Boolean);
-const responses = formIds.length
-  ? await prisma.formResponse.findMany({
-      where: { formId: { in: formIds }, schoolId: { not: null } },
-      select: { schoolId: true, formId: true },
-    })
-  : [];
-const programOfForm = new Map(programs.filter((p) => p.formId).map((p) => [p.formId, p.id]));
-const inProgram = new Set();
-for (const e of events) inProgram.add(`${e.schoolId}:${e.programId}`);
-for (const r of responses) {
-  const pid = programOfForm.get(r.formId);
-  if (pid) inProgram.add(`${r.schoolId}:${pid}`);
-}
+const inProgram = new Set(enrolled.map((e) => `${e.schoolId}:${e.programId}`));
 
 const contacts = await prisma.schoolActivity.findMany({
   where: { type: { in: CONTACT }, occurredAt: { gte: new Date(now.getTime() - RECENT * DAY) } },
