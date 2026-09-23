@@ -65,6 +65,8 @@ export default async function ProgramAdminPage({
       team={team}
       feeLabel={view.form?.feeCents ? money(view.form.feeCents) : null}
       paymentsOn={isPaymentConfigured}
+      asCoordinator={asCoordinator}
+      appActivity={asCoordinator ? null : appActivity}
     />
   );
 }
