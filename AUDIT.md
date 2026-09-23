@@ -930,6 +930,74 @@ rather than reinvent them.
 
 ---
 
+---
+
+# The portal redesign — all five phases, September 2026
+
+Worked from `design/PROMPT - Portal redesign.md`, which arrived after this
+report was written. Every acceptance check in that brief now returns zero.
+
+| Phase | Commit | What changed |
+|---|---|---|
+| 1 | `3f7d534`, `da4e2a9` | One colour source, three fonts with one job each |
+| 2 | `709aa2a` | The program page says each thing once |
+| 3 | `da79bce` | A console per program, opening on what needs you |
+| 4 | `8c59699` | One shell, and Today for whoever is looking |
+| 5 | `d2cbb12` | Stale lists gone, one heading scale |
+
+**Phase 1.** 685 colour values retired across 113 files, and the 256 local
+`const INK / BLUE / RULE…` copies deleted from 75. `RULE` had existed at four
+alphas with nothing to tell them apart; all four are one hairline. Outfit,
+Newsreader and IBM Plex Mono each got one job. Six uppercase label variants
+became one. All 31 `"—"` placeholders say what is missing, in words. All 18
+emoji became Plex Mono chips.
+
+**Phase 2.** The path appeared twice and the description twice. Each appears
+once. The next-step card has three states, and a signed-in coordinator sees
+their own school's step — which is what `ProgramEnrollment` was built for.
+
+**Phase 3.** Every section of a program console is a tab with its own address,
+and Today is the default; the form builder is no longer the first thing on the
+page. `slug === "joc-app"` is replaced by a registry, so the seven programs
+with no data source say in a sentence what is not recorded rather than showing
+an empty chart.
+
+**Phase 4.** One `PortalShell` for both sides. The sidebar went from twenty-odd
+links across five headings to at most seven, built from capabilities.
+`/admin` is Today rather than a board to browse.
+
+**Phase 5.** The footer's third copy of the programs list is gone, the static
+fallbacks no longer stand in for an unreachable database, `Stat` is deleted,
+and twelve page titles at four sizes became one scale.
+
+## What this changed about the report above
+
+- **4.3 `ProgramEnrollment`** — built, and now drives the program page's
+  next-step card and the school's own Today.
+- **Section 3, the ambassador platform** — built. Three tables, three routes,
+  and the rollup on each program console.
+- **Section 5, duplicated data** — the footer's copy is gone and the stale
+  fallbacks no longer serve. The static arrays remain as seeds for a fresh
+  database, which is what they are for.
+- **Section 6, the `Stat` model** — deleted.
+- **Section 9, Stage 1** — every item is done except revoking the GitHub
+  token, which needs the account owner.
+
+## Still open, and still needing you
+
+1. **`CRON_SECRET`** is not set, so nothing scheduled runs. This is now
+   visible: it is the first row a super admin sees on `/admin`, with what it
+   costs written out. It still needs setting in Vercel.
+2. **The library.** 4 published lessons, 0 resources. The console now says so
+   on Today rather than leaving it to be noticed.
+3. **Revoke the GitHub token.**
+4. **Seven of eight programs have nobody down as running them** — surfaced by
+   the new program cards, in orange.
+5. **Pricing is unverified.** The fallbacks remain the seed for
+   `/admin/pricing`, and the file still says nobody at JOC set them.
+
+---
+
 ## Two sentences, if that is all there is time for
 
 The security and stub problems this audit was commissioned to find have already
