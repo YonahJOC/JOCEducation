@@ -9,7 +9,7 @@ const TAG_COLORS: Record<string, string> = {
   "Activity": "#2C7AC9",
   "Design": "#FA912D",
   "Video": "#10233F",
-  "Source sheet": "#1B7F4B",
+  "Source sheet": "#1D6B37",
 };
 const FALLBACK_COLOR = "#2D46AF";
 
@@ -64,13 +64,13 @@ export function ResourceLibrary({
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: "15px", color: "#10233F" }}>{n}</div>
-              <div style={{ fontSize: "12px", color: "rgba(16,35,63,.5)" }}>{t.toLowerCase()}{n === 1 ? "" : "s"}</div>
+              <div style={{ fontSize: "12px", color: "#4A5A74" }}>{t.toLowerCase()}{n === 1 ? "" : "s"}</div>
             </div>
           </div>
         ))}
         <div style={{ marginLeft: "auto", fontWeight: 800, fontSize: "24px", letterSpacing: "-0.04em", color: "#10233F", alignSelf: "center" }}>
           {resources.length}
-          <span style={{ fontWeight: 500, fontSize: "14px", color: "rgba(16,35,63,.5)", letterSpacing: 0 }}> total</span>
+          <span style={{ fontWeight: 500, fontSize: "14px", color: "#4A5A74", letterSpacing: 0 }}> total</span>
         </div>
       </div>
 
@@ -102,7 +102,7 @@ export function ResourceLibrary({
 
       {/* Results */}
       {filtered.length === 0 ? (
-        <p style={{ fontSize: "16px", color: "rgba(16,35,63,.55)", textAlign: "center", padding: "56px 0" }}>
+        <p style={{ fontSize: "16px", color: "#4A5A74", textAlign: "center", padding: "56px 0" }}>
           Nothing matches those filters.
         </p>
       ) : (
@@ -116,10 +116,10 @@ export function ResourceLibrary({
                   <div style={{ width: "34px", height: "34px", borderRadius: "9px", backgroundColor: color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <span style={{ color: "#fff", fontWeight: 700, fontSize: "9.5px", letterSpacing: "0.05em" }}>{abbrev(r.tag)}</span>
                   </div>
-                  <span style={{ fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.5)" }}>{r.tag}</span>
+                  <span style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74" }}>{r.tag}</span>
                 </div>
                 <h2 style={{ fontWeight: 700, fontSize: "17.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: "#10233F", margin: 0 }}>{r.title}</h2>
-                <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.55, margin: 0, flex: 1 }}>{r.description}</p>
+                <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.55, margin: 0, flex: 1 }}>{r.description}</p>
                 {cn && (
                   <span style={{ fontSize: "12px", fontWeight: 600, color: "#C96C00" }}>{cn}</span>
                 )}
@@ -133,7 +133,7 @@ export function ResourceLibrary({
                       Download →
                     </a>
                   ) : (
-                    <span style={{ fontSize: "13.5px", color: "rgba(16,35,63,.45)" }}>File coming soon</span>
+                    <span style={{ fontSize: "13.5px", color: "#4A5A74" }}>File coming soon</span>
                   )}
                 </div>
               </div>

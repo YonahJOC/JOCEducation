@@ -88,11 +88,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "440px", textAlign: "center" }}>
-          <p style={{ fontSize: "34px", marginBottom: "14px" }}>🔒</p>
           <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "10px" }}>
             {signedIn ? "You don't have console access" : "Sign in required"}
           </h1>
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", marginBottom: "22px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", marginBottom: "22px" }}>
             {signedIn ? (
               <>
                 Your account has full access to the site, materials and programs — but the console is
@@ -129,12 +128,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const showMeeting = open || can(session?.user, "run_admin_agenda");
 
   return (
-    <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
+    <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#FBF9F4" }}>
       {/* Sidebar — becomes a top bar with a scrolling nav on narrow screens */}
       <aside
         className="joc-admin-sidebar"
         style={{
-          width: "232px", flexShrink: 0, backgroundColor: "#0B1A31", color: "rgba(255,255,255,.72)",
+          width: "232px", flexShrink: 0, backgroundColor: "#10233F", color: "rgba(255,255,255,.72)",
           display: "flex", flexDirection: "column", padding: "22px 0",
         }}
       >
@@ -212,8 +211,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Main */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {usingSampleData && (
-          <div style={{ backgroundColor: "#FDEEDA", borderBottom: "1px solid rgba(154,84,5,.2)", padding: "10px 30px" }}>
-            <p style={{ fontSize: "13px", color: "#9A5405", margin: 0, lineHeight: 1.5 }}>
+          <div style={{ backgroundColor: "#FFF0E0", borderBottom: "1px solid rgba(154,84,5,.2)", padding: "10px 30px" }}>
+            <p style={{ fontSize: "13px", color: "#C96C00", margin: 0, lineHeight: 1.5 }}>
               <strong>Sample data.</strong> The database isn&rsquo;t connected yet, so these schools and activity entries are
               illustrative and nothing you change here will save. Add <code style={{ background: "rgba(154,84,5,.12)", padding: "1px 5px", borderRadius: "4px" }}>DATABASE_URL</code> to switch to live data.
             </p>

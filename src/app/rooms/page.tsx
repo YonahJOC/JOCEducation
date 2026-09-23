@@ -89,7 +89,7 @@ export default async function RoomsPage() {
       <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: INK, marginBottom: "12px" }}>
         Rooms for the things worth talking through.
       </h1>
-      <p style={{ fontSize: "16.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "60ch", marginBottom: "34px" }}>
+      <p style={{ fontSize: "16.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "60ch", marginBottom: "34px" }}>
         Pick the topics you care about. Ask the question you would ask in the staffroom, and
         answer the ones you know. Everything here is between educators — no school sees another
         school&rsquo;s account, and nothing is published to the public site.
@@ -100,7 +100,7 @@ export default async function RoomsPage() {
           <h2 style={{ fontWeight: 700, fontSize: "20px", color: INK, margin: "0 0 10px" }}>
             No rooms yet.
           </h2>
-          <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "50ch", margin: "0 auto 20px" }}>
+          <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "50ch", margin: "0 auto 20px" }}>
             The JOC education team opens the rooms. Tell them what you would want to talk about and
             they can start one.
           </p>

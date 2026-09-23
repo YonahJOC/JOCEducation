@@ -83,7 +83,7 @@ export default async function AboutPage() {
               {missionHeading}
             </h2>
             {missionBody.map((p, i) => (
-              <p key={i} style={{ fontSize: "16px", color: "rgba(16,35,63,.72)", lineHeight: 1.7, marginBottom: "18px" }}>{p}</p>
+              <p key={i} style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.7, marginBottom: "18px" }}>{p}</p>
             ))}
           </div>
 
@@ -94,7 +94,7 @@ export default async function AboutPage() {
                   <div style={{ fontWeight: 800, fontSize: "32px", letterSpacing: "-0.04em", color: "#2D46AF", minWidth: "80px" }}>{stat.value}</div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: "15.5px", color: "#10233F", marginBottom: "3px" }}>{stat.title}</div>
-                    <div style={{ fontSize: "13px", color: "rgba(16,35,63,.55)" }}>{stat.body}</div>
+                    <div style={{ fontSize: "13px", color: "#4A5A74" }}>{stat.body}</div>
                   </div>
                 </div>
               ))}
@@ -136,7 +136,7 @@ export default async function AboutPage() {
                   </div>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "4px" }}>{person.title}</h3>
                   <p style={{ fontWeight: 600, fontSize: "12.5px", color: "#2D46AF", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>{person.value}</p>
-                  <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6 }}>{person.body}</p>
+                  <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6 }}>{person.body}</p>
                 </div>
               ))}
             </div>

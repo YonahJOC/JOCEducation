@@ -30,7 +30,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
               <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
                 That link is incomplete
               </h1>
-              <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
                 Open the link from your email exactly as it was sent.
               </p>
             </>
@@ -40,7 +40,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
               <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
                 Email confirmed
               </h1>
-              <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: "0 0 24px" }}>
+              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 24px" }}>
                 {result.schoolName
                   ? `You are connected to ${result.schoolName}. Everything your school has access to is waiting.`
                   : result.staff
@@ -59,7 +59,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
               <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
                 That link did not work
               </h1>
-              <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: "0 0 22px" }}>
+              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 22px" }}>
                 {result.error}
               </p>
               <a
@@ -71,7 +71,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
             </>
           )}
 
-          <p style={{ marginTop: "24px", fontSize: "14px", color: "rgba(16,35,63,.55)" }}>
+          <p style={{ marginTop: "24px", fontSize: "14px", color: "#4A5A74" }}>
             <Link href="/login" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
           </p>
         </div>

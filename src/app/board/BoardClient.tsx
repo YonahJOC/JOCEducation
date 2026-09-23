@@ -118,7 +118,7 @@ export function BoardClient({
           <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
             {headline}
           </h1>
-          <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "56ch" }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "56ch" }}>
             {standfirst}
           </p>
         </div>
@@ -141,12 +141,12 @@ export function BoardClient({
 
       {notice && (
         <div style={{ backgroundColor: "rgba(27,127,75,.08)", border: "1px solid rgba(27,127,75,.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px" }}>
-          <p style={{ fontSize: "14.5px", color: "#1B7F4B", margin: 0, lineHeight: 1.5 }}>{notice}</p>
+          <p style={{ fontSize: "14.5px", color: "#1D6B37", margin: 0, lineHeight: 1.5 }}>{notice}</p>
         </div>
       )}
       {error && (
         <div style={{ backgroundColor: "rgba(184,50,30,.07)", border: "1px solid rgba(184,50,30,.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px" }}>
-          <p style={{ fontSize: "14.5px", color: "#B8321E", margin: 0, lineHeight: 1.5 }}>{error}</p>
+          <p style={{ fontSize: "14.5px", color: "#A3261A", margin: 0, lineHeight: 1.5 }}>{error}</p>
         </div>
       )}
 
@@ -171,7 +171,7 @@ export function BoardClient({
             rows={5}
             style={{ ...inputStyle, resize: "vertical" }}
           />
-          <p style={{ fontSize: "13px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+          <p style={{ fontSize: "13px", color: "#4A5A74", margin: 0 }}>
             Posts appear on the board once the JOC education team has read them.
           </p>
           <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
@@ -184,7 +184,7 @@ export function BoardClient({
             </button>
             <button
               onClick={() => setShowForm(false)}
-              style={{ fontFamily: "var(--font-outfit)", background: "none", border: "none", color: "rgba(16,35,63,.55)", cursor: "pointer", fontSize: "14px", fontWeight: 500, minHeight: "46px" }}
+              style={{ fontFamily: "var(--font-outfit)", background: "none", border: "none", color: "#4A5A74", cursor: "pointer", fontSize: "14px", fontWeight: 500, minHeight: "46px" }}
             >
               Cancel
             </button>
@@ -218,7 +218,7 @@ export function BoardClient({
           ))}
         </div>
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ fontSize: "13px", color: "rgba(16,35,63,.45)", fontWeight: 500 }}>
+          <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>
             {filtered.length} {filtered.length === 1 ? "idea" : "ideas"}
           </span>
           <select
@@ -234,7 +234,7 @@ export function BoardClient({
       {/* Ideas */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 0" }}>
-          <p style={{ fontSize: "16px", color: "rgba(16,35,63,.5)" }}>No ideas match those filters yet.</p>
+          <p style={{ fontSize: "16px", color: "#4A5A74" }}>No ideas match those filters yet.</p>
           <button
             onClick={() => { setRegion("All"); setGrade("all"); setPage(1); }}
             style={{ fontFamily: "var(--font-outfit)", marginTop: "16px", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "9999px", padding: "11px 22px", border: "none", cursor: "pointer", minHeight: "44px" }}
@@ -254,15 +254,15 @@ export function BoardClient({
                       {idea.grade === "es" ? "Elementary" : idea.grade === "ms" ? "Middle" : "High school"}
                     </span>
                   </div>
-                  <span style={{ fontSize: "12px", color: "rgba(16,35,63,.4)" }}>{idea.ts}</span>
+                  <span style={{ fontSize: "12px", color: "#4A5A74" }}>{idea.ts}</span>
                 </div>
                 <h2 style={{ fontWeight: 700, fontSize: "18.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: "#10233F", marginBottom: "8px" }}>{idea.title}</h2>
-                <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.72)", lineHeight: 1.6, marginBottom: "18px", whiteSpace: "pre-wrap" }}>{idea.body}</p>
+                <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px", whiteSpace: "pre-wrap" }}>{idea.body}</p>
                 <div style={{ borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "13px", color: "rgba(16,35,63,.5)", fontWeight: 500 }}>{idea.school}</span>
+                  <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>{idea.school}</span>
                   <button
                     onClick={() => like(idea)}
-                    style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: "9999px", cursor: "pointer", border: isLiked(idea) ? "1px solid #FA912D" : "1px solid rgba(16,35,63,.18)", backgroundColor: isLiked(idea) ? "#FDEEDA" : "transparent", color: isLiked(idea) ? "#9A5405" : "rgba(16,35,63,.6)" }}
+                    style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: "9999px", cursor: "pointer", border: isLiked(idea) ? "1px solid #FA912D" : "1px solid rgba(16,35,63,.18)", backgroundColor: isLiked(idea) ? "#FFF0E0" : "transparent", color: isLiked(idea) ? "#C96C00" : "#4A5A74" }}
                   >
                     {isLiked(idea) ? "★" : "☆"} {likeCount(idea)} useful
                   </button>

@@ -102,7 +102,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                     className="hidden xl:inline-flex"
                     style={{
                       fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-                      color: "#fff", backgroundColor: "#0B1A31", borderRadius: "9999px",
+                      color: "#fff", backgroundColor: "#10233F", borderRadius: "9999px",
                       padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
                     }}
                   >
@@ -222,7 +222,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
 
               {account && (account.console || account.school) && (
                 <>
-                  <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", margin: "14px 24px 4px" }}>
+                  <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "14px 24px 4px" }}>
                     {account.roleLabel}
                   </p>
                   {account.console && (
@@ -249,7 +249,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                   >
                     Your account
                   </Link>
-                  <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", textAlign: "center", margin: 0, wordBreak: "break-all" }}>{account.email}</p>
+                  <p style={{ fontSize: "12.5px", color: "#4A5A74", textAlign: "center", margin: 0, wordBreak: "break-all" }}>{account.email}</p>
                   <form action={signOutAction}>
                     <button
                       type="submit"
@@ -325,7 +325,7 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
           <p style={{ fontSize: "14px", fontWeight: 700, color: "#10233F", margin: 0 }}>
             {account.name ?? account.email}
           </p>
-          <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0", wordBreak: "break-all" }}>
+          <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-all" }}>
             {account.email}
           </p>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#C96C00", margin: "6px 0 0" }}>
@@ -344,7 +344,7 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
               type="submit"
               style={{
                 width: "100%", textAlign: "left", fontFamily: "var(--font-outfit)", fontSize: "14px",
-                fontWeight: 600, color: "#B8321E", background: "none", border: "none",
+                fontWeight: 600, color: "#A3261A", background: "none", border: "none",
                 cursor: "pointer", padding: "8px 6px",
               }}
             >

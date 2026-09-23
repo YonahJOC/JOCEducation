@@ -58,7 +58,7 @@ function RailCard({
             style={{
               fontSize: "12px",
               fontWeight: 700,
-              color: active ? "#fff" : "rgba(16,35,63,.55)",
+              color: active ? "#fff" : "#4A5A74",
               lineHeight: 1,
             }}
           >
@@ -73,7 +73,7 @@ function RailCard({
               gap: "5px",
               fontSize: "11px",
               fontWeight: 600,
-              color: "#1B7F4B",
+              color: "#1D6B37",
               background: "rgba(27,127,75,.1)",
               padding: "3px 8px",
               borderRadius: "9999px",
@@ -85,7 +85,7 @@ function RailCard({
                 width: "5px",
                 height: "5px",
                 borderRadius: "50%",
-                backgroundColor: "#1B7F4B",
+                backgroundColor: "#1D6B37",
                 display: "inline-block",
                 flexShrink: 0,
               }}
@@ -98,7 +98,7 @@ function RailCard({
             style={{
               fontSize: "11px",
               fontWeight: 500,
-              color: "rgba(16,35,63,.4)",
+              color: "#4A5A74",
             }}
           >
             ✓ Done
@@ -113,7 +113,7 @@ function RailCard({
           fontWeight: 700,
           letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: active ? cycle.color : "rgba(16,35,63,.45)",
+          color: active ? cycle.color : "#4A5A74",
           marginBottom: "4px",
         }}
       >
@@ -133,7 +133,7 @@ function RailCard({
       >
         {cycle.theme}
       </p>
-      <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", marginBottom: "14px", lineHeight: 1.4 }}>
+      <p style={{ fontSize: "12.5px", color: "#4A5A74", marginBottom: "14px", lineHeight: 1.4 }}>
         {cycle.gloss}
       </p>
 
@@ -160,7 +160,7 @@ function RailCard({
             }}
           />
         </div>
-        <p style={{ fontSize: "11px", color: "rgba(16,35,63,.4)", marginTop: "5px" }}>{cycle.range}</p>
+        <p style={{ fontSize: "11px", color: "#4A5A74", marginTop: "5px" }}>{cycle.range}</p>
       </div>
     </button>
   );
@@ -319,7 +319,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
             fontStyle: "italic",
             fontFamily: "var(--font-newsreader)",
             fontSize: "17px",
-            color: "rgba(16,35,63,.6)",
+            color: "#4A5A74",
             lineHeight: 1.5,
             maxWidth: "400px",
           }}
@@ -352,7 +352,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
           gap: "10px",
         }}
       >
-        <p style={{ fontSize: "13px", fontWeight: 600, color: "rgba(16,35,63,.5)" }}>
+        <p style={{ fontSize: "13px", fontWeight: 600, color: "#4A5A74" }}>
           {selected + 1} of {CYCLES.length}
         </p>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
@@ -457,7 +457,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
           fontStyle: "italic",
           fontFamily: "var(--font-newsreader)",
           fontSize: "13px",
-          color: "rgba(16,35,63,.45)",
+          color: "#4A5A74",
           marginTop: "18px",
           lineHeight: 1.6,
         }}

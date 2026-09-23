@@ -10,8 +10,8 @@ import {
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
-const RED = "#B8321E";
+const GREEN = "#1D6B37";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 const TIERS: PriceTier[] = ["none", "teacher", "staff", "app", "full"];
@@ -91,7 +91,7 @@ export function PricingClient({
       />
 
       {!isSet && (
-        <div style={{ backgroundColor: "#FDEEDA", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
+        <div style={{ backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
           <p style={{ fontSize: "14px", color: "#7C4A00", margin: "0 0 10px", lineHeight: 1.55 }}>
             The pricing page is still showing figures written into the code. Nobody at JOC set them —
             they were placeholders. Bring them in here, then correct them.
@@ -104,7 +104,7 @@ export function PricingClient({
             disabled={disabled || pending}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-              backgroundColor: "#9A5405", border: "none", borderRadius: "9999px",
+              backgroundColor: "#C96C00", border: "none", borderRadius: "9999px",
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -121,10 +121,10 @@ export function PricingClient({
 
       {/* Plans */}
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
           Plans — price per month
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 16px" }}>
           In whole dollars. Annual billing shows {Math.round(ANNUAL_DISCOUNT * 100)}% less, worked out for you.
         </p>
 
@@ -177,10 +177,10 @@ export function PricingClient({
 
       {/* Programs */}
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
           Programs — what each one costs
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 16px" }}>
           A number for a price, <strong style={{ color: INK }}>inc</strong> if that plan includes it,{" "}
           <strong style={{ color: INK }}>na</strong> if it is not offered at that level.
         </p>
@@ -257,7 +257,7 @@ export function PricingClient({
 
 const th: React.CSSProperties = {
   textAlign: "left", fontSize: "11.5px", fontWeight: 700, letterSpacing: "0.08em",
-  textTransform: "uppercase", color: "rgba(16,35,63,.5)", padding: "0 6px 8px", whiteSpace: "nowrap",
+  textTransform: "uppercase", color: "#4A5A74", padding: "0 6px 8px", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = { padding: "4px 6px", verticalAlign: "middle" };
 

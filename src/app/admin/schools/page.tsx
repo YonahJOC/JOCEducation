@@ -50,7 +50,7 @@ async function Inner(searchParams: Search) {
       >
         <NewSchoolForm disabled={usingSampleData} />
       </PageIntro>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
         {all.length} accounts. Click a school to manage its plan, people and history.
       </p>
 
@@ -82,7 +82,7 @@ async function Inner(searchParams: Search) {
                   padding: "8px 13px", borderRadius: "9999px", cursor: "pointer", minHeight: "40px",
                   border: on ? `1.5px solid ${color}` : "1px solid rgba(16,35,63,.14)",
                   backgroundColor: on ? `${color}14` : "#fff",
-                  color: on ? color : "rgba(16,35,63,.7)",
+                  color: on ? color : "#4A5A74",
                   whiteSpace: "nowrap",
                 }}
               >

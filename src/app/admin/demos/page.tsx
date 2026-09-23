@@ -63,7 +63,7 @@ async function Inner() {
         ]}
         note="Nothing here is visible to the school. Statuses and notes are for the JOC team only."
       />
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
         {waiting > 0 ? (
           <strong style={{ color: "#C96C00" }}>{waiting} waiting for a reply.</strong>
         ) : (
@@ -78,7 +78,7 @@ async function Inner() {
       <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         Contact form
       </h2>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 14px" }}>
         {unread > 0 ? (
           <strong style={{ color: "#C96C00" }}>{unread} unanswered.</strong>
         ) : (

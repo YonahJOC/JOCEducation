@@ -6,7 +6,7 @@ import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 export type EventRow = {
@@ -36,7 +36,7 @@ const STATUS_LABELS: Record<string, string> = {
   PLANNED: "Planned", CONFIRMED: "Confirmed", DONE: "Done", CANCELLED: "Cancelled",
 };
 const STATUS_COLORS: Record<string, string> = {
-  PLANNED: "#C96C00", CONFIRMED: "#1B7F4B", DONE: "#2D46AF", CANCELLED: "#B8321E",
+  PLANNED: "#C96C00", CONFIRMED: "#1D6B37", DONE: "#2D46AF", CANCELLED: "#A3261A",
 };
 
 const KIND_LABELS: Record<string, string> = {
@@ -58,7 +58,7 @@ const field: React.CSSProperties = {
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600,
-  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
@@ -161,13 +161,13 @@ function Group({
 }) {
   return (
     <div>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 10px" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
         {title}
       </p>
       {events.length === 0 ? (
         empty ? (
           <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "16px", padding: "32px 22px", textAlign: "center" }}>
-            <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.55)", margin: 0 }}>{empty}</p>
+            <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: 0 }}>{empty}</p>
           </div>
         ) : null
       ) : (
@@ -192,7 +192,7 @@ function Group({
                     </span>
                   )}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
                   {[
                     e.schoolName ?? (e.kind === "JOC_EVENT" ? "Whole network" : "No school set"),
                     e.programName,
@@ -309,11 +309,11 @@ function EventForm({
                   cursor: disabled ? "not-allowed" : "pointer", textAlign: "left",
                   border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
                   backgroundColor: on ? "rgba(45,70,175,.07)" : "#fff",
-                  color: on ? BLUE : "rgba(16,35,63,.7)",
+                  color: on ? BLUE : "#4A5A74",
                 }}
               >
                 {KIND_LABELS[k]}
-                <span style={{ display: "block", fontSize: "12px", fontWeight: 400, color: "rgba(16,35,63,.55)", marginTop: "2px" }}>
+                <span style={{ display: "block", fontSize: "12px", fontWeight: 400, color: "#4A5A74", marginTop: "2px" }}>
                   {k === "JOC_EVENT"
                     ? "The whole network, or anyone who wants to come"
                     : "One program, running at one school"}
@@ -343,7 +343,7 @@ function EventForm({
           <div>
             <label style={label}>Last day</label>
             <input type="date" value={d.endsAt} onChange={(e) => set("endsAt", e.target.value)} disabled={disabled} style={field} />
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
               Leave empty for a single day.
             </p>
           </div>
@@ -370,7 +370,7 @@ function EventForm({
               ))}
             </select>
             {schools.length === 0 && (
-              <p style={{ fontSize: "12px", color: "#9A5405", margin: "5px 0 0" }}>
+              <p style={{ fontSize: "12px", color: "#C96C00", margin: "5px 0 0" }}>
                 No schools on the system yet. Add one under Schools first.
               </p>
             )}
@@ -388,7 +388,7 @@ function EventForm({
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
               Links the event to that program&rsquo;s page.
             </p>
           </div>
@@ -463,7 +463,7 @@ function EventForm({
             onClick={callOff}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#9A5405",
+              fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#C96C00",
               backgroundColor: "rgba(250,145,45,.14)", border: "none", borderRadius: "9999px",
               padding: "11px 18px", minHeight: "42px", cursor: "pointer",
             }}

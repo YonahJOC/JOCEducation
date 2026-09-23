@@ -6,7 +6,7 @@ import { ASSIGNABLE_ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/l
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -15,7 +15,7 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "44px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 /**
@@ -67,7 +67,7 @@ export function CreateUserForm({
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: GREEN, margin: "0 0 12px" }}>
           Account created
         </p>
-        <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
           Give these to <strong style={{ color: INK }}>{created.email}</strong>. The password is not stored
           in readable form, so this is the only time it can be shown — they will be asked to change it when
           they first sign in.
@@ -99,7 +99,7 @@ export function CreateUserForm({
           </button>
           <button
             onClick={() => { setCreated(null); setOpen(false); }}
-            style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
           >
             Done
           </button>
@@ -130,7 +130,7 @@ export function CreateUserForm({
       onSubmit={submit}
       style={{ backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
     >
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
         Create an account
       </p>
 
@@ -151,7 +151,7 @@ export function CreateUserForm({
           <select value={role} onChange={(e) => setRole(e.target.value as Role)} style={field}>
             {ASSIGNABLE_ROLES.map((r) => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}
           </select>
-          <p style={{ fontSize: "12px", color: "rgba(16,35,63,.55)", margin: "5px 0 0", lineHeight: 1.45 }}>
+          <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0", lineHeight: 1.45 }}>
             {ROLE_DESCRIPTIONS[role]}
           </p>
         </div>
@@ -195,11 +195,11 @@ export function CreateUserForm({
         <button
           type="button"
           onClick={() => { setOpen(false); setErr(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
         >
           Cancel
         </button>
-        {err && <span style={{ fontSize: "13px", color: "#B8321E" }}>{err}</span>}
+        {err && <span style={{ fontSize: "13px", color: "#A3261A" }}>{err}</span>}
       </div>
     </form>
   );

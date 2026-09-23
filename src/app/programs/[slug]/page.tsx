@@ -13,7 +13,7 @@ const INK = "#10233F";
 const BLUE = "#2D46AF";
 const PAPER = "#FBF9F4";
 const PANEL = "#F4F7FD";
-const MUTED = "#4A5872";
+const MUTED = "#4A5A74";
 const BODY2 = "#34445E";
 const HAIRLINE = "rgba(16,35,63,.1)";
 

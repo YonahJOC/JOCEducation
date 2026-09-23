@@ -103,8 +103,8 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={{ textAlign: "left", fontWeight: 600, fontSize: "13px", color: "rgba(16,35,63,.55)", paddingBottom: "12px", borderBottom: "1px solid rgba(16,35,63,.08)", paddingRight: "24px" }}>Program</th>
-                <th style={{ textAlign: "right", fontWeight: 600, fontSize: "13px", color: "rgba(16,35,63,.55)", paddingBottom: "12px", borderBottom: "1px solid rgba(16,35,63,.08)", minWidth: "140px" }}>No subscription</th>
+                <th style={{ textAlign: "left", fontWeight: 600, fontSize: "13px", color: "#4A5A74", paddingBottom: "12px", borderBottom: "1px solid rgba(16,35,63,.08)", paddingRight: "24px" }}>Program</th>
+                <th style={{ textAlign: "right", fontWeight: 600, fontSize: "13px", color: "#4A5A74", paddingBottom: "12px", borderBottom: "1px solid rgba(16,35,63,.08)", minWidth: "140px" }}>No subscription</th>
                 <th style={{ textAlign: "right", fontWeight: 700, fontSize: "13px", color: "#10233F", paddingBottom: "12px", borderBottom: "1px solid rgba(16,35,63,.08)", minWidth: "160px" }}>{PRICE_TIER_LABELS[priceTier]}</th>
               </tr>
             </thead>
@@ -115,16 +115,16 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
                 return (
                   <tr key={prog.label}>
                     <td style={{ fontSize: "14.5px", color: "#10233F", padding: "14px 0", paddingRight: "24px", borderBottom: i < PROGRAMS.length - 1 ? "1px solid rgba(16,35,63,.06)" : "none" }}>{prog.label}</td>
-                    <td style={{ textAlign: "right", fontSize: "14.5px", color: "rgba(16,35,63,.55)", padding: "14px 0", borderBottom: i < PROGRAMS.length - 1 ? "1px solid rgba(16,35,63,.06)" : "none" }}>
+                    <td style={{ textAlign: "right", fontSize: "14.5px", color: "#4A5A74", padding: "14px 0", borderBottom: i < PROGRAMS.length - 1 ? "1px solid rgba(16,35,63,.06)" : "none" }}>
                       {tierPrice.cents && tierPrice.cents < noSubPrice ? <span style={{ textDecoration: "line-through" }}>${noSubPrice / 100}</span> : `$${noSubPrice / 100}`}
                     </td>
                     <td style={{ textAlign: "right", padding: "14px 0", borderBottom: i < PROGRAMS.length - 1 ? "1px solid rgba(16,35,63,.06)" : "none" }}>
                       {priceTier === "none" ? (
-                        <span style={{ fontSize: "14.5px", color: "rgba(16,35,63,.55)" }}>—</span>
+                        <span style={{ fontSize: "14.5px", color: "#4A5A74" }}>—</span>
                       ) : tierPrice.na ? (
-                        <span style={{ fontSize: "14.5px", color: "rgba(16,35,63,.55)" }}>Not available</span>
+                        <span style={{ fontSize: "14.5px", color: "#4A5A74" }}>Not available</span>
                       ) : tierPrice.included ? (
-                        <span style={{ fontSize: "14.5px", fontWeight: 600, color: "#1B7F4B" }}>Included</span>
+                        <span style={{ fontSize: "14.5px", fontWeight: 600, color: "#1D6B37" }}>Included</span>
                       ) : (
                         <span style={{ fontSize: "14.5px", fontWeight: 600, color: "#2D46AF" }}>${(tierPrice.cents! / 100)}</span>
                       )}
@@ -141,7 +141,7 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
       <div style={{ backgroundColor: "#F4F7FD", borderRadius: "18px", padding: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <p style={{ fontWeight: 700, fontSize: "16px", color: "#10233F", marginBottom: "6px" }}>Need financial assistance?</p>
-          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.72)", maxWidth: "52ch" }}>No school is turned away on cost. We offer full and partial scholarships to qualifying schools.</p>
+          <p style={{ fontSize: "14.5px", color: "#4A5A74", maxWidth: "52ch" }}>No school is turned away on cost. We offer full and partial scholarships to qualifying schools.</p>
         </div>
         <button style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 24px", border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>
           Apply for a scholarship
@@ -159,11 +159,11 @@ function PlanCard({ title, subtitle, monthlyPrice, billing, highlight, badge, fe
       <h3 style={{ fontWeight: 700, fontSize: "20px", color: highlight ? "#fff" : "#10233F", marginBottom: "16px" }}>{title}</h3>
       <div style={{ marginBottom: "20px" }}>
         <span style={{ fontWeight: 800, fontSize: "38px", letterSpacing: "-0.04em", color: highlight ? "#fff" : "#10233F" }}>${monthlyPrice}</span>
-        <span style={{ fontSize: "14px", color: highlight ? "rgba(255,255,255,.6)" : "rgba(16,35,63,.55)" }}>/mo{billing === "annual" ? " billed annually" : ""}</span>
+        <span style={{ fontSize: "14px", color: highlight ? "rgba(255,255,255,.6)" : "#4A5A74" }}>/mo{billing === "annual" ? " billed annually" : ""}</span>
       </div>
       <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
         {features.map((f) => (
-          <li key={f} style={{ display: "flex", gap: "8px", fontSize: "14px", color: highlight ? "rgba(255,255,255,.8)" : "rgba(16,35,63,.72)" }}>
+          <li key={f} style={{ display: "flex", gap: "8px", fontSize: "14px", color: highlight ? "rgba(255,255,255,.8)" : "#4A5A74" }}>
             <span style={{ color: highlight ? "#FFB55E" : "#FA912D", flexShrink: 0 }}>✓</span>
             {f}
           </li>

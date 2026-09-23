@@ -180,7 +180,7 @@ export const EVENT_STATUS_LABELS: Record<string, string> = {
 
 export const EVENT_STATUS_COLORS: Record<string, string> = {
   PLANNED: "#C96C00",
-  CONFIRMED: "#1B7F4B",
+  CONFIRMED: "#1D6B37",
   DONE: "#2D46AF",
-  CANCELLED: "#B8321E",
+  CANCELLED: "#A3261A",
 };

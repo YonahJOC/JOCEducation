@@ -15,7 +15,7 @@ export default function ForgotPasswordPage() {
         <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
           <ForgotPasswordForm />
 
-          <p style={{ marginTop: "24px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.55)" }}>
+          <p style={{ marginTop: "24px", textAlign: "center", fontSize: "14px", color: "#4A5A74" }}>
             <Link href="/login" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
           </p>
         </div>

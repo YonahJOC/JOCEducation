@@ -141,7 +141,7 @@ export function RoomsClient({
             <span style={{ marginRight: "7px" }} aria-hidden="true">{r.icon}</span>
             {r.name}
           </p>
-          <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
+          <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
             {r.messageCount} message{r.messageCount === 1 ? "" : "s"} ·{" "}
             {r.memberCount} following
             {r.archived ? " · closed" : ""}

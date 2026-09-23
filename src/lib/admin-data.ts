@@ -49,9 +49,9 @@ export const STATUS_COLORS: Record<SchoolStatus, string> = {
   PROSPECT: "#7A8699",
   DEMO_SCHEDULED: "#2C7AC9",
   TRIAL: "#FA912D",
-  ACTIVE: "#1B7F4B",
+  ACTIVE: "#1D6B37",
   LAPSED: "#C96C00",
-  CHURNED: "#B8321E",
+  CHURNED: "#A3261A",
 };
 
 export const PLAN_LABELS: Record<PlanKey, string> = {

@@ -86,7 +86,7 @@ export async function setSchoolStatus(schoolId: string, status: string): Promise
     const me = await requireAccountManager();
     const before = await prisma.school.findUnique({ where: { id: schoolId }, select: { status: true } });
     await prisma.school.update({ where: { id: schoolId }, data: { status: status as never } });
-    await log(schoolId, "STATUS_CHANGE", `Status changed from ${before?.status ?? "—"} to ${status}`, null, me?.id ?? null);
+    await log(schoolId, "STATUS_CHANGE", `Status changed from ${before?.status ?? "no status"} to ${status}`, null, me?.id ?? null);
     revalidatePath(`/admin/schools/${schoolId}`);
     revalidatePath("/admin/schools");
     return { ok: true };

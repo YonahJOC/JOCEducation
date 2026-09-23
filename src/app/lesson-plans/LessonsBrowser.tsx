@@ -35,7 +35,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
       {/* Search + filters */}
       <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", padding: "20px 24px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: "rgba(16,35,63,.4)", pointerEvents: "none" }}>⌕</span>
+          <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: "#4A5A74", pointerEvents: "none" }}>⌕</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -62,7 +62,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
               <Chip key={k} label={v} active={prep === k} onClick={() => setPrep(k)} />
             ))}
           </FilterGroup>
-          <span style={{ marginLeft: "auto", fontWeight: 600, fontSize: "13.5px", color: "rgba(16,35,63,.5)", whiteSpace: "nowrap" }}>
+          <span style={{ marginLeft: "auto", fontWeight: 600, fontSize: "13.5px", color: "#4A5A74", whiteSpace: "nowrap" }}>
             {filtered.length} {filtered.length === 1 ? "plan" : "plans"}
           </span>
         </div>
@@ -71,7 +71,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
       {/* Results */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: "center", padding: "72px 0" }}>
-          <p style={{ fontSize: "17px", color: "rgba(16,35,63,.55)", marginBottom: "16px" }}>
+          <p style={{ fontSize: "17px", color: "#4A5A74", marginBottom: "16px" }}>
             {lessons.length === 0
               ? "No lesson plans have been published yet."
               : "No lesson plans match those filters."}
@@ -99,7 +99,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-      <span style={{ fontWeight: 600, fontSize: "12px", color: "rgba(16,35,63,.45)", letterSpacing: "0.08em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{label}</span>
+      <span style={{ fontWeight: 600, fontSize: "12px", color: "#4A5A74", letterSpacing: "0.08em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{label}</span>
       {children}
     </div>
   );
@@ -122,7 +122,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
   const prepStyle = lesson.prep === "Minimal"
     ? { bg: "#F4F7FD", text: "#12306F" }
     : lesson.prep === "Moderate"
-    ? { bg: "#FDEEDA", text: "#9A5405" }
+    ? { bg: "#FFF0E0", text: "#C96C00" }
     : { bg: "#FEE2E2", text: "#991B1B" };
 
   return (
@@ -148,14 +148,14 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
           {lesson.theme}
         </span>
         <h2 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: "#10233F", marginBottom: "8px" }}>{lesson.title}</h2>
-        <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.72)", lineHeight: 1.55, marginBottom: "16px" }}>{lesson.description}</p>
+        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.55, marginBottom: "16px" }}>{lesson.description}</p>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
           <MetaChip label={GRADE_LABELS_FULL[lesson.grade]} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
           <MetaChip label={`${lesson.time} min`} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
           <MetaChip label={`${lesson.prep} prep`} style={{ backgroundColor: prepStyle.bg, color: prepStyle.text }} />
         </div>
         <div style={{ borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "13px", color: "rgba(16,35,63,.45)" }}>
+          <span style={{ fontSize: "13px", color: "#4A5A74" }}>
             {lesson.files.length} file{lesson.files.length !== 1 ? "s" : ""} included
           </span>
           <span style={{ fontWeight: 700, fontSize: "14px", color: "#2D46AF" }}>Open plan →</span>

@@ -217,7 +217,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Shevat", anchor: "Shevat / Tu B'Shevat",
     range: "Jan 10 – Feb 13",
     startDate: "2027-01-10", endDate: "2027-02-13", weeks: 5,
-    color: "#1B7F4B",
+    color: "#1D6B37",
     desc: "A tree is judged by its fruit, and a person by how they treat the people they don't have to be kind to. Cycle 5 is kavod habriyos in practice: honoring parents, teachers, the staff who keep the building running, and the classmate who is easiest to overlook — anchored by Tu B'Shevat and kavod for the world we were handed.",
     focus: [
       "Kavod chart: honoring the adults in the building nobody thanks",

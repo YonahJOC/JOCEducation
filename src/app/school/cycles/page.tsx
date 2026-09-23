@@ -12,7 +12,7 @@ export default async function SchoolCyclesPage() {
   await requireSchoolPanel();
   const [school, cycles] = await Promise.all([mySchool(), myCycleProgress()]);
   if (!school || !cycles) {
-    return <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)" }}>Could not load your school.</p>;
+    return <p style={{ fontSize: "15px", color: "#4A5A74" }}>Could not load your school.</p>;
   }
 
   const current = cycles.find((c) => c.state === "current");
@@ -24,7 +24,7 @@ export default async function SchoolCyclesPage() {
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         Cycle progress
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 18px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
         How {school.name} is tracking through the year, against the network.
       </p>
 
@@ -57,7 +57,7 @@ export default async function SchoolCyclesPage() {
                       </span>
                     )}
                   </span>
-                  <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontSize: "12.5px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                     {c.state === "upcoming" ? `${c.lessons} lessons ready` : `${ours}% of your teachers · network ${median}%`}
                   </span>
                 </div>
@@ -75,7 +75,7 @@ export default async function SchoolCyclesPage() {
 
       {/* What would move this */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "22px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           What would move this
         </p>
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -118,7 +118,7 @@ function Nudge({ children }: { children: React.ReactNode }) {
   return (
     <li style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
       <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE_TEXT, flexShrink: 0, marginTop: "7px" }} />
-      <span style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.78)" }}>{children}</span>
+      <span style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74" }}>{children}</span>
     </li>
   );
 }

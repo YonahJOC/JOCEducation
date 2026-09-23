@@ -46,9 +46,14 @@ export type FlagInput = {
 
 const DAY = 86_400_000;
 
-/** "Sep 8" — en-US like every other date in the console; en-GB says "Sept". */
+/**
+ * "Sep 8" — en-US like every other date in the console; en-GB says "Sept".
+ *
+ * Says so in words when there is no date. A dash in the middle of a sentence
+ * about how long something has been waiting reads as a subtraction.
+ */
 const shortDate = (d: Date | null) =>
-  d ? new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short" }) : "—";
+  d ? new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short" }) : "a date nobody recorded";
 
 const monthName = (t: number) => new Date(t).toLocaleDateString("en-US", { month: "long" });
 const thisMonth = (now: number) => monthName(now);

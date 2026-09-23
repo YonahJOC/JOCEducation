@@ -25,7 +25,7 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 /** The ones JOC actually works in. Anything else is typed. */
@@ -88,7 +88,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
       }}
     >
       <p style={{ fontSize: "15px", fontWeight: 700, color: INK, margin: "0 0 4px" }}>Add a school</p>
-      <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 16px" }}>
+      <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 16px" }}>
         The name and where it is. Everything else — the city, the size, who runs chesed there — is
         on the school&rsquo;s own page once it exists.
       </p>
@@ -140,11 +140,11 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
         <button
           type="button"
           onClick={() => { setOpen(false); setMsg(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
         >
           Cancel
         </button>
-        {msg && <span style={{ fontSize: "13px", color: "#B8321E" }}>{msg}</span>}
+        {msg && <span style={{ fontSize: "13px", color: "#A3261A" }}>{msg}</span>}
       </div>
     </form>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { setProgramForm, setProgramLead, saveProgramForm, addProgramCoordinator } from "@/app/actions/forms";
@@ -19,7 +20,7 @@ import type { ProgramAdminView } from "@/lib/program-admin";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 const card: React.CSSProperties = {
@@ -28,7 +29,7 @@ const card: React.CSSProperties = {
 };
 const cell: React.CSSProperties = {
   padding: "12px 16px", borderBottom: "1px solid rgba(16,35,63,.05)",
-  color: "rgba(16,35,63,.75)", verticalAlign: "top",
+  color: "#4A5A74", verticalAlign: "top",
 };
 
 export function ProgramAdminClient({
@@ -95,20 +96,20 @@ export function ProgramAdminClient({
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "12px 0 4px" }}>
         {view.name}
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 4px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 4px" }}>
         /programs/{view.slug}
         {!view.published && " · draft"}
         {view.comingSoon && " · coming soon"}
       </p>
       {asCoordinator && (
-        <div style={{ backgroundColor: "#0B1A31", borderRadius: "12px", padding: "12px 16px", margin: "12px 0 0", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ backgroundColor: "#10233F", borderRadius: "12px", padding: "12px 16px", margin: "12px 0 0", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
           <span style={{ fontSize: "13.5px", color: "#fff", lineHeight: 1.5, flex: 1, minWidth: "min(100%, 300px)" }}>
             You are seeing this the way <strong>whoever runs this program</strong> sees it — no
             editing the form, no coordinators panel, no app figures.
           </span>
           <Link
             href={`/admin/programs/${view.slug}`}
-            style={{ fontSize: "13px", fontWeight: 700, color: "#0B1A31", backgroundColor: "#FA912D", borderRadius: "9999px", padding: "9px 16px", textDecoration: "none", whiteSpace: "nowrap" }}
+            style={{ fontSize: "13px", fontWeight: 700, color: "#10233F", backgroundColor: "#FA912D", borderRadius: "9999px", padding: "9px 16px", textDecoration: "none", whiteSpace: "nowrap" }}
           >
             Back to your own view
           </Link>
@@ -126,14 +127,13 @@ export function ProgramAdminClient({
               padding: "9px 16px", minHeight: "40px", textDecoration: "none",
             }}
           >
-            <span aria-hidden="true">👁</span>
             See this as its coordinator does
           </Link>
         </p>
       )}
 
       {!asCoordinator && view.asLead && (
-        <p style={{ fontSize: "13.5px", color: "#9A5405", backgroundColor: "#FDEEDA", borderRadius: "10px", padding: "10px 14px", margin: "12px 0 0", maxWidth: "62ch", lineHeight: 1.5 }}>
+        <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "10px", padding: "10px 14px", margin: "12px 0 0", maxWidth: "62ch", lineHeight: 1.5 }}>
           You are down as running this program, so you can see its sign-ups. Everything else in the
           console stays as it was.
         </p>
@@ -143,21 +143,21 @@ export function ProgramAdminClient({
 
       {/* ── The form, edited right here ────────────────────────────────── */}
       <div style={{ marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
           Sign-up form
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "64ch" }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "64ch" }}>
           {view.form?.published
             ? "This is live. What you change here is what a school sees when they press the button on the program page."
             : "Every program starts with the questions JOC asks any school. Cut what you do not need, add what you do, then tick Published to put it on the program page."}
         </p>
 
         {view.form && (
-          <p style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "13px", color: "#4A5A74", margin: "0 0 14px" }}>
             {view.form.published ? (
-              <Pill color="#1B7F4B">live on the program page</Pill>
+              <Pill color="#1D6B37">live on the program page</Pill>
             ) : view.form.closed ? (
-              <Pill color="#B8321E">closed</Pill>
+              <Pill color="#A3261A">closed</Pill>
             ) : (
               <Pill color="#C96C00">draft — not on the program page yet</Pill>
             )}
@@ -208,7 +208,7 @@ export function ProgramAdminClient({
                     {f.label}
                     {f.required && <span style={{ color: "#C96C00", marginLeft: "5px" }}>*</span>}
                   </span>
-                  <span style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: "12px", color: "#4A5A74", whiteSpace: "nowrap" }}>
                     {FIELD_TYPE_LABELS[f.type]}
                   </span>
                 </li>
@@ -217,7 +217,7 @@ export function ProgramAdminClient({
           </div>
         ) : (
           <div style={card}>
-            <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", margin: 0 }}>
+            <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>
               No form on this program yet.
             </p>
           </div>
@@ -243,7 +243,7 @@ export function ProgramAdminClient({
       {/* ── Where it is running ────────────────────────────────────────── */}
       <div style={card}>
         <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", marginBottom: "6px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
             Where it is running
           </p>
           <Link href="/admin/programming" style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none" }}>
@@ -252,13 +252,13 @@ export function ProgramAdminClient({
         </div>
 
         {view.runs.length === 0 ? (
-          <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", margin: 0, lineHeight: 1.55, maxWidth: "62ch" }}>
+          <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0, lineHeight: 1.55, maxWidth: "62ch" }}>
             Not booked in anywhere yet. Dates are set on the calendar — each one says which school,
             when, and who from JOC is running it.
           </p>
         ) : (
           <>
-            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55, maxWidth: "62ch" }}>
+            <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55, maxWidth: "62ch" }}>
               Every date this program is booked for. Set them on the calendar; this is the view of
               just yours.
             </p>
@@ -281,14 +281,14 @@ export function ProgramAdminClient({
                     <span style={{ flex: 1, minWidth: 0, fontSize: "14px", color: INK }}>
                       {r.schoolName ?? "Open to every school"}
                       {r.audience && (
-                        <span style={{ color: "rgba(16,35,63,.55)", fontSize: "12.5px" }}> · {r.audience}</span>
+                        <span style={{ color: "#4A5A74", fontSize: "12.5px" }}> · {r.audience}</span>
                       )}
                       {r.location && (
-                        <span style={{ color: "rgba(16,35,63,.55)", fontSize: "12.5px" }}> · {r.location}</span>
+                        <span style={{ color: "#4A5A74", fontSize: "12.5px" }}> · {r.location}</span>
                       )}
                     </span>
                     {r.status !== "PLANNED" && (
-                      <Pill color={r.status === "CANCELLED" ? "#B8321E" : r.status === "DONE" ? "#1B7F4B" : "#C96C00"}>
+                      <Pill color={r.status === "CANCELLED" ? "#A3261A" : r.status === "DONE" ? "#1D6B37" : "#C96C00"}>
                         {r.status.toLowerCase()}
                       </Pill>
                     )}
@@ -307,10 +307,10 @@ export function ProgramAdminClient({
       {/* ── Swapping the form out ──────────────────────────────────────── */}
       {view.canEditProgram && (
         <div style={card}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
             Use a different form
           </p>
-          <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "62ch" }}>
+          <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "62ch" }}>
             Each program has its own form already, so this is only for the case where two programs
             should share one. Changing it here does not delete the form that was attached before.
           </p>
@@ -347,10 +347,10 @@ export function ProgramAdminClient({
       {/* ── Who runs it ────────────────────────────────────────────────── */}
       {view.canSetCoordinators && (
         <div style={card}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
             Program coordinators
           </p>
-          <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "62ch" }}>
+          <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 12px", lineHeight: 1.55, maxWidth: "62ch" }}>
             A lead can open this page and read these sign-ups, and nothing else in the console. It
             is not an admin type — they need no permissions at all.
           </p>
@@ -376,7 +376,7 @@ export function ProgramAdminClient({
                     style={{ width: "16px", height: "16px" }}
                   />
                   {u.name ?? u.email}
-                  <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)" }}>{u.email}</span>
+                  <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{u.email}</span>
                 </label>
               );
             })}
@@ -393,10 +393,10 @@ export function ProgramAdminClient({
       {/* ── The sign-ups ───────────────────────────────────────────────── */}
       <div style={{ ...card, padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "18px 20px 12px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
             Sign-ups
           </p>
-          <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: 0 }}>
+          <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>
             {rows.length === 0
               ? view.form
                 ? "Nobody has signed up yet."
@@ -416,7 +416,7 @@ export function ProgramAdminClient({
               <thead>
                 <tr>
                   {["When", "Name", "Email", ...(view.form?.feeCents ? ["Paid"] : []), ...columns].map((h) => (
-                    <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+                    <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
                       {h}
                     </th>
                   ))}
@@ -428,17 +428,17 @@ export function ProgramAdminClient({
                     <td style={cell}>
                       {new Date(r.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
                     </td>
-                    <td style={{ ...cell, fontWeight: 600, color: INK }}>{r.name ?? "—"}</td>
-                    <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? "—"}</td>
+                    <td style={{ ...cell, fontWeight: 600, color: INK }}>{r.name ?? <Absent>No name given</Absent>}</td>
+                    <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                     {view.form?.feeCents ? (
                       <td style={cell}>
-                        <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1B7F4B" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                        <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                           {r.paid ? "paid" : "unpaid"}
                         </span>
                       </td>
                     ) : null}
                     {columns.map((c) => (
-                      <td key={c} style={cell}>{r.answers.find((a) => a.label === c)?.value ?? "—"}</td>
+                      <td key={c} style={cell}>{r.answers.find((a) => a.label === c)?.value ?? <Absent>Not answered</Absent>}</td>
                     ))}
                   </tr>
                 ))}
@@ -492,7 +492,7 @@ function AddCoordinator({ programId }: { programId: number }) {
 
   return (
     <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: `1px solid ${RULE}` }}>
-      <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "58ch" }}>
+      <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "58ch" }}>
         Their name and email. It makes them an account and puts them down as running this program.
         They sign in with that address — no password is set here.
       </p>
@@ -546,7 +546,7 @@ function AddCoordinator({ programId }: { programId: number }) {
         <button
           type="button"
           onClick={() => { setOpen(false); setErr(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
         >
           Cancel
         </button>

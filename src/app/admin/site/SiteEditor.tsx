@@ -5,11 +5,11 @@ import { saveDraft, discardDraft, publishDrafts, setPreview } from "@/app/action
 import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
-const DEEP = "#0B1A31";
+const DEEP = "#10233F";
 const BLUE = "#2D46AF";
 const ORANGE = "#FA912D";
 const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.15)";
 const DRAFT_BG = "#FFFBF3";
 
@@ -115,7 +115,7 @@ export function SiteEditor({
 
           {/* Pane 1 — pages */}
           <nav style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "10px", position: "sticky", top: "16px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "6px 10px 10px" }}>
+            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "6px 10px 10px" }}>
               Pages
             </p>
             {pages.map((p) => {
@@ -128,7 +128,7 @@ export function SiteEditor({
                     display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px",
                     width: "100%", textAlign: "left", fontFamily: "var(--font-outfit)",
                     fontSize: "13.5px", fontWeight: on ? 700 : 500,
-                    color: on ? BLUE : "rgba(16,35,63,.75)",
+                    color: on ? BLUE : "#4A5A74",
                     backgroundColor: on ? "#F4F7FD" : "transparent",
                     border: "none", borderRadius: "10px", padding: "10px 10px",
                     minHeight: "44px", cursor: "pointer",
@@ -149,7 +149,7 @@ export function SiteEditor({
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
             {sections.map(([section, sectionLabel]) => (
               <div key={section} style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
-                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 16px" }}>
+                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
                   {sectionLabel}
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -231,12 +231,12 @@ export function SiteEditor({
             </div>
 
             {msg && (
-              <p style={{ fontSize: "13px", color: msg.startsWith("Published") ? GREEN : "#B8321E", margin: 0 }}>
+              <p style={{ fontSize: "13px", color: msg.startsWith("Published") ? GREEN : "#A3261A", margin: 0 }}>
                 {msg}
               </p>
             )}
 
-            <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", lineHeight: 1.55, margin: 0 }}>
+            <p style={{ fontSize: "12.5px", color: "#4A5A74", lineHeight: 1.55, margin: 0 }}>
               Every field keeps its full history, so any change can be rolled back after publishing.
             </p>
           </aside>
@@ -272,7 +272,7 @@ function FieldRow({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
         <label style={{ fontSize: "13px", fontWeight: 600, color: INK }}>
           {field.label}
-          <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(16,35,63,.4)", marginLeft: "9px" }}>
+          <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#4A5A74", marginLeft: "9px" }}>
             {TYPE_LABEL[field.type] ?? field.type}
           </span>
         </label>
@@ -293,7 +293,7 @@ function FieldRow({
       </div>
 
       {field.help && (
-        <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "0 0 8px", lineHeight: 1.5 }}>{field.help}</p>
+        <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "0 0 8px", lineHeight: 1.5 }}>{field.help}</p>
       )}
 
       {isList ? (
@@ -327,7 +327,7 @@ function FieldRow({
       )}
 
       {field.updatedBy && !dirty && (
-        <p style={{ fontSize: "11.5px", color: "rgba(16,35,63,.4)", margin: "6px 0 0" }}>
+        <p style={{ fontSize: "11.5px", color: "#4A5A74", margin: "6px 0 0" }}>
           Last edited by {field.updatedBy}
         </p>
       )}
@@ -412,7 +412,7 @@ function IconBtn({
       style={{
         width: "30px", height: "28px", display: "flex", alignItems: "center", justifyContent: "center",
         background: "none", border: "none", borderRadius: "6px",
-        color: disabled ? "rgba(16,35,63,.2)" : danger ? "#B8321E" : "rgba(16,35,63,.5)",
+        color: disabled ? "rgba(16,35,63,.2)" : danger ? "#A3261A" : "#4A5A74",
         cursor: disabled ? "default" : "pointer", fontSize: "15px",
       }}
     >

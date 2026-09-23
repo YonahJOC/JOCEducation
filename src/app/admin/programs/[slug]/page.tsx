@@ -30,11 +30,10 @@ export default async function ProgramAdminPage({
   if (view === "denied") {
     return (
       <div style={{ maxWidth: "460px", padding: "40px 0" }}>
-        <p style={{ fontSize: "30px", marginBottom: "12px" }}>🔒</p>
         <h1 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: "#10233F", margin: "0 0 10px" }}>
           Not one of yours
         </h1>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: 0 }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
           You are not down as running this program, and your admin type does not include Programs.
           A super admin can add you as a lead under this program&rsquo;s settings.
         </p>

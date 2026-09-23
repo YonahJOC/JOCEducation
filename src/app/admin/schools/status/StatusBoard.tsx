@@ -7,15 +7,15 @@ import type { SchoolStatusRow } from "@/lib/school-status";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const ORANGE_TEXT = "#C96C00";
-const RED = "#B8321E";
-const MUTED = "rgba(16,35,63,.55)";
+const RED = "#A3261A";
+const MUTED = "#4A5A74";
 const HAIRLINE = "rgba(16,35,63,.09)";
 const PANEL = "#F4F7FD";
 
 function ago(d: Date | string | null): string {
-  if (!d) return "—";
+  if (!d) return "Not yet";
   const days = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
   if (days <= 0) return "today";
   if (days === 1) return "yesterday";
@@ -25,7 +25,7 @@ function ago(d: Date | string | null): string {
 }
 
 const PAID_COLOR: Record<string, string> = {
-  paid: GREEN, granted: BLUE, trial: ORANGE_TEXT, overdue: RED, none: "rgba(16,35,63,.45)",
+  paid: GREEN, granted: BLUE, trial: ORANGE_TEXT, overdue: RED, none: "#4A5A74",
 };
 
 export function StatusBoard({ schools, canEdit }: { schools: SchoolStatusRow[]; canEdit: boolean }) {
@@ -181,7 +181,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ padding: "13px 18px", minWidth: 0 }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", margin: "0 0 6px" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
         {label}
       </p>
       <div style={{ fontSize: "13.5px", color: INK, lineHeight: 1.5 }}>{children}</div>
@@ -289,7 +289,7 @@ function Hours({
           onChange={(e) => setValue(e.target.value.replace(/[^0-9]/g, ""))}
           onBlur={save}
           inputMode="numeric"
-          placeholder="—"
+          placeholder="Not checked"
           disabled={pending}
           aria-label="Hours waiting for approval"
           style={{

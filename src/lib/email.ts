@@ -148,11 +148,11 @@ export function emailShell(opts: {
 
   const button = opts.action
     ? `<p style="margin:24px 0;"><a href="${escapeAttr(opts.action.href)}" style="display:inline-block;background:${BLUE};color:#ffffff;font-weight:700;font-size:15px;text-decoration:none;border-radius:9999px;padding:13px 26px;">${escapeHtml(opts.action.label)}</a></p>
-       <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:rgba(16,35,63,.55);">If the button does not work, copy this address into your browser:<br>${escapeHtml(opts.action.href)}</p>`
+       <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#4A5A74;">If the button does not work, copy this address into your browser:<br>${escapeHtml(opts.action.href)}</p>`
     : "";
 
   const foot = opts.footnote
-    ? `<p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:rgba(16,35,63,.55);">${escapeHtml(opts.footnote)}</p>`
+    ? `<p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#4A5A74;">${escapeHtml(opts.footnote)}</p>`
     : "";
 
   return `<!doctype html>
@@ -168,7 +168,7 @@ export function emailShell(opts: {
           ${foot}
         </td></tr>
       </table>
-      <p style="margin:20px 0 0;font-size:12px;color:rgba(16,35,63,.5);">Just One Chesed, Inc. — a 501(c)(3) nonprofit organization</p>
+      <p style="margin:20px 0 0;font-size:12px;color:#4A5A74;">Just One Chesed, Inc. — a 501(c)(3) nonprofit organization</p>
     </td></tr>
   </table>
 </body></html>`;

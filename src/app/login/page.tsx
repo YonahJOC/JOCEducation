@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
 
         <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
           <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "6px" }}>Welcome back</h1>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", marginBottom: "28px" }}>Sign in to your JOC Education account.</p>
+          <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px" }}>Sign in to your JOC Education account.</p>
 
           <LoginForm
             googleEnabled={isGoogleConfigured}
@@ -30,7 +30,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
             next={next?.startsWith("/") ? next : undefined}
           />
 
-          <p style={{ marginTop: "22px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.6)" }}>
+          <p style={{ marginTop: "22px", textAlign: "center", fontSize: "14px", color: "#4A5A74" }}>
             Don&rsquo;t have an account?{" "}
             <Link href="/signup" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>Sign up</Link>
           </p>

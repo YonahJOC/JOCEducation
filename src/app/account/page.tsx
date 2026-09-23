@@ -16,7 +16,7 @@ const CARD: React.CSSProperties = {
 };
 const LABEL: React.CSSProperties = {
   fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase",
-  fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 12px",
+  fontWeight: 700, color: "#4A5A74", margin: "0 0 12px",
 };
 
 /**
@@ -55,10 +55,10 @@ export default async function AccountPage() {
 
       <div style={CARD}>
         <p style={LABEL}>Sign-in</p>
-        <Row label="Email" value={u.email ?? "—"} />
+        <Row label="Email" value={u.email ?? "Not recorded"} />
         <Row label="Name" value={u.name ?? "Not set"} />
         <Row label="Role" value={ROLE_LABELS[role] ?? role} />
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "10px 0 0" }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "10px 0 0" }}>
           {ROLE_DESCRIPTIONS[role]}
         </p>
       </div>
@@ -68,7 +68,7 @@ export default async function AccountPage() {
         {schoolName ? (
           <Row label="You are with" value={schoolName} />
         ) : (
-          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
             Your account is not linked to a school. Signing in with your school email address
             is what makes the match — ask Just One Chesed if it should be and is not.
           </p>
@@ -77,7 +77,7 @@ export default async function AccountPage() {
 
       <div style={CARD}>
         <p style={LABEL}>Password</p>
-        <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: "0 0 16px" }}>
+        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 16px" }}>
           Change the password you use to sign in.
         </p>
         <Link
@@ -109,7 +109,7 @@ export default async function AccountPage() {
       <form action={signOutAction}>
         <button
           type="submit"
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: "#B8321E", background: "none", border: "none", padding: "8px 0", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", padding: "8px 0", cursor: "pointer", minHeight: "44px" }}
         >
           Sign out
         </button>
@@ -121,7 +121,7 @@ export default async function AccountPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", padding: "7px 0", fontSize: "14.5px" }}>
-      <span style={{ color: "rgba(16,35,63,.55)", minWidth: "110px" }}>{label}</span>
+      <span style={{ color: "#4A5A74", minWidth: "110px" }}>{label}</span>
       <span style={{ color: INK, fontWeight: 500, wordBreak: "break-word" }}>{value}</span>
     </div>
   );

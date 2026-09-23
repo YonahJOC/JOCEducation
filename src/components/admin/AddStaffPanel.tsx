@@ -15,7 +15,7 @@ import { addSchoolStaff } from "@/app/actions/admin";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -25,7 +25,7 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabled?: boolean }) {
@@ -54,10 +54,10 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
 
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
         Add a member of staff
       </p>
-      <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
+      <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
         Their name and email makes them an account at this school. <strong style={{ color: INK }}>No
         message is sent to them</strong> — nothing goes out to a school until JOC launches. Tell
         them yourself, whenever you are ready.
@@ -118,7 +118,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
             {pending ? "Adding…" : "Add them"}
           </button>
           {msg && (
-            <span style={{ fontSize: "13px", color: msg.good ? "#1B7F4B" : RED, lineHeight: 1.45, maxWidth: "42ch" }}>
+            <span style={{ fontSize: "13px", color: msg.good ? "#1D6B37" : RED, lineHeight: 1.45, maxWidth: "42ch" }}>
               {msg.text}
             </span>
           )}

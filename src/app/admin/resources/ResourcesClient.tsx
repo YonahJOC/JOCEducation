@@ -101,7 +101,7 @@ export function ResourcesClient({
         return (
           <>
             <p style={{ fontWeight: 600, color: INK, margin: 0, fontSize: "14.5px" }}>{r.title}</p>
-            <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
+            <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
               {r.tag}
               {cycle ? ` · Cycle ${cycle.num}` : ""}
               {r.fileUrl ? "" : " · no file attached"}

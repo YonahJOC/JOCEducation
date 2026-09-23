@@ -51,7 +51,7 @@ function EventRow({ e }: { e: PublicEvent }) {
           {formatEventDate(e.startsAt, e.endsAt)}
         </p>
         {cancelled && (
-          <p style={{ fontSize: "11.5px", fontWeight: 700, color: "#B8321E", margin: "3px 0 0", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <p style={{ fontSize: "11.5px", fontWeight: 700, color: "#A3261A", margin: "3px 0 0", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Cancelled
           </p>
         )}
@@ -61,13 +61,13 @@ function EventRow({ e }: { e: PublicEvent }) {
         <p style={{ fontSize: "17px", fontWeight: 700, color: INK, margin: "0 0 4px", letterSpacing: "-0.02em", textDecoration: cancelled ? "line-through" : "none" }}>
           {e.title}
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", margin: "0 0 8px" }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 8px" }}>
           {[e.schoolName ?? (e.kind === "JOC_EVENT" ? "Open to every school" : null), e.audience, e.location]
             .filter(Boolean)
             .join(" · ")}
         </p>
         {e.detail && (
-          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: 0, maxWidth: "62ch" }}>
+          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0, maxWidth: "62ch" }}>
             {e.detail}
           </p>
         )}
@@ -89,7 +89,7 @@ function Months({ months }: { months: { label: string; events: PublicEvent[] }[]
     <>
       {months.map((m) => (
         <div key={m.label} style={{ marginBottom: "34px" }}>
-          <h3 style={{ fontWeight: 800, fontSize: "13px", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+          <h3 style={{ fontWeight: 800, fontSize: "13px", letterSpacing: "0.18em", textTransform: "uppercase", color: "#4A5A74", margin: "0 0 4px" }}>
             {m.label}
           </h3>
           {m.events.map((e) => (
@@ -104,7 +104,7 @@ function Months({ months }: { months: { label: string; events: PublicEvent[] }[]
 function Empty({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "18px", padding: "32px 26px" }}>
-      <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.6)", margin: 0, maxWidth: "52ch" }}>
+      <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0, maxWidth: "52ch" }}>
         {children}
       </p>
     </div>
@@ -140,13 +140,13 @@ export default async function ProgrammingPage() {
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4.6vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: INK, margin: "0 0 16px", maxWidth: "18ch" }}>
           What we are running, and when.
         </h1>
-        <p style={{ fontSize: "17px", lineHeight: 1.65, color: "rgba(16,35,63,.72)", margin: "0 0 10px", maxWidth: "58ch" }}>
+        <p style={{ fontSize: "17px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 10px", maxWidth: "58ch" }}>
           The Chesed Cycles say what every school is learning this month. This is what is actually
           happening — the booths, the bake sales, the trips and the collections, across the whole
           network.
         </p>
         {cycle && (
-          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: 0 }}>
+          <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: 0 }}>
             Running now: <strong style={{ color: INK }}>{cycle.theme}</strong> · {cycle.range}
           </p>
         )}
@@ -161,7 +161,7 @@ export default async function ProgrammingPage() {
           <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
             JOC programs
           </h2>
-          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: "0 0 14px" }}>
             Across the whole network — open to every school.
           </p>
           {jocMonths.length === 0 ? (
@@ -181,7 +181,7 @@ export default async function ProgrammingPage() {
           <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
             {seesEverySchool ? "Programs at schools" : "Running at your school"}
           </h2>
-          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: "0 0 14px" }}>
             {seesEverySchool
               ? "Each program, at each school that is running it."
               : "What your school has on this year."}
@@ -202,7 +202,7 @@ export default async function ProgrammingPage() {
             <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
               Already run
             </h2>
-            <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", margin: "0 0 10px" }}>
+            <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: "0 0 10px" }}>
               What the network has done this year.
             </p>
             {past.map((e) => (

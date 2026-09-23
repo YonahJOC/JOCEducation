@@ -19,7 +19,7 @@ export function PromoVideo({ url, title }: { url: string | null | undefined; tit
         aspectRatio: "16 / 9",
         borderRadius: "18px",
         overflow: "hidden",
-        backgroundColor: "#0B1A31",
+        backgroundColor: "#10233F",
         marginBottom: "40px",
       }}
     >

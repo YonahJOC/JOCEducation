@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Absent } from "@/components/Absent";
 import { useState } from "react";
 import { saveForm, deleteForm } from "@/app/actions/forms";
 import { Download } from "@/components/admin/Download";
@@ -10,7 +11,7 @@ import type { AdminFormRow, ResponseRow } from "@/lib/forms";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -21,7 +22,7 @@ const field: React.CSSProperties = {
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600,
-  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
@@ -107,7 +108,7 @@ export function FormsClient({
 
       {forms.length === 0 ? (
         <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", margin: 0 }}>No forms yet.</p>
+          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>No forms yet.</p>
         </div>
       ) : (
         <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
@@ -123,10 +124,10 @@ export function FormsClient({
                 <p style={{ fontSize: "15px", fontWeight: 600, color: INK, margin: 0 }}>
                   {f.title}
                   {!f.published && <Pill color="#C96C00">draft</Pill>}
-                  {f.closed && <Pill color="#B8321E">closed</Pill>}
-                  {f.feeCents ? <Pill color="#1B7F4B">${(f.feeCents / 100).toFixed(2)}</Pill> : null}
+                  {f.closed && <Pill color="#A3261A">closed</Pill>}
+                  {f.feeCents ? <Pill color="#1D6B37">${(f.feeCents / 100).toFixed(2)}</Pill> : null}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "3px 0 0" }}>
+                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "3px 0 0" }}>
                   /forms/{f.slug} · {f.fields.length} question{f.fields.length === 1 ? "" : "s"} ·{" "}
                   {f.responseCount === 0 ? "no answers yet" : `${f.responseCount} answer${f.responseCount === 1 ? "" : "s"}`}
                 </p>
@@ -143,7 +144,7 @@ export function FormsClient({
                 <Link
                   href={`/forms/${f.slug}`}
                   target="_blank"
-                  style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+                  style={{ fontSize: "13px", color: "#4A5A74", textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
                 >
                   View
                 </Link>
@@ -187,7 +188,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
       <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "12px 0 4px" }}>
         {form.title}
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 18px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
         {rows.length} answer{rows.length === 1 ? "" : "s"}
         {form.feeCents ? ` · ${rows.filter((r) => r.paid).length} paid` : ""}
       </p>
@@ -199,7 +200,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
           <thead>
             <tr>
               {["When", "Name", "Email", ...(form.feeCents ? ["Paid"] : []), ...columns].map((h) => (
-                <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+                <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
                   {h}
                 </th>
               ))}
@@ -209,18 +210,18 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
             {rows.map((r) => (
               <tr key={r.id}>
                 <td style={cell}>{r.createdAt.toLocaleDateString("en-US", { day: "numeric", month: "short" })}</td>
-                <td style={{ ...cell, fontWeight: 600, color: INK }}>{r.name ?? "—"}</td>
-                <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? "—"}</td>
+                <td style={{ ...cell, fontWeight: 600, color: INK }}>{r.name ?? <Absent>No name given</Absent>}</td>
+                <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                 {form.feeCents ? (
                   <td style={cell}>
-                    <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1B7F4B" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                    <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                       {r.paid ? "paid" : "unpaid"}
                     </span>
                   </td>
                 ) : null}
                 {columns.map((c) => (
                   <td key={c} style={cell}>
-                    {r.answers.find((a) => a.label === c)?.value ?? "—"}
+                    {r.answers.find((a) => a.label === c)?.value ?? <Absent>Not answered</Absent>}
                   </td>
                 ))}
               </tr>
@@ -235,6 +236,6 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
 const cell: React.CSSProperties = {
   padding: "12px 16px",
   borderBottom: "1px solid rgba(16,35,63,.05)",
-  color: "rgba(16,35,63,.75)",
+  color: "#4A5A74",
   verticalAlign: "top",
 };

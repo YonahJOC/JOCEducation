@@ -7,8 +7,8 @@ import type { CycleRef } from "@/components/admin/LessonEditor";
 const INK = "#10233F";
 const BLUE = "#2D46AF";
 const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1B7F4B";
-const RED = "#B8321E";
+const GREEN = "#1D6B37";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 /**
@@ -167,12 +167,12 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
   return (
     <div style={{ backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Import from the workbook
         </p>
         <button
           onClick={() => { setOpen(false); setRows(null); setRaw(""); setResult(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: "rgba(16,35,63,.55)", background: "none", border: "none", cursor: "pointer" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer" }}
         >
           Close
         </button>
@@ -180,7 +180,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
 
       {!rows ? (
         <>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: "0 0 12px" }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 12px" }}>
             Copy the rows straight out of the workbook and paste them here. Tabs or commas both work.
             Nothing is saved until you have seen every row.
           </p>
@@ -199,13 +199,13 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
 
           {columnCount > 0 && (
             <>
-              <p style={{ fontSize: "12.5px", fontWeight: 600, color: "rgba(16,35,63,.6)", margin: "0 0 9px" }}>
+              <p style={{ fontSize: "12.5px", fontWeight: 600, color: "#4A5A74", margin: "0 0 9px" }}>
                 What is each column?
               </p>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "14px" }}>
                 {Array.from({ length: columnCount }, (_, i) => (
                   <label key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <span style={{ fontSize: "11px", color: "rgba(16,35,63,.5)" }}>
+                    <span style={{ fontSize: "11px", color: "#4A5A74" }}>
                       Column {i + 1}
                       {table[0]?.[i] ? ` · ${table[0][i].slice(0, 14)}` : ""}
                     </span>
@@ -246,7 +246,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
         </>
       ) : (
         <>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
             {rows.filter((r) => r.include).length} of {rows.length} will be imported, as unpublished
             drafts. Untick anything you do not want.
           </p>
@@ -276,7 +276,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                     <span style={{ fontSize: "14px", fontWeight: 600, color: INK, display: "block" }}>
                       {r.title || <em style={{ color: RED, fontWeight: 400 }}>No title</em>}
                     </span>
-                    <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)" }}>
+                    <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>
                       {[r.theme, r.grade.toUpperCase(), `${r.minutes} min`, cycle ? cycle.theme : null]
                         .filter(Boolean)
                         .join(" · ")}
@@ -306,7 +306,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
             </button>
             <button
               onClick={() => setRows(null)}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
             >
               Back
             </button>

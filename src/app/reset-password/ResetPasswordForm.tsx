@@ -6,7 +6,7 @@ import { completePasswordReset } from "@/app/actions/reset";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 
 const input: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
@@ -38,7 +38,7 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
       <div style={{ textAlign: "center" }}>
         <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "24px" }}>✓</div>
         <h2 style={{ fontWeight: 800, fontSize: "22px", color: INK, marginBottom: "10px" }}>Password changed</h2>
-        <p style={{ fontSize: "15px", color: "rgba(16,35,63,.62)", lineHeight: 1.6, marginBottom: "24px" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "24px" }}>
           You can sign in with your new password now.
         </p>
         <Link
@@ -56,7 +56,7 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, marginBottom: "8px" }}>
         Choose a new password
       </h1>
-      <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", marginBottom: "28px", lineHeight: 1.55 }}>
+      <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px", lineHeight: 1.55 }}>
         For <strong style={{ color: INK }}>{email}</strong>. At least 10 characters.
       </p>
 

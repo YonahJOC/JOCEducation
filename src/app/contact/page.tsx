@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { C, label } from "@/lib/joc-tokens";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -34,9 +35,9 @@ export default function ContactPage() {
   if (state === "success") {
     return (
       <div style={{ maxWidth: "560px", margin: "80px auto", padding: "0 26px", textAlign: "center" }}>
-        <div style={{ fontSize: "48px", marginBottom: "20px" }}>✉</div>
+        <p style={{ ...label, color: C.orangeText, marginBottom: "12px" }}>Message sent</p>
         <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "12px" }}>Message received</h1>
-        <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, marginBottom: "28px" }}>
+        <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "28px" }}>
           Thank you for reaching out. Someone from the JOC Education team will be in touch within one business day.
         </p>
         <Link href="/" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 28px", textDecoration: "none" }}>
@@ -55,7 +56,7 @@ export default function ContactPage() {
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "18px" }}>
           Talk to the<br />JOC Education team.
         </h1>
-        <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.65, marginBottom: "36px" }}>
+        <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.65, marginBottom: "36px" }}>
           Questions about a subscription, a program, or how to bring JOC to your school? We respond to every message within one business day.
         </p>
 
@@ -73,7 +74,7 @@ export default function ContactPage() {
               <span style={{ fontSize: "22px", flexShrink: 0 }}>{link.icon}</span>
               <div>
                 <div style={{ fontWeight: 600, fontSize: "15px", color: "#10233F", marginBottom: "3px" }}>{link.title}</div>
-                <div style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)" }}>{link.description}</div>
+                <div style={{ fontSize: "13.5px", color: "#4A5A74" }}>{link.description}</div>
               </div>
             </Link>
           ))}
@@ -147,7 +148,7 @@ export default function ContactPage() {
           >
             {state === "submitting" ? "Sending…" : "Send message"}
           </button>
-          <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)", textAlign: "center" }}>
+          <p style={{ fontSize: "12.5px", color: "#4A5A74", textAlign: "center" }}>
             We respond within one business day. No spam, ever.
           </p>
         </form>

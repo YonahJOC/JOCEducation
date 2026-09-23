@@ -96,7 +96,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
           <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 36px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
             {room.name}
           </h1>
-          <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: "6px 0 0" }}>
+          <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 0" }}>
             {room.description}
           </p>
         </div>

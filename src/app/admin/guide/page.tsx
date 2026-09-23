@@ -192,12 +192,12 @@ export default async function GuidePage() {
       <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: INK, margin: "0 0 8px" }}>
         {firstName ? `Start here, ${firstName}.` : "Start here."}
       </h1>
-      <p style={{ fontSize: "16px", color: "rgba(16,35,63,.68)", lineHeight: 1.65, margin: "0 0 12px", maxWidth: "68ch" }}>
+      <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.65, margin: "0 0 12px", maxWidth: "68ch" }}>
         This is where everything on the site gets written and changed. Nothing here can break the
         site: anything you have not published is invisible to teachers, and anything you have
         published can be changed back.
       </p>
-      <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", lineHeight: 1.6, margin: "0 0 30px", maxWidth: "68ch" }}>
+      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 30px", maxWidth: "68ch" }}>
         Every page has a <strong style={{ color: INK }}>“How do I change this?”</strong> link under
         its title with the steps for that page. Below is the whole console, section by section.
       </p>
@@ -205,7 +205,7 @@ export default async function GuidePage() {
       <Group title="Your work" sections={CONTENT} />
       {superAdmin && <Group title="Accounts and money" sections={ACCOUNTS} />}
 
-      <div style={{ backgroundColor: "#0B1A31", borderRadius: "18px", padding: "26px 28px", marginTop: "10px" }}>
+      <div style={{ backgroundColor: "#10233F", borderRadius: "18px", padding: "26px 28px", marginTop: "10px" }}>
         <h2 style={{ fontWeight: 700, fontSize: "18px", color: "#fff", margin: "0 0 10px" }}>
           Two things that are not working yet
         </h2>
@@ -228,7 +228,7 @@ export default async function GuidePage() {
 function Group({ title, sections }: { title: string; sections: Section[] }) {
   return (
     <div style={{ marginBottom: "36px" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
         {title}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -240,7 +240,7 @@ function Group({ title, sections }: { title: string; sections: Section[] }) {
             >
               {s.title} <span style={{ color: BLUE, fontSize: "15px" }}>→</span>
             </Link>
-            <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.68)", lineHeight: 1.6, margin: "6px 0 12px" }}>
+            <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 12px" }}>
               {s.what}
             </p>
             <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "7px" }}>
@@ -249,7 +249,7 @@ function Group({ title, sections }: { title: string; sections: Section[] }) {
               ))}
             </ol>
             {s.note && (
-              <p style={{ fontSize: "13.5px", color: "#9A5405", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
+              <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
                 {s.note}
               </p>
             )}

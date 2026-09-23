@@ -32,7 +32,7 @@ export function LegalPage({
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 42px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: INK, margin: "0 0 10px" }}>
           {title}
         </h1>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", margin: "0 0 34px", paddingBottom: "22px", borderBottom: `1px solid ${RULE}` }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 34px", paddingBottom: "22px", borderBottom: `1px solid ${RULE}` }}>
           Last updated {updated}
         </p>
         <div style={{ fontSize: "16px", lineHeight: 1.7, color: "rgba(16,35,63,.82)" }}>{children}</div>

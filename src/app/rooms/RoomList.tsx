@@ -62,7 +62,7 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
       </div>
 
       {shown.length === 0 ? (
-        <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.55)", padding: "40px 0", textAlign: "center" }}>
+        <p style={{ fontSize: "15.5px", color: "#4A5A74", padding: "40px 0", textAlign: "center" }}>
           You are not following any rooms yet. Follow one and it will show up here.
         </p>
       ) : (
@@ -93,25 +93,25 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                       </span>
                     )}
                     {r.archived && (
-                      <span style={{ fontSize: "11px", fontWeight: 700, color: "rgba(16,35,63,.5)", backgroundColor: "#F4F7FD", borderRadius: "9999px", padding: "2px 9px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: "9999px", padding: "2px 9px" }}>
                         closed
                       </span>
                     )}
                   </div>
 
-                  <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.68)", lineHeight: 1.55, margin: "0 0 10px" }}>
+                  <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 10px" }}>
                     {r.description}
                   </p>
 
                   {r.lastBody ? (
-                    <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.5)", margin: 0, lineHeight: 1.5 }}>
-                      <strong style={{ color: "rgba(16,35,63,.7)", fontWeight: 600 }}>{r.lastBy}</strong>
+                    <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: 0, lineHeight: 1.5 }}>
+                      <strong style={{ color: "#4A5A74", fontWeight: 600 }}>{r.lastBy}</strong>
                       {" · "}{ago(r.lastAt)}{" — "}
                       {r.lastBody}
                       {r.lastBody.length >= 140 ? "…" : ""}
                     </p>
                   ) : (
-                    <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.45)", margin: 0 }}>
+                    <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: 0 }}>
                       Nothing said yet — be the first.
                     </p>
                   )}
@@ -126,13 +126,13 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                       padding: "9px 16px", minHeight: "42px", borderRadius: "9999px",
                       border: joined[r.id] ? "1px solid rgba(16,35,63,.2)" : `1.5px solid ${BLUE}`,
                       backgroundColor: joined[r.id] ? "#F4F7FD" : "#fff",
-                      color: joined[r.id] ? "rgba(16,35,63,.6)" : BLUE,
+                      color: joined[r.id] ? "#4A5A74" : BLUE,
                       cursor: "pointer", whiteSpace: "nowrap",
                     }}
                   >
                     {joined[r.id] ? "Following" : "Follow"}
                   </button>
-                  <span style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: "12px", color: "#4A5A74", whiteSpace: "nowrap" }}>
                     {r.messageCount} message{r.messageCount === 1 ? "" : "s"}
                   </span>
                 </div>

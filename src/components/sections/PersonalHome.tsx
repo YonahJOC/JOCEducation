@@ -38,7 +38,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.4vw, 36px)", letterSpacing: "-0.035em", color: INK, margin: "0 0 6px" }}>
         {greeting}
       </h1>
-      <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", margin: "0 0 26px" }}>
+      <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 26px" }}>
         {data.isStaff
           ? "You have full access to everything on the site."
           : data.schoolName
@@ -101,11 +101,11 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px" }}>
         {/* New since last visit */}
         <section style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "20px", padding: "22px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
             New since you were last here
           </p>
           {data.newSinceLastVisit.length === 0 ? (
-            <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.6)", margin: 0 }}>
+            <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
               Nothing new yet. When Just One Chesed publishes a lesson or resource, it will appear here.
             </p>
           ) : (
@@ -115,7 +115,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
                   <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "7px" }} />
                   <div>
                     <p style={{ fontSize: "14.5px", color: INK, margin: 0, lineHeight: 1.45 }}>{n.title}</p>
-                    <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "2px 0 0" }}>{n.kind}</p>
+                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>{n.kind}</p>
                   </div>
                 </div>
               ))}
@@ -126,7 +126,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
         {/* Saved lessons */}
         <section style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "20px", padding: "22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
               Your saved lessons
             </p>
             <Link href="/lesson-plans" style={{ fontSize: "13px", color: BLUE, textDecoration: "none", fontWeight: 600 }}>
@@ -134,7 +134,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
             </Link>
           </div>
           {data.savedLessons.length === 0 ? (
-            <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.6)", margin: 0 }}>
+            <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
               Nothing saved yet. Star a lesson while you are reading it and it will wait for you here.
             </p>
           ) : (
@@ -144,7 +144,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
                 return (
                   <Link key={l.id} href={`/lesson-plans/${l.id}`} style={{ textDecoration: "none" }}>
                     <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>{l.title}</p>
-                    <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {GRADE_LABEL[l.grade] ?? l.grade}{c ? ` · ${c.theme}` : ""}
                     </p>
                   </Link>
@@ -158,13 +158,13 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       {/* My school — read only */}
       {data.schoolName && (
         <section style={{ backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "22px", marginTop: "16px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 10px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
             Your school
           </p>
           <p style={{ fontWeight: 700, fontSize: "19px", color: INK, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
             {data.schoolName}
           </p>
-          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: 0 }}>
+          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
             {data.schoolAdmins.length > 0 ? (
               <>
                 For anything to do with your school&rsquo;s account — adding a colleague, seats, or your
@@ -210,7 +210,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
               <p style={{ fontWeight: 700, fontSize: "15px", color: INK, margin: "0 0 4px", letterSpacing: "-0.02em" }}>
                 {l.title}
               </p>
-              <p style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", margin: 0 }}>{l.body}</p>
+              <p style={{ fontSize: "13px", color: "#4A5A74", margin: 0 }}>{l.body}</p>
             </Link>
           ))}
         </div>

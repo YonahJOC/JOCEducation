@@ -16,7 +16,7 @@ export default function NotFound() {
         <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 5vw, 36px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: "#10233F", marginBottom: "14px" }}>
           This page doesn't exist.
         </h1>
-        <p style={{ fontSize: "16px", color: "rgba(16,35,63,.62)", lineHeight: 1.6, marginBottom: "36px" }}>
+        <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "36px" }}>
           The link may be broken, or the page may have moved. Try heading back home.
         </p>
 

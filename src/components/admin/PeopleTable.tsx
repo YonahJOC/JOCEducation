@@ -11,7 +11,7 @@ const BLUE = "#2D46AF";
 const RULE = "rgba(16,35,63,.15)";
 
 export const ROLE_COLOR: Record<string, string> = {
-  SUPER_ADMIN: "#B8321E", ADMIN: "#2D46AF", STAFF: "#1B7F4B",
+  SUPER_ADMIN: "#A3261A", ADMIN: "#2D46AF", STAFF: "#1D6B37",
   SCHOOL_ADMIN: "#2C7AC9", TEACHER: "#7A8699",
 };
 
@@ -46,7 +46,7 @@ function ago(d: Date | string | null) {
 
 const th: React.CSSProperties = {
   textAlign: "left", padding: "10px 20px", fontSize: "10.5px", letterSpacing: "0.16em",
-  textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)",
+  textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
   borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
@@ -70,11 +70,11 @@ export function PeopleTable({
 }) {
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0, padding: "16px 20px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
         {title}
       </p>
       {people.length === 0 ? (
-        <p style={{ padding: "20px", fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>Nobody yet.</p>
+        <p style={{ padding: "20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nobody yet.</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: showSchool ? "720px" : "600px" }}>
@@ -167,8 +167,8 @@ function Row({
   return (
     <tr style={{ opacity: active ? 1 : 0.55 }}>
       <td style={td}>
-        <span style={{ fontWeight: 600, color: INK, display: "block" }}>{person.name ?? "—"}</span>
-        <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", wordBreak: "break-all" }}>{person.email}</span>
+        <span style={{ fontWeight: 600, color: INK, display: "block" }}>{person.name ?? "No name on the account"}</span>
+        <span style={{ fontSize: "12.5px", color: "#4A5A74", wordBreak: "break-all" }}>{person.email}</span>
       {/* Which programs they run. Not an admin type and not a role — a
           coordinator holds no permission at all; being named here is the
           whole of their access, and it reaches one program's sign-ups.
@@ -178,7 +178,7 @@ function Row({
           there is nothing in it. */}
       {programs.length > 0 && (canSetCoordinators || runs.length > 0) && (
         <span style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", marginTop: "8px" }}>
-          <span style={{ fontSize: "11.5px", color: "rgba(16,35,63,.45)", marginRight: "1px" }}>Runs</span>
+          <span style={{ fontSize: "11.5px", color: "#4A5A74", marginRight: "1px" }}>Runs</span>
 
           {runs.map((pid) => {
             const prog = programs.find((x) => x.id === pid);
@@ -249,7 +249,7 @@ function Row({
                 style={{
                   appearance: "none", WebkitAppearance: "none", MozAppearance: "none",
                   fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600,
-                  color: "rgba(16,35,63,.6)", backgroundColor: "transparent",
+                  color: "#4A5A74", backgroundColor: "transparent",
                   border: `1px dashed rgba(16,35,63,.28)`, borderRadius: "9999px",
                   padding: "4px 11px", lineHeight: 1.5,
                   cursor: disabled || pending ? "not-allowed" : "pointer", outline: "none",
@@ -267,14 +267,14 @@ function Row({
         </span>
       )}
       {runsError && (
-        <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "5px", maxWidth: "30ch", lineHeight: 1.4 }}>
+        <span style={{ display: "block", fontSize: "12px", color: "#A3261A", marginTop: "5px", maxWidth: "30ch", lineHeight: 1.4 }}>
           {runsError}
         </span>
       )}
-        {msg && <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "3px" }}>{msg}</span>}
+        {msg && <span style={{ display: "block", fontSize: "12px", color: "#A3261A", marginTop: "3px" }}>{msg}</span>}
         {newPassword && (
           <span style={{ display: "block", marginTop: "6px", backgroundColor: "#F4F7FD", borderRadius: "8px", padding: "7px 10px" }}>
-            <span style={{ display: "block", fontSize: "11px", color: "rgba(16,35,63,.55)" }}>
+            <span style={{ display: "block", fontSize: "11px", color: "#4A5A74" }}>
               New password — shown once
             </span>
             <span style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "14px", fontWeight: 700, color: BLUE }}>
@@ -303,7 +303,7 @@ function Row({
               {schools.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           ) : (
-            <span style={{ color: "rgba(16,35,63,.75)" }}>
+            <span style={{ color: "#4A5A74" }}>
               {person.schoolName ?? <span style={{ color: "#C96C00" }}>no school</span>}
             </span>
           )}
@@ -363,7 +363,7 @@ function Row({
                 disabled={disabled || pending}
                 style={{
                   fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-                  color: adminType ? INK : "rgba(16,35,63,.5)", backgroundColor: "#fff",
+                  color: adminType ? INK : "#4A5A74", backgroundColor: "#fff",
                   border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
                   minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
                 }}
@@ -374,20 +374,20 @@ function Row({
                 ))}
               </select>
               {typeError && (
-                <p style={{ fontSize: "12px", color: "#B8321E", margin: "4px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
+                <p style={{ fontSize: "12px", color: "#A3261A", margin: "4px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
                   {typeError}
                 </p>
               )}
             </>
           ) : (
-            <span style={{ fontSize: "13px", color: "rgba(16,35,63,.6)" }}>
-              {adminTypes.find((t) => t.id === adminType)?.name ?? "—"}
+            <span style={{ fontSize: "13px", color: "#4A5A74" }}>
+              {adminTypes.find((t) => t.id === adminType)?.name ?? "No admin type"}
             </span>
           )}
         </td>
       )}
 
-      <td style={{ ...td, color: "rgba(16,35,63,.6)", whiteSpace: "nowrap" }}>{ago(person.lastSeenAt)}</td>
+      <td style={{ ...td, color: "#4A5A74", whiteSpace: "nowrap" }}>{ago(person.lastSeenAt)}</td>
 
       <td style={{ ...td, whiteSpace: "nowrap", textAlign: "right" }}>
         {canEditRoles && (
@@ -409,7 +409,7 @@ function Row({
               disabled={disabled || pending}
               style={{
                 fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-                color: active ? "#B8321E" : "#1B7F4B", background: "none", border: "none",
+                color: active ? "#A3261A" : "#1D6B37", background: "none", border: "none",
                 cursor: disabled ? "not-allowed" : "pointer", padding: "6px 0", minHeight: "38px",
               }}
             >

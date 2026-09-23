@@ -10,7 +10,7 @@ export default async function SchoolPlanPage() {
 
   if (!school) {
     return (
-      <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)", maxWidth: "48ch", lineHeight: 1.6 }}>
+      <p style={{ fontSize: "15px", color: "#4A5A74", maxWidth: "48ch", lineHeight: 1.6 }}>
         We could not load your school. Email{" "}
         <a href="mailto:education@justonechesed.org">education@justonechesed.org</a> if this continues.
       </p>

@@ -66,7 +66,7 @@ export default async function BoardPage() {
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "14px" }}>
           Nobody has posted yet.
         </h1>
-        <p style={{ fontSize: "16.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, marginBottom: "26px" }}>
+        <p style={{ fontSize: "16.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "26px" }}>
           This is where teachers describe what they actually ran in their classrooms — what worked,
           what didn&rsquo;t, what surprised them. Be the first.
         </p>

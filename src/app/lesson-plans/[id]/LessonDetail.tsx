@@ -56,7 +56,7 @@ export function LessonDetail({
   const prepStyle = lesson.prep === "Minimal"
     ? { bg: "#F4F7FD", text: "#12306F" }
     : lesson.prep === "Moderate"
-    ? { bg: "#FDEEDA", text: "#9A5405" }
+    ? { bg: "#FFF0E0", text: "#C96C00" }
     : { bg: "#FEE2E2", text: "#991B1B" };
 
 
@@ -81,7 +81,7 @@ export function LessonDetail({
       {/* Back nav */}
       <Link
         href="/lesson-plans"
-        style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "rgba(16,35,63,.6)", fontSize: "14px", fontWeight: 600, textDecoration: "none", marginBottom: "28px" }}
+        style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#4A5A74", fontSize: "14px", fontWeight: 600, textDecoration: "none", marginBottom: "28px" }}
       >
         ← Lesson Plans
       </Link>
@@ -108,7 +108,7 @@ export function LessonDetail({
                 Cycle {cycle.num} · {cycle.theme}
               </Link>
               {cycle.weekTitle && (
-                <span style={{ color: "rgba(16,35,63,.55)" }}>
+                <span style={{ color: "#4A5A74" }}>
                   {" — week "}{lesson.cycleWeek}, {cycle.weekTitle}
                 </span>
               )}
@@ -121,7 +121,7 @@ export function LessonDetail({
             <MetaChip label={`${lesson.prep} prep`} style={{ backgroundColor: prepStyle.bg, color: prepStyle.text }} />
           </div>
 
-          <p style={{ fontSize: "17px", color: "rgba(16,35,63,.72)", lineHeight: 1.65, marginBottom: "40px", maxWidth: "64ch" }}>
+          <p style={{ fontSize: "17px", color: "#4A5A74", lineHeight: 1.65, marginBottom: "40px", maxWidth: "64ch" }}>
             {lesson.description}
           </p>
 
@@ -167,7 +167,7 @@ export function LessonDetail({
                       <span style={{ fontWeight: 700, fontSize: "16px", color: "#10233F" }}>{step.title}</span>
                       <span style={{ fontWeight: 600, fontSize: "12.5px", color: stripeColor, backgroundColor: `${stripeColor}18`, padding: "3px 10px", borderRadius: "9999px" }}>{step.duration}</span>
                     </div>
-                    <RichText text={step.description} style={{ fontSize: "15px", color: "rgba(16,35,63,.72)", lineHeight: 1.6 }} />
+                    <RichText text={step.description} style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6 }} />
                   </div>
                 </div>
               ))}
@@ -226,8 +226,8 @@ export function LessonDetail({
                     style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.12)", backgroundColor: "#F8FAFE" }}
                   >
                     <span style={{ fontSize: "18px", opacity: 0.5 }}>📄</span>
-                    <span style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", fontWeight: 500 }}>{file.name}</span>
-                    <span style={{ marginLeft: "auto", fontSize: "11.5px", color: "rgba(16,35,63,.45)", fontWeight: 600 }}>
+                    <span style={{ fontSize: "13.5px", color: "#4A5A74", fontWeight: 500 }}>{file.name}</span>
+                    <span style={{ marginLeft: "auto", fontSize: "11.5px", color: "#4A5A74", fontWeight: 600 }}>
                       {file.url ? "sign in" : "not yet uploaded"}
                     </span>
                   </div>
@@ -236,7 +236,7 @@ export function LessonDetail({
             </div>
             {!canDownload && (
               <>
-                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)", marginTop: "14px" }}>
+                <p style={{ fontSize: "12.5px", color: "#4A5A74", marginTop: "14px" }}>
                   Sign in with a JOC Education account to download.
                 </p>
                 <Link
@@ -252,7 +252,7 @@ export function LessonDetail({
           {/* Save lesson */}
           <div style={{ backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "20px 24px", marginBottom: "20px" }}>
             <p style={{ fontWeight: 600, fontSize: "14px", color: "#10233F", marginBottom: "8px" }}>Save for later</p>
-            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.62)", lineHeight: 1.5, marginBottom: "14px" }}>
+            <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.5, marginBottom: "14px" }}>
               {signedIn
                 ? "Saved lessons are waiting for you on your home page."
                 : "Sign in to add this lesson to your saved plans."}
@@ -275,7 +275,7 @@ export function LessonDetail({
                   {saved ? "★ Saved" : "☆ Save this lesson"}
                 </button>
                 {saveError && (
-                  <p style={{ fontSize: "12.5px", color: "#B8321E", margin: "8px 0 0" }}>{saveError}</p>
+                  <p style={{ fontSize: "12.5px", color: "#A3261A", margin: "8px 0 0" }}>{saveError}</p>
                 )}
               </>
             ) : (
@@ -320,7 +320,7 @@ export function LessonDetail({
                 <div style={{ padding: "18px" }}>
                   <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", lineHeight: 1.25, marginBottom: "6px" }}>{rel.title}</h3>
-                  <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: 0 }}>{rel.time} min · {rel.prep} prep</p>
+                  <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: 0 }}>{rel.time} min · {rel.prep} prep</p>
                 </div>
               </Link>
             ))}

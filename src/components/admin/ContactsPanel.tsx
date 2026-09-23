@@ -5,7 +5,7 @@ import { saveSchoolContact, deleteSchoolContact } from "@/app/actions/admin";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.15)";
 
 export type ContactRow = {
@@ -23,7 +23,7 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 const BLANK: ContactRow = { id: "", name: "", title: "", email: "", phone: "", isPrimary: false };
@@ -74,7 +74,7 @@ export function ContactsPanel({
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Contacts
         </p>
         {!draft && (
@@ -128,7 +128,7 @@ export function ContactsPanel({
             </button>
             <button
               onClick={() => { setDraft(null); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
             >
               Cancel
             </button>
@@ -137,7 +137,7 @@ export function ContactsPanel({
       )}
 
       {contacts.length === 0 && !draft ? (
-        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.6)", margin: 0 }}>
+        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
           Nobody recorded yet. Add whoever JOC actually speaks to at this school.
         </p>
       ) : (
@@ -153,7 +153,7 @@ export function ContactsPanel({
                     </span>
                   )}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0", wordBreak: "break-word" }}>
+                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
                   {[c.title, c.email, c.phone].filter(Boolean).join(" · ") || "No details"}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export function ContactsPanel({
                 <button
                   onClick={() => remove(c)}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#B8321E", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
                 >
                   Remove
                 </button>
@@ -179,7 +179,7 @@ export function ContactsPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? GREEN : "#B8321E" }}>{msg}</p>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? GREEN : "#A3261A" }}>{msg}</p>
       )}
     </div>
   );

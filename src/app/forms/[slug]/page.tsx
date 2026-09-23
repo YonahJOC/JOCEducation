@@ -38,13 +38,13 @@ export default async function FormPage({ params, searchParams }: Props) {
         </h1>
 
         {form.description && (
-          <p style={{ fontSize: "16.5px", lineHeight: 1.65, color: "rgba(16,35,63,.75)", margin: "0 0 18px", maxWidth: "58ch", whiteSpace: "pre-wrap" }}>
+          <p style={{ fontSize: "16.5px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 18px", maxWidth: "58ch", whiteSpace: "pre-wrap" }}>
             {form.description}
           </p>
         )}
 
         {form.feeCents && (
-          <p style={{ display: "inline-block", fontSize: "14.5px", fontWeight: 600, color: "#9A5405", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "8px 16px", margin: "0 0 22px" }}>
+          <p style={{ display: "inline-block", fontSize: "14.5px", fontWeight: 600, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "8px 16px", margin: "0 0 22px" }}>
             {money(form.feeCents)}{form.feeLabel ? ` — ${form.feeLabel}` : ""}
           </p>
         )}
@@ -54,7 +54,7 @@ export default async function FormPage({ params, searchParams }: Props) {
         {form.closed ? (
           <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
             <h2 style={{ fontWeight: 800, fontSize: "19px", color: INK, margin: "0 0 8px" }}>This has closed</h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: 0 }}>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
               It is no longer taking answers. If you think it should be open, email{" "}
               <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
                 education@justonechesed.org
@@ -65,7 +65,7 @@ export default async function FormPage({ params, searchParams }: Props) {
         ) : needsSignIn ? (
           <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
             <h2 style={{ fontWeight: 800, fontSize: "19px", color: INK, margin: "0 0 8px" }}>Please sign in first</h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: "0 0 16px" }}>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
               This one is for people with a JOC Education account.
             </p>
             <Link

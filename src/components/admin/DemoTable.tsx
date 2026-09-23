@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { setDemoStatus, convertDemoToSchool } from "@/app/actions/admin";
 
@@ -9,7 +10,7 @@ const RULE = "rgba(16,35,63,.15)";
 
 const STATUS_COLOR: Record<string, string> = {
   NEW: "#FA912D", CONTACTED: "#2C7AC9", SCHEDULED: "#2D46AF",
-  COMPLETED: "#1B7F4B", CONVERTED: "#1B7F4B", LOST: "#7A8699",
+  COMPLETED: "#1D6B37", CONVERTED: "#1D6B37", LOST: "#7A8699",
 };
 
 const STATUSES = ["NEW", "CONTACTED", "SCHEDULED", "COMPLETED", "LOST"] as const;
@@ -25,7 +26,7 @@ export type DemoRowT = {
 };
 
 function fmt(d: Date | string | null, withTime = false) {
-  if (!d) return "—";
+  if (!d) return "Not set";
   const date = new Date(d);
   return date.toLocaleDateString("en-US", {
     weekday: "short", day: "numeric", month: "short",
@@ -35,7 +36,7 @@ function fmt(d: Date | string | null, withTime = false) {
 
 const th: React.CSSProperties = {
   textAlign: "left", padding: "11px 20px", fontSize: "10.5px", letterSpacing: "0.16em",
-  textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)",
+  textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
   borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
@@ -45,7 +46,7 @@ const td: React.CSSProperties = {
 export function DemoTable({ demos, disabled }: { demos: DemoRowT[]; disabled?: boolean }) {
   if (demos.length === 0) {
     return (
-      <p style={{ padding: "24px 20px", fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+      <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
         No demo requests yet. They arrive here when someone books on the landing page.
       </p>
     );
@@ -110,11 +111,11 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
         <a href={`mailto:${demo.email}`} style={{ fontSize: "12.5px", color: "#2D46AF", textDecoration: "none", wordBreak: "break-all" }}>
           {demo.email}
         </a>
-        {msg && <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "3px" }}>{msg}</span>}
+        {msg && <span style={{ display: "block", fontSize: "12px", color: "#A3261A", marginTop: "3px" }}>{msg}</span>}
       </td>
-      <td style={{ ...td, color: "rgba(16,35,63,.75)" }}>{demo.schoolName ?? "—"}</td>
-      <td style={{ ...td, color: "rgba(16,35,63,.75)", whiteSpace: "nowrap" }}>{fmt(demo.requestedFor, true)}</td>
-      <td style={{ ...td, color: "rgba(16,35,63,.6)", whiteSpace: "nowrap" }}>{fmt(demo.createdAt)}</td>
+      <td style={{ ...td, color: "#4A5A74" }}>{demo.schoolName ?? <Absent>No school given</Absent>}</td>
+      <td style={{ ...td, color: "#4A5A74", whiteSpace: "nowrap" }}>{fmt(demo.requestedFor, true)}</td>
+      <td style={{ ...td, color: "#4A5A74", whiteSpace: "nowrap" }}>{fmt(demo.createdAt)}</td>
       <td style={td}>
         {converted ? (
           <span style={{

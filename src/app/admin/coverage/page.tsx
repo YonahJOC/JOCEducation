@@ -107,7 +107,7 @@ async function Inner() {
                           Now
                         </span>
                       )}
-                      <span style={{ display: "block", fontSize: "12px", color: "rgba(16,35,63,.5)", marginTop: "2px" }}>
+                      <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "2px" }}>
                         {c.hebrew} · {c.range}
                       </span>
                     </td>
@@ -142,7 +142,7 @@ async function Inner() {
                       );
                     })}
 
-                    <td style={{ ...td, textAlign: "center", color: res > 0 ? "rgba(16,35,63,.75)" : ORANGE_TEXT }}>
+                    <td style={{ ...td, textAlign: "center", color: res > 0 ? "#4A5A74" : ORANGE_TEXT }}>
                       {res > 0 ? res : "Nothing yet"}
                     </td>
                   </tr>
@@ -153,7 +153,7 @@ async function Inner() {
         </div>
       </div>
 
-      <p style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", margin: "14px 0 0", lineHeight: 1.6, maxWidth: "62ch" }}>
+      <p style={{ fontSize: "13px", color: "#4A5A74", margin: "14px 0 0", lineHeight: 1.6, maxWidth: "62ch" }}>
         A dashed square is a Cycle and grade band with nothing written for it. Those weeks will arrive
         whether or not there is material for them, so this is the list to work down.
       </p>
@@ -163,7 +163,7 @@ async function Inner() {
 
 const th: React.CSSProperties = {
   padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase",
-  fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: `1px solid ${RULE}`,
+  fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${RULE}`,
   backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
 };
 

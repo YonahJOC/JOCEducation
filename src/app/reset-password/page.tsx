@@ -25,7 +25,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
               <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "10px" }}>
                 That link is incomplete
               </h1>
-              <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, marginBottom: "22px" }}>
+              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "22px" }}>
                 Open the link from your email exactly as it was sent, or ask for a new one.
               </p>
               <Link
@@ -37,7 +37,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
             </>
           )}
 
-          <p style={{ marginTop: "24px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.55)" }}>
+          <p style={{ marginTop: "24px", textAlign: "center", fontSize: "14px", color: "#4A5A74" }}>
             <Link href="/login" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
           </p>
         </div>

@@ -53,7 +53,7 @@ export function LoginForm({
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
             <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(16,35,63,.1)" }} />
-            <span style={{ fontSize: "13px", color: "rgba(16,35,63,.4)", fontWeight: 500 }}>or</span>
+            <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>or</span>
             <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(16,35,63,.1)" }} />
           </div>
         </>
@@ -99,7 +99,7 @@ export function LoginForm({
           </button>
         </form>
       ) : (
-        <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
           Sign-in is not switched on yet. Write to{" "}
           <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600 }}>
             education@justonechesed.org

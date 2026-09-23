@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.14)";
 
 export type DemoDay = { key: string; weekday: string; day: string; month: string };
@@ -107,7 +107,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         <p style={{ fontWeight: 700, fontSize: "19px", color: INK, marginBottom: "8px", letterSpacing: "-0.02em" }}>
           Request sent
         </p>
-        <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6, marginBottom: "18px" }}>
+        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px" }}>
           You asked for <strong style={{ color: INK }}>{day.weekday} {day.month} {day.day} at {slot}</strong>.
           Someone from the JOC Education team will confirm by email.
         </p>
@@ -210,7 +210,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
       </div>
 
       {error && (
-        <p role="alert" style={{ fontSize: "13px", color: "#B8321E", marginBottom: "12px" }}>{error}</p>
+        <p role="alert" style={{ fontSize: "13px", color: "#A3261A", marginBottom: "12px" }}>{error}</p>
       )}
 
       <button

@@ -6,7 +6,7 @@ import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 
 export type FileRow = {
   id: string;
@@ -88,7 +88,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
 
       {files.length === 0 ? (
         <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.6)", margin: 0 }}>
+          <p style={{ fontSize: "15.5px", color: "#4A5A74", margin: 0 }}>
             Nothing uploaded yet.
           </p>
         </div>
@@ -105,7 +105,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
             >
               <div style={{ minWidth: 0, flex: 1 }}>
                 <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0, wordBreak: "break-word" }}>{f.name}</p>
-                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
                   {f.size} · {f.when}
                   {f.uploadedBy ? ` · ${f.uploadedBy}` : ""}
                 </p>
@@ -124,7 +124,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
                   setCopied(f.id);
                   setTimeout(() => setCopied(null), 1500);
                 }}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: copied === f.id ? "#1B7F4B" : INK, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: copied === f.id ? "#1D6B37" : INK, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
                 {copied === f.id ? "Copied" : "Copy link"}
               </button>

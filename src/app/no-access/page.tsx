@@ -47,7 +47,7 @@ export default async function NoAccessPage() {
           Your school isn&rsquo;t set up yet.
         </h1>
 
-        <p style={{ fontSize: "17px", lineHeight: 1.65, color: "rgba(16,35,63,.75)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "17px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 14px" }}>
           {email ? (
             <>
               You&rsquo;re signed in as <strong style={{ color: INK }}>{email}</strong>, but that account
@@ -63,7 +63,7 @@ export default async function NoAccessPage() {
           <p style={{ fontSize: "16px", fontWeight: 700, color: INK, margin: "0 0 4px" }}>
             Has a teacher given you a code?
           </p>
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: "0 0 12px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 12px" }}>
             Students who run a JOC program at their school get a six-character code from the teacher
             who runs it. You do not need your school&rsquo;s plan for that.
           </p>
@@ -79,7 +79,7 @@ export default async function NoAccessPage() {
           </Link>
         </div>
 
-        <p style={{ fontSize: "16px", lineHeight: 1.65, color: "rgba(16,35,63,.7)", margin: "0 0 28px" }}>
+        <p style={{ fontSize: "16px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 28px" }}>
           {looksLikeSchool ? (
             <>
               If your school already works with Just One Chesed, ask whoever arranged it to invite this
@@ -102,7 +102,7 @@ export default async function NoAccessPage() {
           <p style={{ fontWeight: 700, fontSize: "17px", color: INK, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
             In the meantime
           </p>
-          <p style={{ fontSize: "15px", lineHeight: 1.65, color: "rgba(16,35,63,.72)", margin: "0 0 18px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 18px" }}>
             The teaching platform is still being built, but Just One Chesed runs ten chesed programs your
             school can start this year — Kindness Booth, Bake for Chesed, Just One Tutor and more.
           </p>
@@ -133,7 +133,7 @@ export default async function NoAccessPage() {
             type="submit"
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600,
-              color: "rgba(16,35,63,.6)", background: "none", border: "none",
+              color: "#4A5A74", background: "none", border: "none",
               cursor: "pointer", padding: 0,
             }}
           >

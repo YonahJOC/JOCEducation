@@ -77,7 +77,7 @@ export function LessonsClient({
 
       <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
         {lessons.length === 0 ? (
-          <p style={{ padding: "24px 20px", fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+          <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
             No lessons yet.
           </p>
         ) : (
@@ -86,7 +86,7 @@ export function LessonsClient({
               <thead>
                 <tr>
                   {["Title", "Grade", "Time", "Cycle", "Status", ""].map((h, i) => (
-                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
                       {h}
                     </th>
                   ))}
@@ -99,19 +99,19 @@ export function LessonsClient({
                     <tr key={l.id}>
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
                         <span style={{ fontWeight: 600, color: INK, display: "block" }}>{l.title}</span>
-                        <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)" }}>{l.theme}</span>
+                        <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{l.theme}</span>
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
                         {GRADE_LABELS[l.grade] ?? l.grade}
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
                         {l.timeMinutes} min
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74" }}>
                         {cycle ? (
                           <>
                             {cycle.num}. {cycle.theme}
-                            <span style={{ display: "block", fontSize: "12px", color: "rgba(16,35,63,.5)" }}>
+                            <span style={{ display: "block", fontSize: "12px", color: "#4A5A74" }}>
                               {l.cycleWeek
                                 ? `Week ${l.cycleWeek}${cycle.weeks[l.cycleWeek - 1] ? ` — ${cycle.weeks[l.cycleWeek - 1]}` : ""}`
                                 : "any week"}
@@ -124,7 +124,7 @@ export function LessonsClient({
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
                         <span style={{
                           display: "inline-block", fontSize: "11.5px", fontWeight: 700, padding: "3px 9px", borderRadius: "9999px",
-                          color: l.published ? "#1B7F4B" : "#C96C00",
+                          color: l.published ? "#1D6B37" : "#C96C00",
                           backgroundColor: l.published ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
                         }}>
                           {l.published ? "published" : "draft"}
@@ -142,7 +142,7 @@ export function LessonsClient({
                         <Link
                           href={l.published ? `/lesson-plans/${l.id}` : `/lesson-plans/${l.id}?preview=1`}
                           target="_blank"
-                          style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", textDecoration: "none" }}
+                          style={{ fontSize: "13px", color: "#4A5A74", textDecoration: "none" }}
                         >
                           {l.published ? "View" : "Preview"}
                         </Link>

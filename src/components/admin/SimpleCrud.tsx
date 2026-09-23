@@ -13,7 +13,7 @@ export const crudField: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 export const crudLabel: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 /**
@@ -99,7 +99,7 @@ export function CrudShell<T extends { id: string | number }>({
             </button>
             <button
               onClick={() => { setDraft(null); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
             >
               Cancel
             </button>
@@ -108,12 +108,12 @@ export function CrudShell<T extends { id: string | number }>({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", marginBottom: "12px", color: msg === "Saved." ? "#1B7F4B" : "#B8321E" }}>{msg}</p>
+        <p style={{ fontSize: "13.5px", marginBottom: "12px", color: msg === "Saved." ? "#1D6B37" : "#A3261A" }}>{msg}</p>
       )}
 
       <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
         {items.length === 0 ? (
-          <p style={{ padding: "24px 20px", fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>Nothing here yet.</p>
+          <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column" }}>
             {items.map((item) => (
@@ -136,7 +136,7 @@ export function CrudShell<T extends { id: string | number }>({
                   <button
                     onClick={() => remove(item)}
                     disabled={disabled}
-                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#B8321E", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "38px" }}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "38px" }}
                   >
                     Delete
                   </button>

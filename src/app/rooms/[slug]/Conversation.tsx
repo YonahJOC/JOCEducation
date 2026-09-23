@@ -5,7 +5,7 @@ import { postMessage, removeMessage } from "@/app/actions/rooms";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 
 export type Msg = {
   id: string;
@@ -80,7 +80,7 @@ export function Conversation({
             >
               {pending ? "Posting…" : "Post"}
             </button>
-            <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.45)" }}>
+            <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>
               Enter posts · Shift + Enter for a new line
             </span>
           </div>
@@ -89,13 +89,13 @@ export function Conversation({
       )}
 
       {closed && (
-        <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.6)", backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "14px 18px", marginBottom: "28px" }}>
+        <p style={{ fontSize: "14.5px", color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "14px 18px", marginBottom: "28px" }}>
           This room is closed to new messages. Everything in it stays readable.
         </p>
       )}
 
       {messages.length === 0 ? (
-        <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.55)", textAlign: "center", padding: "48px 0" }}>
+        <p style={{ fontSize: "15.5px", color: "#4A5A74", textAlign: "center", padding: "48px 0" }}>
           Nothing here yet. Whatever you are wondering about, someone else is too.
         </p>
       ) : (
@@ -166,7 +166,7 @@ function Message({ message: m, roomId, canPost }: { message: Msg; roomId: string
                 </button>
                 <button
                   onClick={() => { setReplying(false); setReply(""); }}
-                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "rgba(16,35,63,.55)", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
                 >
                   Cancel
                 </button>
@@ -205,20 +205,20 @@ function Bubble({
         <div style={{ display: "flex", gap: "10px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "3px" }}>
           <span style={{ fontWeight: 700, fontSize: "14.5px", color: INK }}>{m.author}</span>
           {m.authorSchool && (
-            <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)" }}>{m.authorSchool}</span>
+            <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{m.authorSchool}</span>
           )}
-          <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.4)" }}>{m.when}</span>
+          <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{m.when}</span>
           {canRemove && !removed && (
             <button
               onClick={onRemove}
-              style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.4)", background: "none", border: "none", cursor: "pointer", minHeight: "32px" }}
+              style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600, color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "32px" }}
             >
               Remove
             </button>
           )}
         </div>
         {removed ? (
-          <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.4)", fontStyle: "italic", margin: 0 }}>
+          <p style={{ fontSize: "14.5px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>
             {m.removedBy === "moderator" ? "Removed by the JOC team." : "Removed."}
           </p>
         ) : (
@@ -238,10 +238,10 @@ function ReplyBubble({ message: m }: { message: Msg }) {
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", gap: "9px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "2px" }}>
           <span style={{ fontWeight: 700, fontSize: "13.5px", color: INK }}>{m.author}</span>
-          <span style={{ fontSize: "12px", color: "rgba(16,35,63,.4)" }}>{m.when}</span>
+          <span style={{ fontSize: "12px", color: "#4A5A74" }}>{m.when}</span>
         </div>
         {m.removed ? (
-          <p style={{ fontSize: "14px", color: "rgba(16,35,63,.4)", fontStyle: "italic", margin: 0 }}>Removed.</p>
+          <p style={{ fontSize: "14px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>Removed.</p>
         ) : (
           <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.82)", lineHeight: 1.6, margin: 0, whiteSpace: "pre-wrap" }}>
             {m.body}

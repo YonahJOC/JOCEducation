@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Absent } from "@/components/Absent";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
 import { canRunSchoolApp } from "@/lib/access";
@@ -23,7 +24,7 @@ export const dynamic = "force-dynamic";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const MUTED = "rgba(16,35,63,.6)";
+const MUTED = "#4A5A74";
 const HAIRLINE = "rgba(16,35,63,.1)";
 
 /**
@@ -168,11 +169,11 @@ export default async function SchoolProgramsPage() {
                         <td style={td}>
                           {r.createdAt.toLocaleDateString("en-US", { day: "numeric", month: "short" })}
                         </td>
-                        <td style={{ ...td, fontWeight: 600, color: INK }}>{r.name ?? "—"}</td>
-                        <td style={{ ...td, wordBreak: "break-all" }}>{r.email ?? "—"}</td>
+                        <td style={{ ...td, fontWeight: 600, color: INK }}>{r.name ?? <Absent>No name given</Absent>}</td>
+                        <td style={{ ...td, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                         {r.form?.feeCents ? (
                           <td style={td}>
-                            <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1B7F4B" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                            <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                               {r.paid ? "paid" : "unpaid"}
                             </span>
                           </td>
@@ -208,10 +209,10 @@ const h1: React.CSSProperties = {
 };
 const th: React.CSSProperties = {
   textAlign: "left", padding: "10px 18px", fontSize: "10.5px", letterSpacing: "0.14em",
-  textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)",
+  textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
   borderBottom: `1px solid rgba(16,35,63,.08)`, backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
-  padding: "11px 18px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)",
+  padding: "11px 18px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74",
   verticalAlign: "top",
 };

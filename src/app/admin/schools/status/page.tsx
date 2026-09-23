@@ -59,8 +59,8 @@ function Count({ n, label, warn }: { n: number; label: string; warn?: boolean })
     <span
       style={{
         fontSize: "13px", fontWeight: 600,
-        color: warn ? "#9A5405" : "rgba(16,35,63,.65)",
-        backgroundColor: warn ? "#FDEEDA" : "#fff",
+        color: warn ? "#C96C00" : "#4A5A74",
+        backgroundColor: warn ? "#FFF0E0" : "#fff",
         border: `1px solid ${warn ? "rgba(154,84,5,.25)" : "rgba(16,35,63,.1)"}`,
         borderRadius: "9999px", padding: "6px 13px",
       }}

@@ -5,7 +5,7 @@ import { placeOrder } from "@/app/actions/orders";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
@@ -15,7 +15,7 @@ const field: React.CSSProperties = {
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12.5px", fontWeight: 600,
-  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  color: "#4A5A74", marginBottom: "5px",
 };
 
 /**
@@ -64,7 +64,7 @@ export function OrderForm({
       <div style={{ textAlign: "center", padding: "12px 0" }}>
         <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: "22px" }}>✓</div>
         <h3 style={{ fontWeight: 800, fontSize: "19px", color: INK, margin: "0 0 8px" }}>Order received</h3>
-        <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
           Nothing has been charged. JOC will confirm the total{needsAddress ? ", including shipping," : ""}{" "}
           and arrange the invoice.
           {done.emailed
@@ -77,7 +77,7 @@ export function OrderForm({
 
   return (
     <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-      <p style={{ fontSize: "13px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: 0 }}>
+      <p style={{ fontSize: "13px", color: "#4A5A74", lineHeight: 1.55, margin: 0 }}>
         Card payment is not switched on yet. Send the order and JOC will confirm the total
         {needsAddress ? ", including shipping," : ""} and invoice your school.
       </p>
@@ -131,7 +131,7 @@ export function OrderForm({
       >
         {pending ? "Sending…" : `Send this order — $${subtotal}`}
       </button>
-      <p style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", textAlign: "center", margin: 0 }}>
+      <p style={{ fontSize: "12px", color: "#4A5A74", textAlign: "center", margin: 0 }}>
         Nothing is charged now.
       </p>
     </form>

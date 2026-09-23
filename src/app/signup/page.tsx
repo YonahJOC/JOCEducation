@@ -46,7 +46,7 @@ export default function SignupPage() {
         <div style={{ maxWidth: "420px", textAlign: "center" }}>
           <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#ECFDF5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "28px" }}>✓</div>
           <h2 style={{ fontWeight: 800, fontSize: "26px", color: "#10233F", marginBottom: "10px" }}>Your account is ready</h2>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", lineHeight: 1.6, marginBottom: "28px" }}>
+          <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "28px" }}>
             {done.verificationSent
               ? "Check your inbox and confirm your address. Until you do, the account exists but has no access to anything — confirming it is what connects you to your school."
               : done.willGetAccess
@@ -70,7 +70,7 @@ export default function SignupPage() {
 
         <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
           <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "6px" }}>Create your account</h1>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", marginBottom: "28px" }}>Get access to all JOC Education resources.</p>
+          <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px" }}>Get access to all JOC Education resources.</p>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
@@ -117,7 +117,7 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <p style={{ marginTop: "22px", textAlign: "center", fontSize: "14px", color: "rgba(16,35,63,.6)" }}>
+          <p style={{ marginTop: "22px", textAlign: "center", fontSize: "14px", color: "#4A5A74" }}>
             Already have an account?{" "}
             <Link href="/login" style={{ color: "#2D46AF", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
           </p>

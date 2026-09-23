@@ -8,8 +8,8 @@ import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
-const RED = "#B8321E";
+const GREEN = "#1D6B37";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 export type CycleRow = {
@@ -48,7 +48,7 @@ const field: React.CSSProperties = {
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600,
-  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
@@ -106,7 +106,7 @@ export function CyclesClient({
       </PageIntro>
 
       {usingStatic && (
-        <div style={{ backgroundColor: "#FDEEDA", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
+        <div style={{ backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
           <p style={{ fontSize: "14px", color: "#7C4A00", margin: "0 0 10px", lineHeight: 1.55 }}>
             The site is showing the eight cycles written into the code. Bring them in here and they
             become editable — nothing on the site changes when you do.
@@ -119,7 +119,7 @@ export function CyclesClient({
             disabled={disabled || pending}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-              backgroundColor: "#9A5405", border: "none", borderRadius: "9999px",
+              backgroundColor: "#C96C00", border: "none", borderRadius: "9999px",
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -134,7 +134,7 @@ export function CyclesClient({
 
       {cycles.length === 0 ? (
         <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", margin: 0 }}>Nothing here yet.</p>
+          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -167,7 +167,7 @@ export function CyclesClient({
                       <span
                         key={t}
                         style={{
-                          fontSize: "10.5px", fontWeight: 700, color: "rgba(16,35,63,.6)",
+                          fontSize: "10.5px", fontWeight: 700, color: "#4A5A74",
                           backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px",
                           padding: "2px 8px", marginLeft: "8px", letterSpacing: "0.04em",
                         }}
@@ -176,7 +176,7 @@ export function CyclesClient({
                       </span>
                     ))}
                   </p>
-                  <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
+                  <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
                     {c.range} · {c.weeks} weeks · {c.hebrew} ·{" "}
                     {c.lessonCount > 0
                       ? `${c.lessonCount} lesson${c.lessonCount === 1 ? "" : "s"}`
@@ -185,7 +185,7 @@ export function CyclesClient({
                 </div>
                 <Link
                   href={`/cycles/${c.slug}`}
-                  style={{ fontSize: "13px", fontWeight: 600, color: "rgba(16,35,63,.55)", textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+                  style={{ fontSize: "13px", fontWeight: 600, color: "#4A5A74", textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
                 >
                   View
                 </Link>
@@ -319,14 +319,14 @@ function CycleForm({
         <div>
           <label style={label}>The question it asks a student</label>
           <input value={d.question} onChange={(e) => set("question", e.target.value)} placeholder="Who have I not thanked?" disabled={disabled} style={field} />
-          <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+          <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
             Shown large on the cycle page, and to the education team while they write a lesson for it.
           </p>
         </div>
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           When it runs
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px", marginBottom: "12px" }}>
@@ -339,11 +339,11 @@ function CycleForm({
             {isFirst ? (
               <input type="date" value={d.startDate} onChange={(e) => set("startDate", e.target.value)} disabled={disabled} style={field} />
             ) : (
-              <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#F7F8FB", color: INK, margin: 0 }}>
-                {d.startDate ? formatCycleRange(d.startDate, d.startDate).split(" – ")[0] : "—"}
+              <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: INK, margin: 0 }}>
+                {d.startDate ? formatCycleRange(d.startDate, d.startDate).split(" – ")[0] : "No date yet"}
               </p>
             )}
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
               {isFirst
                 ? "The first day of the school year. Everything else follows from here."
                 : `The day after Cycle ${d.num - 1} ends.`}
@@ -352,13 +352,13 @@ function CycleForm({
           <div>
             <label style={label}>Last day</label>
             <input type="date" value={d.endDate} onChange={(e) => set("endDate", e.target.value)} disabled={disabled} style={field} />
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
               Change this and the later cycles move with it.
             </p>
           </div>
           <div>
             <label style={label}>Length</label>
-            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#F7F8FB", color: derivedWeeks ? INK : "rgba(16,35,63,.45)", margin: 0 }}>
+            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: derivedWeeks ? INK : "#4A5A74", margin: 0 }}>
               {derivedWeeks ? `${derivedWeeks} weeks` : "set both dates"}
             </p>
           </div>
@@ -378,7 +378,7 @@ function CycleForm({
             {/* This is the line every public page shows. It used to be typed
                 here by hand, which meant you could change the two dates above
                 and the whole site would carry on showing the old ones. */}
-            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#F7F8FB", color: derivedRange ? INK : "rgba(16,35,63,.45)", margin: 0 }}>
+            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: derivedRange ? INK : "#4A5A74", margin: 0 }}>
               {derivedRange || "set both dates"}
             </p>
           </div>
@@ -394,14 +394,14 @@ function CycleForm({
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
               {knockOn.map((k) => (
-                <p key={k.num} style={{ fontSize: "13px", color: "rgba(16,35,63,.72)", margin: 0, lineHeight: 1.5 }}>
+                <p key={k.num} style={{ fontSize: "13px", color: "#4A5A74", margin: 0, lineHeight: 1.5 }}>
                   <strong style={{ color: INK, fontWeight: 600 }}>Cycle {k.num} — {k.theme}</strong>{" "}
-                  <span style={{ color: "rgba(16,35,63,.45)", textDecoration: "line-through" }}>{k.from}</span>{" "}
+                  <span style={{ color: "#4A5A74", textDecoration: "line-through" }}>{k.from}</span>{" "}
                   → {k.to}
                 </p>
               ))}
             </div>
-            <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "9px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "9px 0 0", lineHeight: 1.5 }}>
               Each one keeps its own length. You do not need to edit them yourself.
             </p>
           </div>
@@ -419,14 +419,14 @@ function CycleForm({
             suggestions={allTags}
             disabled={disabled}
           />
-          <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "8px 0 0" }}>
+          <p style={{ fontSize: "12px", color: "#4A5A74", margin: "8px 0 0" }}>
             Shown on the cycle page. Pick as many as apply, or type your own.
           </p>
         </div>
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           About this cycle
         </p>
         <textarea value={d.desc} onChange={(e) => set("desc", e.target.value)} rows={3} placeholder="A paragraph a teacher reads to understand what these weeks are for." disabled={disabled} style={{ ...field, resize: "vertical" }} />
@@ -436,7 +436,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
           Lesson plan breakdown
         </p>
         {/* This used to read "The dates give 8 weeks. You have written 4.",
@@ -444,7 +444,7 @@ function CycleForm({
             stages a cycle moves through, not one entry per week. Cycle 1 runs
             eight weeks in four stages on purpose. It says what it is now, and
             stops telling anybody off. */}
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
           The stages this cycle moves through, in order — what a teacher reads to see how it runs.
           {derivedWeeks
             ? ` These ${d.weekPlan.length} stage${d.weekPlan.length === 1 ? "" : "s"} spread across ${derivedWeeks} week${derivedWeeks === 1 ? "" : "s"}; there is no need for one each.`
@@ -455,7 +455,7 @@ function CycleForm({
           {d.weekPlan.map((w, i) => (
             <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "12px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(16,35,63,.45)", flexShrink: 0, minWidth: "54px" }}>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "#4A5A74", flexShrink: 0, minWidth: "54px" }}>
                   STEP {i + 1}
                 </span>
                 <input
@@ -508,7 +508,7 @@ function CycleForm({
         >
           {pending ? "Saving…" : "Save"}
         </button>
-        <span style={{ fontSize: "13px", color: "rgba(16,35,63,.55)" }}>
+        <span style={{ fontSize: "13px", color: "#4A5A74" }}>
           Saving puts this on the site straight away.
         </span>
         {d.id > 0 && (
@@ -552,7 +552,7 @@ function Lines({
             onClick={() => onChange(items.filter((_, n) => n !== i))}
             disabled={disabled}
             aria-label="Remove"
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "16px", color: "rgba(16,35,63,.4)", background: "none", border: "none", cursor: "pointer", minWidth: "36px", minHeight: "42px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "16px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minWidth: "36px", minHeight: "42px" }}
           >
             ×
           </button>
@@ -639,7 +639,7 @@ function TagPicker({
             disabled={disabled}
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 500,
-              color: "rgba(16,35,63,.7)", backgroundColor: "#fff",
+              color: "#4A5A74", backgroundColor: "#fff",
               border: `1px dashed ${RULE}`, borderRadius: "9999px",
               padding: "6px 13px", minHeight: "36px",
               cursor: disabled ? "not-allowed" : "pointer",

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { label } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import {
   getSchool, STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, ENROLLMENT_LABELS, usingSampleData,
@@ -21,12 +22,13 @@ const CARD: React.CSSProperties = {
 };
 
 const ACTIVITY_ICON: Record<string, string> = {
-  CALL: "☎", EMAIL: "✉", MEETING: "◷", DEMO: "▶", NOTE: "✎",
-  PLAN_CHANGE: "⇅", ACCESS_GRANTED: "✓", ACCESS_REVOKED: "×", STATUS_CHANGE: "→",
+  CALL: "CALL", EMAIL: "EMAIL", MEETING: "MEETING", DEMO: "DEMO", NOTE: "NOTE",
+  PLAN_CHANGE: "PLAN", ACCESS_GRANTED: "ACCESS ON", ACCESS_REVOKED: "ACCESS OFF",
+  STATUS_CHANGE: "STATUS", VISIT: "VISIT",
 };
 
 function fmt(d: Date | null | undefined) {
-  if (!d) return "—";
+  if (!d) return "Not recorded";
   return new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 }
 
@@ -71,7 +73,7 @@ async function Inner({ slug }: { slug: string }) {
           <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: INK, margin: "0 0 6px" }}>
             {s.name}
           </h1>
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", fontSize: "13.5px", color: "rgba(16,35,63,.6)" }}>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", fontSize: "13.5px", color: "#4A5A74" }}>
             <span style={{ display: "inline-block", fontSize: "11.5px", fontWeight: 700, padding: "3px 10px", borderRadius: "9999px", color: STATUS_COLORS[s.status], backgroundColor: `${STATUS_COLORS[s.status]}1a` }}>
               {STATUS_LABELS[s.status]}
             </span>
@@ -118,12 +120,12 @@ async function Inner({ slug }: { slug: string }) {
           {/* People with logins */}
           <div style={CARD}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-              <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+              <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
                 Logins ({members.length}{s.seats ? ` of ${s.seats} seats` : ""})
               </p>
             </div>
             {members.length === 0 ? (
-              <p style={{ fontSize: "14px", color: "rgba(16,35,63,.5)", margin: "0 0 14px" }}>
+              <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 14px" }}>
                 Nobody at this school has signed in yet.
               </p>
             ) : (
@@ -132,14 +134,14 @@ async function Inner({ slug }: { slug: string }) {
                   <div key={m.id} style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                     <div style={{ minWidth: 0 }}>
                       <p style={{ fontSize: "14px", fontWeight: 600, color: INK, margin: 0 }}>{m.name ?? m.email}</p>
-                      <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "1px 0 0", wordBreak: "break-all" }}>{m.email}</p>
+                      <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "1px 0 0", wordBreak: "break-all" }}>{m.email}</p>
                     </div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                      <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", color: "rgba(16,35,63,.55)", textTransform: "uppercase" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", color: "#4A5A74", textTransform: "uppercase" }}>
                         {String(m.role).replace("_", " ")}
                       </span>
                       {!m.active && (
-                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#B8321E", backgroundColor: "rgba(184,50,30,.1)", padding: "2px 8px", borderRadius: "9999px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#A3261A", backgroundColor: "rgba(184,50,30,.1)", padding: "2px 8px", borderRadius: "9999px" }}>
                           suspended
                         </span>
                       )}
@@ -187,26 +189,30 @@ async function Inner({ slug }: { slug: string }) {
           <ActivityComposer schoolId={s.id} disabled={usingSampleData} />
 
           <div style={CARD}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 16px" }}>
+            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
               History
             </p>
             {activities.length === 0 ? (
-              <p style={{ fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+              <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>
                 Nothing logged yet. Every call, email and plan change will appear here.
               </p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {activities.map((a) => (
                   <div key={a.id} style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                    <span style={{ width: "26px", height: "26px", borderRadius: "8px", backgroundColor: "#F4F7FD", color: "#2D46AF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", flexShrink: 0 }}>
-                      {ACTIVITY_ICON[a.type] ?? "•"}
+                    <span style={{
+                      ...label, flexShrink: 0, width: "84px", textAlign: "center",
+                      backgroundColor: "#F4F7FD", color: "#2D46AF",
+                      borderRadius: "6px", padding: "4px 6px", lineHeight: 1.5,
+                    }}>
+                        {ACTIVITY_ICON[a.type] ?? "OTHER"}
                     </span>
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <p style={{ fontSize: "14.5px", color: INK, margin: 0, fontWeight: 500, lineHeight: 1.4 }}>{a.summary}</p>
                       {a.detail && (
-                        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.65)", margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
+                        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
                       )}
-                      <p style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", margin: "4px 0 0" }}>
+                      <p style={{ fontSize: "12px", color: "#4A5A74", margin: "4px 0 0" }}>
                         {fmt(a.occurredAt)}{a.author ? ` · ${a.author}` : " · system"}
                       </p>
                     </div>

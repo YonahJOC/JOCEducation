@@ -21,7 +21,7 @@ const WIDTH = "1180px";
  * Fallbacks. Every string below is editable at /admin/site — these are what
  * renders if a field was never edited, or if the database is unreachable.
  */
-const CARD_COLORS = [BLUE, ORANGE, "#1B7F4B", "#2C7AC9"];
+const CARD_COLORS = [BLUE, ORANGE, "#1D6B37", "#2C7AC9"];
 
 const FALLBACK_INSIDE = [
   { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion points. Print and teach." },
@@ -94,7 +94,7 @@ export default async function EducatorLanding({
         <p
           style={{
             maxWidth: WIDTH, margin: "0 auto", padding: "9px 26px",
-            fontSize: "13px", color: "rgba(16,35,63,.72)", textAlign: "center", lineHeight: 1.5,
+            fontSize: "13px", color: "#4A5A74", textAlign: "center", lineHeight: 1.5,
           }}
         >
           This is the JOC Educators Portal. Looking for the main site?{" "}
@@ -216,7 +216,7 @@ export default async function EducatorLanding({
               </span>
             </h1>
 
-            <p style={{ fontSize: "17.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", maxWidth: "46ch", margin: "0 0 22px" }}>
+            <p style={{ fontSize: "17.5px", lineHeight: 1.6, color: "#4A5A74", maxWidth: "46ch", margin: "0 0 22px" }}>
               Lesson plans, classroom resources and chesed programs for Jewish day schools and yeshivos — organised around the
               Chesed Cycle, so the whole school is working on one middah at a time.
             </p>
@@ -231,7 +231,7 @@ export default async function EducatorLanding({
               <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 7px" }}>
                 In development
               </p>
-              <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: 0 }}>
+              <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
                 The teaching platform is still being built and accounts are not open to schools yet. In the
                 meantime, JOC runs 10 chesed programs your school can start this year —{" "}
                 <a href="#demo" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
@@ -260,13 +260,13 @@ export default async function EducatorLanding({
               <div
                 role="status"
                 style={{
-                  backgroundColor: "#FDEEDA", border: "1px solid rgba(154,84,5,.25)",
+                  backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)",
                   borderRadius: "14px", padding: "13px 16px", marginBottom: "12px",
                 }}
               >
-                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: "#9A5405", margin: 0 }}>
+                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
                   <strong>That account isn&rsquo;t attached to a school yet.</strong> Sign in with your school
-                  email address, or <a href="#demo" style={{ color: "#9A5405", fontWeight: 700 }}>book a walkthrough</a>.
+                  email address, or <a href="#demo" style={{ color: "#C96C00", fontWeight: 700 }}>book a walkthrough</a>.
                 </p>
               </div>
             )}
@@ -371,7 +371,7 @@ export default async function EducatorLanding({
                   {card.value}
                 </p>
                 <p style={{ fontWeight: 700, fontSize: "16.5px", color: INK, letterSpacing: "-0.02em", margin: "0 0 7px" }}>{card.title}</p>
-                <p style={{ fontSize: "14px", lineHeight: 1.55, color: "rgba(16,35,63,.66)", margin: 0 }}>{card.body}</p>
+                <p style={{ fontSize: "14px", lineHeight: 1.55, color: "#4A5A74", margin: 0 }}>{card.body}</p>
               </div>
             </div>
             );
@@ -389,7 +389,7 @@ export default async function EducatorLanding({
             <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 18px" }}>
               Start a chesed program this year.
             </h2>
-            <p style={{ fontSize: "16px", lineHeight: 1.65, color: "rgba(16,35,63,.72)", margin: "0 0 24px", maxWidth: "44ch" }}>
+            <p style={{ fontSize: "16px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 24px", maxWidth: "44ch" }}>
               Twenty minutes with someone from Just One Chesed — not a sales pitch, and not a slide deck.
             </p>
 
@@ -413,14 +413,14 @@ export default async function EducatorLanding({
             <p
               style={{
                 fontFamily: "var(--font-newsreader)", fontStyle: "italic",
-                fontSize: "17px", lineHeight: 1.6, color: "rgba(16,35,63,.78)",
+                fontSize: "17px", lineHeight: 1.6, color: "#4A5A74",
                 borderLeft: `3px solid ${ORANGE}`, paddingLeft: "18px", margin: "0 0 26px", maxWidth: "40ch",
               }}
             >
               Chesed stops being an assembly once the whole school is working on the same middah in the same weeks.
             </p>
 
-            <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: 0 }}>
+            <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>
               Would rather just email?{" "}
               <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
                 education@justonechesed.org

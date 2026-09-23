@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Newsreader } from "next/font/google";
+import { Outfit, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, type HeaderAccount } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -16,11 +16,29 @@ const outfit = Outfit({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+/**
+ * Three fonts, one job each.
+ *
+ *   Outfit      names, headings, buttons, the interface itself
+ *   Newsreader  anything a person reads: a program's description, the reason
+ *               on a row, what a student wrote
+ *   Plex Mono   labels, dates, counts, codes, step numbers — the things that
+ *               are read as data rather than as prose
+ *
+ * Newsreader carries its roman as well as its italic now, and both weights,
+ * because it is doing real reading work rather than decorating a pull quote.
+ */
 const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
-  style: ["italic"],
-  weight: ["400"],
+  style: ["normal", "italic"],
+  weight: ["400", "500"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -79,7 +97,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     : null;
 
   return (
-    <html lang="en" className={`${outfit.variable} ${newsreader.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${newsreader.variable} ${plexMono.variable}`}>
       <body>
         <ChromeGate><Header account={account} /></ChromeGate>
         <main className="flex-1">{children}</main>

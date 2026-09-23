@@ -51,7 +51,7 @@ async function Inner() {
         <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", margin: "0 0 10px" }}>
           Site content
         </h1>
-        <p style={{ fontSize: "15px", lineHeight: 1.65, color: "rgba(16,35,63,.7)" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.65, color: "#4A5A74" }}>
           Editing the public site needs the database. Once <code>DATABASE_URL</code> is set, every
           field listed in the registry appears here with the wording the site currently uses.
         </p>

@@ -7,7 +7,7 @@ import { passwordProblem } from "@/lib/password";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -16,7 +16,7 @@ const field: React.CSSProperties = {
   padding: "12px 14px", outline: "none", minHeight: "46px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12.5px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "6px",
+  display: "block", fontSize: "12.5px", fontWeight: 600, color: "#4A5A74", marginBottom: "6px",
 };
 
 export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; forced: boolean }) {
@@ -53,7 +53,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
         <p style={{ fontWeight: 700, fontSize: "19px", color: INK, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
           Password changed
         </p>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.72)", margin: "0 0 18px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 18px" }}>
           Use the new one next time you sign in.
         </p>
         <a
@@ -90,7 +90,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
           style={{ ...field, borderColor: next && strength ? "#C96C00" : RULE }}
           autoFocus={forced}
         />
-        <p style={{ fontSize: "12.5px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? "#C96C00" : GREEN) : "rgba(16,35,63,.55)" }}>
+        <p style={{ fontSize: "12.5px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? "#C96C00" : GREEN) : "#4A5A74" }}>
           {next ? (strength ?? "That will do.") : "At least 10 characters. Avoid anything with the organisation's name in it."}
         </p>
       </div>
@@ -122,7 +122,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
       </button>
 
       {err && (
-        <p role="alert" style={{ fontSize: "13.5px", lineHeight: 1.5, color: "#B8321E", backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px", padding: "11px 14px", margin: "14px 0 0" }}>
+        <p role="alert" style={{ fontSize: "13.5px", lineHeight: 1.5, color: "#A3261A", backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px", padding: "11px 14px", margin: "14px 0 0" }}>
           {err}
         </p>
       )}

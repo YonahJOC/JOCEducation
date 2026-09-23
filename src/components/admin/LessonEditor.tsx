@@ -6,11 +6,11 @@ import { FilePicker } from "@/components/admin/FilePicker";
 import { RICH_TEXT_HINT } from "@/components/ui/RichText";
 
 const INK = "#10233F";
-const DEEP = "#0B1A31";
+const DEEP = "#10233F";
 const BLUE = "#2D46AF";
 const ORANGE = "#FA912D";
 const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.15)";
 
 export type LessonDraft = {
@@ -53,7 +53,7 @@ const field: React.CSSProperties = {
 };
 const legend: React.CSSProperties = {
   fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase",
-  fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px",
+  fontWeight: 700, color: "#4A5A74", margin: "0 0 14px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
@@ -184,7 +184,7 @@ export function LessonEditor({
               style={{ ...field, resize: "vertical" }}
             />
             <div style={{ marginTop: "14px" }}>
-              <label style={{ fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", display: "block", marginBottom: "5px" }}>
+              <label style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", display: "block", marginBottom: "5px" }}>
                 Theme or middah
               </label>
               <input value={d.theme} onChange={(e) => set("theme", e.target.value)} disabled={disabled} style={field} />
@@ -234,7 +234,7 @@ export function LessonEditor({
                         padding: "8px 4px", outline: "none",
                       }}
                     />
-                    <span style={{ fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(16,35,63,.4)", fontWeight: 700 }}>
+                    <span style={{ fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4A5A74", fontWeight: 700 }}>
                       min
                     </span>
                   </div>
@@ -256,7 +256,7 @@ export function LessonEditor({
                       style={{ ...field, resize: "vertical", backgroundColor: "#fff" }}
                     />
                     {i === 0 && (
-                      <p style={{ fontSize: "11.5px", color: "rgba(16,35,63,.5)", margin: "5px 0 0", lineHeight: 1.5 }}>
+                      <p style={{ fontSize: "11.5px", color: "#4A5A74", margin: "5px 0 0", lineHeight: 1.5 }}>
                         {RICH_TEXT_HINT}
                       </p>
                     )}
@@ -293,7 +293,7 @@ export function LessonEditor({
 
           <div style={card}>
             <p style={legend}>Discussion points</p>
-            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "-6px 0 14px" }}>
+            <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "-6px 0 14px" }}>
               The heading a teacher sees above these is set once for every lesson, under
               Site → Lesson pages.
             </p>
@@ -302,7 +302,7 @@ export function LessonEditor({
 
           <div style={card}>
             <p style={legend}>Printables and handouts</p>
-            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "-6px 0 14px" }}>
+            <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "-6px 0 14px" }}>
               What a teacher downloads with this lesson. Only signed-in accounts with access can open them.
             </p>
             <LessonFiles files={d.files} onChange={(v) => set("files", v)} disabled={disabled} />
@@ -355,7 +355,7 @@ export function LessonEditor({
                 {missing.map((m) => (
                   <li key={m} style={{ display: "flex", gap: "9px", alignItems: "flex-start" }}>
                     <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "7px" }} />
-                    <span style={{ fontSize: "13.5px", lineHeight: 1.5, color: "rgba(16,35,63,.72)" }}>Needs {m}</span>
+                    <span style={{ fontSize: "13.5px", lineHeight: 1.5, color: "#4A5A74" }}>Needs {m}</span>
                   </li>
                 ))}
               </ul>
@@ -386,7 +386,7 @@ export function LessonEditor({
               {pending ? "Saving…" : d.id ? "Save changes" : "Create lesson"}
             </button>
             {msg && (
-              <p style={{ fontSize: "13px", margin: "10px 0 0", color: msg === "Saved." ? GREEN : "#B8321E" }}>{msg}</p>
+              <p style={{ fontSize: "13px", margin: "10px 0 0", color: msg === "Saved." ? GREEN : "#A3261A" }}>{msg}</p>
             )}
           </div>
         </aside>
@@ -420,7 +420,7 @@ function Segmented({
 }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "104px minmax(0,1fr)", gap: "14px", alignItems: "center", paddingBottom: last ? 0 : "12px", marginBottom: last ? 0 : "12px", borderBottom: last ? "none" : "1px solid rgba(16,35,63,.06)" }}>
-      <span style={{ fontSize: "12.5px", fontWeight: 600, color: "rgba(16,35,63,.6)" }}>{label}</span>
+      <span style={{ fontSize: "12.5px", fontWeight: 600, color: "#4A5A74" }}>{label}</span>
       <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
         {options.map(([v, l]) => {
           const on = v === value;
@@ -436,7 +436,7 @@ function Segmented({
                 cursor: disabled ? "default" : "pointer",
                 border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
                 backgroundColor: on ? "#F4F7FD" : "#fff",
-                color: on ? BLUE : "rgba(16,35,63,.7)",
+                color: on ? BLUE : "#4A5A74",
                 whiteSpace: "nowrap",
               }}
             >
@@ -502,7 +502,7 @@ function Tiny({
       style={{
         width: "28px", height: "26px", display: "flex", alignItems: "center", justifyContent: "center",
         background: "none", border: "none", borderRadius: "6px",
-        color: disabled ? "rgba(16,35,63,.2)" : danger ? "#B8321E" : "rgba(16,35,63,.5)",
+        color: disabled ? "rgba(16,35,63,.2)" : danger ? "#A3261A" : "#4A5A74",
         cursor: disabled ? "default" : "pointer", fontSize: "15px",
       }}
     >
@@ -528,7 +528,7 @@ function LessonFiles({
         <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "14px" }}>
           <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", marginBottom: "12px" }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px" }}>
                 What the teacher sees
               </label>
               <input
@@ -543,7 +543,7 @@ function LessonFiles({
               type="button"
               onClick={() => onChange(files.filter((_, n) => n !== i))}
               disabled={disabled}
-              style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#B8321E", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "42px" }}
             >
               Remove
             </button>

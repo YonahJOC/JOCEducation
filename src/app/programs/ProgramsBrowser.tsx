@@ -32,7 +32,7 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
           <h2 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 38px)", lineHeight: 1.06, letterSpacing: "-0.03em", color: "#10233F", marginBottom: "8px" }}>
             Programs JOC runs for your school.
           </h2>
-          <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "60ch", marginBottom: "32px" }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "60ch", marginBottom: "32px" }}>
             {c.text(
               "list.intro",
               "Each one is run by JOC — we bring the materials, the training and the logistics. Availability depends on your subscription level."
@@ -44,13 +44,13 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
                   <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>{p.tag}</span>
                   {p.comingSoon && (
-                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#9A5405", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>Coming soon</span>
+                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#C96C00", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>Coming soon</span>
                   )}
                 </div>
                 <h3 style={{ fontWeight: 700, fontSize: "21px", color: "#10233F", marginBottom: "10px" }}>{p.name}</h3>
-                <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6, marginBottom: "12px", flex: 1 }}>{p.description}</p>
+                <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "12px", flex: 1 }}>{p.description}</p>
                 <p style={{ fontSize: "12.5px", color: "#C96C00", fontWeight: 600, marginBottom: "20px" }}>{p.meta}</p>
-                <div style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", marginBottom: "20px" }}>
+                <div style={{ fontSize: "12.5px", color: "#4A5A74", marginBottom: "20px" }}>
                   <span style={{ fontWeight: 600 }}>Included with: </span>{p.available.join(", ")}
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>

@@ -237,7 +237,7 @@ export default async function CycleDetailPage({ params }: Props) {
                     >
                       {w.title}
                     </p>
-                    <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6 }}>{w.body}</p>
+                    <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6 }}>{w.body}</p>
                     <WeekLessons lessons={lessons.filter((l) => l.cycleWeek === i + 1)} color={cycle.color} />
                   </div>
                 </li>
@@ -354,7 +354,7 @@ export default async function CycleDetailPage({ params }: Props) {
                   ["Anchor", cycle.anchor],
                 ].map(([label, val]) => (
                   <div key={label} style={{ display: "flex", gap: "12px", fontSize: "14px" }}>
-                    <span style={{ color: "rgba(16,35,63,.5)", minWidth: "100px" }}>{label}</span>
+                    <span style={{ color: "#4A5A74", minWidth: "100px" }}>{label}</span>
                     <span style={{ color: "#10233F", fontWeight: 500 }}>{val}</span>
                   </div>
                 ))}
@@ -376,7 +376,7 @@ export default async function CycleDetailPage({ params }: Props) {
                     fontSize: "10.5px",
                     letterSpacing: "0.22em",
                     textTransform: "uppercase",
-                    color: "rgba(16,35,63,.5)",
+                    color: "#4A5A74",
                     marginBottom: "10px",
                   }}
                 >
@@ -393,7 +393,7 @@ export default async function CycleDetailPage({ params }: Props) {
                 >
                   {nextCycle.theme}
                 </p>
-                <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", marginBottom: "14px" }}>
+                <p style={{ fontSize: "14px", color: "#4A5A74", marginBottom: "14px" }}>
                   {nextCycle.hebrew} · {nextCycle.range} · {nextCycle.weeks} weeks
                 </p>
                 <Link
@@ -482,7 +482,7 @@ function CycleMaterials({
             </span>
             <span style={{ minWidth: 0, flex: 1 }}>
               <span style={{ display: "block", fontWeight: 700, fontSize: "15px", color: "#10233F", lineHeight: 1.3 }}>{l.title}</span>
-              <span style={{ display: "block", fontSize: "13px", color: "rgba(16,35,63,.55)", marginTop: "2px" }}>
+              <span style={{ display: "block", fontSize: "13px", color: "#4A5A74", marginTop: "2px" }}>
                 {l.grade === "es" ? "Elementary" : l.grade === "ms" ? "Middle" : "High school"} · {l.time} min
               </span>
             </span>
@@ -505,7 +505,7 @@ function CycleMaterials({
             </span>
             <span style={{ minWidth: 0, flex: 1 }}>
               <span style={{ display: "block", fontWeight: 700, fontSize: "15px", color: "#10233F", lineHeight: 1.3 }}>{r.title}</span>
-              <span style={{ display: "block", fontSize: "13px", color: "rgba(16,35,63,.55)", marginTop: "2px" }}>{r.tag}</span>
+              <span style={{ display: "block", fontSize: "13px", color: "#4A5A74", marginTop: "2px" }}>{r.tag}</span>
             </span>
             <span style={{ color, fontWeight: 700, fontSize: "15px", flexShrink: 0 }}>›</span>
           </Link>
@@ -544,7 +544,7 @@ function WeekLessons({ lessons, color }: { lessons: PublicLesson[]; color: strin
             <span style={{ display: "block", fontWeight: 600, fontSize: "14px", color: "#10233F", lineHeight: 1.3 }}>
               {l.title}
             </span>
-            <span style={{ display: "block", fontSize: "12px", color: "rgba(16,35,63,.55)", marginTop: "1px" }}>
+            <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "1px" }}>
               {l.grade === "es" ? "Elementary" : l.grade === "ms" ? "Middle" : "High school"} · {l.time} min
             </span>
           </span>

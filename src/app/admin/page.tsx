@@ -1,4 +1,6 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
+import { label } from "@/lib/joc-tokens";
+import { Absent } from "@/components/Absent";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
@@ -15,7 +17,7 @@ const CARD: React.CSSProperties = {
 };
 
 function ago(date: Date | null): string {
-  if (!date) return "—";
+  if (!date) return "Not set";
   const days = Math.floor((Date.now() - new Date(date).getTime()) / 86400000);
   if (days <= 0) return "today";
   if (days === 1) return "yesterday";
@@ -25,8 +27,9 @@ function ago(date: Date | null): string {
 }
 
 const ACTIVITY_ICON: Record<string, string> = {
-  CALL: "☎", EMAIL: "✉", MEETING: "◷", DEMO: "▶", NOTE: "✎",
-  PLAN_CHANGE: "⇅", ACCESS_GRANTED: "✓", ACCESS_REVOKED: "×", STATUS_CHANGE: "→",
+  CALL: "CALL", EMAIL: "EMAIL", MEETING: "MEETING", DEMO: "DEMO", NOTE: "NOTE",
+  PLAN_CHANGE: "PLAN", ACCESS_GRANTED: "ACCESS ON", ACCESS_REVOKED: "ACCESS OFF",
+  STATUS_CHANGE: "STATUS", VISIT: "VISIT",
 };
 
 export default async function AdminOverview() {
@@ -66,7 +69,7 @@ async function Inner() {
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         Overview
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 24px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 24px" }}>
         Where every school stands, and what needs attention today.
       </p>
 
@@ -81,7 +84,7 @@ async function Inner() {
       {/* Needs attention */}
       {needsAttention && (
         <div style={{ ...CARD, borderColor: "rgba(184,50,30,.28)", padding: "18px 20px", marginBottom: "24px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#B8321E", margin: "0 0 12px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#A3261A", margin: "0 0 12px" }}>
             Needs attention
           </p>
           {/* One verb per row — what to actually do about it */}
@@ -89,7 +92,7 @@ async function Inner() {
             {attention.map((s) => {
               const issue =
                 s.planStatus === "PAST_DUE"
-                  ? { severity: "#B8321E", why: "Payment overdue", verb: "Call" }
+                  ? { severity: "#A3261A", why: "Payment overdue", verb: "Call" }
                   : s.status === "LAPSED"
                   ? { severity: "#C96C00", why: "Lapsed — no active plan", verb: "Call" }
                   : { severity: "#FA912D", why: "Trial has run out", verb: "Confirm" };
@@ -145,7 +148,7 @@ async function Inner() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
         {/* Pipeline */}
         <div style={{ ...CARD, padding: "20px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 16px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
             Pipeline
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
@@ -155,7 +158,7 @@ async function Inner() {
                 <div key={p.status}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
                     <span style={{ fontSize: "13.5px", color: INK, fontWeight: 500 }}>{STATUS_LABELS[p.status]}</span>
-                    <span style={{ fontSize: "13px", color: "rgba(16,35,63,.55)", fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ fontSize: "13px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                       {p.count}{p.students > 0 ? ` · ${p.students.toLocaleString()} students` : ""}
                     </span>
                   </div>
@@ -171,22 +174,26 @@ async function Inner() {
         {/* Recent activity */}
         <div style={{ ...CARD, padding: "20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
               Recent activity
             </p>
           </div>
           {activity.length === 0 ? (
-            <p style={{ fontSize: "14px", color: "rgba(16,35,63,.5)" }}>Nothing logged yet.</p>
+            <p style={{ fontSize: "14px", color: "#4A5A74" }}>Nothing logged yet.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "13px" }}>
               {activity.map((a) => (
                 <div key={a.id} style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
-                  <span style={{ width: "22px", height: "22px", borderRadius: "6px", backgroundColor: "#F4F7FD", color: "#2D46AF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", flexShrink: 0 }}>
-                    {ACTIVITY_ICON[a.type] ?? "•"}
+                  <span style={{
+                    ...label, flexShrink: 0, width: "84px", textAlign: "center",
+                    backgroundColor: "#F4F7FD", color: "#2D46AF",
+                    borderRadius: "6px", padding: "4px 6px", lineHeight: 1.5,
+                  }}>
+                    {ACTIVITY_ICON[a.type] ?? "OTHER"}
                   </span>
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <p style={{ fontSize: "14px", color: INK, margin: 0, lineHeight: 1.4 }}>{a.summary}</p>
-                    <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "12px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {a.schoolName ? `${a.schoolName} · ` : ""}{ago(a.occurredAt)}{a.author ? ` · ${a.author}` : ""}
                     </p>
                   </div>
@@ -200,7 +207,7 @@ async function Inner() {
       {/* Schools snapshot */}
       <div style={{ ...CARD, marginTop: "16px", overflow: "hidden" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 20px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
             Schools
           </p>
           <Link href="/admin/schools" style={{ fontSize: "13px", color: "#2D46AF", textDecoration: "none", fontWeight: 600 }}>
@@ -216,20 +223,20 @@ async function Inner() {
 function Metric({ label, value, sub, accent }: { label: string; value: string; sub: string; accent?: boolean }) {
   return (
     <div style={{ ...CARD, padding: "16px 18px", borderColor: accent ? "rgba(250,145,45,.4)" : "rgba(16,35,63,.09)" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 8px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
         {label}
       </p>
       <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: accent ? "#C96C00" : INK, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </p>
-      <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "6px 0 0" }}>{sub}</p>
+      <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
     </div>
   );
 }
 
 export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
   if (schools.length === 0) {
-    return <p style={{ padding: "22px 20px", fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>No schools yet.</p>;
+    return <p style={{ padding: "22px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>No schools yet.</p>;
   }
   return (
     <div style={{ overflowX: "auto" }}>
@@ -237,7 +244,7 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
         <thead>
           <tr>
             {["School", "Status", "Plan", "Seats", "Staff", "Last contact"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "10px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+              <th key={h} style={{ textAlign: "left", padding: "10px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
                 {h}
               </th>
             ))}
@@ -250,8 +257,8 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
                 <Link href={`/admin/schools/${s.id}`} style={{ color: INK, fontWeight: 600, textDecoration: "none" }}>
                   {s.name}
                 </Link>
-                <span style={{ display: "block", fontSize: "12px", color: "rgba(16,35,63,.5)", marginTop: "2px" }}>
-                  {s.city ?? s.region ?? "—"}{s.studentCount ? ` · ${s.studentCount} students` : ""}
+                <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "2px" }}>
+                  {s.city ?? s.region ?? "Place not recorded"}{s.studentCount ? ` · ${s.studentCount} students` : ""}
                 </span>
               </td>
               <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
@@ -259,19 +266,19 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
                   {STATUS_LABELS[s.status]}
                 </span>
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)", whiteSpace: "nowrap" }}>
-                {s.plan ? PLAN_LABELS[s.plan] : "—"}
+              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
+                {s.plan ? PLAN_LABELS[s.plan] : <Absent>No plan</Absent>}
                 {s.grantedManually && (
-                  <span style={{ display: "block", fontSize: "11px", color: "#1B7F4B", fontWeight: 600 }}>granted</span>
+                  <span style={{ display: "block", fontSize: "11px", color: "#1D6B37", fontWeight: 600 }}>granted</span>
                 )}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)", fontVariantNumeric: "tabular-nums" }}>
-                {s.seats ?? "—"}
+              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+                {s.seats ?? <Absent>Not set</Absent>}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.75)", fontVariantNumeric: "tabular-nums" }}>
+              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                 {s.memberCount}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "rgba(16,35,63,.6)", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
                 {ago(s.lastActivityAt)}
               </td>
             </tr>

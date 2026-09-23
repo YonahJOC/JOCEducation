@@ -50,7 +50,7 @@ const JOC = [
 export async function Footer() {
   const PROGRAMS = await programLinks();
   return (
-    <footer style={{ backgroundColor: "#0B1A31", padding: "54px 26px 34px" }}>
+    <footer style={{ backgroundColor: "#10233F", padding: "54px 26px 34px" }}>
       <div
         className="mx-auto grid gap-10"
         style={{

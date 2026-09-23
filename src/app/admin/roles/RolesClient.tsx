@@ -11,7 +11,7 @@ import type { AdminRoleRow } from "@/lib/admin-roles";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -22,7 +22,7 @@ const field: React.CSSProperties = {
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600,
-  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  color: "#4A5A74", marginBottom: "5px",
 };
 
 const BLANK: AdminRoleRow = {
@@ -74,13 +74,13 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "760px" }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "12px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD" }}>
+              <th style={{ textAlign: "left", padding: "12px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD" }}>
                 Admin type
               </th>
               {CAPABILITY_GROUPS.map((g) => (
                 <th
                   key={g.label}
-                  style={{ textAlign: "center", padding: "12px 14px", fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}
+                  style={{ textAlign: "center", padding: "12px 14px", fontSize: "10.5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}
                 >
                   {g.label}
                 </th>
@@ -95,17 +95,17 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
                   <span style={{ fontWeight: 600, color: INK, display: "block" }}>
                     {r.name}
                     {r.builtIn && (
-                      <span style={{ fontSize: "10.5px", fontWeight: 700, color: "rgba(16,35,63,.45)", backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
+                      <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#4A5A74", backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
                         built in
                       </span>
                     )}
                   </span>
                   {r.description && (
-                    <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", display: "block", marginTop: "2px", maxWidth: "46ch" }}>
+                    <span style={{ fontSize: "12.5px", color: "#4A5A74", display: "block", marginTop: "2px", maxWidth: "46ch" }}>
                       {r.description}
                     </span>
                   )}
-                  <span style={{ fontSize: "12px", color: "rgba(16,35,63,.45)", display: "block", marginTop: "3px" }}>
+                  <span style={{ fontSize: "12px", color: "#4A5A74", display: "block", marginTop: "3px" }}>
                     {r.memberCount === 0
                       ? "nobody yet"
                       : `${r.memberCount} ${r.memberCount === 1 ? "person" : "people"}`}
@@ -129,7 +129,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
                       ) : (
                         <span style={{
                           fontSize: "12px", fontWeight: 700, borderRadius: "9999px", padding: "3px 9px",
-                          color: all ? "#1B7F4B" : "#C96C00",
+                          color: all ? "#1D6B37" : "#C96C00",
                           backgroundColor: all ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
                         }}>
                           {all ? "all" : `${held.length} of ${g.capabilities.length}`}
@@ -154,19 +154,19 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
       </div>
 
       <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", marginTop: "18px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.5)", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
           What each permission covers
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px 24px" }}>
           {CAPABILITY_GROUPS.map((g) => (
             <div key={g.label}>
-              <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
                 {g.label}
               </p>
               {g.capabilities.map((c) => (
                 <div key={c} style={{ marginBottom: "6px" }}>
                   <p style={{ fontSize: "13px", fontWeight: 600, color: INK, margin: 0 }}>{CAPABILITY_LABELS[c]}</p>
-                  <p style={{ fontSize: "12.5px", lineHeight: 1.45, color: "rgba(16,35,63,.6)", margin: 0 }}>
+                  <p style={{ fontSize: "12.5px", lineHeight: 1.45, color: "#4A5A74", margin: 0 }}>
                     {CAPABILITY_DESCRIPTIONS[c]}
                   </p>
                 </div>
@@ -247,11 +247,11 @@ function RoleForm({
             onChange={(e) => setD((p) => ({ ...p, name: e.target.value }))}
             placeholder="Shop manager"
             disabled={disabled || d.builtIn}
-            style={{ ...field, backgroundColor: d.builtIn ? "#F7F8FB" : "#fff" }}
+            style={{ ...field, backgroundColor: d.builtIn ? "#FBF9F4" : "#fff" }}
             autoFocus={!d.id}
           />
           {d.builtIn && (
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
               Built-in types keep their name. You can still change what this one can do.
             </p>
           )}
@@ -269,10 +269,10 @@ function RoleForm({
       </div>
 
       <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 4px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
           What this type can do
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
           {locked
             ? "Super admin holds every permission and cannot be reduced — it is the way back from any other mistake made on this page."
             : "Anything not ticked is not just hidden: those pages refuse to open."}
@@ -284,7 +284,7 @@ function RoleForm({
           return (
             <div key={g.label} style={{ marginBottom: "18px" }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px", marginBottom: "8px" }}>
-                <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+                <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
                   {g.label}
                 </p>
                 {!locked && (
@@ -331,7 +331,7 @@ function RoleForm({
                   <span style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: INK }}>
                     {CAPABILITY_LABELS[c]}
                   </span>
-                  <span style={{ display: "block", fontSize: "13px", color: "rgba(16,35,63,.62)", lineHeight: 1.5, marginTop: "2px" }}>
+                  <span style={{ display: "block", fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, marginTop: "2px" }}>
                     {CAPABILITY_DESCRIPTIONS[c]}
                   </span>
                 </span>

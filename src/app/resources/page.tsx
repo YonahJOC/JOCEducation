@@ -27,7 +27,7 @@ export default async function ResourcesPage() {
       <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px" }}>
         {c.text("hero.headline", "Everything for the classroom, all in one place.")}
       </h1>
-      <p style={{ fontSize: "17px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "58ch", marginBottom: "16px" }}>
+      <p style={{ fontSize: "17px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "58ch", marginBottom: "16px" }}>
         {c.text(
           "hero.standfirst",
           "Worksheets, activities, posters, videos and source sheets — tied to the Chesed Cycles and included with any JOC Education subscription."
@@ -55,7 +55,7 @@ export default async function ResourcesPage() {
           <h2 style={{ fontWeight: 700, fontSize: "21px", color: "#10233F", margin: "0 0 10px" }}>
             {c.text("empty.heading", "The library is being built.")}
           </h2>
-          <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "52ch", margin: "0 auto" }}>
+          <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "52ch", margin: "0 auto" }}>
             {c.text(
               "empty.body",
               "The JOC Education team is preparing the first set of worksheets, activities and source sheets. They will appear here as they are published — nothing is hidden behind a paywall that is not yet ready."

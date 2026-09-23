@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const MUTED = "rgba(16,35,63,.6)";
+const MUTED = "#4A5A74";
 
 export default async function MyProgramsPage() {
   const programs = await listProgramsForAdmin();
@@ -73,7 +73,7 @@ export default async function MyProgramsPage() {
                     </span>
                   )}
                 </span>
-                <span style={{ display: "block", fontSize: "12.5px", color: "rgba(16,35,63,.55)", marginTop: "3px" }}>
+                <span style={{ display: "block", fontSize: "12.5px", color: "#4A5A74", marginTop: "3px" }}>
                   {p.formTitle ?? "No form yet"}
                   {" · "}
                   {p.responseCount === 0

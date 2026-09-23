@@ -5,8 +5,8 @@ import { uploadFile } from "@/app/actions/files";
 
 const BLUE = "#2D46AF";
 const INK = "#10233F";
-const GREEN = "#1B7F4B";
-const RED = "#B8321E";
+const GREEN = "#1D6B37";
+const RED = "#A3261A";
 
 /**
  * Attach a file to whatever is being edited.
@@ -44,7 +44,7 @@ export function FilePicker({
 
   return (
     <div>
-      <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px" }}>
+      <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px" }}>
         {label}
       </label>
 
@@ -103,7 +103,7 @@ export function FilePicker({
         disabled={disabled || isUpload}
         style={{
           width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-          fontSize: "13.5px", color: INK, backgroundColor: isUpload ? "#F7F8FB" : "#fff",
+          fontSize: "13.5px", color: INK, backgroundColor: isUpload ? "#FBF9F4" : "#fff",
           border: "1px solid rgba(16,35,63,.15)", borderRadius: "10px",
           padding: "10px 12px", minHeight: "42px", outline: "none",
         }}

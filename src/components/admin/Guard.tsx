@@ -22,11 +22,10 @@ export async function Guard({
   if (openForReview || can(session?.user, need)) return <>{children}</>;
   return (
     <div style={{ maxWidth: "460px", padding: "40px 0" }}>
-      <p style={{ fontSize: "30px", marginBottom: "12px" }}>🔒</p>
       <h1 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: "#10233F", margin: "0 0 10px" }}>
         Not part of your admin type
       </h1>
-      <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: 0 }}>
+      <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
         This page needs <strong style={{ color: "#10233F" }}>{CAPABILITY_LABELS[need]}</strong>, which
         your admin type does not include. A super admin can change that under Admin types.
       </p>

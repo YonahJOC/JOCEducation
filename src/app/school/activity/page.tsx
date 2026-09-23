@@ -23,7 +23,7 @@ export default async function SchoolActivityPage() {
   const cycles = await getCycles();
   const [school, activity] = await Promise.all([mySchool(), myActivity()]);
   if (!school || !activity) {
-    return <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)" }}>Could not load your school.</p>;
+    return <p style={{ fontSize: "15px", color: "#4A5A74" }}>Could not load your school.</p>;
   }
 
   const byGrade = (["es", "ms", "hs"] as const).map((g) => ({
@@ -39,7 +39,7 @@ export default async function SchoolActivityPage() {
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         Chesed activity
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
         What teachers at {school.name} are actually using.
       </p>
 
@@ -51,11 +51,11 @@ export default async function SchoolActivityPage() {
 
       {/* Grades */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           By grade band
         </p>
         {activity.recent.length === 0 ? (
-          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.65)", margin: 0 }}>
+          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
             Nothing yet. Once teachers start saving lessons, you will see which grades are moving and
             which have not begun.
           </p>
@@ -68,7 +68,7 @@ export default async function SchoolActivityPage() {
                   <div key={g.grade}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13.5px", marginBottom: "5px" }}>
                       <span style={{ color: INK }}>{g.label}</span>
-                      <span style={{ color: "rgba(16,35,63,.55)" }}>{g.count}</span>
+                      <span style={{ color: "#4A5A74" }}>{g.count}</span>
                     </div>
                     <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.07)", overflow: "hidden" }}>
                       <div style={{ height: "100%", width: `${(g.count / max) * 100}%`, backgroundColor: g.count ? BLUE : "transparent", borderRadius: "9999px" }} />
@@ -89,11 +89,11 @@ export default async function SchoolActivityPage() {
 
       {/* Feed */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           Recently
         </p>
         {activity.recent.length === 0 ? (
-          <p style={{ fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>Nothing to show yet.</p>
+          <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nothing to show yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {activity.recent.map((r, i) => {
@@ -105,7 +105,7 @@ export default async function SchoolActivityPage() {
                     <p style={{ fontSize: "14px", color: INK, margin: 0, lineHeight: 1.45 }}>
                       <strong style={{ fontWeight: 600 }}>{r.who}</strong> saved {r.lesson}
                     </p>
-                    <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {GRADE_LABEL[r.grade] ?? r.grade}
                       {cycle ? ` · ${cycle.theme}` : ""} · {ago(r.when)}
                     </p>
@@ -123,13 +123,13 @@ export default async function SchoolActivityPage() {
 function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "16px 18px" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 8px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
         {label}
       </p>
       <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: INK, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </p>
-      <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "6px 0 0" }}>{sub}</p>
+      <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
     </div>
   );
 }

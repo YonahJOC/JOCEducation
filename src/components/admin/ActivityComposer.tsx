@@ -48,7 +48,7 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
       onSubmit={submit}
       style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}
     >
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
         Log an interaction
       </p>
 
@@ -63,7 +63,7 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
               padding: "7px 13px", borderRadius: "9999px", cursor: "pointer", minHeight: "38px",
               border: type === v ? "1.5px solid #2D46AF" : `1px solid ${RULE}`,
               backgroundColor: type === v ? "#F4F7FD" : "#fff",
-              color: type === v ? "#2D46AF" : "rgba(16,35,63,.7)",
+              color: type === v ? "#2D46AF" : "#4A5A74",
             }}
           >
             {l}
@@ -106,7 +106,7 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
           {pending ? "Saving…" : "Log it"}
         </button>
         {msg && (
-          <span style={{ fontSize: "13px", color: msg === "Logged." ? "#1B7F4B" : "#B8321E" }}>{msg}</span>
+          <span style={{ fontSize: "13px", color: msg === "Logged." ? "#1D6B37" : "#A3261A" }}>{msg}</span>
         )}
       </div>
     </form>

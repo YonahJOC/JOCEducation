@@ -7,7 +7,7 @@ const INK = "#10233F";
 const BLUE = "#2D46AF";
 const ORANGE = "#FA912D";
 const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.14)";
 
 const PLAN_LABELS: Record<string, string> = {
@@ -23,7 +23,7 @@ type Request = {
 };
 
 function fmt(d: Date | string | null) {
-  if (!d) return "—";
+  if (!d) return "Not set";
   return new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 }
 
@@ -67,7 +67,7 @@ export function SchoolPlanPanel({
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         Plan &amp; seats
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
         What {schoolName} is on, and how to change it.
       </p>
 
@@ -77,8 +77,8 @@ export function SchoolPlanPanel({
           <>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "18px", marginBottom: "18px" }}>
               <Stat label="Plan" value={PLAN_LABELS[plan] ?? plan} />
-              <Stat label="Billing" value={interval ? interval.charAt(0) + interval.slice(1).toLowerCase() : "—"} />
-              <Stat label="Seats" value={`${seatsUsed} of ${seats ?? "—"}`} />
+              <Stat label="Billing" value={interval ? interval.charAt(0) + interval.slice(1).toLowerCase() : "Not set"} />
+              <Stat label="Seats" value={seats == null ? `${seatsUsed} used, no seat limit set` : `${seatsUsed} of ${seats}`} />
               <Stat label="Renews" value={fmt(renewsOn)} />
             </div>
 
@@ -100,7 +100,7 @@ export function SchoolPlanPanel({
             )}
           </>
         ) : (
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: 0 }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
             No plan is set up yet. Ask {contact} below and they will get you started.
           </p>
         )}
@@ -114,7 +114,7 @@ export function SchoolPlanPanel({
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE_TEXT, margin: "0 0 12px" }}>
           Ask for a change
         </p>
-        <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
           This goes to <strong style={{ color: INK }}>{contact}</strong>. Nothing changes and nothing is
           charged until you have spoken to them.
         </p>
@@ -132,7 +132,7 @@ export function SchoolPlanPanel({
         />
 
         <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-          <label style={{ fontSize: "13.5px", color: "rgba(16,35,63,.7)" }}>
+          <label style={{ fontSize: "13.5px", color: "#4A5A74" }}>
             Seats needed (optional){" "}
             <input
               value={wantsSeats}
@@ -166,14 +166,14 @@ export function SchoolPlanPanel({
       {/* Past requests */}
       {requests.length > 0 && (
         <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 16px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
             Requests you have sent
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {requests.map((r) => (
               <div key={r.id} style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(16,35,63,.06)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "5px" }}>
-                  <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)" }}>{fmt(r.createdAt)}</span>
+                  <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{fmt(r.createdAt)}</span>
                   <span style={{
                     fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
                     color: r.status === "OPEN" ? ORANGE_TEXT : GREEN,
@@ -184,7 +184,7 @@ export function SchoolPlanPanel({
                 <p style={{ fontSize: "14px", lineHeight: 1.6, color: INK, margin: 0 }}>{r.message}</p>
                 {r.response && (
                   <div style={{ marginTop: "10px", paddingLeft: "13px", borderLeft: `3px solid ${BLUE}` }}>
-                    <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "0 0 3px" }}>
+                    <p style={{ fontSize: "12px", color: "#4A5A74", margin: "0 0 3px" }}>
                       Just One Chesed replied {fmt(r.respondedAt)}
                     </p>
                     <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.8)", margin: 0 }}>{r.response}</p>
@@ -202,7 +202,7 @@ export function SchoolPlanPanel({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 5px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
         {label}
       </p>
       <p style={{ fontSize: "16px", fontWeight: 600, color: INK, margin: 0, letterSpacing: "-0.02em" }}>{value}</p>

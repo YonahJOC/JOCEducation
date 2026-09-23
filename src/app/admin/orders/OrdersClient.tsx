@@ -6,7 +6,7 @@ import { PageIntro } from "@/components/admin/PageIntro";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 
 const STATUSES = ["NEW", "QUOTED", "INVOICED", "FULFILLED", "CANCELLED"] as const;
 const STATUS_LABEL: Record<string, string> = {
@@ -15,7 +15,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 const STATUS_COLOR: Record<string, string> = {
   NEW: "#FA912D", QUOTED: "#2C7AC9", INVOICED: "#2D46AF",
-  FULFILLED: "#1B7F4B", CANCELLED: "#7A8699",
+  FULFILLED: "#1D6B37", CANCELLED: "#7A8699",
 };
 
 export type OrderRow = {
@@ -57,7 +57,7 @@ export function OrdersClient({ orders, disabled }: { orders: OrderRow[]; disable
 
       {orders.length === 0 ? (
         <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.6)", margin: 0 }}>No orders yet.</p>
+          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>No orders yet.</p>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -103,7 +103,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           <p style={{ fontSize: "15px", fontWeight: 700, color: INK, margin: 0 }}>
             {order.schoolName} — {order.subtotal}
           </p>
-          <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0", wordBreak: "break-word" }}>
+          <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
             {order.contactName} · {order.contactEmail}
             {order.phone ? ` · ${order.phone}` : ""}
             {order.poNumber ? ` · PO ${order.poNumber}` : ""} · {order.when}
@@ -123,7 +123,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
             {order.items.map((it, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px", color: INK }}>
                 <span>{it.quantity} × {it.name}</span>
-                <span style={{ color: "rgba(16,35,63,.6)", whiteSpace: "nowrap" }}>{it.unitPrice} {it.unit}</span>
+                <span style={{ color: "#4A5A74", whiteSpace: "nowrap" }}>{it.unitPrice} {it.unit}</span>
               </div>
             ))}
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "6px", fontSize: "14px", fontWeight: 700, color: INK }}>
@@ -138,7 +138,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           {order.notes && <Block label="Notes from the school" text={order.notes} />}
 
           <div style={{ marginBottom: "12px" }}>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px" }}>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px" }}>
               What you told them (shipping, final total, invoice number)
             </label>
             <textarea
@@ -161,7 +161,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
                   padding: "8px 14px", minHeight: "40px", borderRadius: "9999px",
                   border: status === s ? `1.5px solid ${STATUS_COLOR[s]}` : "1px solid rgba(16,35,63,.18)",
                   backgroundColor: status === s ? `${STATUS_COLOR[s]}14` : "#fff",
-                  color: status === s ? STATUS_COLOR[s] : "rgba(16,35,63,.65)",
+                  color: status === s ? STATUS_COLOR[s] : "#4A5A74",
                   cursor: disabled ? "not-allowed" : "pointer",
                 }}
               >
@@ -177,7 +177,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           </div>
 
           {msg && (
-            <p style={{ fontSize: "12.5px", color: msg === "Saved." ? "#1B7F4B" : RED, margin: "10px 0 0" }}>{msg}</p>
+            <p style={{ fontSize: "12.5px", color: msg === "Saved." ? "#1D6B37" : RED, margin: "10px 0 0" }}>{msg}</p>
           )}
         </div>
       )}
@@ -188,8 +188,8 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
 function Block({ label, text }: { label: string; text: string }) {
   return (
     <div style={{ marginBottom: "12px" }}>
-      <p style={{ fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", margin: "0 0 4px" }}>{label}</p>
-      <p style={{ fontSize: "14px", color: INK, lineHeight: 1.55, margin: 0, whiteSpace: "pre-wrap", backgroundColor: "#F7F8FB", borderRadius: "10px", padding: "10px 12px" }}>
+      <p style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", margin: "0 0 4px" }}>{label}</p>
+      <p style={{ fontSize: "14px", color: INK, lineHeight: 1.55, margin: 0, whiteSpace: "pre-wrap", backgroundColor: "#FBF9F4", borderRadius: "10px", padding: "10px 12px" }}>
         {text}
       </p>
     </div>

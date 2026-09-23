@@ -43,11 +43,10 @@ export default async function SchoolLayout({ children }: { children: React.React
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "430px", textAlign: "center" }}>
-          <p style={{ fontSize: "32px", marginBottom: "14px" }}>🔒</p>
           <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, marginBottom: "10px" }}>
             For school administrators
           </h1>
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", marginBottom: "22px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", marginBottom: "22px" }}>
             This area is for the person who runs a school&rsquo;s JOC account. If that should be you, ask
             Just One Chesed to set it up.
           </p>
@@ -107,14 +106,14 @@ export default async function SchoolLayout({ children }: { children: React.React
             border: `1px solid ${RULE}`, borderRadius: "14px",
           }}
         >
-          <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 5px" }}>
+          <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
             You administer
           </p>
           <p style={{ fontWeight: 700, fontSize: "15px", color: INK, margin: 0, lineHeight: 1.3, letterSpacing: "-0.02em" }}>
             {schoolName}
           </p>
           {planLabel && (
-            <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "3px 0 0", textTransform: "capitalize" }}>
+            <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "3px 0 0", textTransform: "capitalize" }}>
               {planLabel}
             </p>
           )}
@@ -134,7 +133,7 @@ export default async function SchoolLayout({ children }: { children: React.React
 
         <div style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: `1px solid ${RULE}` }}>
           {session?.user?.email && (
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.6)", margin: "0 0 10px", wordBreak: "break-all" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "0 0 10px", wordBreak: "break-all" }}>
               {session.user.email}
             </p>
           )}
@@ -145,7 +144,7 @@ export default async function SchoolLayout({ children }: { children: React.React
             <form action={signOutAction}>
               <button
                 type="submit"
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", padding: 0, cursor: "pointer", minHeight: "36px", textAlign: "left" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: "#4A5A74", background: "none", border: "none", padding: 0, cursor: "pointer", minHeight: "36px", textAlign: "left" }}
               >
                 Sign out
               </button>

@@ -16,7 +16,7 @@ export default async function LessonPlansPage() {
       <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "12px" }}>
         Every lesson plan we have.
       </h1>
-      <p style={{ fontSize: "17px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "56ch", marginBottom: "40px" }}>
+      <p style={{ fontSize: "17px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "56ch", marginBottom: "40px" }}>
         Ready-to-use chesed lesson plans for elementary, middle, and high school. Download the full plan and all printables in one click.
       </p>
 

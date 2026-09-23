@@ -23,11 +23,10 @@ export default async function MeetingsPage() {
   if (!openForReview && !can(session?.user, "run_admin_agenda")) {
     return (
       <div style={{ maxWidth: "460px", padding: "40px 0" }}>
-        <p style={{ fontSize: "30px", marginBottom: "12px" }}>🔒</p>
         <h1 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
           Not one of yours
         </h1>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: 0 }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
           Running the admin meeting is its own permission. A super admin can add it to your admin
           type under Admin types.
         </p>

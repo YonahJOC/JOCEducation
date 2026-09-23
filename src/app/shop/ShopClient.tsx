@@ -50,7 +50,7 @@ export function ShopClient({
           <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
             {headline}
           </h1>
-          <p style={{ fontSize: "16px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "54ch" }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "54ch" }}>
             {standfirst}
           </p>
         </div>
@@ -101,7 +101,7 @@ export function ShopClient({
             <div style={{ padding: "20px" }}>
               <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 600, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "10px" }}>{p.category}</span>
               <h2 style={{ fontWeight: 700, fontSize: "17.5px", color: "#10233F", lineHeight: 1.25, marginBottom: "6px" }}>{p.name}</h2>
-              <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.62)", lineHeight: 1.55, marginBottom: "18px" }}>{p.detail}</p>
+              <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, marginBottom: "18px" }}>{p.detail}</p>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: "#10233F" }}>${p.price}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -141,7 +141,7 @@ export function ShopClient({
             <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
               {itemCount === 0 ? (
                 <div style={{ textAlign: "center", padding: "48px 0" }}>
-                  <p style={{ fontSize: "16px", color: "rgba(16,35,63,.5)", marginBottom: "16px" }}>Your cart is empty.</p>
+                  <p style={{ fontSize: "16px", color: "#4A5A74", marginBottom: "16px" }}>Your cart is empty.</p>
                   <button onClick={() => setDrawerOpen(false)} style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "9999px", padding: "11px 22px", border: "none", cursor: "pointer" }}>Browse products</button>
                 </div>
               ) : (
@@ -151,7 +151,7 @@ export function ShopClient({
                       <div style={{ width: "56px", height: "56px", borderRadius: "10px", backgroundColor: "#F4F7FD", flexShrink: 0 }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontWeight: 600, fontSize: "14.5px", color: "#10233F", marginBottom: "4px" }}>{p.name}</p>
-                        <p style={{ fontSize: "13px", color: "rgba(16,35,63,.5)", marginBottom: "10px" }}>${p.price} each</p>
+                        <p style={{ fontSize: "13px", color: "#4A5A74", marginBottom: "10px" }}>${p.price} each</p>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <button onClick={() => removeFromCart(p.id)} style={{ width: "28px", height: "28px", borderRadius: "50%", border: "1px solid rgba(16,35,63,.18)", backgroundColor: "#fff", cursor: "pointer", fontWeight: 700, fontSize: "15px" }}>−</button>
                           <span style={{ fontWeight: 700, fontSize: "15px", color: "#10233F", minWidth: "16px", textAlign: "center" }}>{cart[p.id]}</span>
@@ -169,7 +169,7 @@ export function ShopClient({
             {itemCount > 0 && (
               <div style={{ padding: "20px 24px", borderTop: "1px solid rgba(16,35,63,.1)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "14px", color: "rgba(16,35,63,.55)" }}>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
+                  <span style={{ fontSize: "14px", color: "#4A5A74" }}>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
                   <span style={{ fontWeight: 700, fontSize: "15px", color: "#10233F" }}>${subtotal}</span>
                 </div>
                 <OrderForm

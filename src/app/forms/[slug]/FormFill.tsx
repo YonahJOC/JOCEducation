@@ -6,7 +6,7 @@ import type { PublicForm } from "@/lib/forms";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.16)";
 
 const field: React.CSSProperties = {
@@ -45,7 +45,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
         <h2 style={{ fontWeight: 800, fontSize: "21px", letterSpacing: "-0.03em", color: INK, margin: "0 0 8px" }}>
           {paid ? "Paid, and received" : "Sent"}
         </h2>
-        <p style={{ fontSize: "15.5px", lineHeight: 1.6, color: "rgba(16,35,63,.75)", margin: 0 }}>{done}</p>
+        <p style={{ fontSize: "15.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>{done}</p>
       </div>
     );
   }
@@ -121,7 +121,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
                       padding: "11px 24px", borderRadius: "9999px", minHeight: "46px", cursor: "pointer",
                       border: values[f.id] === o ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
                       backgroundColor: values[f.id] === o ? "rgba(45,70,175,.07)" : "#fff",
-                      color: values[f.id] === o ? BLUE : "rgba(16,35,63,.72)",
+                      color: values[f.id] === o ? BLUE : "#4A5A74",
                     }}
                   >
                     {o}
@@ -176,7 +176,7 @@ function Labelled({
         {required && <span style={{ color: "#C96C00", marginLeft: "5px" }} aria-label="required">*</span>}
       </label>
       {help && (
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", margin: "0 0 7px", lineHeight: 1.5 }}>{help}</p>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 7px", lineHeight: 1.5 }}>{help}</p>
       )}
       {children}
     </div>

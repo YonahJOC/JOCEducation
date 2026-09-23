@@ -5,7 +5,7 @@ import { addTeacher, cancelInvitation, removeTeacher, setTeacherRole } from "@/a
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RED = "#B91C1C";
 const RULE = "rgba(16,35,63,.14)";
 
@@ -70,7 +70,7 @@ export function TeachersPanel({
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
         Your teachers
       </h1>
-      <p style={{ fontSize: "14px", color: "rgba(16,35,63,.6)", margin: "0 0 18px" }}>
+      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
         Everyone at {schoolName} with a JOC Education login.
       </p>
 
@@ -91,7 +91,7 @@ export function TeachersPanel({
         <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "18px 20px", marginBottom: "16px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13.5px", marginBottom: "8px" }}>
             <span style={{ color: INK, fontWeight: 600 }}>{seatsUsed} of {seats} seats used</span>
-            <span style={{ color: full ? "#C96C00" : "rgba(16,35,63,.55)" }}>
+            <span style={{ color: full ? "#C96C00" : "#4A5A74" }}>
               {full ? "All seats taken" : `${seats - seatsUsed} available`}
             </span>
           </div>
@@ -106,10 +106,10 @@ export function TeachersPanel({
         onSubmit={add}
         style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}
       >
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           Add a teacher
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "-6px 0 14px", maxWidth: "56ch" }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "-6px 0 14px", maxWidth: "56ch" }}>
           Their name and email gives them a login here. <strong style={{ color: INK }}>No message
           is sent to them</strong> — tell them yourself, and they sign in with that address.
         </p>
@@ -154,7 +154,7 @@ export function TeachersPanel({
       {/* Pending invitations */}
       {invitations.length > 0 && (
         <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
             Invited, not yet joined
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -164,7 +164,7 @@ export function TeachersPanel({
                 <div key={i.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                   <div style={{ minWidth: 0 }}>
                     <span style={{ fontSize: "14px", color: INK, wordBreak: "break-all" }}>{i.email}</span>
-                    <span style={{ fontSize: "12.5px", color: expired ? "#C96C00" : "rgba(16,35,63,.5)", marginLeft: "8px" }}>
+                    <span style={{ fontSize: "12.5px", color: expired ? "#C96C00" : "#4A5A74", marginLeft: "8px" }}>
                       {expired ? "expired" : "pending"}
                     </span>
                   </div>
@@ -178,11 +178,11 @@ export function TeachersPanel({
 
       {/* Team */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", overflow: "hidden", marginBottom: "16px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0, padding: "16px 20px", borderBottom: `1px solid rgba(16,35,63,.08)` }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid rgba(16,35,63,.08)` }}>
           On your team ({members.length})
         </p>
         {members.length === 0 ? (
-          <p style={{ padding: "20px", fontSize: "14px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+          <p style={{ padding: "20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
             Nobody has joined yet. Invite your first teacher above.
           </p>
         ) : (
@@ -192,16 +192,16 @@ export function TeachersPanel({
                 <div style={{ minWidth: 0 }}>
                   <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>
                     {m.name ?? m.email}
-                    {m.id === meId && <span style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", fontWeight: 500 }}> · you</span>}
+                    {m.id === meId && <span style={{ fontSize: "12px", color: "#4A5A74", fontWeight: 500 }}> · you</span>}
                   </p>
-                  <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", margin: "2px 0 0", wordBreak: "break-all" }}>
+                  <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-all" }}>
                     {m.email} · {ago(m.lastSeenAt)}
                   </p>
                 </div>
                 <div style={{ display: "flex", gap: "12px", alignItems: "center", flexShrink: 0 }}>
                   <span style={{
                     fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
-                    color: m.role === "SCHOOL_ADMIN" ? BLUE : "rgba(16,35,63,.5)",
+                    color: m.role === "SCHOOL_ADMIN" ? BLUE : "#4A5A74",
                     backgroundColor: m.role === "SCHOOL_ADMIN" ? "#F4F7FD" : "transparent",
                     padding: m.role === "SCHOOL_ADMIN" ? "3px 9px" : 0, borderRadius: "9999px",
                   }}>
@@ -225,10 +225,10 @@ export function TeachersPanel({
 
       {/* Who can administer */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
           Who can administer this school
         </p>
-        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.72)", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 10px" }}>
           {admins.length === 1
             ? "You are the only administrator."
             : `${admins.length} people can manage this school's teachers and plan.`}{" "}

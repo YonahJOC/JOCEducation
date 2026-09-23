@@ -24,7 +24,7 @@ export default async function PricingPage() {
         <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px", maxWidth: "16ch" }}>
           {c.text("hero.headline", "Simple, transparent pricing.")}
         </h1>
-        <p style={{ fontSize: "17px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, maxWidth: "55ch", marginBottom: "40px" }}>
+        <p style={{ fontSize: "17px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "55ch", marginBottom: "40px" }}>
           {c.text(
             "hero.standfirst",
             "No long-term commitment on monthly plans. Annual saves 15%. No school is turned away on cost — we offer full and partial scholarships."
@@ -42,7 +42,7 @@ export default async function PricingPage() {
           ].map(([stat, label]) => (
             <div key={label}>
               <div style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: "#10233F" }}>{stat}</div>
-              <div style={{ fontSize: "13.5px", color: "rgba(16,35,63,.55)", fontWeight: 500, marginTop: "2px" }}>{label}</div>
+              <div style={{ fontSize: "13.5px", color: "#4A5A74", fontWeight: 500, marginTop: "2px" }}>{label}</div>
             </div>
           ))}
         </div>
@@ -66,7 +66,7 @@ export default async function PricingPage() {
         <div style={{ marginTop: "48px", backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "28px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
           <div>
             <p style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "5px" }}>Still have questions?</p>
-            <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.62)" }}>Our team is happy to walk through the options for your school.</p>
+            <p style={{ fontSize: "14.5px", color: "#4A5A74" }}>Our team is happy to walk through the options for your school.</p>
           </div>
           <a href="mailto:education@justonechesed.org" style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
             Contact us
@@ -81,7 +81,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <div style={{ padding: "24px 28px", border: "1px solid rgba(16,35,63,.08)", borderRadius: "0" }}>
       <p style={{ fontWeight: 700, fontSize: "15.5px", color: "#10233F", marginBottom: "8px" }}>{q}</p>
-      <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: 0 }}>{a}</p>
+      <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>{a}</p>
     </div>
   );
 }

@@ -1,26 +1,34 @@
 @import "tailwindcss";
 
+/* This block mirrors src/lib/joc-tokens.ts, which is the source. A colour that
+   is not in that file does not belong here either: two lists of colours is how
+   the console ended up with three different greys for the same muted text. */
 @theme {
   /* Brand colors */
   --color-ink:          #10233F;
-  --color-ink-deep:     #0B1A31;
   --color-blue:         #2D46AF;
-  --color-blue-light:   #2C7AC9;
+  --color-blue-hover:   #223892;
+  --color-blue-tint:    #E4E9F8;
   --color-orange:       #FA912D;
   --color-orange-text:  #C96C00;
-  --color-orange-light: #FFB55E;
-  --color-orange-pale:  #FFC98A;
+  --color-orange-tint:  #FFF0E0;
+  --color-muted:        #4A5A74;
   --color-paper:        #FBF9F4;
   --color-panel:        #F4F7FD;
+  --color-hairline:     #E3E6EF;
   --color-input:        #F8FAFE;
-  --color-amber-bg:     #FDEEDA;
-  --color-amber-text:   #9A5405;
-  --color-joc-green:    #1B7F4B;
+  --color-green:        #2FA457;
+  --color-green-tint:   #E3F4E8;
+  --color-green-text:   #1D6B37;
+  --color-red:          #D8412F;
+  --color-red-tint:     #FBE6E3;
+  --color-red-text:     #A3261A;
   --color-white:        #FFFFFF;
 
   /* Typography */
   --font-outfit:      'Outfit', sans-serif;
   --font-newsreader:  'Newsreader', serif;
+  --font-mono:        'IBM Plex Mono', ui-monospace, monospace;
 
   /* Border radius */
   --radius-pill:   9999px;
@@ -39,8 +47,8 @@
 
 :root {
   --border-subtle: rgba(16,35,63,.10);
-  --ink-body:      rgba(16,35,63,.72);
-  --ink-muted:     rgba(16,35,63,.62);
+  --ink-body:      #4A5A74;
+  --ink-muted:     #4A5A74;
 }
 
 html {

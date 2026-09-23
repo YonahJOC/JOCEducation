@@ -7,7 +7,7 @@ import {
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const RED = "#B8321E";
+const RED = "#A3261A";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -18,7 +18,7 @@ const field: React.CSSProperties = {
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600,
-  color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
@@ -148,10 +148,10 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
           Questions
         </p>
-        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
           Name and email are always asked for — you do not need to add them.
         </p>
 
@@ -159,7 +159,7 @@ export function FormBuilder({
           {d.fields.map((f, i) => (
             <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "14px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(16,35,63,.45)", minWidth: "26px" }}>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "#4A5A74", minWidth: "26px" }}>
                   {i + 1}
                 </span>
                 <input
@@ -232,11 +232,11 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 12px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 12px" }}>
           Payment
         </p>
         {!paymentsOn && (
-          <p style={{ fontSize: "13.5px", color: "#9A5405", backgroundColor: "#FDEEDA", borderRadius: "10px", padding: "11px 14px", margin: "0 0 12px", lineHeight: 1.55 }}>
+          <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "10px", padding: "11px 14px", margin: "0 0 12px", lineHeight: 1.55 }}>
             Card payment is not switched on yet. You can set an amount, but the form will not publish
             until Stripe is connected — better that than taking registrations and never charging anyone.
           </p>
@@ -290,7 +290,7 @@ export function FormBuilder({
         )}
         {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
         {saved && !msg && (
-          <p style={{ fontSize: "13.5px", fontWeight: 600, color: "#1B7F4B", margin: 0 }}>Saved.</p>
+          <p style={{ fontSize: "13.5px", fontWeight: 600, color: "#1D6B37", margin: 0 }}>Saved.</p>
         )}
       </div>
     </form>

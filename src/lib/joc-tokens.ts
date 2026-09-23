@@ -44,7 +44,56 @@ export const ROW_SHADOW = "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)";
 /** The console runs edge to edge; its content does not. */
 export const CONTENT_MAX = "1080px";
 
-const font = "var(--font-outfit)";
+/**
+ * Three fonts, one job each. Declared in src/app/layout.tsx.
+ *
+ *   ui     names, headings, buttons, the interface
+ *   read   anything a person reads as prose — a program's description, the
+ *          reason on a row, what a student wrote about their event
+ *   data   labels, dates, counts, codes, step numbers
+ *
+ * The distinction is the whole of the type system. A count set in the reading
+ * face looks like an opinion; a sentence set in the data face looks like a
+ * log line.
+ */
+export const F = {
+  ui: "var(--font-outfit)",
+  read: "var(--font-newsreader)",
+  data: "var(--font-mono)",
+} as const;
+
+const font = F.ui;
+
+/**
+ * The one uppercase label.
+ *
+ * It replaces six near-identical variants that had accumulated — 10.5/.2em,
+ * 11/.14em, 11.5/.22em, 12/.1em, 12/.08em and 13/.12em — none of which
+ * differed for any reason anybody could name.
+ */
+export const label: React.CSSProperties = {
+  fontFamily: F.data,
+  fontSize: "11px",
+  fontWeight: 500,
+  letterSpacing: ".04em",
+  textTransform: "uppercase",
+};
+
+/** Prose. Set it in the reading face, and give it room. */
+export const prose: React.CSSProperties = {
+  fontFamily: F.read,
+  fontSize: "17px",
+  lineHeight: 1.6,
+  color: C.ink,
+};
+
+/** A figure, a date, a code — anything read as data rather than as language. */
+export const datum: React.CSSProperties = {
+  fontFamily: F.data,
+  fontSize: "13px",
+  fontWeight: 500,
+  color: C.muted,
+};
 
 /** A filled blue button. Everything primary looks like this and nothing else does. */
 export const primaryButton: React.CSSProperties = {
@@ -67,10 +116,14 @@ export const chip: React.CSSProperties = {
   borderRadius: R.chip, padding: "4px 9px", whiteSpace: "nowrap",
 };
 
-export const bandLabel: React.CSSProperties = {
-  fontFamily: font, fontSize: "12px", fontWeight: 700,
-  textTransform: "uppercase", letterSpacing: ".08em",
-};
+/**
+ * The old band label, now the one label.
+ *
+ * Kept as a name because it reads well where it is used — the label above a
+ * band's figure — but it is the same object, so there is one uppercase style
+ * on the whole site rather than six.
+ */
+export const bandLabel: React.CSSProperties = label;
 
 export const bandFigure: React.CSSProperties = {
   fontFamily: font, fontSize: "30px", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.1,

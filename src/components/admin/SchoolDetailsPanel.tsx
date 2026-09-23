@@ -5,7 +5,7 @@ import { updateSchoolDetails } from "@/app/actions/admin";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
-const GREEN = "#1B7F4B";
+const GREEN = "#1D6B37";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
@@ -14,7 +14,7 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 export function SchoolDetailsPanel({
@@ -68,7 +68,7 @@ export function SchoolDetailsPanel({
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           School details
         </p>
         {!editing && (
@@ -85,11 +85,11 @@ export function SchoolDetailsPanel({
       {!editing ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
           <Row k="Name" v={name} />
-          <Row k="Location" v={[city, region].filter(Boolean).join(" · ") || "—"} />
+          <Row k="Location" v={[city, region].filter(Boolean).join(" · ") || "Not recorded"} />
           <Row k="Type" v={type.replace(/_/g, " ").toLowerCase()} />
-          <Row k="Students" v={studentCount ? String(studentCount) : "—"} />
+          <Row k="Students" v={studentCount ? String(studentCount) : "Enrolment not recorded"} />
           <div style={{ paddingTop: "10px", marginTop: "4px", borderTop: "1px solid rgba(16,35,63,.07)" }}>
-            <p style={{ fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", margin: "0 0 6px" }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", margin: "0 0 6px" }}>
               Email domains
             </p>
             {emailDomains.length === 0 ? (
@@ -162,7 +162,7 @@ export function SchoolDetailsPanel({
               placeholder="darcheitorah.org, staff.darcheitorah.org"
               style={field}
             />
-            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "rgba(16,35,63,.55)", margin: "6px 0 0" }}>
+            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
               Anyone signing in with an address on these joins this school automatically. Separate several
               with commas. A domain can only belong to one school.
             </p>
@@ -175,7 +175,7 @@ export function SchoolDetailsPanel({
               placeholder="The id this school has inside the JOC App"
               style={field}
             />
-            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "rgba(16,35,63,.55)", margin: "6px 0 0" }}>
+            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
               How this school is matched to the JOC App. Until it is set, the app reports nothing
               for them — no hours, no approvals, nothing on the app console. Matching is by id and
               never by name: &ldquo;Yeshiva Darchei Torah&rdquo; and &ldquo;Darchei Torah&rdquo; are
@@ -196,7 +196,7 @@ export function SchoolDetailsPanel({
             </button>
             <button
               onClick={() => { setEditing(false); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
             >
               Cancel
             </button>
@@ -205,7 +205,7 @@ export function SchoolDetailsPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? GREEN : "#B8321E" }}>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? GREEN : "#A3261A" }}>
           {msg}
         </p>
       )}
@@ -216,7 +216,7 @@ export function SchoolDetailsPanel({
 function Row({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px" }}>
-      <span style={{ color: "rgba(16,35,63,.55)" }}>{k}</span>
+      <span style={{ color: "#4A5A74" }}>{k}</span>
       <span style={{ color: INK, fontWeight: 500, textAlign: "right", textTransform: k === "Type" ? "capitalize" : "none" }}>{v}</span>
     </div>
   );

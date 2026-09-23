@@ -36,7 +36,7 @@ const field: React.CSSProperties = {
 };
 
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 export function PlanPanel({
@@ -105,7 +105,7 @@ export function PlanPanel({
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Plan &amp; access
         </p>
         {!editing && (
@@ -124,18 +124,18 @@ export function PlanPanel({
           {plan ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "7px", marginBottom: "16px" }}>
               <Row k="Plan" v={PLANS.find((p) => p[0] === plan)?.[1] ?? plan} />
-              <Row k="Billing status" v={planStatus ?? "—"} />
-              <Row k="Seats" v={String(seats ?? "—")} />
-              <Row k="Renews" v={renewsOn ? new Date(renewsOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : "—"} />
+              <Row k="Billing status" v={planStatus ?? "Not recorded"} />
+              <Row k="Seats" v={seats == null ? "Not set" : String(seats)} />
+              <Row k="Renews" v={renewsOn ? new Date(renewsOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : "No renewal date"} />
               {grantedManually && (
                 <div style={{ backgroundColor: "rgba(27,127,75,.07)", border: "1px solid rgba(27,127,75,.25)", padding: "11px 13px", borderRadius: "10px", marginTop: "6px" }}>
-                  <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1B7F4B", margin: "0 0 5px" }}>
+                  <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1D6B37", margin: "0 0 5px" }}>
                     {(grantKind ?? "granted").toLowerCase()} · free access
                   </p>
                   {grantNote && (
-                    <p style={{ fontSize: "13px", lineHeight: 1.5, color: "rgba(16,35,63,.78)", margin: "0 0 4px" }}>{grantNote}</p>
+                    <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: "0 0 4px" }}>{grantNote}</p>
                   )}
-                  <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: 0 }}>
+                  <p style={{ fontSize: "12px", color: "#4A5A74", margin: 0 }}>
                     {grantedBy ? `Approved by ${grantedBy}` : "Approver not recorded"}
                     {grantReviewOn ? ` · review ${new Date(grantReviewOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}` : ""}
                   </p>
@@ -143,7 +143,7 @@ export function PlanPanel({
               )}
             </div>
           ) : (
-            <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", margin: "0 0 16px", lineHeight: 1.55 }}>
+            <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 16px", lineHeight: 1.55 }}>
               No plan yet. This school has no access to gated content.
             </p>
           )}
@@ -161,7 +161,7 @@ export function PlanPanel({
                     padding: "6px 11px", borderRadius: "9999px", minHeight: "36px",
                     border: status === v ? "1.5px solid #2D46AF" : `1px solid ${RULE}`,
                     backgroundColor: status === v ? "#F4F7FD" : "#fff",
-                    color: status === v ? "#2D46AF" : "rgba(16,35,63,.7)",
+                    color: status === v ? "#2D46AF" : "#4A5A74",
                     cursor: disabled || status === v ? "default" : "pointer",
                     opacity: disabled ? 0.5 : 1,
                   }}
@@ -176,7 +176,7 @@ export function PlanPanel({
             <button
               onClick={revoke}
               disabled={disabled || pending}
-              style={{ marginTop: "14px", fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#B8321E", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0 }}
+              style={{ marginTop: "14px", fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0 }}
             >
               Revoke access
             </button>
@@ -208,7 +208,7 @@ export function PlanPanel({
             <input type="date" value={fEnd} onChange={(e) => setFEnd(e.target.value)} style={field} />
           </div>
           {/* Granting free access — three distinct kinds, each with a reason */}
-          <div style={{ border: `1.5px solid ${fGranted ? "#1B7F4B" : RULE}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
+          <div style={{ border: `1.5px solid ${fGranted ? "#1D6B37" : RULE}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
             <label style={{ display: "flex", gap: "9px", alignItems: "flex-start", cursor: "pointer" }}>
               <input
                 type="checkbox"
@@ -218,7 +218,7 @@ export function PlanPanel({
               />
               <span style={{ fontSize: "13.5px", color: INK, lineHeight: 1.5, fontWeight: 600 }}>
                 Give this school free access
-                <small style={{ display: "block", color: "rgba(16,35,63,.55)", fontSize: "12.5px", fontWeight: 400 }}>
+                <small style={{ display: "block", color: "#4A5A74", fontSize: "12.5px", fontWeight: 400 }}>
                   No payment. Recorded on the school&rsquo;s history with who approved it.
                 </small>
               </span>
@@ -238,9 +238,9 @@ export function PlanPanel({
                         style={{
                           fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
                           padding: "8px 13px", borderRadius: "9999px", minHeight: "40px", cursor: "pointer",
-                          border: fKind === v ? "1.5px solid #1B7F4B" : `1px solid ${RULE}`,
+                          border: fKind === v ? "1.5px solid #1D6B37" : `1px solid ${RULE}`,
                           backgroundColor: fKind === v ? "rgba(27,127,75,.1)" : "#fff",
-                          color: fKind === v ? "#1B7F4B" : "rgba(16,35,63,.7)",
+                          color: fKind === v ? "#1D6B37" : "#4A5A74",
                         }}
                       >
                         {l}
@@ -248,7 +248,7 @@ export function PlanPanel({
                     ))}
                   </div>
                   {fKind && (
-                    <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "7px 0 0" }}>
+                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "7px 0 0" }}>
                       {GRANT_KINDS.find(([v]) => v === fKind)?.[2]}
                     </p>
                   )}
@@ -268,7 +268,7 @@ export function PlanPanel({
                 <div>
                   <label style={label}>Review on</label>
                   <input type="date" value={fReview} onChange={(e) => setFReview(e.target.value)} style={field} />
-                  <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+                  <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
                     JOC reviews grants each Elul.
                   </p>
                 </div>
@@ -285,7 +285,7 @@ export function PlanPanel({
             </button>
             <button
               onClick={() => { setEditing(false); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
             >
               Cancel
             </button>
@@ -294,7 +294,7 @@ export function PlanPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." || msg.includes("updated") || msg.includes("revoked") ? "#1B7F4B" : "#B8321E" }}>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." || msg.includes("updated") || msg.includes("revoked") ? "#1D6B37" : "#A3261A" }}>
           {msg}
         </p>
       )}
@@ -305,7 +305,7 @@ export function PlanPanel({
 function Row({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px" }}>
-      <span style={{ color: "rgba(16,35,63,.55)" }}>{k}</span>
+      <span style={{ color: "#4A5A74" }}>{k}</span>
       <span style={{ color: INK, fontWeight: 500, textAlign: "right" }}>{v}</span>
     </div>
   );

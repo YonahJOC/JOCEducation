@@ -116,7 +116,7 @@ export function ProductsClient({ products, disabled }: { products: ProductRow[];
               onChange={(url) => set({ fileUrl: url })}
               disabled={disabled}
             />
-            <p style={{ fontSize: "12px", color: "rgba(16,35,63,.5)", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
               Leave empty for something printed and posted.
             </p>
           </div>
@@ -136,7 +136,7 @@ export function ProductsClient({ products, disabled }: { products: ProductRow[];
       renderRow={(p) => (
         <>
           <p style={{ fontWeight: 600, color: INK, margin: 0, fontSize: "14.5px" }}>{p.name}</p>
-          <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
+          <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
             {p.priceDollars > 0 ? `$${p.priceDollars.toFixed(2)} ${p.unit}` : "no price set"}
             {` · ${p.category}`}
             {p.fileUrl ? " · download" : ""}

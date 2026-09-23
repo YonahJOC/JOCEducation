@@ -68,7 +68,7 @@ export function PageIntro({
         {children}
       </div>
 
-      <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.65)", lineHeight: 1.6, margin: "0 0 10px", maxWidth: "74ch" }}>
+      <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 10px", maxWidth: "74ch" }}>
         {what}
       </p>
 
@@ -99,7 +99,7 @@ export function PageIntro({
                 ))}
               </ol>
               {note && (
-                <p style={{ fontSize: "13.5px", color: "#9A5405", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
+                <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
                   {note}
                 </p>
               )}

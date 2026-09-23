@@ -21,7 +21,7 @@ export default async function FormsPage() {
           Forms
         </h1>
         {forms.length === 0 ? (
-          <p style={{ fontSize: "15.5px", color: "rgba(16,35,63,.6)", margin: 0 }}>
+          <p style={{ fontSize: "15.5px", color: "#4A5A74", margin: 0 }}>
             Nothing open at the moment.
           </p>
         ) : (
@@ -35,13 +35,13 @@ export default async function FormsPage() {
                 <p style={{ fontSize: "17px", fontWeight: 700, color: INK, margin: "0 0 4px", letterSpacing: "-0.02em" }}>
                   {f.title}
                   {f.feeCents && (
-                    <span style={{ fontSize: "12.5px", fontWeight: 700, color: "#9A5405", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "3px 10px", marginLeft: "10px" }}>
+                    <span style={{ fontSize: "12.5px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "3px 10px", marginLeft: "10px" }}>
                       {money(f.feeCents)}
                     </span>
                   )}
                 </p>
                 {f.description && (
-                  <p style={{ fontSize: "14.5px", lineHeight: 1.55, color: "rgba(16,35,63,.65)", margin: 0, maxWidth: "62ch" }}>
+                  <p style={{ fontSize: "14.5px", lineHeight: 1.55, color: "#4A5A74", margin: 0, maxWidth: "62ch" }}>
                     {f.description.split("\n")[0]}
                   </p>
                 )}
