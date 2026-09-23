@@ -379,14 +379,17 @@ export async function saveProgramForm(
     });
     if (!program) return { ok: false, error: "That program no longer exists." };
 
+    // Running a program is not one of these. A coordinator reads their
+    // sign-ups; the questions a school is asked are JOC's to write, and one
+    // person who runs one program should not be able to change what every
+    // school arriving at that program is asked.
     const mayAdminister =
       !isAuthConfigured ||
       can(me, "forms") ||
       can(me, "programs") ||
-      can(me, "coordinators") ||
-      Boolean(me?.id && program.leads.some((l) => l.id === me.id));
+      can(me, "coordinators");
     if (!mayAdminister) {
-      return { ok: false, error: "You are not down as running this program." };
+      return { ok: false, error: "Editing this form needs the Forms, Programs or Coordinators permission." };
     }
 
     // Only this program's own form. Without this check the id in the request

@@ -18,8 +18,9 @@ import { ensureProgramForm } from "@/lib/program-forms";
  *   2. Anyone with the `programs` permission. Sees every program.
  *   3. Anyone with `forms`. Sees the answers wherever they are.
  *
- * A lead is deliberately not given the `forms` permission: that would open
- * every form on the site, which is the opposite of what is wanted here.
+ * A lead is deliberately given neither the `forms` permission nor the right
+ * to edit this program's own form. They see the questions and they see the
+ * answers; writing the questions stays with JOC.
  */
 
 export type ProgramAdminView = {
@@ -55,6 +56,10 @@ export type ProgramAdminView = {
   /**
    * May build and edit this program's own sign-up form. Scoped to this
    * program: it does not imply the site-wide Forms permission.
+   *
+   * Not a coordinator. They read their sign-ups; the questions a school is
+   * asked are JOC's to write, and the person running one program should not
+   * be able to change what every school arriving at it is asked.
    */
   canEditForm: boolean;
 };
@@ -131,7 +136,7 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
       asLead: isLead && !managesPrograms && !readsForms && !namesCoordinators,
       canEditProgram: open || managesPrograms,
       canSetCoordinators: open || namesCoordinators,
-      canEditForm: open || isLead || managesPrograms || readsForms || namesCoordinators,
+      canEditForm: open || managesPrograms || readsForms || namesCoordinators,
     };
   } catch {
     return null;
