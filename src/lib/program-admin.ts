@@ -1,6 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { can } from "@/lib/access";
+import { can, canAccessConsole } from "@/lib/access";
 import { listResponses, type ResponseRow, type PublicField } from "@/lib/forms";
 import { ensureProgramForm } from "@/lib/program-forms";
 
@@ -154,6 +154,27 @@ export async function leadsAnyProgram(userId: string | null | undefined): Promis
   } catch {
     return false;
   }
+}
+
+/**
+ * Can this person open the console at all?
+ *
+ * Two ways in, and every place that asks has to know about both: a capability,
+ * which the education and programming teams hold, or running a program, which
+ * a coordinator does while holding no capability whatever.
+ *
+ * It lives here rather than in access.ts because the second route is a
+ * database question and access.ts is deliberately synchronous. Four callers
+ * were each answering it their own way — the header, the console layout, the
+ * console's front door and the account page — and every time one of them was
+ * missed, somebody got a console they could not see a way into.
+ */
+export async function canOpenConsole(
+  user: { id?: string | null; role?: string | null; email?: string | null; capabilities?: string[] | null } | null | undefined,
+): Promise<boolean> {
+  if (!user) return false;
+  if (canAccessConsole(user)) return true;
+  return leadsAnyProgram(user.id ?? null);
 }
 
 /** Every program this person may open — for the list page. */

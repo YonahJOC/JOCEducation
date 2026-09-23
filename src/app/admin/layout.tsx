@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { leadsAnyProgram } from "@/lib/program-admin";
+import { leadsAnyProgram, canOpenConsole } from "@/lib/program-admin";
 import {
   canAccessConsole, canManageAccounts, canManageCalendar, canManageContent,
   canManageUsers, ROLE_LABELS, type Role,
@@ -69,7 +69,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   // The console is for the educational team and above. JOC staff have full
   // access to the site itself but nothing to do here.
-  if (isAuthConfigured && !canAccessConsole(session?.user) && !leadsProgram) {
+  if (isAuthConfigured && !(await canOpenConsole(session?.user))) {
     const signedIn = Boolean(session?.user);
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>

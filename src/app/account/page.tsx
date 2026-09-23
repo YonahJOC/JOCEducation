@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
-import { ROLE_LABELS, ROLE_DESCRIPTIONS, canAccessConsole, canRunOwnSchool, type Role } from "@/lib/access";
+import { ROLE_LABELS, ROLE_DESCRIPTIONS, canRunOwnSchool, type Role } from "@/lib/access";
+import { canOpenConsole } from "@/lib/program-admin";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
 
@@ -26,6 +27,7 @@ export default async function AccountPage() {
   const session = await safeAuth();
   if (!session?.user) redirect("/login?next=%2Faccount");
   const u = session.user;
+  const openConsole = await canOpenConsole(u);
 
   let schoolName: string | null = null;
   if (isDatabaseConfigured() && u.schoolId) {
@@ -86,11 +88,11 @@ export default async function AccountPage() {
         </Link>
       </div>
 
-      {(canAccessConsole(u) || canRunOwnSchool(u)) && (
+      {(openConsole || canRunOwnSchool(u)) && (
         <div style={CARD}>
           <p style={LABEL}>Where you can go</p>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-            {canAccessConsole(u) && (
+            {openConsole && (
               <Link href="/admin" style={{ fontSize: "14px", fontWeight: 600, color: BLUE, textDecoration: "none" }}>
                 JOC Console →
               </Link>

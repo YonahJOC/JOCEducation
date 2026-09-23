@@ -5,7 +5,8 @@ import { Header, type HeaderAccount } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ChromeGate } from "@/components/layout/ChromeGate";
 import { safeAuth } from "@/auth";
-import { canAccessConsole, canRunOwnSchool, ROLE_LABELS, type Role } from "@/lib/access";
+import { canRunOwnSchool, ROLE_LABELS, type Role } from "@/lib/access";
+import { canOpenConsole } from "@/lib/program-admin";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -58,12 +59,19 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // session object.
   const session = await safeAuth();
   const u = session?.user;
+
+  // Two ways into the console, and the button has to know about both. The
+  // capability route covers the education and programming teams; running a
+  // program covers a coordinator, who holds no capability at all. Opening the
+  // door without lighting the way to it is the same as leaving it shut —
+  // which is exactly what happened.
+  const consoleAccess = await canOpenConsole(u);
   const account: HeaderAccount = u?.email
     ? {
         email: u.email,
         name: u.name ?? null,
         roleLabel: ROLE_LABELS[(u.role ?? "TEACHER") as Role] ?? "Member",
-        console: canAccessConsole(u),
+        console: consoleAccess,
         school: canRunOwnSchool(u),
       }
     : null;
