@@ -34,13 +34,19 @@ export type Today = {
 
 const days = (from: Date, now: number) => Math.floor((now - from.getTime()) / 86_400_000);
 
-export async function getToday(): Promise<Today> {
+/**
+ * @param who Whose Today. Defaults to the signed-in person; passing one is
+ *   how this gets tested, because the rows a person sees are entirely a
+ *   function of their capabilities and that is the part worth checking.
+ */
+export async function getToday(
+  who?: Parameters<typeof can>[0] & { name?: string | null },
+): Promise<Today> {
   const empty: Today = { title: "Today", rows: [], figures: [] };
   if (!isDatabaseConfigured()) return empty;
 
   try {
-    const session = await safeAuth();
-    const me = session?.user;
+    const me = who ?? (await safeAuth())?.user;
     const now = Date.now();
     const rows: TodayRow[] = [];
     const figures: TodayFigure[] = [];
