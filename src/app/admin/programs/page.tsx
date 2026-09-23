@@ -9,7 +9,13 @@ async function getPrograms(): Promise<ProgramRow[]> {
   try {
     const rows = await prisma.programPage.findMany({
       orderBy: [{ sort: "asc" }, { id: "asc" }],
-      include: { steps: { orderBy: { order: "asc" } } },
+      include: {
+        steps: { orderBy: { order: "asc" } },
+        // Surfaced on the row so coordinators are visible from the list rather
+        // than only inside a page nobody knew to open.
+        _count: { select: { leads: true } },
+        form: { select: { _count: { select: { responses: true } } } },
+      },
     });
     return rows.map((p) => ({
       id: p.id,
@@ -25,6 +31,8 @@ async function getPrograms(): Promise<ProgramRow[]> {
       howItWorks: p.steps.map((s) => ({ step: s.step, title: s.title, description: s.description, linkLabel: s.linkLabel, linkUrl: s.linkUrl })),
       externalHref: p.externalHref,
       videoUrl: p.videoUrl,
+      leadCount: p._count.leads,
+      responseCount: p.form?._count.responses ?? 0,
       cta: p.cta,
       published: p.published,
     comingSoon: p.comingSoon,

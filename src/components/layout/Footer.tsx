@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getPublishedPrograms } from "@/lib/content";
 
 const EDUCATION = [
   { label: "Chesed Programs",  href: "/programs" },
@@ -11,13 +12,32 @@ const EDUCATION = [
   { label: "About us",         href: "/about" },
 ];
 
-const PROGRAMS = [
+/**
+ * The programs column, read from the console rather than typed here.
+ *
+ * It was a hand-written list of five, and by the time anyone noticed it was
+ * missing three — a program added in the console appeared on /programs and
+ * nowhere else. A footer that has to be edited in code every time the team
+ * adds a program is a footer that is wrong most of the time.
+ */
+const FALLBACK_PROGRAMS = [
   { label: "Kindness Booth",  href: "/programs/kindness-booth" },
   { label: "Bake for Chesed", href: "/programs/bake-for-chesed" },
   { label: "Just One Tutor",  href: "/programs/just-one-tutor" },
   { label: "Chesed Match",    href: "/programs/chesed-match" },
   { label: "JOC Center Trip", href: "/programs/joc-center-trip" },
 ];
+
+/** At most six, so one long column does not unbalance the footer. */
+async function programLinks() {
+  try {
+    const rows = await getPublishedPrograms();
+    if (rows.length === 0) return FALLBACK_PROGRAMS;
+    return rows.slice(0, 6).map((p) => ({ label: p.name, href: `/programs/${p.slug}` }));
+  } catch {
+    return FALLBACK_PROGRAMS;
+  }
+}
 
 const JOC = [
   { label: "About JustOneChesed", href: "https://justonechesed.org" },
@@ -27,7 +47,8 @@ const JOC = [
   { label: "Donate",              href: "https://justonechesed.org/donate" },
 ];
 
-export function Footer() {
+export async function Footer() {
+  const PROGRAMS = await programLinks();
   return (
     <footer style={{ backgroundColor: "#0B1A31", padding: "54px 26px 34px" }}>
       <div

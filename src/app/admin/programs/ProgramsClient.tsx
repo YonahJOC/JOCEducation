@@ -25,6 +25,8 @@ export type ProgramRow = {
   howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref: string | null;
   videoUrl: string | null;
+  leadCount?: number;
+  responseCount?: number;
   cta: string;
   published: boolean;
   comingSoon: boolean;
@@ -43,7 +45,7 @@ const BLANK: ProgramRow = {
   id: 0, slug: "", name: "", tag: "Ongoing", tagline: "", description: "",
   heroColor: "#2D46AF", meta: "", available: [], whatsIncluded: [""],
   howItWorks: [{ step: "01", title: "", description: "", linkLabel: "", linkUrl: "" }],
-  externalHref: null, videoUrl: null, cta: "Register your school", published: false, comingSoon: false, sort: 0,
+  externalHref: null, videoUrl: null, leadCount: 0, responseCount: 0, cta: "Register your school", published: false, comingSoon: false, sort: 0,
 };
 
 const field: React.CSSProperties = {
@@ -163,24 +165,41 @@ export function ProgramsClient({
             >
               <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: p.heroColor, flexShrink: 0 }} />
               <div style={{ minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>{p.name}</p>
+                {/* The name is the way in. It used to be plain text beside a
+                    link labelled "Sign-ups", so the page holding the form and
+                    the coordinators was behind a word that named neither. */}
+                <Link
+                  href={`/admin/programs/${p.slug}`}
+                  style={{ fontSize: "14.5px", fontWeight: 600, color: INK, textDecoration: "none", display: "inline-block", minHeight: "26px" }}
+                >
+                  {p.name}
+                </Link>
                 <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "2px 0 0" }}>
                   {p.tag} · /programs/{p.slug}
                   {p.published ? "" : " · draft"}{p.comingSoon ? " · coming soon" : ""}
                 </p>
+                <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "3px 0 0" }}>
+                  {p.leadCount
+                    ? `${p.leadCount} coordinator${p.leadCount === 1 ? "" : "s"}`
+                    : "No coordinator yet"}
+                  {" · "}
+                  {p.responseCount
+                    ? `${p.responseCount} sign-up${p.responseCount === 1 ? "" : "s"}`
+                    : "no sign-ups"}
+                </p>
               </div>
               <Link
                 href={`/admin/programs/${p.slug}`}
-                style={{ fontSize: "13px", fontWeight: 600, color: INK, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center", whiteSpace: "nowrap" }}
               >
-                Sign-ups
+                Form &amp; coordinators →
               </Link>
               <button
                 onClick={() => setEditing(p)}
                 disabled={disabled}
                 style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
-                Edit
+                Edit page
               </button>
             </div>
           ))}
