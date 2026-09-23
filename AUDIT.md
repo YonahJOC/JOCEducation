@@ -89,7 +89,7 @@ Vercel would have opened the gate *and* passed all 25 console guards at the
 same moment, publishing thirty-seven schools' records with nobody able to sign
 in and notice.
 
-Closed in `9e1f…` (this audit):
+Closed in `327a244` (this audit):
 
 - [src/auth.ts](src/auth.ts) exports `openForReview`, which is
   `!isAuthConfigured && NODE_ENV !== "production"`. All 42 guard sites read
