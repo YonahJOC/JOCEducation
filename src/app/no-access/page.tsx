@@ -59,6 +59,26 @@ export default async function NoAccessPage() {
           )}
         </p>
 
+        <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", margin: "0 0 22px" }}>
+          <p style={{ fontSize: "16px", fontWeight: 700, color: INK, margin: "0 0 4px" }}>
+            Has a teacher given you a code?
+          </p>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(16,35,63,.7)", margin: "0 0 12px" }}>
+            Students who run a JOC program at their school get a six-character code from the teacher
+            who runs it. You do not need your school&rsquo;s plan for that.
+          </p>
+          <Link
+            href="/ambassador/join"
+            style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              fontSize: "15px", fontWeight: 700, color: "#fff", backgroundColor: BLUE,
+              borderRadius: "12px", padding: "12px 20px", minHeight: "46px", textDecoration: "none",
+            }}
+          >
+            Enter your code
+          </Link>
+        </div>
+
         <p style={{ fontSize: "16px", lineHeight: 1.65, color: "rgba(16,35,63,.7)", margin: "0 0 28px" }}>
           {looksLikeSchool ? (
             <>

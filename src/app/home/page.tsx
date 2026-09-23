@@ -4,6 +4,7 @@ import { safeAuth, isAuthConfigured } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { PersonalHome, cyclesStartedSince, type HomeData } from "@/components/sections/PersonalHome";
+import { myAmbassadorship } from "@/lib/ambassadors";
 
 export const metadata: Metadata = {
   title: "JOC Education",
@@ -24,6 +25,12 @@ export default async function HomePage() {
     if (!session?.user) redirect("/");
     // An administrator-issued password has been seen by someone else.
     if (session.user.mustChangePassword) redirect("/account/password?forced=1");
+
+    // An ambassador is a student. The school's plan is the school's, not
+    // theirs, so the access check below would send every one of them to
+    // /no-access — the platform, unreachable, for the people it is for.
+    if (!hasSiteAccess(session.user) && (await myAmbassadorship())) redirect("/ambassador");
+
     if (!hasSiteAccess(session.user)) redirect("/no-access");
     return <PersonalHome data={await loadHome(session.user)} />;
   }

@@ -88,6 +88,8 @@ model School {
   programLights SchoolProgramLight[]
   agendaItems   AdminMeetingItem[]
   enrollments   ProgramEnrollment[]
+  ambassadors   ProgramAmbassador[]
+  ambassadorInvites AmbassadorInvite[]
 
   @@index([status])
   @@index([accountManagerId])
@@ -280,6 +282,11 @@ model User {
   accessGrants     Subscription[]      @relation("AccessGranter")
 
   lightsSet        SchoolProgramLight[] @relation("LightSetBy")
+
+  /// Programs this student runs at their school, and the ones they supervise.
+  ambassadorships  ProgramAmbassador[]  @relation("AmbassadorUser")
+  supervising      ProgramAmbassador[]  @relation("AmbassadorSupervisor")
+  ambassadorInvites AmbassadorInvite[]  @relation("AmbassadorInviter")
   agendaRaised     AdminMeetingItem[]   @relation("AgendaRaisedBy")
   agendaDecided    AdminMeetingItem[]   @relation("AgendaDecidedBy")
 
@@ -781,6 +788,8 @@ model StoredFile {
   uploadedById String?
   uploadedBy   User?   @relation("UploadedFiles", fields: [uploadedById], references: [id], onDelete: SetNull)
 
+  reportPhotos EventReport[] @relation("ReportPhoto")
+
   createdAt DateTime @default(now())
 
   @@index([createdAt])
@@ -834,6 +843,8 @@ model ProgramPage {
   lights      SchoolProgramLight[]
   agendaItems AdminMeetingItem[]
   enrollments ProgramEnrollment[]
+  ambassadors ProgramAmbassador[]
+  ambassadorInvites AmbassadorInvite[]
 
   /// A promo video for the top of the program page. YouTube, Vimeo or a
   /// direct file — whatever the team has.
@@ -1179,6 +1190,8 @@ model ProgramEvent {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  reports EventReport[]
 
   @@index([startsAt])
   @@index([schoolId])
@@ -1665,4 +1678,120 @@ enum EnrollmentStage {
   PAUSED
   /// They stopped. Kept, so the history is honest.
   ENDED
+}
+
+// ─── Student ambassadors ─────────────────────────────────────────────────────
+
+/// One student running one program at one school, for a bounded period.
+///
+/// Every other role here is scoped to at most a school. An ambassador has to
+/// be scoped to *a program at a school*, which is why this is a table rather
+/// than another value in the Role enum: a student with only a role would see
+/// every program their school runs, which is the one thing this must prevent.
+///
+/// Two per program per school. The cap is enforced when a code is redeemed,
+/// not here, because a tenure that has ended does not use up a place.
+model ProgramAmbassador {
+  id        String @id @default(cuid())
+  userId    String
+  schoolId  String
+  programId Int
+
+  /// The teacher who invited them and who reads their reports. Restrict
+  /// rather than SetNull: an ambassador with nobody supervising them is a
+  /// student writing into a void, so the teacher has to be handed over first.
+  supervisorId String
+
+  startsAt DateTime  @default(now())
+  /// Tenure end. Past this the scope is gone — checked in the scope helper,
+  /// not hidden in the interface.
+  endsAt   DateTime?
+
+  user       User        @relation("AmbassadorUser", fields: [userId], references: [id], onDelete: Cascade)
+  supervisor User        @relation("AmbassadorSupervisor", fields: [supervisorId], references: [id], onDelete: Restrict)
+  school     School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  program    ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  reports EventReport[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, schoolId, programId])
+  @@index([schoolId, programId])
+  @@index([supervisorId])
+}
+
+/// A code a teacher hands to a student, on paper or out loud.
+///
+/// Not an email. These are minors at a school JOC does not employ, and the
+/// portal's send gate blocks mail to them anyway — so the invitation travels
+/// the way everything else at a school travels, which is a teacher telling
+/// somebody something.
+///
+/// Knowing a code grants nothing beyond one program at one school, and only
+/// until it expires or its two places are taken.
+model AmbassadorInvite {
+  id        String @id @default(cuid())
+  code      String @unique
+  schoolId  String
+  programId Int
+
+  createdById String
+  createdBy   User   @relation("AmbassadorInviter", fields: [createdById], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  /// Redemptions so far. Refused at two.
+  usedCount Int       @default(0)
+  revokedAt DateTime?
+
+  school  School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  program ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([schoolId, programId])
+  @@index([expiresAt])
+}
+
+/// What happened when the program actually ran.
+///
+/// Written by the student who ran it, read in full by their teacher, and
+/// counted — not quoted with their name on it — by JOC. See the privacy rules
+/// in src/lib/ambassadors.ts.
+model EventReport {
+  id           String @id @default(cuid())
+  ambassadorId String
+
+  /// The calendar entry this reports on, where there is one. Null when the
+  /// ambassador ran something the calendar never knew about, which is itself
+  /// the most valuable thing this table records.
+  eventId Int?
+
+  occurredOn DateTime
+  /// The student's own estimate, and labelled as one everywhere it is shown.
+  /// A CRM figure that reads as measured and is not is worse than no figure.
+  participants Int?
+
+  whatHappened String  @db.Text
+  wentWell     String? @db.Text
+  wouldChange  String? @db.Text
+
+  /// Optional, and a photo of a school event has other people's children in
+  /// it. Visible to the supervising teacher; reaches JOC only when the
+  /// teacher says it may.
+  photoId       String?
+  photoShared   Boolean @default(false)
+
+  submittedAt        DateTime  @default(now())
+  /// Set when the supervising teacher has read it.
+  seenBySupervisorAt DateTime?
+
+  ambassador ProgramAmbassador @relation(fields: [ambassadorId], references: [id], onDelete: Cascade)
+  event      ProgramEvent?     @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  photo      StoredFile?       @relation("ReportPhoto", fields: [photoId], references: [id], onDelete: SetNull)
+
+  @@index([ambassadorId, occurredOn])
+  @@index([eventId])
+  @@index([occurredOn])
 }

@@ -10,9 +10,11 @@ import { FIELD_TYPE_LABELS } from "@/lib/forms";
 import { AppActivityPanel } from "@/components/admin/AppActivityPanel";
 import { ProgramLights } from "@/components/admin/ProgramLights";
 import { ProgramSchools } from "@/components/admin/ProgramSchools";
+import { ProgramReports } from "@/components/admin/ProgramReports";
 import type { AppActivity } from "@/lib/app-activity";
 import type { ProgramTraffic } from "@/lib/program-traffic";
 import type { EnrolledRow } from "@/lib/program-enrollment";
+import type { ProgramReporting } from "@/lib/ambassadors";
 import type { ProgramAdminView } from "@/lib/program-admin";
 
 const INK = "#10233F";
@@ -31,7 +33,7 @@ const cell: React.CSSProperties = {
 
 export function ProgramAdminClient({
   view, forms, team, feeLabel, paymentsOn, appActivity = null, asCoordinator = false, traffic = null,
-  enrolled = [],
+  enrolled = [], reporting = null,
 }: {
   view: ProgramAdminView;
   forms: { id: string; title: string; responseCount: number }[];
@@ -46,6 +48,8 @@ export function ProgramAdminClient({
   traffic?: ProgramTraffic | null;
   /** Every school that is in it, and how far along. */
   enrolled?: EnrolledRow[];
+  /** What the student ambassadors have reported. Never carries a name. */
+  reporting?: ProgramReporting | null;
 }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -229,6 +233,8 @@ export function ProgramAdminClient({
         rows={enrolled}
         canEdit={!asCoordinator || view.asLead}
       />
+
+      {reporting && <ProgramReports programName={view.name} data={reporting} />}
 
       {traffic && (
         <ProgramLights programId={view.id} slug={view.slug} programName={view.name} data={traffic} />

@@ -22,6 +22,7 @@ const NAV = [
   { label: "Your programs", href: "/school/programs", app: true },
   { label: "Chesed activity", href: "/school/activity", app: true },
   { label: "Cycle progress", href: "/school/cycles", app: true },
+  { label: "Your ambassadors", href: "/school/ambassadors", app: true },
   { label: "Your teachers", href: "/school/teachers" },
   { label: "Plan & seats", href: "/school/plan" },
 ];

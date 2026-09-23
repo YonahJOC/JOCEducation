@@ -7,6 +7,7 @@ import { ProgramAdminClient } from "./ProgramAdminClient";
 import { getAppActivity } from "@/lib/app-activity";
 import { getProgramTraffic } from "@/lib/program-traffic";
 import { enrolledSchools } from "@/lib/program-enrollment";
+import { programReporting } from "@/lib/ambassadors";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 
@@ -60,6 +61,10 @@ export default async function ProgramAdminPage({
   // their own program's schools on — it is the work, not an admin job.
   const enrolled = await enrolledSchools(view.id);
 
+  // What the students running it have written up. Counts and words only —
+  // programReporting cannot return a name.
+  const reporting = await programReporting(view.id);
+
   // Only offered to somebody who may actually rewire the program.
   const forms = view.canEditProgram ? await listForms() : [];
   const team = view.canSetCoordinators && isDatabaseConfigured()
@@ -81,6 +86,7 @@ export default async function ProgramAdminPage({
       appActivity={asCoordinator ? null : appActivity}
       traffic={traffic}
       enrolled={enrolled}
+      reporting={reporting}
     />
   );
 }
