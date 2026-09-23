@@ -509,7 +509,7 @@ Against the brief's list, all six already exist:
 - **Material delivery** — partly: `School.studentListAt`, `liveScreenAt`,
   `storeOpenAt`. No record of what was *sent to* a school.
 
-## 4.3 The real gap: `ProgramEnrollment`
+## 4.3 The real gap: `ProgramEnrollment` — **built in `817c0f5`**
 
 The console can answer "is this school a customer?" and "when is the Kindness
 Booth at Bnos Chaya?" It cannot answer **"which programs is this school
@@ -549,9 +549,27 @@ enum EnrollmentStage {
 }
 ```
 
-This collapses the duplicated inference into one table, gives the traffic light
-a real "not in this program" test instead of two guesses, gives ambassador
-reports something to hang off, and gives the CRM the stage board it is missing.
+**Shipped.** [prisma/schema.prisma](prisma/schema.prisma) has the model and the
+enum; [src/lib/program-enrollment.ts](src/lib/program-enrollment.ts) is the one
+place the question is answered; both inferences now call it
+([program-traffic.ts:112](src/lib/program-traffic.ts#L112),
+[program-lights.ts:166](src/lib/program-lights.ts#L166)); and
+[src/components/admin/ProgramSchools.tsx](src/components/admin/ProgramSchools.tsx)
+puts "Schools in &lt;Program&gt;" above the traffic light on every console,
+sorted furthest-along first and then by whoever has been stuck longest.
+
+Two questions, kept apart on purpose:
+
+- `schoolsInProgram()` — has this program *reached* this school at all? Any
+  stage counts. It is what keeps a school off the "not in this yet" list, so a
+  school never appears in both.
+- `allEnrolledPairs()` — is this school *busy enough* with one program to be
+  worth a word before another is introduced? Being told about a program is not
+  being in it, so `INTRODUCED` does not count.
+
+Backfilled from the calendar and the sign-ups on the live database: 8 pairs,
+all `REGISTERED`. "Reconcile with the calendar" re-runs it and only ever
+creates — a stage somebody set by hand is a decision.
 
 ## 4.4 Ambassador rollup in the CRM
 
@@ -603,7 +621,7 @@ the fallbacks have not.
 | Board posts | `BoardPost` — **0 rows** | none | Single source. |
 | Resources | `Resource` — **0 rows** | none | Single source; the page says the library is being built. |
 | School / hours statistics | `SiteField` (56 rows), editable at `/admin/site` | none | **Already collapsed.** No invented figure survives in the codebase — see Section 8. |
-| "Is this school in this program?" | *nothing* | inferred twice: [program-traffic.ts:103](src/lib/program-traffic.ts#L103) and [program-lights.ts:164](src/lib/program-lights.ts#L164) | **Yes** — two copies of a rule with no table behind it. `ProgramEnrollment` (4.3) fixes it. |
+| "Is this school in this program?" | `ProgramEnrollment` | ~~inferred twice~~ | **Collapsed in `817c0f5`.** Both readers call [src/lib/program-enrollment.ts](src/lib/program-enrollment.ts). |
 
 **Recommendation.** Keep the fallback pattern; stop hand-maintaining the
 fallbacks. Generate `programs.ts`, `lessons.ts` and `cycles.ts` from the
@@ -753,13 +771,14 @@ library that does. None returns a static array.
 
 23 referenced. Status inferred from live behaviour:
 
-**Set** — `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET` (gate is live),
-`CRON_SECRET`, plus the `VERCEL_*` variables Vercel injects.
+**Set** — `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET` (the gate is live),
+plus the `VERCEL_*` variables Vercel injects.
 
 **Not set** —
 
 | Variable | Consequence |
 |---|---|
+| **`CRON_SECRET`** | **Both scheduled jobs are dead.** `/api/app-sync` and `/api/lights` each answer **503** on the live site — they refuse to run rather than leave an unauthenticated endpoint that rewrites every school's figures. So the JOC App is never read and the traffic light is never recomputed overnight. One variable, any long random string, same value in Vercel. This is the cheapest fix on the list. |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google sign-in is not offered; password only |
 | `RESEND_API_KEY` / `EMAIL_FROM` | no mail sent at all; password reset dead-ends |
 | `EMAIL_LAUNCHED` | correct — no school can be emailed |
@@ -853,9 +872,8 @@ blocked on it. The one thing missing is the ambassador scope, which is Stage 4.
 
 ## Stage 4 — the ambassador platform, in order
 
-16. **`ProgramEnrollment`** (4.3) first. Without it an ambassador has nothing
-    well-defined to be scoped *to*, and the "in this program" test stays
-    duplicated in two files.
+16. ~~**`ProgramEnrollment`** (4.3) first.~~ **Done in `817c0f5`** — see 4.3.
+    An ambassador now has something well-defined to be scoped to.
 17. **`ProgramAmbassador` + `AmbassadorInvite`**, with the two-per-program cap
     and `endsAt`, plus a `requireAmbassador()` scope helper beside
     `requireAccountHolder()`.
@@ -891,14 +909,14 @@ three reports and then silence.
     release time, or cut each to one honest placeholder. Never hand-maintain a
     second copy of a list the console edits.
 28. Delete `FALLBACK_PROGRAMS` in `Footer.tsx` — a third copy of the same list.
-29. Replace both copies of the "is this school in this program?" inference with
-    a `ProgramEnrollment` read.
+29. ~~Replace both copies of the "is this school in this program?" inference
+    with a `ProgramEnrollment` read.~~ **Done in `817c0f5`.**
 
 ## Stage 7 — schema summary
 
-**Add:** `ProgramEnrollment` + `EnrollmentStage`, `ProgramAmbassador`,
-`AmbassadorInvite`, `EventReport`, optionally `RenewalSchedule` and
-`MaterialDelivery`.
+**Add:** ~~`ProgramEnrollment` + `EnrollmentStage`~~ (done),
+`ProgramAmbassador`, `AmbassadorInvite`, `EventReport`, optionally
+`RenewalSchedule` and `MaterialDelivery`.
 
 **Add capabilities:** `view_ambassador_reports` (Programs group),
 `manage_ambassadors` (School accounts group).
