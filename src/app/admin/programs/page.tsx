@@ -24,6 +24,7 @@ async function getPrograms(): Promise<ProgramRow[]> {
       whatsIncluded: p.whatsIncluded,
       howItWorks: p.steps.map((s) => ({ step: s.step, title: s.title, description: s.description, linkLabel: s.linkLabel, linkUrl: s.linkUrl })),
       externalHref: p.externalHref,
+      videoUrl: p.videoUrl,
       cta: p.cta,
       published: p.published,
     comingSoon: p.comingSoon,

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
 import { Stages } from "@/components/programs/Stages";
+import { PromoVideo } from "@/components/programs/PromoVideo";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -77,6 +78,11 @@ export default async function ProgramDetailPage({ params }: Props) {
 
           {/* Main content */}
           <div>
+            {/* The promo video, where one has been added. It goes above the
+                words: a school deciding whether this is for them is better
+                served by 40 seconds of it running than by a paragraph. */}
+            <PromoVideo url={program.videoUrl} title={program.name} />
+
             {/* About */}
             <p style={{ fontSize: "17.5px", color: "rgba(16,35,63,.85)", lineHeight: 1.65, marginBottom: "44px" }}>
               {program.description}

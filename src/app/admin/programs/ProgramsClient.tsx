@@ -24,6 +24,7 @@ export type ProgramRow = {
   whatsIncluded: string[];
   howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref: string | null;
+  videoUrl: string | null;
   cta: string;
   published: boolean;
   comingSoon: boolean;
@@ -42,7 +43,7 @@ const BLANK: ProgramRow = {
   id: 0, slug: "", name: "", tag: "Ongoing", tagline: "", description: "",
   heroColor: "#2D46AF", meta: "", available: [], whatsIncluded: [""],
   howItWorks: [{ step: "01", title: "", description: "", linkLabel: "", linkUrl: "" }],
-  externalHref: null, cta: "Register your school", published: false, comingSoon: false, sort: 0,
+  externalHref: null, videoUrl: null, cta: "Register your school", published: false, comingSoon: false, sort: 0,
 };
 
 const field: React.CSSProperties = {
@@ -220,6 +221,7 @@ function ProgramForm({
         whatsIncluded: d.whatsIncluded,
         howItWorks: d.howItWorks,
         externalHref: d.externalHref,
+        videoUrl: d.videoUrl,
         cta: d.cta,
         published: d.published,
         comingSoon: d.comingSoon,
@@ -416,6 +418,22 @@ function ProgramForm({
             + Add a step
           </button>
         </div>
+      </div>
+
+      <div style={card}>
+        <label style={label}>Promo video</label>
+        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
+          Paste the link — whatever you have. The one in the browser bar, the Share button&rsquo;s
+          short link, a Vimeo page. It plays at the top of the program page, above How it works.
+          Leave it empty and nothing shows: no empty box.
+        </p>
+        <input
+          value={d.videoUrl ?? ""}
+          onChange={(e) => set("videoUrl", e.target.value || null)}
+          placeholder="https://youtu.be/… or https://vimeo.com/…"
+          disabled={disabled}
+          style={field}
+        />
       </div>
 
       <div style={card}>

@@ -227,6 +227,7 @@ export async function getPublishedPrograms(): Promise<Program[]> {
         linkUrl: s.linkUrl,
       })),
       cta: p.cta,
+      videoUrl: p.videoUrl,
       external: Boolean(p.externalHref),
       externalHref: p.externalHref ?? undefined,
     }));

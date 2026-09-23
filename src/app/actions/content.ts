@@ -306,6 +306,7 @@ export async function saveProgram(input: {
   whatsIncluded: string[];
   howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref?: string | null;
+  videoUrl?: string | null;
   cta: string;
   published: boolean;
   comingSoon: boolean;
@@ -333,6 +334,7 @@ export async function saveProgram(input: {
       available: input.available.map((a) => a.trim()).filter(Boolean),
       whatsIncluded: input.whatsIncluded.map((a) => a.trim()).filter(Boolean),
       externalHref: input.externalHref?.trim() || null,
+      videoUrl: input.videoUrl?.trim() || null,
       cta: input.cta.trim() || "Register your school",
       published: input.published,
       sort: Number(input.sort) || 0,
@@ -411,6 +413,7 @@ export async function seedProgramsFromStatic(): Promise<Result> {
           available: p.available,
           whatsIncluded: p.whatsIncluded,
           externalHref: p.externalHref ?? null,
+          videoUrl: null,
           cta: p.cta,
           published: true,
           sort: i,

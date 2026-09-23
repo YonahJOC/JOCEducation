@@ -19,6 +19,8 @@ export type Program = {
   formSlug?: string | null;
   external?: boolean;
   externalHref?: string;
+  /** A promo video at the top of the page. */
+  videoUrl?: string | null;
 };
 
 export const PROGRAMS: Program[] = [
