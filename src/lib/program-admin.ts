@@ -46,6 +46,23 @@ export type ProgramAdminView = {
     fields: PublicField[];
   } | null;
   responses: ResponseRow[];
+  /**
+   * Where and when this program is actually running. A console for one
+   * program is not just its sign-ups — the question its coordinator is asked
+   * is "when are we at Darchei Torah", and that lived only on the
+   * calendar, filtered by hand.
+   */
+  runs: {
+    id: number;
+    title: string;
+    schoolName: string | null;
+    startsAt: Date;
+    endsAt: Date | null;
+    status: string;
+    published: boolean;
+    location: string | null;
+    audience: string | null;
+  }[];
   leads: { id: string; name: string | null; email: string }[];
   /** True when this person only got here by being a lead. */
   asLead: boolean;
@@ -76,6 +93,10 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
       include: {
         form: { include: { fields: { orderBy: { order: "asc" } } } },
         leads: { select: { id: true, name: true, email: true } },
+        events: {
+          orderBy: { startsAt: "asc" },
+          include: { school: { select: { name: true } } },
+        },
       },
     });
     if (!p) return null;
@@ -93,6 +114,10 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
             include: {
               form: { include: { fields: { orderBy: { order: "asc" } } } },
               leads: { select: { id: true, name: true, email: true } },
+              events: {
+                orderBy: { startsAt: "asc" },
+                include: { school: { select: { name: true } } },
+              },
             },
           })) ?? p;
       }
@@ -132,6 +157,17 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
           }
         : null,
       responses: p.form ? await listResponses(p.form.id) : [],
+      runs: p.events.map((e) => ({
+        id: e.id,
+        title: e.title,
+        schoolName: e.school?.name ?? null,
+        startsAt: e.startsAt,
+        endsAt: e.endsAt,
+        status: e.status,
+        published: e.published,
+        location: e.location,
+        audience: e.audience,
+      })),
       leads: p.leads,
       asLead: isLead && !managesPrograms && !readsForms && !namesCoordinators,
       canEditProgram: open || managesPrograms,

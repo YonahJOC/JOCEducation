@@ -173,6 +173,70 @@ export function ProgramAdminClient({
         )}
       </div>
 
+      {/* ── Where it is running ────────────────────────────────────────── */}
+      <div style={card}>
+        <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", marginBottom: "6px" }}>
+          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+            Where it is running
+          </p>
+          <Link href="/admin/programming" style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none" }}>
+            Open the calendar →
+          </Link>
+        </div>
+
+        {view.runs.length === 0 ? (
+          <p style={{ fontSize: "14px", color: "rgba(16,35,63,.55)", margin: 0, lineHeight: 1.55, maxWidth: "62ch" }}>
+            Not booked in anywhere yet. Dates are set on the calendar — each one says which school,
+            when, and who from JOC is running it.
+          </p>
+        ) : (
+          <>
+            <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", margin: "0 0 14px", lineHeight: 1.55, maxWidth: "62ch" }}>
+              Every date this program is booked for. Set them on the calendar; this is the view of
+              just yours.
+            </p>
+            <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "1px" }}>
+              {view.runs.map((r, i) => {
+                const past = new Date(r.startsAt).getTime() < Date.now();
+                return (
+                  <li
+                    key={r.id}
+                    style={{
+                      display: "flex", gap: "14px", alignItems: "baseline", flexWrap: "wrap",
+                      padding: "11px 12px", borderRadius: "8px", minWidth: 0,
+                      backgroundColor: i % 2 ? "transparent" : "rgba(244,247,253,.75)",
+                      opacity: past ? 0.6 : 1,
+                    }}
+                  >
+                    <span style={{ fontSize: "13px", fontWeight: 700, color: INK, minWidth: "104px", whiteSpace: "nowrap" }}>
+                      {new Date(r.startsAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+                    </span>
+                    <span style={{ flex: 1, minWidth: 0, fontSize: "14px", color: INK }}>
+                      {r.schoolName ?? "Open to every school"}
+                      {r.audience && (
+                        <span style={{ color: "rgba(16,35,63,.55)", fontSize: "12.5px" }}> · {r.audience}</span>
+                      )}
+                      {r.location && (
+                        <span style={{ color: "rgba(16,35,63,.55)", fontSize: "12.5px" }}> · {r.location}</span>
+                      )}
+                    </span>
+                    {r.status !== "PLANNED" && (
+                      <Pill color={r.status === "CANCELLED" ? "#B8321E" : r.status === "DONE" ? "#1B7F4B" : "#C96C00"}>
+                        {r.status.toLowerCase()}
+                      </Pill>
+                    )}
+                    {/* An unpublished date is the team's working plan. A school
+                        has not been told, and somebody looking at this list
+                        needs to know that before they ring one. */}
+                    {!r.published && <Pill color="#C96C00">not announced</Pill>}
+                  </li>
+                );
+              })}
+            </ol>
+          </>
+        )}
+      </div>
+
       {/* ── Swapping the form out ──────────────────────────────────────── */}
       {view.canEditProgram && (
         <div style={card}>
