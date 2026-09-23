@@ -29,6 +29,11 @@ export type ProgramAdminView = {
   name: string;
   published: boolean;
   comingSoon: boolean;
+  /** "Event", "Ongoing", "Trip" — what kind of program it is. */
+  tag: string;
+  /** Its own colour. The console band wears it, so a coordinator who runs
+   *  two of them knows which console they are on before reading a word. */
+  heroColor: string;
   /** The form attached to this program, if any. */
   form: {
     id: string;
@@ -148,6 +153,8 @@ export async function getProgramAdmin(
       name: p.name,
       published: p.published,
       comingSoon: p.comingSoon,
+      tag: p.tag,
+      heroColor: p.heroColor,
       form: p.form
         ? {
             id: p.form.id,
@@ -230,7 +237,12 @@ export async function canOpenConsole(
 
 /** Every program this person may open — for the list page. */
 export async function listProgramsForAdmin(): Promise<
-  { id: number; slug: string; name: string; published: boolean; responseCount: number; formTitle: string | null }[]
+  {
+    id: number; slug: string; name: string; published: boolean;
+    responseCount: number; formTitle: string | null;
+    /** For the card: what kind it is, its colour, and who runs it. */
+    tag: string; heroColor: string; lead: string | null;
+  }[]
 > {
   if (!isDatabaseConfigured()) return [];
   const session = await safeAuth();
@@ -241,7 +253,10 @@ export async function listProgramsForAdmin(): Promise<
     const rows = await prisma.programPage.findMany({
       where: seesAll ? {} : { leads: { some: { id: me?.id ?? "__none__" } } },
       orderBy: { sort: "asc" },
-      include: { form: { select: { title: true, _count: { select: { responses: true } } } } },
+      include: {
+        form: { select: { title: true, _count: { select: { responses: true } } } },
+        leads: { select: { name: true, email: true } },
+      },
     });
     return rows.map((p) => ({
       id: p.id,
@@ -250,6 +265,9 @@ export async function listProgramsForAdmin(): Promise<
       published: p.published,
       responseCount: p.form?._count.responses ?? 0,
       formTitle: p.form?.title ?? null,
+      tag: p.tag,
+      heroColor: p.heroColor,
+      lead: p.leads[0] ? p.leads[0].name ?? p.leads[0].email : null,
     }));
   } catch {
     return [];

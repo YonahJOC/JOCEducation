@@ -7,6 +7,7 @@ import {
   STAGES, STAGE_LABEL, STAGE_MEANING, STAGE_TONE, countsAsIn,
   type Stage, type EnrolledRow,
 } from "@/lib/program-enrollment";
+import { STUCK_DAYS } from "@/lib/program-today";
 import {
   C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
   rowCard, rowInner, rowBody, rowAction, rowDetail, rowTitle, sectionHeading,
@@ -34,8 +35,8 @@ const TONE: Record<"going" | "setup" | "stopped", { bg: string; fg: string }> = 
   stopped: { bg: C.panel, fg: C.muted },
 };
 
-/** Sitting at one stage this long is the thing a coordinator should notice. */
-const STUCK_DAYS = 45;
+// Sitting at one stage this long is the thing a coordinator should notice.
+// Defined with the Today tab, which counts the same rows this list shows.
 
 export function ProgramSchools({
   programId, slug, programName, rows, canEdit,

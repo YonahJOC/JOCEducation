@@ -291,3 +291,21 @@ body {
 @media (min-width: 720px) {
   .joc-app-detail { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
 }
+
+/* Program console cards, and the Today tab's two columns. */
+.joc-program-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.joc-today {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (min-width: 1000px) {
+  .joc-today { grid-template-columns: minmax(0, 1fr) 300px; gap: 26px; }
+}

@@ -13,6 +13,8 @@ import { AppActivityPanel } from "@/components/admin/AppActivityPanel";
 import { ProgramLights } from "@/components/admin/ProgramLights";
 import { ProgramSchools } from "@/components/admin/ProgramSchools";
 import { ProgramReports } from "@/components/admin/ProgramReports";
+import type { TabKey } from "@/components/admin/ProgramConsoleHeader";
+import { textButton } from "@/lib/joc-tokens";
 import type { AppActivity } from "@/lib/app-activity";
 import type { ProgramTraffic } from "@/lib/program-traffic";
 import type { EnrolledRow } from "@/lib/program-enrollment";
@@ -30,7 +32,7 @@ const cell: React.CSSProperties = {
 
 export function ProgramAdminClient({
   view, forms, team, feeLabel, paymentsOn, appActivity = null, asCoordinator = false, traffic = null,
-  enrolled = [], reporting = null,
+  enrolled = [], reporting = null, tab = "today", today = null,
 }: {
   view: ProgramAdminView;
   forms: { id: string; title: string; responseCount: number }[];
@@ -47,6 +49,10 @@ export function ProgramAdminClient({
   enrolled?: EnrolledRow[];
   /** What the student ambassadors have reported. Never carries a name. */
   reporting?: ProgramReporting | null;
+  /** Which section is open. An address, not state — see ProgramConsoleHeader. */
+  tab?: TabKey;
+  /** The Today tab, rendered by the page because it reads the database. */
+  today?: React.ReactNode;
 }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -85,60 +91,23 @@ export function ProgramAdminClient({
 
   return (
     <div>
-      <Link href="/admin/programs" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
-        ← All programs
-      </Link>
+      {/* The band and the tabs are rendered by the page, above this. */}
 
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "12px 0 4px" }}>
-        {view.name}
-      </h1>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 4px" }}>
-        /programs/{view.slug}
-        {!view.published && " · draft"}
-        {view.comingSoon && " · coming soon"}
-      </p>
-      {asCoordinator && (
-        <div style={{ backgroundColor: "#10233F", borderRadius: "12px", padding: "12px 16px", margin: "12px 0 0", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-          <span style={{ fontSize: "13.5px", color: "#fff", lineHeight: 1.5, flex: 1, minWidth: "min(100%, 300px)" }}>
-            You are seeing this the way <strong>whoever runs this program</strong> sees it — no
-            editing the form, no coordinators panel, no app figures.
-          </span>
-          <Link
-            href={`/admin/programs/${view.slug}`}
-            style={{ fontSize: "13px", fontWeight: 700, color: "#10233F", backgroundColor: "#FA912D", borderRadius: "9999px", padding: "9px 16px", textDecoration: "none", whiteSpace: "nowrap" }}
-          >
-            Back to your own view
-          </Link>
-        </div>
-      )}
+      {tab === "today" && today}
 
       {!asCoordinator && (view.canEditForm || view.canSetCoordinators) && (
-        <p style={{ margin: "12px 0 0" }}>
+        <p style={{ margin: "0 0 14px" }}>
           <Link
-            href={`/admin/programs/${view.slug}?as=coordinator`}
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "7px",
-              fontSize: "13px", fontWeight: 600, color: C.ink,
-              backgroundColor: "rgba(16,35,63,.06)", borderRadius: "9999px",
-              padding: "9px 16px", minHeight: "40px", textDecoration: "none",
-            }}
+            href={`/admin/programs/${view.slug}?tab=${tab}&as=coordinator`}
+            style={{ ...textButton, display: "inline-flex", alignItems: "center" }}
           >
             See this as its coordinator does
           </Link>
         </p>
       )}
 
-      {!asCoordinator && view.asLead && (
-        <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "10px", padding: "10px 14px", margin: "12px 0 0", maxWidth: "62ch", lineHeight: 1.5 }}>
-          You are down as running this program, so you can see its sign-ups. Everything else in the
-          console stays as it was.
-        </p>
-      )}
-
-      <div style={{ height: "22px" }} />
-
-      {/* ── The form, edited right here ────────────────────────────────── */}
-      <div style={{ marginBottom: "14px" }}>
+      {/* ── The sign-up form ───────────────────────────────────────────── */}
+      <div style={{ marginBottom: "14px", display: tab === "setup" ? undefined : "none" }}>
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
           Sign-up form
         </p>
@@ -220,24 +189,24 @@ export function ProgramAdminClient({
         )}
       </div>
 
-      {appActivity && <AppActivityPanel data={appActivity} />}
+      {tab === "today" && appActivity && <AppActivityPanel data={appActivity} />}
 
-      <ProgramSchools
+      {tab === "schools" && <ProgramSchools
         programId={view.id}
         slug={view.slug}
         programName={view.name}
         rows={enrolled}
         canEdit={!asCoordinator || view.asLead}
-      />
+      />}
 
-      {reporting && <ProgramReports programName={view.name} data={reporting} />}
+      {tab === "today" && reporting && <ProgramReports programName={view.name} data={reporting} />}
 
-      {traffic && (
+      {tab === "not-in-yet" && traffic && (
         <ProgramLights programId={view.id} slug={view.slug} programName={view.name} data={traffic} />
       )}
 
       {/* ── Where it is running ────────────────────────────────────────── */}
-      <div style={card}>
+      <div style={{ ...card, display: tab === "calendar" ? undefined : "none" }}>
         <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", marginBottom: "6px" }}>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
             Where it is running
@@ -301,7 +270,7 @@ export function ProgramAdminClient({
       </div>
 
       {/* ── Swapping the form out ──────────────────────────────────────── */}
-      {view.canEditProgram && (
+      {tab === "setup" && view.canEditProgram && (
         <div style={card}>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
             Use a different form
@@ -341,7 +310,7 @@ export function ProgramAdminClient({
       )}
 
       {/* ── Who runs it ────────────────────────────────────────────────── */}
-      {view.canSetCoordinators && (
+      {tab === "setup" && view.canSetCoordinators && (
         <div style={card}>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
             Program coordinators
@@ -387,6 +356,7 @@ export function ProgramAdminClient({
       )}
 
       {/* ── The sign-ups ───────────────────────────────────────────────── */}
+      {tab === "sign-ups" && (
       <div style={{ ...card, padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "18px 20px 12px" }}>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
@@ -443,6 +413,7 @@ export function ProgramAdminClient({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
