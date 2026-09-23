@@ -6,10 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
  * The educator landing page at `/` is the only public route. Everything else
  * — the site, the portal, the console — requires an account.
  *
- * The gate switches itself on as soon as signing in is actually possible,
- * which is a database plus a signing secret. Before that it stays open, so a
- * site with no working login can never lock everybody out. Set
- * GATE_DISABLED=true to force it open (useful for a staging deploy).
+ * The gate needs a database and a signing secret to be worth anything, since
+ * without them nobody can sign in. In development it stands aside in that
+ * state so a fresh clone can be read; in production it does the opposite —
+ * see below. GATE_DISABLED=true opens it deliberately.
  *
  * This runs on the edge where Prisma cannot, so it only checks for the
  * presence of a session cookie. Real authorization — roles, subscription,
@@ -63,7 +63,10 @@ const PUBLIC_PREFIXES = [
   // Whether a particular form needs an account is the form's own setting,
   // enforced when it is submitted — not something the gate decides.
   "/forms",
-  "/brand", "/_next", "/account",
+  "/brand", "/_next",
+  // Somebody an administrator issued a password to has to be able to change
+  // it. Only that page — /account itself sits behind the gate like the rest.
+  "/account/password",
 ];
 
 const PUBLIC_FILES = new Set([

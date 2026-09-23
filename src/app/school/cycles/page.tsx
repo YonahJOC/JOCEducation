@@ -1,3 +1,4 @@
+import { requireSchoolPanel } from "../account-only";
 import { mySchool, myCycleProgress } from "@/lib/school-data";
 
 const INK = "#10233F";
@@ -8,6 +9,7 @@ const RULE = "rgba(16,35,63,.14)";
 export const metadata = { title: "Cycle progress" };
 
 export default async function SchoolCyclesPage() {
+  await requireSchoolPanel();
   const [school, cycles] = await Promise.all([mySchool(), myCycleProgress()]);
   if (!school || !cycles) {
     return <p style={{ fontSize: "15px", color: "rgba(16,35,63,.65)" }}>Could not load your school.</p>;

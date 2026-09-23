@@ -1,3 +1,4 @@
+import { requireSchoolPanel } from "../account-only";
 import { mySchool, myActivity } from "@/lib/school-data";
 import { getCycles } from "@/lib/cycle-data";
 
@@ -18,6 +19,7 @@ function ago(d: Date) {
 }
 
 export default async function SchoolActivityPage() {
+  await requireSchoolPanel();
   const cycles = await getCycles();
   const [school, activity] = await Promise.all([mySchool(), myActivity()]);
   if (!school || !activity) {
