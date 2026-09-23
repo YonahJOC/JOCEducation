@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 import { logSchoolTouch } from "@/app/actions/school-status";
 import { syncAppNow } from "@/app/actions/app-sync";
-import { hours, type Flag } from "@/lib/app-flags";
+import { hours, schoolYear, compareRows, type Flag } from "@/lib/app-flags";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
 /**
@@ -41,11 +41,42 @@ const when = (d: Date | string) =>
 
 export function AppActivityPanel({ data }: { data: AppActivity }) {
   const [open, setOpen] = useState<string | null>(null);
+  const { rows, replay, animating } = useRiseToTop(data.rows);
 
   return (
     <div style={{ marginBottom: "14px" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 6px" }}>
-        All schools
+      {/* The one sentence the panel exists to say. */}
+      <div style={{ backgroundColor: INK, borderRadius: "16px", padding: "20px 22px", marginBottom: "14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE, margin: "0 0 6px" }}>
+          Today on the app
+        </p>
+        <p style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 700, letterSpacing: "-0.03em", color: "#fff", margin: "0 0 4px", lineHeight: 1.2 }}>
+          {data.flagged === 0
+            ? "Nothing needs you today"
+            : `${data.flagged} school${data.flagged === 1 ? "" : "s"} need${data.flagged === 1 ? "s" : ""} you today`}
+        </p>
+        <p style={{ fontSize: "13px", color: data.sync.stale ? "#F5A954" : "#C3CCDD", margin: 0 }}>
+          {data.sync.connected ? data.sync.text : "Not reading the JOC App yet"}
+        </p>
+      </div>
+
+      <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: 0 }}>
+          All schools
+        </p>
+        {data.flagged > 0 && (
+          <button
+            type="button"
+            onClick={replay}
+            disabled={animating}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: MUTED, background: "none", border: "none", cursor: animating ? "default" : "pointer", minHeight: "36px" }}
+          >
+            Replay
+          </button>
+        )}
+      </div>
+      <p style={{ fontSize: "13px", color: MUTED, margin: "0 0 12px" }}>
+        Anything that needs you rises to the top.
       </p>
 
       {/* How old this is. Said before anything else, because every figure
@@ -79,7 +110,7 @@ export function AppActivityPanel({ data }: { data: AppActivity }) {
         </div>
       ) : (
         <div style={{ display: "grid", gap: "8px" }}>
-          {data.rows.map((r) => (
+          {rows.map((r) => (
             <Row key={r.schoolId} row={r} open={open === r.schoolId} onToggle={() => setOpen(open === r.schoolId ? null : r.schoolId)} />
           ))}
         </div>
@@ -109,7 +140,7 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
   const colour = f ? FLAG_COLOR[f.kind] : null;
 
   return (
-    <div style={{
+    <div data-school={row.schoolId} style={{
       backgroundColor: "#fff",
       border: `1px solid ${f ? `${colour}44` : HAIRLINE}`,
       borderRadius: "14px", overflow: "hidden",
@@ -133,9 +164,10 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
           <p style={{ fontSize: "15.5px", fontWeight: 600, color: INK, margin: "0 0 2px" }}>{row.name}</p>
           {f ? (
             <p style={{ fontSize: "13.5px", color: MUTED, margin: "0 0 6px", lineHeight: 1.45 }}>
-              {f.reason}{" "}
-              <span style={{ color: colour!, fontWeight: 600 }}>
-                True for {f.days === 0 ? "less than a day" : `${f.days} day${f.days === 1 ? "" : "s"}`}.
+              {/* For a waiting message, what they actually asked. */}
+              {f.kind === "message" && row.message ? row.message.body : f.reason}
+              <span style={{ color: colour! }}>
+                {" · "}true for {f.days === 0 ? "less than a day" : `${f.days} day${f.days === 1 ? "" : "s"}`}
               </span>
             </p>
           ) : !row.appSchoolId ? (
@@ -182,23 +214,25 @@ function Badges({ row }: { row: AppRow }) {
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+      {/* A payment is for a school year, and saying which one is the
+          difference between a fact and a vague reassurance. */}
       <Badge
         tone={row.payment.state === "paid" || row.payment.state === "granted" ? "good" : row.payment.state === "unpaid" ? "bad" : "warn"}
       >
-        {row.payment.label}
+        {row.payment.state === "unknown" ? row.payment.label : `${row.payment.label} ${schoolYear()}`}
       </Badge>
 
       {st?.storeRedeemedThisMonth == null ? (
         <Badge tone="warn">Prize store not open</Badge>
       ) : (
-        <Badge tone="plain">{st.storeRedeemedThisMonth} redeemed this month</Badge>
+        <Badge tone="plain">Prize store · {st.storeRedeemedThisMonth} redeemed this month</Badge>
       )}
 
       {!st ? null : st.unapprovedMinutes === 0 ? (
-        <Badge tone="good">Nothing waiting</Badge>
+        <Badge tone="good">All approved</Badge>
       ) : (
         <Badge tone={oldHours ? "warn" : "plain"}>
-          {hours(st.unapprovedMinutes)}h waiting
+          {hours(st.unapprovedMinutes)} h to approve
         </Badge>
       )}
     </div>
@@ -524,4 +558,85 @@ function ReadNow({ connected }: { connected: boolean }) {
       )}
     </div>
   );
+}
+
+/**
+ * The flagged schools rising to the top.
+ *
+ * The list arrives A–Z, the way a list of schools is normally written, and
+ * then the ones that need somebody move up. Watching them move is what makes
+ * the point: these were in the middle of an ordinary list a second ago.
+ *
+ * FLIP, so the browser animates a transform rather than reflowing 37 rows.
+ * Nothing moves at all where somebody has asked for less motion — the list is
+ * simply already sorted, which is the same information without the show.
+ */
+function useRiseToTop(sorted: AppRow[]) {
+  const alpha = [...sorted].sort((a, b) => a.name.localeCompare(b.name));
+  const nothingToDo = sorted.every((r) => !r.flag);
+
+  const [order, setOrder] = useState<"alpha" | "sorted">(nothingToDo ? "sorted" : "alpha");
+  const [animating, setAnimating] = useState(false);
+  const positions = useRef<Map<string, number>>(new Map());
+
+  const measure = () => {
+    const m = new Map<string, number>();
+    document.querySelectorAll<HTMLElement>("[data-school]").forEach((el) => {
+      m.set(el.dataset.school!, el.getBoundingClientRect().top);
+    });
+    return m;
+  };
+
+  const rise = () => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setOrder("sorted");
+      return;
+    }
+    positions.current = measure();
+    setAnimating(true);
+    setOrder("sorted");
+  };
+
+  // Let the first paint land as A–Z, then move.
+  useEffect(() => {
+    if (nothingToDo) return;
+    const t = setTimeout(rise, 450);
+    return () => clearTimeout(t);
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Between React writing the new order and the browser painting it, put every
+  // row back where it was and let it travel forwards.
+  useLayoutEffect(() => {
+    if (order !== "sorted" || positions.current.size === 0) return;
+    const after = measure();
+    const els = document.querySelectorAll<HTMLElement>("[data-school]");
+    let longest = 0;
+    els.forEach((el) => {
+      const id = el.dataset.school!;
+      const from = positions.current.get(id);
+      const to = after.get(id);
+      if (from === undefined || to === undefined || from === to) return;
+      const delta = from - to;
+      longest = 900;
+      el.animate(
+        [{ transform: `translateY(${delta}px)` }, { transform: "translateY(0)" }],
+        { duration: 900, easing: "cubic-bezier(.22,1,.36,1)" },
+      );
+    });
+    positions.current = new Map();
+    if (longest) {
+      const t = setTimeout(() => setAnimating(false), longest);
+      return () => clearTimeout(t);
+    }
+    setAnimating(false);
+  }, [order]);
+
+  return {
+    rows: order === "alpha" ? alpha : [...sorted].sort(compareRows),
+    replay: () => { setOrder("alpha"); setTimeout(rise, 60); },
+    animating,
+  };
 }

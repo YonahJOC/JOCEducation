@@ -45,6 +45,29 @@ export type FlagInput = {
 };
 
 const DAY = 86_400_000;
+
+/** "Sep 8" — en-US like every other date in the console; en-GB says "Sept". */
+const shortDate = (d: Date | null) =>
+  d ? new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short" }) : "—";
+
+const monthName = (t: number) => new Date(t).toLocaleDateString("en-US", { month: "long" });
+const thisMonth = (now: number) => monthName(now);
+const lastMonth = (now: number) => {
+  const d = new Date(now);
+  d.setDate(1);
+  d.setMonth(d.getMonth() - 1);
+  return monthName(d.getTime());
+};
+
+/**
+ * The school year a payment covers, as a school says it: 2026–27. The year
+ * turns over in August, which is when a Jewish day school's does.
+ */
+export function schoolYear(now = Date.now()): string {
+  const d = new Date(now);
+  const start = d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
+  return `${start}–${String(start + 1).slice(2)}`;
+}
 const daysSince = (d: Date, now: number) => Math.floor((now - new Date(d).getTime()) / DAY);
 
 /** Hours, to one decimal, from minutes. */
@@ -65,9 +88,9 @@ export function flagFor(s: FlagInput, now = Date.now()): Flag | null {
     const days = daysSince(s.unansweredSince, now);
     return {
       kind: "message",
-      label: "Waiting on us",
-      figure: days === 0 ? "today" : `${days}d`,
-      reason: "They sent a message nobody has answered.",
+      label: "Message waiting",
+      figure: days === 0 ? "today" : `${days} ${days === 1 ? "day" : "days"}`,
+      reason: "Nobody has answered them.",
       days,
       action: { label: "Read message", kind: "message" },
     };
@@ -80,9 +103,9 @@ export function flagFor(s: FlagInput, now = Date.now()): Flag | null {
     if (days > 7) {
       return {
         kind: "hours",
-        label: "Hours waiting",
-        figure: `${hours(s.unapprovedMinutes)}h`,
-        reason: `The oldest has been waiting ${days} days for a teacher to approve it.`,
+        label: "Hours to approve",
+        figure: `${hours(s.unapprovedMinutes)} h`,
+        reason: `Waiting for a teacher to approve, oldest since ${shortDate(s.unapprovedOldestAt)}`,
         days,
         action: { label: "See hours waiting", kind: "hours" },
       };
@@ -94,9 +117,9 @@ export function flagFor(s: FlagInput, now = Date.now()): Flag | null {
   if (s.activeStudentsLast >= 10 && s.activeStudents * 2 <= s.activeStudentsLast) {
     return {
       kind: "drop",
-      label: "Students dropped",
-      figure: `${s.activeStudents} of ${s.activeStudentsLast}`,
-      reason: `Active students fell from ${s.activeStudentsLast} last month to ${s.activeStudents}.`,
+      label: "Students dropping",
+      figure: `${s.activeStudentsLast} → ${s.activeStudents}`,
+      reason: `Active students, ${lastMonth(now)} to ${thisMonth(now)}`,
       // Measured against the month, not an event, so it reads as "this month".
       days: 30,
       action: { label: "Open school", kind: "school" },
@@ -110,11 +133,11 @@ export function flagFor(s: FlagInput, now = Date.now()): Flag | null {
       return {
         kind: "quiet",
         label: "Gone quiet",
-        figure: days === null ? "never" : `${days}d`,
+        figure: days === null ? "never" : `${days} ${days === 1 ? "day" : "days"}`,
         reason:
           days === null
-            ? "Nobody at this school has ever logged anything."
-            : `Nothing logged for ${days} days.`,
+            ? "Nobody at this school has ever logged anything"
+            : `Nothing logged since ${shortDate(s.lastActivityAt)}`,
         days: days ?? 999,
         action: { label: "Open school", kind: "school" },
       };
