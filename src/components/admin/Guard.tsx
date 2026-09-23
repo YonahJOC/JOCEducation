@@ -1,4 +1,4 @@
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can, CAPABILITY_LABELS, type Capability } from "@/lib/access";
 
 /**
@@ -19,7 +19,7 @@ export async function Guard({
 
   // Before sign-in is configured there is nobody to authorize; the console is
   // open so it can be reviewed, and the sample-data banner explains the state.
-  if (!isAuthConfigured || can(session?.user, need)) return <>{children}</>;
+  if (openForReview || can(session?.user, need)) return <>{children}</>;
   return (
     <div style={{ maxWidth: "460px", padding: "40px 0" }}>
       <p style={{ fontSize: "30px", marginBottom: "12px" }}>🔒</p>

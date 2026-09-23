@@ -5,6 +5,7 @@ import { SchoolPlanPanel } from "@/components/school/PlanPanel";
 export const metadata = { title: "Plan & seats" };
 
 export default async function SchoolPlanPage() {
+  await requireAccountHolder();
   const [school, requests] = await Promise.all([mySchool(), myPlanRequests()]);
 
   if (!school) {

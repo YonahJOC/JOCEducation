@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canRunOwnSchool } from "@/lib/access";
 
 /**
@@ -13,7 +13,7 @@ import { canRunOwnSchool } from "@/lib/access";
  * Every page that is not the app's calls this.
  */
 export async function requireAccountHolder(): Promise<void> {
-  if (!isAuthConfigured) return;
+  if (openForReview) return;
   const session = await safeAuth();
   if (!canRunOwnSchool(session?.user)) redirect("/school/programs");
 }

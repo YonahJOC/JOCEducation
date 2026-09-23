@@ -1,7 +1,7 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canManageAccounts, canAccessConsole } from "@/lib/access";
 import { leadsAnyProgram } from "@/lib/program-admin";
 import {
@@ -34,7 +34,7 @@ export default async function AdminOverview() {
   // education team to a locked door as the first thing they see was a poor
   // welcome — they get the guide instead, which is their actual start.
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageAccounts(session?.user)) {
+  if (!openForReview && !canManageAccounts(session?.user)) {
     // A program coordinator holds no capability and has one page in here.
     // The guide is written for the education team and would be the wrong
     // welcome, so they land on their own programs instead.

@@ -6,6 +6,7 @@ import { TeachersPanel } from "@/components/school/TeachersPanel";
 export const metadata = { title: "Your teachers" };
 
 export default async function SchoolTeachersPage() {
+  await requireAccountHolder();
   const [school, session] = await Promise.all([mySchool(), safeAuth()]);
 
   if (!school) {

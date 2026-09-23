@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canManageUsers, CAPABILITIES, type Capability } from "@/lib/access";
 
@@ -25,7 +25,7 @@ type Result = { ok: true; id?: string } | { ok: false; error: string };
 
 async function requireUserManager() {
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageUsers(session?.user)) {
+  if (!openForReview && !canManageUsers(session?.user)) {
     throw new Error("Only someone with People and access can change admin types");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");

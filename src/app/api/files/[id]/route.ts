@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { readFile } from "@/lib/files";
 
@@ -14,7 +14,7 @@ import { readFile } from "@/lib/files";
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  if (isAuthConfigured) {
+  if (!openForReview) {
     const session = await safeAuth();
     if (!session?.user) {
       return NextResponse.json({ error: "Sign in to download this." }, { status: 401 });

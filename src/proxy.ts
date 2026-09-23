@@ -19,7 +19,25 @@ import { NextRequest, NextResponse } from "next/server";
  */
 
 const canSignIn = Boolean(process.env.AUTH_SECRET && process.env.DATABASE_URL);
-const gateOn = canSignIn && process.env.GATE_DISABLED !== "true";
+
+/**
+ * Two different reasons the gate might be off, and only one of them is a
+ * decision.
+ *
+ *   GATE_DISABLED=true    somebody at JOC chose to open the site. Honoured.
+ *   sign-in is broken     nobody chose anything. Standing aside here would
+ *                         publish every school's record to whoever has the
+ *                         address, and with no sign-in there would be nobody
+ *                         able to get in and notice.
+ *
+ * The second used to open the gate too. In production it now shuts it: the
+ * landing page still serves, everything else says no, and src/lib/boot.ts
+ * says in the logs why.
+ */
+const inProduction = process.env.NODE_ENV === "production";
+const gateOn = canSignIn
+  ? process.env.GATE_DISABLED !== "true"
+  : inProduction;
 
 /** Reachable without an account. */
 const PUBLIC_PATHS = new Set([

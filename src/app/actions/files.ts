@@ -1,14 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { putFile, deleteFile, FILE_SIZE_LIMIT } from "@/lib/files";
 
 /** Uploading is the education team's job — ADMIN and above. */
 async function requireUploader() {
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "resources")) {
+  if (!openForReview && !can(session?.user, "resources")) {
     return null;
   }
   return session?.user ?? null;
@@ -20,7 +20,7 @@ export type UploadResult =
 
 export async function uploadFile(formData: FormData): Promise<UploadResult> {
   const user = await requireUploader();
-  if (isAuthConfigured && !user) {
+  if (!openForReview && !user) {
     return { ok: false, error: "You need educational team access to upload files." };
   }
 
@@ -45,7 +45,7 @@ export async function uploadFile(formData: FormData): Promise<UploadResult> {
 
 export async function removeFile(id: string): Promise<{ ok: true } | { ok: false; error: string }> {
   const user = await requireUploader();
-  if (isAuthConfigured && !user) {
+  if (!openForReview && !user) {
     return { ok: false, error: "You need educational team access to remove files." };
   }
   const done = await deleteFile(id);

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, isAuthConfigured, openForReview } from "@/auth";
 import { leadsAnyProgram, canOpenConsole } from "@/lib/program-admin";
 import {
-  can, canAccessConsole, canManageAccounts, canManageCalendar, canManageContent,
+  can, canManageAccounts, canManageCalendar, canManageContent,
   canManageUsers, ROLE_LABELS, type Role,
 } from "@/lib/access";
 import { usingSampleData } from "@/lib/admin-data";
@@ -83,7 +83,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   // The console is for the educational team and above. JOC staff have full
   // access to the site itself but nothing to do here.
-  if (isAuthConfigured && !(await canOpenConsole(session?.user))) {
+  if (!openForReview && !(await canOpenConsole(session?.user))) {
     const signedIn = Boolean(session?.user);
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
@@ -117,7 +117,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const role = (session?.user?.role ?? null) as Role | null;
   // Before auth is configured the console is open so it can be reviewed;
   // treat that as full access rather than hiding half the navigation.
-  const open = !isAuthConfigured;
+  const open = openForReview;
   const showAccounts = open || canManageAccounts(session?.user);
   const showPeople = open || canManageUsers(session?.user);
   const showCalendar = open || canManageCalendar(session?.user);

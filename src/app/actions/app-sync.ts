@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { runAppSync, isAppConnected } from "@/lib/app-sync";
 
@@ -18,7 +18,7 @@ export async function syncAppNow(): Promise<
   { ok: true; rows: number; unmatched: number } | { ok: false; error: string }
 > {
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "app_activity")) {
+  if (!openForReview && !can(session?.user, "app_activity")) {
     return { ok: false, error: "Your admin type does not include JOC App activity." };
   }
   if (!isAppConnected) {

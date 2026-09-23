@@ -3,7 +3,7 @@ import { PeopleTable, type PersonRow, type SchoolRef, type ProgramRef } from "@/
 import { CreateUserForm } from "@/components/admin/CreateUserForm";
 import { usingSampleData } from "@/lib/admin-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canManageRoles, can, JOC_STAFF_DOMAIN, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { ensureAdminRoles, listAdminRoles } from "@/lib/admin-roles";
@@ -19,10 +19,10 @@ export default async function UsersPage() {
 
 async function Inner() {
   const session = await safeAuth();
-  const canEditRoles = !isAuthConfigured || canManageRoles(session?.user);
+  const canEditRoles = openForReview || canManageRoles(session?.user);
   // Naming coordinators is its own permission — the programming team holds it
   // and does not hold the one that changes roles.
-  const canSetCoordinators = !isAuthConfigured || can(session?.user, "coordinators");
+  const canSetCoordinators = openForReview || can(session?.user, "coordinators");
 
   let users: PersonRow[] = [];
   let schools: SchoolRef[] = [];

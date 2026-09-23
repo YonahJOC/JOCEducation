@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can } from "@/lib/access";
 import { recomputeSchoolLights } from "@/lib/program-lights";
@@ -19,7 +19,7 @@ type Result = { ok: true } | { ok: false; error: string };
 async function requireSchools() {
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "schools")) {
+  if (!openForReview && !can(session?.user, "schools")) {
     throw new Error("Your admin type does not include Schools");
   }
   return session?.user ?? null;

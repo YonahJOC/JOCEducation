@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canRunSchoolApp } from "@/lib/access";
 import { schoolSignUpsToCsv, type SchoolSignUp } from "@/lib/csv";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
@@ -23,7 +23,7 @@ export async function GET() {
   }
 
   const session = await safeAuth();
-  if (isAuthConfigured && !canRunSchoolApp(session?.user)) {
+  if (!openForReview && !canRunSchoolApp(session?.user)) {
     return NextResponse.json({ error: "This is for whoever runs a school's JOC App." }, { status: 403 });
   }
 

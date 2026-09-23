@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can, CAPABILITY_LABELS, type Capability } from "@/lib/access";
 
@@ -22,7 +22,7 @@ type Result = { ok: true; id?: string | number } | { ok: false; error: string };
  */
 async function requireContentEditor(need: Capability) {
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, need)) {
+  if (!openForReview && !can(session?.user, need)) {
     throw new Error(`Your admin type does not include ${CAPABILITY_LABELS[need]}`);
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");

@@ -7,6 +7,8 @@ import { ChromeGate } from "@/components/layout/ChromeGate";
 import { safeAuth } from "@/auth";
 import { canRunOwnSchool, ROLE_LABELS, type Role } from "@/lib/access";
 import { canOpenConsole } from "@/lib/program-admin";
+// Refuses to serve a production build that cannot authenticate anybody.
+import "@/lib/boot";
 
 const outfit = Outfit({
   variable: "--font-outfit",

@@ -42,7 +42,6 @@ export function AuthCard({
   next?: string;
 }) {
   const [tab, setTab] = useState<"login" | "signup">(defaultTab);
-  const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const [signInState, signInAction, signingIn] = useActionState(signInWithPassword, {});
@@ -59,20 +58,11 @@ export function AuthCard({
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
-    setNotice(null);
-    // Auth is not connected yet — see tech plan Phase 2.
-    window.setTimeout(() => {
-      setSubmitting(false);
-      setNotice(
-        tab === "login"
-          ? "Sign-in isn't switched on yet. Book a demo below and the JOC team will set your school up."
-          : "Accounts aren't open yet. Book a demo below and we'll create your school's logins."
-      );
-    }, 700);
-  }
+  // There used to be a handleSubmit here that waited 700ms and then said
+  // sign-in was not switched on. It has been switched on since the day the
+  // database was connected, and this card was still the front door telling
+  // people otherwise. Both tabs now do the real thing, or say plainly that
+  // they cannot.
 
   return (
     <div
@@ -170,25 +160,34 @@ export function AuthCard({
         <span style={{ flex: 1, height: "1px", backgroundColor: RULE }} />
       </div>
 
+      {/* Creating an account is its own page, with the questions a new
+          account actually needs — name, school, role. Half of that form
+          repeated here would be a second signup form to keep in step with
+          the first, and the first would win. */}
+      {tab === "signup" ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          <p style={{ fontSize: "13.5px", lineHeight: 1.6, color: "rgba(16,35,63,.65)", margin: 0 }}>
+            Anyone can make an account. It starts with nothing attached to it — what you can see
+            follows your school, once your address is verified.
+          </p>
+          <Link
+            href="/signup"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
+              color: "#fff", backgroundColor: BLUE, borderRadius: "9999px",
+              padding: "14px 20px", minHeight: "44px", textDecoration: "none",
+            }}
+          >
+            Create an account
+          </Link>
+        </div>
+      ) : (
       <form
-        {...(passwordEnabled && tab === "login"
-          ? { action: signInAction }
-          : { onSubmit: handleSubmit })}
+        action={signInAction}
         style={{ display: "flex", flexDirection: "column", gap: "14px" }}
       >
         {next && <input type="hidden" name="next" value={next} />}
-        {tab === "signup" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
-            <div>
-              <label htmlFor="fname" style={labelStyle}>First name</label>
-              <input id="fname" name="fname" autoComplete="given-name" style={inputStyle} />
-            </div>
-            <div>
-              <label htmlFor="school" style={labelStyle}>School</label>
-              <input id="school" name="school" autoComplete="organization" style={inputStyle} />
-            </div>
-          </div>
-        )}
 
         <div>
           <label htmlFor="email" style={labelStyle}>School email</label>
@@ -206,27 +205,25 @@ export function AuthCard({
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <label htmlFor="password" style={labelStyle}>Password</label>
-            {tab === "login" && (
-              <Link
-                href="/forgot-password"
-                style={{ fontSize: "12.5px", color: BLUE, textDecoration: "none", fontWeight: 500 }}
-              >
-                Forgot?
-              </Link>
-            )}
+            <Link
+              href="/forgot-password"
+              style={{ fontSize: "12.5px", color: BLUE, textDecoration: "none", fontWeight: 500 }}
+            >
+              Forgot?
+            </Link>
           </div>
           <input
             id="password"
             name="password"
             type="password"
-            autoComplete={tab === "login" ? "current-password" : "new-password"}
+            autoComplete="current-password"
             style={inputStyle}
           />
         </div>
 
         <button
           type="submit"
-          disabled={submitting || signingIn}
+          disabled={signingIn || !passwordEnabled}
           style={{
             width: "100%",
             fontFamily: "var(--font-outfit)",
@@ -238,13 +235,21 @@ export function AuthCard({
             borderRadius: "9999px",
             padding: "14px 20px",
             minHeight: "44px",
-            cursor: submitting || signingIn ? "default" : "pointer",
-            opacity: submitting || signingIn ? 0.7 : 1,
+            cursor: signingIn || !passwordEnabled ? "default" : "pointer",
+            opacity: signingIn || !passwordEnabled ? 0.7 : 1,
             marginTop: "2px",
           }}
         >
-          {submitting || signingIn ? "One moment…" : tab === "login" ? "Sign in" : "Create account"}
+          {signingIn ? "One moment…" : "Sign in"}
         </button>
+
+        {/* Said plainly rather than after a fake wait. */}
+        {!passwordEnabled && !googleEnabled && (
+          <p role="status" style={{ fontSize: "13px", lineHeight: 1.5, color: "#9A5405", backgroundColor: "#FDEEDA", borderRadius: "12px", padding: "11px 14px", margin: 0 }}>
+            Signing in is not available right now. Book a walkthrough below and the JOC team will
+            sort your school out.
+          </p>
+        )}
 
         {signInState?.error && (
           <p
@@ -276,6 +281,7 @@ export function AuthCard({
           </p>
         )}
       </form>
+      )}
 
       <p
         style={{

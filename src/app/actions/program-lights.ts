@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can } from "@/lib/access";
 import { recomputeProgramLights, recomputeSchoolLights, LIGHT_LABEL, type Light } from "@/lib/program-lights";
@@ -34,7 +34,7 @@ async function requireProgram(programId: number) {
   const session = await safeAuth();
   const me = session?.user ?? null;
 
-  if (!isAuthConfigured) return me;
+  if (openForReview) return me;
 
   const lead = me?.id
     ? (await prisma.programPage.count({ where: { id: programId, leads: { some: { id: me.id } } } })) > 0
@@ -47,7 +47,7 @@ async function requireProgram(programId: number) {
 async function requireSetLight() {
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "set_program_light")) {
+  if (!openForReview && !can(session?.user, "set_program_light")) {
     throw new Error("Changing a light needs the traffic-light permission.");
   }
   return session?.user ?? null;
@@ -304,7 +304,7 @@ export async function refreshLights(slug?: string): Promise<Result> {
 async function requireAgenda() {
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "run_admin_agenda")) {
+  if (!openForReview && !can(session?.user, "run_admin_agenda")) {
     throw new Error("Running the meeting needs the admin meeting permission.");
   }
   return session?.user ?? null;

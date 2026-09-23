@@ -12,7 +12,7 @@ import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { ContactsPanel, type ContactRow } from "@/components/admin/ContactsPanel";
 import { SchoolsGuard } from "@/components/admin/Guard";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
 const INK = "#10233F";
@@ -38,7 +38,7 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
   // Checked before the query rather than around the markup, so a refusal
   // never reads the school in the first place.
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageAccounts(session?.user)) {
+  if (!openForReview && !canManageAccounts(session?.user)) {
     return <SchoolsGuard>{null}</SchoolsGuard>;
   }
   return Inner(await params);

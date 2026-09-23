@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { listProgramsForAdmin } from "@/lib/program-admin";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 
 /**
@@ -28,7 +28,7 @@ export default async function MyProgramsPage() {
   // wording follows, so the page never calls somebody else's programs "yours".
   const session = await safeAuth();
   const all =
-    !isAuthConfigured ||
+    openForReview ||
     can(session?.user, "programs") ||
     can(session?.user, "forms") ||
     can(session?.user, "coordinators");

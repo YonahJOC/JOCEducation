@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canRunSchoolApp } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 
@@ -59,7 +59,7 @@ type SignUp = Awaited<ReturnType<typeof loadSignUps>>[number];
 
 export default async function SchoolProgramsPage() {
   const session = await safeAuth();
-  if (isAuthConfigured && !canRunSchoolApp(session?.user)) redirect("/home");
+  if (!openForReview && !canRunSchoolApp(session?.user)) redirect("/home");
 
   const schoolId = session?.user?.schoolId ?? null;
   if (!schoolId || !isDatabaseConfigured()) {

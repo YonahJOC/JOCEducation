@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProgramAdmin } from "@/lib/program-admin";
 import { listForms } from "@/lib/forms";
@@ -7,7 +6,7 @@ import { money, isPaymentConfigured } from "@/lib/payments";
 import { ProgramAdminClient } from "./ProgramAdminClient";
 import { getAppActivity } from "@/lib/app-activity";
 import { getProgramTraffic } from "@/lib/program-traffic";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 
 export const metadata = { title: "Program — JOC Console" };
@@ -45,7 +44,7 @@ export default async function ProgramAdminPage({
   // behind their own capability — the console is full of schools' data.
   const session = await safeAuth();
   const appActivity =
-    slug === "joc-app" && (!isAuthConfigured || can(session?.user, "app_activity"))
+    slug === "joc-app" && (openForReview || can(session?.user, "app_activity"))
       ? await getAppActivity()
       : null;
 
@@ -53,7 +52,7 @@ export default async function ProgramAdminPage({
   // preview — it is the one part of this page a coordinator works from, so
   // hiding it in the preview would make the preview a lie.
   const traffic = await getProgramTraffic(view.id, {
-    canSetLight: !asCoordinator && (!isAuthConfigured || can(session?.user, "set_program_light")),
+    canSetLight: !asCoordinator && (openForReview || can(session?.user, "set_program_light")),
   });
 
   // Only offered to somebody who may actually rewire the program.

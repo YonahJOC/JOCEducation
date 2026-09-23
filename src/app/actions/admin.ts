@@ -1,11 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can, canManageRoles, canManageUsers } from "@/lib/access";
 import { hashPassword, passwordProblem, generateTempPassword } from "@/lib/password";
-import { isAuthConfigured } from "@/auth";
 
 /**
  * Mutations for the internal admin console.
@@ -24,7 +23,7 @@ async function requireAccountManager() {
   const session = await safeAuth();
   // Before auth is configured there is nobody to authorize, and the database
   // check below stops anything from actually being written.
-  if (isAuthConfigured && !can(session?.user, "schools")) {
+  if (!openForReview && !can(session?.user, "schools")) {
     throw new Error("Your admin type does not include Schools and plans");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -42,7 +41,7 @@ async function requireAccountManager() {
  */
 async function requireUserManager() {
   const session = await safeAuth();
-  if (isAuthConfigured && !canManageUsers(session?.user)) {
+  if (!openForReview && !canManageUsers(session?.user)) {
     throw new Error("Only a super admin can change who has an account");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -52,7 +51,7 @@ async function requireUserManager() {
 /** The demo pipeline is its own job — answering enquiries, not running plans. */
 async function requireDemoManager() {
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "demos")) {
+  if (!openForReview && !can(session?.user, "demos")) {
     throw new Error("Your admin type does not include Demo requests");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -62,7 +61,7 @@ async function requireDemoManager() {
 /** Turning an enquiry into a school account touches both. */
 async function requireDemoAndSchools() {
   const session = await safeAuth();
-  if (isAuthConfigured && !(can(session?.user, "demos") && can(session?.user, "schools"))) {
+  if (!openForReview && !(can(session?.user, "demos") && can(session?.user, "schools"))) {
     throw new Error("Creating a school from an enquiry needs both Demo requests and Schools and plans");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -611,7 +610,7 @@ export async function setUserActive(userId: string, active: boolean): Promise<Re
 export async function setUserRole(userId: string, role: string): Promise<Result> {
   try {
     const session = await safeAuth();
-    if (isAuthConfigured && !canManageRoles(session?.user)) {
+    if (!openForReview && !canManageRoles(session?.user)) {
       return { ok: false, error: "Only a super admin can change roles" };
     }
     if (!isDatabaseConfigured()) return { ok: false, error: "Database not connected" };

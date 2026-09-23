@@ -1,5 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can, canAccessConsole } from "@/lib/access";
 import { listResponses, type ResponseRow, type PublicField } from "@/lib/forms";
 import { ensureProgramForm } from "@/lib/program-forms";
@@ -139,7 +139,7 @@ export async function getProgramAdmin(
     const namesCoordinators = can(me, "coordinators");
 
     // Before sign-in is configured the console is open for review.
-    const open = !isAuthConfigured;
+    const open = openForReview;
     if (!open && !isLead && !managesPrograms && !readsForms && !namesCoordinators) return "denied";
 
     return {
@@ -235,7 +235,7 @@ export async function listProgramsForAdmin(): Promise<
   if (!isDatabaseConfigured()) return [];
   const session = await safeAuth();
   const me = session?.user;
-  const seesAll = !isAuthConfigured || can(me, "programs") || can(me, "forms") || can(me, "coordinators");
+  const seesAll = openForReview || can(me, "programs") || can(me, "forms") || can(me, "coordinators");
 
   try {
     const rows = await prisma.programPage.findMany({

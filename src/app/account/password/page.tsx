@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { PasswordForm } from "./PasswordForm";
 
@@ -23,7 +23,7 @@ export default async function ChangePasswordPage({
 }) {
   const { forced } = await searchParams;
   const session = await safeAuth();
-  if (isAuthConfigured && !session?.user) redirect("/");
+  if (!openForReview && !session?.user) redirect("/");
 
   let hasPassword = true;
   let mustChange = Boolean(session?.user?.mustChangePassword);

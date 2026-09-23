@@ -1,6 +1,6 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
 import { PageIntro } from "@/components/admin/PageIntro";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { getSchoolStatus } from "@/lib/school-status";
 import { StatusBoard } from "./StatusBoard";
@@ -14,7 +14,7 @@ export default async function SchoolStatusPage() {
 
 async function Inner() {
   const session = await safeAuth();
-  const canEdit = !isAuthConfigured || can(session?.user, "schools");
+  const canEdit = openForReview || can(session?.user, "schools");
   const schools = await getSchoolStatus();
 
   const missing = {

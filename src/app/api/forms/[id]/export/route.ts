@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { responsesToCsv } from "@/lib/csv";
 import { listResponses } from "@/lib/forms";
@@ -33,7 +33,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     .catch(() => null);
   if (!form) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  if (isAuthConfigured) {
+  if (!openForReview) {
     const session = await safeAuth();
     const me = session?.user;
     if (!me) return NextResponse.json({ error: "Sign in first." }, { status: 401 });

@@ -79,15 +79,28 @@ Server actions guard themselves independently — e.g.
 [src/app/actions/program-lights.ts:32](src/app/actions/program-lights.ts#L32).
 Hiding a nav link is never the only protection.
 
-**Note on `!isAuthConfigured`.** Every guard has the escape hatch
-`if (!isAuthConfigured || can(...))`. That is safe *only* because
-`isAuthConfigured` is derived from `DATABASE_URL + AUTH_SECRET` being present
-([src/auth.ts:36-41](src/auth.ts#L36)) — in production it is true, so the
-escape hatch is closed. It exists so a fresh clone with no `.env` can be
-reviewed. **It is the single most load-bearing condition in the codebase.** If
-`AUTH_SECRET` were ever unset in Vercel, the gate would open *and* every
-console guard would pass simultaneously. That is worth a deploy-time assertion
-— see Section 9.
+**The escape hatch — found here, closed here.** Every guard used to read
+`if (!isAuthConfigured || can(...))`, and the edge gate switched itself off
+under the same condition. It exists so a fresh clone with no `.env` can be
+read end to end, and in production `isAuthConfigured` is true, so it was
+closed *in practice*. But it was **the single most load-bearing condition in
+the codebase, and it was written down nowhere**: one missing `AUTH_SECRET` in
+Vercel would have opened the gate *and* passed all 25 console guards at the
+same moment, publishing thirty-seven schools' records with nobody able to sign
+in and notice.
+
+Closed in `9e1f…` (this audit):
+
+- [src/auth.ts](src/auth.ts) exports `openForReview`, which is
+  `!isAuthConfigured && NODE_ENV !== "production"`. All 42 guard sites read
+  that instead — 15 of the form `!isAuthConfigured ||` and 27 of the form
+  `isAuthConfigured &&`, which is the same hatch written the other way round.
+- [src/proxy.ts](src/proxy.ts) now distinguishes a *decision* to open the gate
+  (`GATE_DISABLED=true`, still honoured) from sign-in being *broken*. The
+  second shuts the gate in production instead of opening it.
+- [src/lib/boot.ts](src/lib/boot.ts) prints a banner in the logs saying which
+  variable is missing. It deliberately does **not** throw: failing the build
+  would mean the deploy that fixes the variable is the one that cannot run.
 
 ## 1.2 Secrets in the repo
 
@@ -104,7 +117,17 @@ console guard would pass simultaneously. That is worth a deploy-time assertion
 
 Reviewed all 60 pages and 10 API routes. Findings:
 
-1. **`/school/activity` and `/school/cycles`** —
+1. **`/school/plan` and `/school/teachers` imported their guard and never
+   called it.** Both files begin
+   `import { requireAccountHolder } from "../account-only";` and neither
+   invoked it — ESLint had been reporting it as an unused import. The hole an
+   earlier fix was written to close was still open. It was not a data leak,
+   because `mySchool()` derives the school from the session and returns
+   `null` for anyone else — but a school app admin typing the address got
+   *"We could not load your school"*, which reads as a fault rather than a
+   refusal. **Fixed in this audit;** both pages now `await requireAccountHolder()`.
+
+2. **`/school/activity` and `/school/cycles`** —
    [src/app/school/activity/page.tsx](src/app/school/activity/page.tsx),
    [src/app/school/cycles/page.tsx](src/app/school/cycles/page.tsx) — have no
    guard in the page itself. They are **not** exposures: the shared layout
@@ -116,14 +139,14 @@ Reviewed all 60 pages and 10 API routes. Findings:
    a page-level guard anyway, for the same reason the admin pages have one: the
    layout is one edit away from being the only thing standing there.
 
-2. **`/account` is in `PUBLIC_PREFIXES`** ([src/proxy.ts:47](src/proxy.ts#L47)).
+3. **`/account` is in `PUBLIC_PREFIXES`** ([src/proxy.ts:47](src/proxy.ts#L47)).
    The page itself redirects an unauthenticated visitor
    ([src/app/account/page.tsx](src/app/account/page.tsx)), so this is not an
    exposure either, but the reason for the exemption (a user with an
    admin-issued password must reach it before the gate would let them) should
    be narrowed to `/account/password`.
 
-3. **`/api/lights` was locked out, not open** — the opposite problem, fixed in
+4. **`/api/lights` was locked out, not open** — the opposite problem, fixed in
    `f09bbc3`. Vercel Cron sends no cookie, so the gate answered it 401 before
    the route's `CRON_SECRET` check ever ran. It is now listed in
    `PUBLIC_FILES` and still authorised by the secret.
@@ -617,8 +640,9 @@ fallback that says it failed.
 5. **Orphaned components** — exactly one:
    `src/components/admin/AccountsGuard.tsx`, imported nowhere. It was
    superseded by the `SchoolsGuard`/`UsersGuard`/etc. family in
-   `src/components/admin/Guard.tsx`. **Delete it** — a second, older guard
-   sitting in the tree is the kind of thing somebody imports by mistake.
+   `src/components/admin/Guard.tsx`. **Deleted in this audit** — a second,
+   older guard sitting in the tree is the kind of thing somebody imports by
+   mistake.
 
 6. **Seed script registration** — `package.json:36-38` (`"prisma": { "seed":
    "tsx prisma/seed.ts" }`). There is **no `prisma.config.ts`**. Prisma 6.19
@@ -639,7 +663,15 @@ fallback that says it failed.
    else needing a schedule must go inside one of the existing two until the
    move to a paid team.
 
-10. **The landing signup tab** (2.1) — the only remaining user-facing stub.
+10. **The landing signup tab** (2.1) — fixed in this audit.
+
+11. **`Date.now()` during render.** The React purity rule flags four sites:
+    `CyclesClient.tsx:142`, `ProgramAdminClient.tsx:248` and two in the new
+    `AdminMeetingClient.tsx`. The meetings ones are fixed — which meeting is
+    next, and whether one is overdue, are now decided once on the server and
+    passed down, rather than answered differently by the server and the browser
+    a moment apart. The other two are pre-existing and worth the same
+    treatment.
 
 ---
 
@@ -780,15 +812,17 @@ Ordered by what blocks what, not by effort.
 
 ## Stage 1 — before any real data can be collected
 
-1. **Assert the environment at boot.** `isAuthConfigured` being false opens the
-   edge gate *and* every console guard at once. Add a module that throws in
-   production when `AUTH_SECRET` or `DATABASE_URL` is missing, so the site
-   fails loudly rather than opening quietly. **This is the highest-value single
-   change in this document.**
-2. **Fix the landing signup tab** (2.1) — it is live and it is wrong.
-3. **Delete `src/components/admin/AccountsGuard.tsx`** and the `Stat` model.
-4. **Revoke the leaked GitHub token.**
-5. Add page-level guards to `/school/activity` and `/school/cycles`; narrow the
+1. ~~**Close the auth escape hatch.**~~ **Done in this audit** — see 1.1.
+   `openForReview`, the gate change, and the boot banner.
+2. ~~**Fix the landing signup tab.**~~ **Done.** The fake 700ms wait is gone;
+   the sign-in tab posts to the real action and the create-account tab links to
+   `/signup` rather than half-duplicating its form.
+3. ~~**Call `requireAccountHolder()` on `/school/plan` and
+   `/school/teachers`.**~~ **Done** — see 1.3.
+4. ~~**Delete `src/components/admin/AccountsGuard.tsx`.**~~ **Done.**
+5. **Delete the `Stat` model** — still there, still unreferenced.
+6. **Revoke the leaked GitHub token.** Needs the account owner.
+7. Add page-level guards to `/school/activity` and `/school/cycles`; narrow the
    `/account` gate exemption to `/account/password`.
 
 The four-role system the brief asks for **already exists** and is better than

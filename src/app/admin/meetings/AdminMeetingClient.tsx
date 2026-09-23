@@ -20,6 +20,10 @@ export type MeetingView = {
   meetsAt: Date | string;
   note: string | null;
   closedAt: Date | string | null;
+  /** Decided on the server: the meeting things are currently added to. */
+  isNext: boolean;
+  /** Its date has passed and nobody has closed it. */
+  isOverdue: boolean;
   items: {
     id: string;
     schoolId: string;
@@ -57,9 +61,8 @@ const shortDay = (d: Date | string) =>
   new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 
 export function AdminMeetingClient({ meetings }: { meetings: MeetingView[] }) {
-  const now = Date.now();
-  const next = meetings.find((m) => !m.closedAt && new Date(m.meetsAt).getTime() >= now);
-  const rest = meetings.filter((m) => m.id !== next?.id);
+  const next = meetings.find((m) => m.isNext);
+  const rest = meetings.filter((m) => !m.isNext);
 
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
@@ -119,7 +122,7 @@ function Meeting({ m, openByDefault = false }: { m: MeetingView; openByDefault?:
       <div style={{ backgroundColor: C.ink, padding: "18px 22px", display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
         <span style={{ flex: 1, minWidth: "min(100%, 260px)" }}>
           <span style={{ ...bandLabel, color: "#FFD8AE", display: "block", marginBottom: "3px" }}>
-            {m.closedAt ? "Closed" : new Date(m.meetsAt).getTime() < Date.now() ? "Overdue" : "Next meeting"}
+            {m.closedAt ? "Closed" : m.isOverdue ? "Overdue" : m.isNext ? "Next meeting" : "Booked"}
           </span>
           <span style={{ fontFamily: "var(--font-outfit)", fontSize: "22px", fontWeight: 800, letterSpacing: "-0.02em", color: C.white, display: "block" }}>
             {day(m.meetsAt)}

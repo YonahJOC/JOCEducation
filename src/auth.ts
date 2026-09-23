@@ -41,6 +41,19 @@ export const isAuthConfigured = isPasswordConfigured || Boolean(
   isGoogleConfigured && process.env.AUTH_SECRET && isDatabaseConfigured()
 );
 
+/**
+ * The console opens itself when signing in is impossible, so a fresh clone
+ * with no .env can be read end to end. That is a convenience for whoever is
+ * reviewing the code, and nothing more.
+ *
+ * In production the same condition would hand a stranger every school's
+ * record, so there it is false whatever the environment says, and every guard
+ * that used to read `!isAuthConfigured` reads this instead. src/lib/boot.ts
+ * refuses to start at all in that state; this is the second lock on the same
+ * door, because the two are one import apart from each other.
+ */
+export const openForReview = !isAuthConfigured && process.env.NODE_ENV !== "production";
+
 /** How long before the JWT re-reads role and school from the database. */
 const REFRESH_MS = 5 * 60 * 1000;
 

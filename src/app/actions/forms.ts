@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can } from "@/lib/access";
 import { FIELD_TYPES, NEEDS_OPTIONS, type FieldType, type Answer } from "@/lib/forms";
@@ -22,7 +22,7 @@ type Result = { ok: true; id?: string } | { ok: false; error: string };
 
 async function requireFormEditor() {
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "forms")) {
+  if (!openForReview && !can(session?.user, "forms")) {
     throw new Error("Your admin type does not include Forms and their answers");
   }
   if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -316,7 +316,7 @@ export async function submitForm(input: {
 export async function setProgramForm(programId: number, formId: string | null): Promise<Result> {
   try {
     const session = await safeAuth();
-    if (isAuthConfigured && !can(session?.user, "programs")) {
+    if (!openForReview && !can(session?.user, "programs")) {
       throw new Error("Your admin type does not include Programs");
     }
     if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -350,7 +350,7 @@ export async function setProgramLead(
 ): Promise<Result> {
   try {
     const session = await safeAuth();
-    if (isAuthConfigured && !can(session?.user, "coordinators")) {
+    if (!openForReview && !can(session?.user, "coordinators")) {
       throw new Error("Your admin type does not include Program coordinators");
     }
     if (!isDatabaseConfigured()) throw new Error("Database not connected");
@@ -397,7 +397,7 @@ export async function saveProgramForm(
     // person who runs one program should not be able to change what every
     // school arriving at that program is asked.
     const mayAdminister =
-      !isAuthConfigured ||
+      openForReview ||
       can(me, "forms") ||
       can(me, "programs") ||
       can(me, "coordinators");
@@ -449,7 +449,7 @@ export async function addProgramCoordinator(
   try {
     if (!isDatabaseConfigured()) return { ok: false, error: "Database not connected" };
     const session = await safeAuth();
-    if (isAuthConfigured && !can(session?.user, "coordinators")) {
+    if (!openForReview && !can(session?.user, "coordinators")) {
       return { ok: false, error: "Your admin type does not include setting coordinators." };
     }
 

@@ -1,5 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { AdminMeetingClient, type MeetingView } from "./AdminMeetingClient";
 
@@ -20,7 +20,7 @@ const INK = "#10233F";
 
 export default async function MeetingsPage() {
   const session = await safeAuth();
-  if (isAuthConfigured && !can(session?.user, "run_admin_agenda")) {
+  if (!openForReview && !can(session?.user, "run_admin_agenda")) {
     return (
       <div style={{ maxWidth: "460px", padding: "40px 0" }}>
         <p style={{ fontSize: "30px", marginBottom: "12px" }}>🔒</p>
@@ -55,11 +55,21 @@ export default async function MeetingsPage() {
     },
   });
 
+  // A dynamic server component, rendered once per request — reading the clock
+  // here is the point. The purity rule cannot tell this from a client render.
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const nextId = rows
+    .filter((m) => !m.closedAt && m.meetsAt.getTime() >= now)
+    .sort((a, b) => a.meetsAt.getTime() - b.meetsAt.getTime())[0]?.id ?? null;
+
   const meetings: MeetingView[] = rows.map((m) => ({
     id: m.id,
     meetsAt: m.meetsAt,
     note: m.note,
     closedAt: m.closedAt,
+    isNext: m.id === nextId,
+    isOverdue: !m.closedAt && m.meetsAt.getTime() < now,
     items: m.items.map((i) => ({
       id: i.id,
       schoolId: i.school.id,

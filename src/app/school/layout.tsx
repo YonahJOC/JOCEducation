@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { safeAuth, isAuthConfigured } from "@/auth";
+import { safeAuth, openForReview } from "@/auth";
 import { canRunOwnSchool, canRunSchoolApp } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
@@ -36,9 +36,9 @@ const NAV = [
 export default async function SchoolLayout({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
 
-  const runsAccount = !isAuthConfigured || canRunOwnSchool(session?.user);
+  const runsAccount = openForReview || canRunOwnSchool(session?.user);
 
-  if (isAuthConfigured && !canRunSchoolApp(session?.user)) {
+  if (!openForReview && !canRunSchoolApp(session?.user)) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "430px", textAlign: "center" }}>
