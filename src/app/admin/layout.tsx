@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
+import { leadsAnyProgram } from "@/lib/program-admin";
 import {
   canAccessConsole, canManageAccounts, canManageCalendar, canManageContent,
   canManageUsers, ROLE_LABELS, type Role,
@@ -51,12 +52,24 @@ const CONTENT_NAV: NavItem[] = [
   { label: "Forms", href: "/admin/forms", hint: "Registrations, sign-ups and feedback" },
 ];
 
+/** For whoever runs a program, whether or not they hold an admin type. */
+const MINE_NAV = [
+  { label: "Your programs", href: "/admin/my-programs", hint: "Sign-ups for the programs you run" },
+];
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
 
+  // Running a program is the second way in. A coordinator holds no capability
+  // at all, so the capability check alone locked them out of the one page
+  // built for them.
+  const leadsProgram = isAuthConfigured
+    ? await leadsAnyProgram(session?.user?.id ?? null)
+    : false;
+
   // The console is for the educational team and above. JOC staff have full
   // access to the site itself but nothing to do here.
-  if (isAuthConfigured && !canAccessConsole(session?.user)) {
+  if (isAuthConfigured && !canAccessConsole(session?.user) && !leadsProgram) {
     const signedIn = Boolean(session?.user);
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
@@ -95,6 +108,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const showPeople = open || canManageUsers(session?.user);
   const showCalendar = open || canManageCalendar(session?.user);
   const showContent = open || canManageContent(session?.user);
+  const showMine = leadsProgram;
 
   return (
     <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
@@ -147,6 +161,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             rather than something not yours. */}
         <div className="joc-admin-nav">
           <SideNav label="" items={START_NAV} />
+          {showMine && <SideNav label="Yours" items={MINE_NAV} />}
           {showAccounts && <SideNav label="Accounts" items={ACCOUNTS_NAV} />}
           {showCalendar && <SideNav label="Calendar" items={CALENDAR_NAV} />}
           {showContent && <SideNav label="Content" items={CONTENT_NAV} />}

@@ -138,6 +138,24 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
   }
 }
 
+/**
+ * Does this person run any program?
+ *
+ * The console door asks for a capability, and a program coordinator has none —
+ * which locked them out of the page built for them. This is the second way in:
+ * not an admin type, just the fact that somebody put them down as running
+ * something.
+ */
+export async function leadsAnyProgram(userId: string | null | undefined): Promise<boolean> {
+  if (!userId || !isDatabaseConfigured()) return false;
+  try {
+    const n = await prisma.programPage.count({ where: { leads: { some: { id: userId } } } });
+    return n > 0;
+  } catch {
+    return false;
+  }
+}
+
 /** Every program this person may open — for the list page. */
 export async function listProgramsForAdmin(): Promise<
   { id: number; slug: string; name: string; published: boolean; responseCount: number; formTitle: string | null }[]
