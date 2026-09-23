@@ -240,3 +240,16 @@ body {
   box-shadow: 0 0 0 2px #fff;
   border-radius: 4px;
 }
+
+/* School status board: the seven cells wrap rather than scroll sideways —
+   the last board that scrolled hid a control nobody could find. */
+.joc-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0;
+}
+.joc-status-grid > * { border-right: 1px solid rgba(16, 35, 63, .07); border-bottom: 1px solid rgba(16, 35, 63, .07); }
+@media (max-width: 560px) {
+  .joc-status-grid { grid-template-columns: minmax(0, 1fr); }
+  .joc-status-grid > * { border-right: none; }
+}

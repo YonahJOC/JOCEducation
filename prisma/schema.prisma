@@ -39,6 +39,24 @@ model School {
 
   status SchoolStatus @default(PROSPECT)
 
+  // ── Where they are up to ───────────────────────────────────────────────
+  // Each of these is a date rather than a tick, so the board can say how long
+  // something has been true. A tick only ever says "yes", and the useful
+  // question is almost always "since when".
+
+  /// When the school sent the list of students taking part.
+  studentListAt DateTime?
+  /// When the JOC live screen went up in the building.
+  liveScreenAt  DateTime?
+  /// When their school store opened.
+  storeOpenAt   DateTime?
+
+  /// Chesed hours logged in the JOC App and waiting for somebody to approve
+  /// them. This lives in the app, not here, so it carries the moment it was
+  /// last read — a number with no date is a number nobody can trust.
+  unapprovedHours   Int?
+  unapprovedCheckedAt DateTime?
+
   /// JOC staff member who owns this relationship
   accountManagerId String?
   accountManager   User?   @relation("AccountManager", fields: [accountManagerId], references: [id], onDelete: SetNull)
@@ -653,6 +671,8 @@ enum ActivityType {
   CALL
   EMAIL
   MEETING
+  /// Somebody from JOC physically went to the school.
+  VISIT
   DEMO
   /// System-generated audit entries
   PLAN_CHANGE

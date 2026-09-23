@@ -1,0 +1,7 @@
+-- Where each school is up to, as JOC tracks it.
+ALTER TYPE "ActivityType" ADD VALUE IF NOT EXISTS 'VISIT';
+ALTER TABLE "School" ADD COLUMN IF NOT EXISTS "studentListAt" TIMESTAMP(3);
+ALTER TABLE "School" ADD COLUMN IF NOT EXISTS "liveScreenAt" TIMESTAMP(3);
+ALTER TABLE "School" ADD COLUMN IF NOT EXISTS "storeOpenAt" TIMESTAMP(3);
+ALTER TABLE "School" ADD COLUMN IF NOT EXISTS "unapprovedHours" INTEGER;
+ALTER TABLE "School" ADD COLUMN IF NOT EXISTS "unapprovedCheckedAt" TIMESTAMP(3);

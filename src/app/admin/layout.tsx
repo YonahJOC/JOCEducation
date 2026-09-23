@@ -15,6 +15,7 @@ export const metadata = { title: "JOC Console", robots: { index: false, follow: 
 /** School accounts, billing and the sales pipeline. */
 const ACCOUNTS_NAV: NavItem[] = [
   { label: "Overview", href: "/admin", hint: "Where every school stands" },
+  { label: "School status", href: "/admin/schools/status", hint: "Paid, lists, screens, visits — all of it on one screen" },
   { label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history" },
   { label: "Demo requests", href: "/admin/demos", hint: "Bookings and contact-form messages" },
   { label: "Orders", href: "/admin/orders", hint: "What schools have ordered from the shop" },
