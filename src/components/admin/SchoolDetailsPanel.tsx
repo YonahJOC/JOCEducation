@@ -18,7 +18,7 @@ const label: React.CSSProperties = {
 };
 
 export function SchoolDetailsPanel({
-  schoolId, name, city, region, website, type, enrollment, studentCount, emailDomains, disabled,
+  schoolId, name, city, region, website, type, enrollment, studentCount, emailDomains, appSchoolId, disabled,
 }: {
   schoolId: string;
   name: string;
@@ -29,6 +29,8 @@ export function SchoolDetailsPanel({
   enrollment: string;
   studentCount: number | null;
   emailDomains: string[];
+  /** This school's id inside the JOC App, where somebody has set it. */
+  appSchoolId?: string | null;
   disabled?: boolean;
 }) {
   const [editing, setEditing] = useState(false);
@@ -39,6 +41,7 @@ export function SchoolDetailsPanel({
     name, city: city ?? "", region: region ?? "", website: website ?? "",
     type, enrollment, studentCount: studentCount?.toString() ?? "",
     emailDomains: emailDomains.join(", "),
+    appSchoolId: appSchoolId ?? "",
   });
   const set = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
 
@@ -55,6 +58,7 @@ export function SchoolDetailsPanel({
         enrollment: f.enrollment,
         studentCount: f.studentCount ? Number(f.studentCount) : null,
         emailDomains: f.emailDomains,
+        appSchoolId: f.appSchoolId,
       });
       setMsg(r.ok ? "Saved." : r.error);
       if (r.ok) setEditing(false);
@@ -161,6 +165,21 @@ export function SchoolDetailsPanel({
             <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "rgba(16,35,63,.55)", margin: "6px 0 0" }}>
               Anyone signing in with an address on these joins this school automatically. Separate several
               with commas. A domain can only belong to one school.
+            </p>
+          </div>
+          <div>
+            <label style={label}>JOC App id</label>
+            <input
+              value={f.appSchoolId}
+              onChange={(e) => set("appSchoolId", e.target.value)}
+              placeholder="The id this school has inside the JOC App"
+              style={field}
+            />
+            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "rgba(16,35,63,.55)", margin: "6px 0 0" }}>
+              How this school is matched to the JOC App. Until it is set, the app reports nothing
+              for them — no hours, no approvals, nothing on the app console. Matching is by id and
+              never by name: &ldquo;Yeshiva Darchei Torah&rdquo; and &ldquo;Darchei Torah&rdquo; are
+              the same school and would never have lined up.
             </p>
           </div>
           <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginTop: "2px" }}>

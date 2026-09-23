@@ -52,6 +52,7 @@ async function Inner({ slug }: { slug: string }) {
   const details = (data as { details?: {
     city: string | null; region: string | null; website: string | null;
     type: string; enrollment: string; studentCount: number | null; emailDomains: string[];
+    appSchoolId: string | null;
   } }).details;
   const planRequests = (data as { planRequests?: {
     id: string; message: string; status: string; response: string | null;
@@ -178,6 +179,7 @@ async function Inner({ slug }: { slug: string }) {
               enrollment={details.enrollment}
               studentCount={details.studentCount}
               emailDomains={details.emailDomains}
+              appSchoolId={details.appSchoolId}
               disabled={usingSampleData}
             />
           )}

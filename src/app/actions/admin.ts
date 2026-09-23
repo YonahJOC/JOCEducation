@@ -310,6 +310,8 @@ export async function updateSchoolDetails(input: {
   studentCount?: number | null;
   /** Comma or space separated; stored lowercased with any @ stripped. */
   emailDomains: string;
+  /** This school's id inside the JOC App. The only thing the two are matched on. */
+  appSchoolId?: string | null;
 }): Promise<Result> {
   try {
     const me = await requireAccountManager();
@@ -333,6 +335,20 @@ export async function updateSchoolDetails(input: {
       }
     }
 
+    // One app id belongs to one school. Two schools claiming the same id
+    // would send one school's figures to both, which is the exact mistake
+    // matching-by-id exists to prevent.
+    const appSchoolId = input.appSchoolId?.trim() || null;
+    if (appSchoolId) {
+      const taken = await prisma.school.findFirst({
+        where: { id: { not: input.schoolId }, appSchoolId },
+        select: { name: true },
+      });
+      if (taken) {
+        return { ok: false, error: `That JOC App id already belongs to ${taken.name}.` };
+      }
+    }
+
     const before = await prisma.school.findUnique({
       where: { id: input.schoolId },
       select: { emailDomains: true },
@@ -342,6 +358,7 @@ export async function updateSchoolDetails(input: {
       where: { id: input.schoolId },
       data: {
         name,
+        appSchoolId,
         city: input.city?.trim() || null,
         region: input.region?.trim() || null,
         website: input.website?.trim() || null,

@@ -169,7 +169,7 @@ export async function getSchool(id: string) {
       details: {
         city: s.city, region: s.region, website: null,
         type: "DAY_SCHOOL", enrollment: s.enrollment,
-        studentCount: s.studentCount, emailDomains: [] as string[],
+        studentCount: s.studentCount, emailDomains: [] as string[], appSchoolId: null as string | null,
       },
       planRequests: [] as {
         id: string; message: string; status: string;
@@ -228,6 +228,7 @@ export async function getSchool(id: string) {
       lastActivityAt: s.activities[0]?.occurredAt ?? null,
     } satisfies SchoolRow,
     details: {
+      appSchoolId: s.appSchoolId,
       city: s.city,
       region: s.region,
       website: s.website,
