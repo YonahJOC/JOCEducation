@@ -169,56 +169,68 @@ function Row({
       <td style={td}>
         <span style={{ fontWeight: 600, color: INK, display: "block" }}>{person.name ?? "—"}</span>
         <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", wordBreak: "break-all" }}>{person.email}</span>
-      {/* Which programs they run. This is not an admin type and not a role —
-          a coordinator holds no permission at all; being named here is the
-          whole of their access, and it reaches one program's sign-ups. */}
-        {programs.length > 0 && (
-          <div style={{ marginTop: "9px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", margin: "0 0 5px" }}>
-              Programs they run
-            </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", maxWidth: "260px" }}>
-            {runs.map((pid) => {
-              const prog = programs.find((x) => x.id === pid);
-              if (!prog) return null;
-              return (
-                <span
-                  key={pid}
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: "5px",
-                    fontSize: "12px", fontWeight: 600, color: "#0B5E57",
-                    backgroundColor: "rgba(15,110,104,.1)", borderRadius: "9999px",
-                    padding: "3px 4px 3px 10px",
-                  }}
-                >
-                  {prog.name}
-                  {canSetCoordinators && (
-                    <button
-                      type="button"
-                      aria-label={`Stop ${person.name ?? person.email} running ${prog.name}`}
-                      onClick={() => {
-                        const prev = runs;
-                        setRuns(runs.filter((x) => x !== pid));
-                        setRunsError(null);
-                        start(async () => {
-                          const r = await setProgramLead(pid, person.id, false);
-                          if (!r.ok) { setRuns(prev); setRunsError(r.error); }
-                        });
-                      }}
-                      disabled={disabled || pending}
-                      style={{
-                        border: "none", background: "none", cursor: "pointer", color: "#0B5E57",
-                        fontSize: "15px", lineHeight: 1, padding: "3px 6px", borderRadius: "9999px",
-                      }}
-                    >
-                      ×
-                    </button>
-                  )}
-                </span>
-              );
-            })}
+      {/* Which programs they run. Not an admin type and not a role — a
+          coordinator holds no permission at all; being named here is the
+          whole of their access, and it reaches one program's sign-ups.
 
-            {canSetCoordinators && runs.length < programs.length && (
+          Reads as a sentence rather than a form: "Runs: Kindness Booth +".
+          It sits on every row of a dense table, so it has to be quiet when
+          there is nothing in it. */}
+      {programs.length > 0 && (canSetCoordinators || runs.length > 0) && (
+        <span style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", marginTop: "8px" }}>
+          <span style={{ fontSize: "11.5px", color: "rgba(16,35,63,.45)", marginRight: "1px" }}>Runs</span>
+
+          {runs.map((pid) => {
+            const prog = programs.find((x) => x.id === pid);
+            if (!prog) return null;
+            return (
+              <span
+                key={pid}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: "2px",
+                  fontSize: "12px", fontWeight: 600, color: BLUE,
+                  backgroundColor: "rgba(45,70,175,.09)", borderRadius: "9999px",
+                  padding: canSetCoordinators ? "3px 3px 3px 10px" : "3px 10px",
+                  lineHeight: 1.5, maxWidth: "100%",
+                }}
+              >
+                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {prog.name}
+                </span>
+                {canSetCoordinators && (
+                  <button
+                    type="button"
+                    title={`Stop ${person.name ?? person.email} running ${prog.name}`}
+                    aria-label={`Stop ${person.name ?? person.email} running ${prog.name}`}
+                    onClick={() => {
+                      const prev = runs;
+                      setRuns(runs.filter((x) => x !== pid));
+                      setRunsError(null);
+                      start(async () => {
+                        const r = await setProgramLead(pid, person.id, false);
+                        if (!r.ok) { setRuns(prev); setRunsError(r.error); }
+                      });
+                    }}
+                    disabled={disabled || pending}
+                    style={{
+                      width: "18px", height: "18px", flexShrink: 0, borderRadius: "50%",
+                      border: "none", background: "rgba(45,70,175,.12)", color: BLUE,
+                      fontSize: "13px", lineHeight: 1, cursor: disabled ? "not-allowed" : "pointer",
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      padding: 0,
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </span>
+            );
+          })}
+
+          {/* Styled to match the chips, so the row is one set of pills rather
+              than pills sitting beside a form control. */}
+          {canSetCoordinators && runs.length < programs.length && (
+            <span style={{ position: "relative", display: "inline-flex" }}>
               <select
                 value=""
                 onChange={(e) => {
@@ -233,33 +245,32 @@ function Row({
                   });
                 }}
                 disabled={disabled || pending}
+                aria-label={`Add a program for ${person.name ?? person.email}`}
                 style={{
-                  fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-                  color: "rgba(16,35,63,.6)", backgroundColor: "#fff",
-                  border: `1px solid ${RULE}`, borderRadius: "9px", padding: "6px 8px",
-                  minHeight: "36px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                  appearance: "none", WebkitAppearance: "none", MozAppearance: "none",
+                  fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600,
+                  color: "rgba(16,35,63,.6)", backgroundColor: "transparent",
+                  border: `1px dashed rgba(16,35,63,.28)`, borderRadius: "9999px",
+                  padding: "4px 11px", lineHeight: 1.5,
+                  cursor: disabled || pending ? "not-allowed" : "pointer", outline: "none",
                 }}
               >
-                <option value="">+ Add a program</option>
+                <option value="">{runs.length === 0 ? "+ Add a program" : "+ Add"}</option>
                 {programs
                   .filter((x) => !runs.includes(x.id))
                   .map((x) => (
                     <option key={x.id} value={x.id}>{x.name}</option>
                   ))}
               </select>
-            )}
-
-            {!canSetCoordinators && runs.length === 0 && (
-              <span style={{ fontSize: "13px", color: "rgba(16,35,63,.4)" }}>—</span>
-            )}
-          </div>
-          {runsError && (
-            <p style={{ fontSize: "12px", color: "#B8321E", margin: "5px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
-              {runsError}
-            </p>
+            </span>
           )}
-          </div>
-        )}
+        </span>
+      )}
+      {runsError && (
+        <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "5px", maxWidth: "30ch", lineHeight: 1.4 }}>
+          {runsError}
+        </span>
+      )}
         {msg && <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "3px" }}>{msg}</span>}
         {newPassword && (
           <span style={{ display: "block", marginTop: "6px", backgroundColor: "#F4F7FD", borderRadius: "8px", padding: "7px 10px" }}>
