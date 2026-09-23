@@ -241,9 +241,22 @@ export async function submitForm(input: {
       answers.push({ fieldId: f.id, label: f.label, value });
     }
 
+    // Which school this sign-up is for, taken from the person signing up.
+    // Read from the database rather than the session: the session carries a
+    // school from whenever the token was minted, and somebody moved school
+    // since then would file their registration at the old one.
+    let schoolId: string | null = null;
+    if (session?.user?.id) {
+      const who = await prisma.user
+        .findUnique({ where: { id: session.user.id }, select: { schoolId: true } })
+        .catch(() => null);
+      schoolId = who?.schoolId ?? null;
+    }
+
     const response = await prisma.formResponse.create({
       data: {
         formId: form.id,
+        schoolId,
         userId: session?.user?.id ?? null,
         name,
         email,

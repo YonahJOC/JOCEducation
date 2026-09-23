@@ -6,6 +6,7 @@ import {
 import { PlanPanel } from "@/components/admin/PlanPanel";
 import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { AddStaffPanel } from "@/components/admin/AddStaffPanel";
+import { AppAdminToggle } from "@/components/admin/AppAdminToggle";
 import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 import { PageIntro } from "@/components/admin/PageIntro";
@@ -141,6 +142,11 @@ async function Inner({ slug }: { slug: string }) {
                           suspended
                         </span>
                       )}
+                      <AppAdminToggle
+                        userId={m.id}
+                        initial={Boolean((m as { schoolAppAdmin?: boolean }).schoolAppAdmin)}
+                        disabled={usingSampleData}
+                      />
                     </div>
                   </div>
                 ))}

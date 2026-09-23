@@ -73,7 +73,8 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders Order[]
+  orders        Order[]
+  formResponses FormResponse[]
 
   @@index([status])
   @@index([accountManagerId])
@@ -247,6 +248,11 @@ model User {
   roomMembers   RoomMember[]
   formResponses FormResponse[] @relation("FormResponses")
   programsLed   ProgramPage[] @relation("ProgramLeads")
+
+  /// A teacher who runs their school's JOC App: sees their own school's
+  /// sign-ups and activity, and not the plan or the seats. Deliberately not
+  /// the SCHOOL_ADMIN role — that one is about money and people.
+  schoolAppAdmin Boolean @default(false)
 
   managedSchools   School[]            @relation("AccountManager")
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
@@ -1285,6 +1291,12 @@ model FormResponse {
   id     String @id @default(cuid())
   formId String
 
+  /// Which school this sign-up is for. Taken from the signed-in person's
+  /// school where there is one. Without it a school can never be shown its
+  /// own registrations, and every response collected before this existed is
+  /// one nobody can attribute.
+  schoolId String?
+
   /// Set when the person was signed in.
   userId String?
   user   User?   @relation("FormResponses", fields: [userId], references: [id], onDelete: SetNull)
@@ -1305,8 +1317,10 @@ model FormResponse {
 
   createdAt DateTime @default(now())
 
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  form   Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  school School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
 
   @@index([formId, createdAt])
+  @@index([schoolId])
   @@index([userId])
 }

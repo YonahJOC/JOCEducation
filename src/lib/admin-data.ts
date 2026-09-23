@@ -190,7 +190,7 @@ export async function getSchool(id: string) {
       accountManager: { select: { name: true, email: true } },
       contacts: { orderBy: { isPrimary: "desc" } },
       members: {
-        select: { id: true, name: true, email: true, role: true, active: true, lastSeenAt: true },
+        select: { id: true, name: true, email: true, role: true, active: true, lastSeenAt: true, schoolAppAdmin: true },
         orderBy: { createdAt: "asc" },
       },
       activities: {
@@ -316,7 +316,7 @@ export async function getStaffUsers() {
   const rows = await prisma.user.findMany({
     where: { role: { in: ["ADMIN", "SUPER_ADMIN"] } },
     orderBy: { createdAt: "asc" },
-    select: { id: true, name: true, email: true, role: true, active: true, lastSeenAt: true },
+    select: { id: true, name: true, email: true, role: true, active: true, lastSeenAt: true, schoolAppAdmin: true },
   });
   return rows.map((u) => ({ ...u, schoolName: null }));
 }

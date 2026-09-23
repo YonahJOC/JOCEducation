@@ -6,6 +6,8 @@ declare module "next-auth" {
       id: string;
       role: string;
       schoolId: string | null;
+      /** Runs their school's JOC App — see canRunSchoolApp. */
+      schoolAppAdmin?: boolean;
       /** True for @justonechesed.org addresses — full access, no subscription. */
       isStaff: boolean;
       /** Set when an admin issued a temporary password. */
@@ -21,6 +23,7 @@ declare module "next-auth" {
   interface User {
     role?: string;
     schoolId?: string | null;
+    schoolAppAdmin?: boolean;
     mustChangePassword?: boolean;
   }
 }
@@ -30,6 +33,7 @@ declare module "next-auth/jwt" {
     uid?: string;
     role?: string;
     schoolId?: string | null;
+    schoolAppAdmin?: boolean;
     mustChangePassword?: boolean;
     capabilities?: string[] | null;
     suspended?: boolean;

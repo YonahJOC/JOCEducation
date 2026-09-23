@@ -473,3 +473,22 @@ export const PLAN_LABELS: Record<Plan, string> = {
   APP_AND_EDUCATION: "JOC App + JOC Education",
   FULL_PARTNERSHIP: "Full JOC Partnership",
 };
+
+/**
+ * Runs their school's JOC App.
+ *
+ * Narrower than SCHOOL_ADMIN on purpose. A school admin is about money and
+ * people — the plan, the seats, who has a login. An app admin is a teacher
+ * who looks after what their students are doing, and has no business seeing
+ * what the school pays.
+ *
+ * It is also not a program coordinator. That is a JOC job and sees every
+ * school's sign-ups for one program; this sees one school's sign-ups for
+ * every program. Confusing the two would show a teacher at one school the
+ * contact details of every other school that registered.
+ */
+export function canRunSchoolApp(user: SchoolUser | null | undefined): boolean {
+  if (!user) return false;
+  if (canRunOwnSchool(user)) return true;
+  return Boolean((user as { schoolAppAdmin?: boolean }).schoolAppAdmin) && Boolean(user.schoolId);
+}

@@ -792,3 +792,37 @@ export async function addSchoolStaff(input: {
     return { ok: false, error: e instanceof Error ? e.message : "Could not add them." };
   }
 }
+
+/**
+ * Make somebody at a school their school's app admin, or stop them being one.
+ *
+ * Deliberately separate from their role. SCHOOL_ADMIN is about money and
+ * people; this is about what the students are doing. A school will often want
+ * a teacher doing the second and nobody but the principal doing the first.
+ */
+export async function setSchoolAppAdmin(userId: string, on: boolean): Promise<Result> {
+  try {
+    await requireAccountManager();
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, schoolId: true, name: true, email: true } });
+    if (!user) return { ok: false, error: "That person no longer exists." };
+    if (on && !user.schoolId) {
+      return { ok: false, error: `${user.name ?? user.email} is not attached to a school, so there is no school app for them to run.` };
+    }
+
+    await prisma.user.update({ where: { id: userId }, data: { schoolAppAdmin: on } });
+    if (user.schoolId) {
+      await log(
+        user.schoolId,
+        "NOTE",
+        on ? `${user.name ?? user.email} can now run the school's app` : `${user.name ?? user.email} no longer runs the school's app`,
+        null,
+        null,
+      );
+      revalidatePath(`/admin/schools/${user.schoolId}`);
+    }
+    revalidatePath("/admin/users");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not change that." };
+  }
+}

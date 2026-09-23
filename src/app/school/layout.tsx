@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { canRunOwnSchool } from "@/lib/access";
+import { canRunOwnSchool, canRunSchoolApp } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
 
@@ -13,11 +13,17 @@ const ORANGE_TEXT = "#C96C00";
 const PAPER = "#FBF9F4";
 const RULE = "rgba(16,35,63,.12)";
 
+/**
+ * Two audiences in here. A school admin runs the account — the plan, the
+ * seats, who has a login. An app admin is a teacher looking after what their
+ * students are doing, and has no business seeing what the school pays.
+ */
 const NAV = [
+  { label: "Your programs", href: "/school/programs", app: true },
+  { label: "Chesed activity", href: "/school/activity", app: true },
+  { label: "Cycle progress", href: "/school/cycles", app: true },
   { label: "Your teachers", href: "/school/teachers" },
   { label: "Plan & seats", href: "/school/plan" },
-  { label: "Chesed activity", href: "/school/activity" },
-  { label: "Cycle progress", href: "/school/cycles" },
 ];
 
 /**
@@ -30,7 +36,9 @@ const NAV = [
 export default async function SchoolLayout({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
 
-  if (isAuthConfigured && !canRunOwnSchool(session?.user)) {
+  const runsAccount = !isAuthConfigured || canRunOwnSchool(session?.user);
+
+  if (isAuthConfigured && !canRunSchoolApp(session?.user)) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "430px", textAlign: "center" }}>
@@ -112,7 +120,7 @@ export default async function SchoolLayout({ children }: { children: React.React
         </div>
 
         <nav className="joc-school-nav" style={{ display: "flex", flexDirection: "column" }}>
-          {NAV.map((i) => (
+          {NAV.filter((i) => runsAccount || i.app).map((i) => (
             <Link
               key={i.href}
               href={i.href}

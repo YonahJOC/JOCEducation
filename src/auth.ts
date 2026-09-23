@@ -83,6 +83,7 @@ if (isPasswordConfigured) {
           image: user.image,
           role: user.role,
           schoolId: user.schoolId,
+          schoolAppAdmin: user.schoolAppAdmin,
         };
       },
     })
@@ -102,6 +103,7 @@ const config: NextAuthConfig = {
         token.uid = user.id;
         token.role = (user as { role?: string }).role ?? "TEACHER";
         token.schoolId = (user as { schoolId?: string | null }).schoolId ?? null;
+        token.schoolAppAdmin = Boolean((user as { schoolAppAdmin?: boolean }).schoolAppAdmin);
         token.refreshedAt = Date.now();
       }
 
@@ -110,11 +112,12 @@ const config: NextAuthConfig = {
         try {
           const fresh = await prisma.user.findUnique({
             where: { id: String(token.uid) },
-            select: { role: true, schoolId: true, active: true, mustChangePassword: true },
+            select: { role: true, schoolId: true, active: true, mustChangePassword: true, schoolAppAdmin: true },
           });
           if (fresh) {
             token.role = fresh.role;
             token.schoolId = fresh.schoolId;
+            token.schoolAppAdmin = fresh.schoolAppAdmin;
             token.mustChangePassword = fresh.mustChangePassword;
             token.suspended = !fresh.active;
           }
@@ -136,6 +139,7 @@ const config: NextAuthConfig = {
       session.user.id = String(token.uid ?? "");
       session.user.role = String(token.role ?? "TEACHER");
       session.user.schoolId = (token.schoolId as string | null) ?? null;
+      session.user.schoolAppAdmin = Boolean(token.schoolAppAdmin);
       session.user.mustChangePassword = Boolean(token.mustChangePassword);
       // Null means "no admin role held" — access.ts then falls back to the
       // built-in default for their role.
