@@ -16,8 +16,8 @@ const WIDTH = "1180px";
 
 export const metadata: Metadata = {
   // The root layout appends "— JOC Education"; spelling it out here too gave
-  // "Programming — JOC Education — JOC Education".
-  title: "Programming",
+  // "Calendar — JOC Education — JOC Education".
+  title: "Calendar",
   description:
     "What Just One Chesed is running, and when. The calendar of chesed programs across our partner schools.",
 };
@@ -135,7 +135,7 @@ export default async function ProgrammingPage() {
     <div style={{ backgroundColor: PAPER, minHeight: "70vh" }}>
       <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "52px 26px 20px" }}>
         <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
-          Programming
+          Calendar
         </p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4.6vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: INK, margin: "0 0 16px", maxWidth: "18ch" }}>
           What we are running, and when.

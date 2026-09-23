@@ -3,7 +3,7 @@ import { getAllEvents } from "@/lib/events";
 import { ProgrammingGuard } from "@/components/admin/Guard";
 import { ProgrammingClient, type EventRow } from "./ProgrammingClient";
 
-export const metadata = { title: "Programming — JOC Console" };
+export const metadata = { title: "Calendar — JOC Console" };
 
 export default async function AdminProgrammingPage() {
   return <ProgrammingGuard>{await Inner()}</ProgrammingGuard>;

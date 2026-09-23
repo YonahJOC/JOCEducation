@@ -84,7 +84,6 @@ export function PeopleTable({
                 {showSchool && <th style={th}>School</th>}
                 <th style={th}>Role</th>
                 {adminTypes.length > 0 && <th style={th}>Admin type</th>}
-                {programs.length > 0 && <th style={th}>Runs</th>}
                 <th style={th}>Last seen</th>
                 <th style={th} />
               </tr>
@@ -170,6 +169,97 @@ function Row({
       <td style={td}>
         <span style={{ fontWeight: 600, color: INK, display: "block" }}>{person.name ?? "—"}</span>
         <span style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", wordBreak: "break-all" }}>{person.email}</span>
+      {/* Which programs they run. This is not an admin type and not a role —
+          a coordinator holds no permission at all; being named here is the
+          whole of their access, and it reaches one program's sign-ups. */}
+        {programs.length > 0 && (
+          <div style={{ marginTop: "9px" }}>
+            <p style={{ fontSize: "10.5px", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.4)", margin: "0 0 5px" }}>
+              Programs they run
+            </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", maxWidth: "260px" }}>
+            {runs.map((pid) => {
+              const prog = programs.find((x) => x.id === pid);
+              if (!prog) return null;
+              return (
+                <span
+                  key={pid}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "5px",
+                    fontSize: "12px", fontWeight: 600, color: "#0B5E57",
+                    backgroundColor: "rgba(15,110,104,.1)", borderRadius: "9999px",
+                    padding: "3px 4px 3px 10px",
+                  }}
+                >
+                  {prog.name}
+                  {canSetCoordinators && (
+                    <button
+                      type="button"
+                      aria-label={`Stop ${person.name ?? person.email} running ${prog.name}`}
+                      onClick={() => {
+                        const prev = runs;
+                        setRuns(runs.filter((x) => x !== pid));
+                        setRunsError(null);
+                        start(async () => {
+                          const r = await setProgramLead(pid, person.id, false);
+                          if (!r.ok) { setRuns(prev); setRunsError(r.error); }
+                        });
+                      }}
+                      disabled={disabled || pending}
+                      style={{
+                        border: "none", background: "none", cursor: "pointer", color: "#0B5E57",
+                        fontSize: "15px", lineHeight: 1, padding: "3px 6px", borderRadius: "9999px",
+                      }}
+                    >
+                      ×
+                    </button>
+                  )}
+                </span>
+              );
+            })}
+
+            {canSetCoordinators && runs.length < programs.length && (
+              <select
+                value=""
+                onChange={(e) => {
+                  const pid = Number(e.target.value);
+                  if (!pid) return;
+                  const prev = runs;
+                  setRuns([...runs, pid]);
+                  setRunsError(null);
+                  start(async () => {
+                    const r = await setProgramLead(pid, person.id, true);
+                    if (!r.ok) { setRuns(prev); setRunsError(r.error); }
+                  });
+                }}
+                disabled={disabled || pending}
+                style={{
+                  fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                  color: "rgba(16,35,63,.6)", backgroundColor: "#fff",
+                  border: `1px solid ${RULE}`, borderRadius: "9px", padding: "6px 8px",
+                  minHeight: "36px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                }}
+              >
+                <option value="">+ Add a program</option>
+                {programs
+                  .filter((x) => !runs.includes(x.id))
+                  .map((x) => (
+                    <option key={x.id} value={x.id}>{x.name}</option>
+                  ))}
+              </select>
+            )}
+
+            {!canSetCoordinators && runs.length === 0 && (
+              <span style={{ fontSize: "13px", color: "rgba(16,35,63,.4)" }}>—</span>
+            )}
+          </div>
+          {runsError && (
+            <p style={{ fontSize: "12px", color: "#B8321E", margin: "5px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
+              {runsError}
+            </p>
+          )}
+          </div>
+        )}
         {msg && <span style={{ display: "block", fontSize: "12px", color: "#B8321E", marginTop: "3px" }}>{msg}</span>}
         {newPassword && (
           <span style={{ display: "block", marginTop: "6px", backgroundColor: "#F4F7FD", borderRadius: "8px", padding: "7px 10px" }}>
@@ -282,95 +372,6 @@ function Row({
             <span style={{ fontSize: "13px", color: "rgba(16,35,63,.6)" }}>
               {adminTypes.find((t) => t.id === adminType)?.name ?? "—"}
             </span>
-          )}
-        </td>
-      )}
-
-      {/* Which programs they run. This is not an admin type and not a role —
-          a coordinator holds no permission at all; being named here is the
-          whole of their access, and it reaches one program's sign-ups. */}
-      {programs.length > 0 && (
-        <td style={td}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", maxWidth: "260px" }}>
-            {runs.map((pid) => {
-              const prog = programs.find((x) => x.id === pid);
-              if (!prog) return null;
-              return (
-                <span
-                  key={pid}
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: "5px",
-                    fontSize: "12px", fontWeight: 600, color: "#0B5E57",
-                    backgroundColor: "rgba(15,110,104,.1)", borderRadius: "9999px",
-                    padding: "3px 4px 3px 10px",
-                  }}
-                >
-                  {prog.name}
-                  {canSetCoordinators && (
-                    <button
-                      type="button"
-                      aria-label={`Stop ${person.name ?? person.email} running ${prog.name}`}
-                      onClick={() => {
-                        const prev = runs;
-                        setRuns(runs.filter((x) => x !== pid));
-                        setRunsError(null);
-                        start(async () => {
-                          const r = await setProgramLead(pid, person.id, false);
-                          if (!r.ok) { setRuns(prev); setRunsError(r.error); }
-                        });
-                      }}
-                      disabled={disabled || pending}
-                      style={{
-                        border: "none", background: "none", cursor: "pointer", color: "#0B5E57",
-                        fontSize: "15px", lineHeight: 1, padding: "3px 6px", borderRadius: "9999px",
-                      }}
-                    >
-                      ×
-                    </button>
-                  )}
-                </span>
-              );
-            })}
-
-            {canSetCoordinators && runs.length < programs.length && (
-              <select
-                value=""
-                onChange={(e) => {
-                  const pid = Number(e.target.value);
-                  if (!pid) return;
-                  const prev = runs;
-                  setRuns([...runs, pid]);
-                  setRunsError(null);
-                  start(async () => {
-                    const r = await setProgramLead(pid, person.id, true);
-                    if (!r.ok) { setRuns(prev); setRunsError(r.error); }
-                  });
-                }}
-                disabled={disabled || pending}
-                style={{
-                  fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-                  color: "rgba(16,35,63,.6)", backgroundColor: "#fff",
-                  border: `1px solid ${RULE}`, borderRadius: "9px", padding: "6px 8px",
-                  minHeight: "36px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
-                }}
-              >
-                <option value="">+ Add a program</option>
-                {programs
-                  .filter((x) => !runs.includes(x.id))
-                  .map((x) => (
-                    <option key={x.id} value={x.id}>{x.name}</option>
-                  ))}
-              </select>
-            )}
-
-            {!canSetCoordinators && runs.length === 0 && (
-              <span style={{ fontSize: "13px", color: "rgba(16,35,63,.4)" }}>—</span>
-            )}
-          </div>
-          {runsError && (
-            <p style={{ fontSize: "12px", color: "#B8321E", margin: "5px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
-              {runsError}
-            </p>
           )}
         </td>
       )}

@@ -109,10 +109,10 @@ export function ProgrammingClient({
   return (
     <div>
       <PageIntro
-        title="Programming"
+        title="Calendar"
         what="The calendar of what JOC is actually running, and where. This is separate from the Chesed Cycles: the cycles say what every school is learning this month, this says what is happening."
         steps={STEPS}
-        note="Nothing appears on the public Programming page until you tick Published. To call something off, use Cancel rather than Delete — a school that was told it was happening needs to see that it is not."
+        note="Nothing appears on the public Calendar until you tick Published. To call something off, use Cancel rather than Delete — a school that was told it was happening needs to see that it is not."
       >
         <button
           onClick={() => setEditing({ ...BLANK })}
@@ -416,7 +416,7 @@ function EventForm({
           value={d.detail}
           onChange={(e) => set("detail", e.target.value)}
           rows={3}
-          placeholder="A line or two the school will read on the Programming page."
+          placeholder="A line or two the school will read on the Calendar."
           disabled={disabled}
           style={{ ...field, resize: "vertical" }}
         />

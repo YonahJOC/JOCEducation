@@ -8,7 +8,7 @@ import { signOutAction } from "@/app/actions/auth";
 
 const NAV = [
   { label: "Programs",        href: "/programs" },
-  { label: "Programming",     href: "/programming" },
+  { label: "Calendar",        href: "/programming" },
   { label: "Chesed Cycles",  href: "/cycles" },
   { label: "Lesson Plans",    href: "/lesson-plans" },
   { label: "Resources",       href: "/resources" },

@@ -29,7 +29,7 @@ const PEOPLE_NAV: NavItem[] = [
 
 /** The calendar — what runs when. Programming and education both need it. */
 const CALENDAR_NAV: NavItem[] = [
-  { label: "Programming", href: "/admin/programming", hint: "What is running, and where" },
+  { label: "Calendar", href: "/admin/programming", hint: "What is running, and where" },
   { label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes and their dates" },
 ];
 
@@ -163,7 +163,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <SideNav label="" items={START_NAV} />
           {showMine && <SideNav label="Yours" items={MINE_NAV} />}
           {showAccounts && <SideNav label="Accounts" items={ACCOUNTS_NAV} />}
-          {showCalendar && <SideNav label="Calendar" items={CALENDAR_NAV} />}
+          {showCalendar && <SideNav label="Planning" items={CALENDAR_NAV} />}
           {showContent && <SideNav label="Content" items={CONTENT_NAV} />}
           {showPeople && <SideNav label="Access" items={PEOPLE_NAV} />}
         </div>
