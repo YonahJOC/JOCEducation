@@ -50,8 +50,11 @@ const PUBLIC_PREFIXES = [
 
 const PUBLIC_FILES = new Set([
   "/api/version",
-  // Authorised by CRON_SECRET in the route, not by a session.
+  // Authorised by CRON_SECRET in the route, not by a session. Vercel Cron
+  // carries no cookie, so the gate would answer these before the route ever
+  // ran — and the only sign of it would be a nightly 401 nobody reads.
   "/api/app-sync",
+  "/api/lights",
   "/favicon.ico",
   "/robots.txt",
   "/sitemap.xml",
