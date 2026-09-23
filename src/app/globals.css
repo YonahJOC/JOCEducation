@@ -144,3 +144,20 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .joc-pulse { animation: none; }
 }
+
+/* Program stages: the four-across rail becomes a vertical one on narrow
+   screens, with the connecting line running down the left of each stage
+   rather than across the top. */
+@media (max-width: 900px) {
+  .joc-stages { grid-template-columns: minmax(0, 1fr) !important; }
+  .joc-stage { flex-direction: row !important; gap: 16px; }
+  .joc-stage-rail { flex-direction: column !important; margin-bottom: 0 !important; align-self: stretch; }
+  .joc-stage-line { width: 2px !important; height: auto !important; flex: 1 !important; min-height: 18px; }
+  .joc-stage-body { padding-right: 0 !important; padding-bottom: 26px; }
+}
+
+/* Program page: the sidebar drops under the article on narrow screens. It was
+   a fixed 340px column at every width, which pushed the page off a phone. */
+@media (max-width: 900px) {
+  .joc-program-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 34px !important; }
+}

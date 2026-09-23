@@ -22,7 +22,7 @@ export type ProgramRow = {
   meta: string;
   available: string[];
   whatsIncluded: string[];
-  howItWorks: { step: string; title: string; description: string }[];
+  howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref: string | null;
   cta: string;
   published: boolean;
@@ -41,7 +41,7 @@ const PLANS = [
 const BLANK: ProgramRow = {
   id: 0, slug: "", name: "", tag: "Ongoing", tagline: "", description: "",
   heroColor: "#2D46AF", meta: "", available: [], whatsIncluded: [""],
-  howItWorks: [{ step: "01", title: "", description: "" }],
+  howItWorks: [{ step: "01", title: "", description: "", linkLabel: "", linkUrl: "" }],
   externalHref: null, cta: "Register your school", published: false, comingSoon: false, sort: 0,
 };
 
@@ -377,15 +377,39 @@ function ProgramForm({
                 value={s.description}
                 onChange={(e) => set("howItWorks", d.howItWorks.map((x, n) => n === i ? { ...x, description: e.target.value } : x))}
                 rows={2}
-                placeholder="What happens at this step"
+                placeholder="What happens at this stage"
                 disabled={disabled}
                 style={{ ...field, resize: "vertical" }}
               />
+
+              {/* The one thing to do at this stage. Without it the page
+                  describes a process and keeps the process somewhere else. */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap" }}>
+                <input
+                  value={s.linkLabel ?? ""}
+                  onChange={(e) => set("howItWorks", d.howItWorks.map((x, n) => n === i ? { ...x, linkLabel: e.target.value } : x))}
+                  placeholder="Button text — “Book a time”"
+                  disabled={disabled}
+                  style={{ ...field, flex: "1 1 180px", minWidth: 0 }}
+                />
+                <input
+                  value={s.linkUrl ?? ""}
+                  onChange={(e) => set("howItWorks", d.howItWorks.map((x, n) => n === i ? { ...x, linkUrl: e.target.value } : x))}
+                  placeholder="Where it goes — /pricing, {form}, https://…"
+                  disabled={disabled}
+                  style={{ ...field, flex: "2 1 240px", minWidth: 0 }}
+                />
+              </div>
             </div>
           ))}
+          <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.5)", lineHeight: 1.5, margin: "2px 0 0", maxWidth: "62ch" }}>
+            Write <strong>{"{form}"}</strong> as the address to mean this program&rsquo;s own sign-up
+            form — then it keeps working if the form is renamed. A stage with no button text just
+            shows its words.
+          </p>
           <button
             type="button"
-            onClick={() => set("howItWorks", [...d.howItWorks, { step: String(d.howItWorks.length + 1).padStart(2, "0"), title: "", description: "" }])}
+            onClick={() => set("howItWorks", [...d.howItWorks, { step: String(d.howItWorks.length + 1).padStart(2, "0"), title: "", description: "", linkLabel: "", linkUrl: "" }])}
             disabled={disabled}
             style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
           >

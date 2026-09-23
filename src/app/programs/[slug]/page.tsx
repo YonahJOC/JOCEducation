@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
+import { Stages } from "@/components/programs/Stages";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -72,7 +73,7 @@ export default async function ProgramDetailPage({ params }: Props) {
       </div>
 
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "56px 26px 72px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "52px", alignItems: "start" }}>
+        <div className="joc-program-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 340px", gap: "52px", alignItems: "start" }}>
 
           {/* Main content */}
           <div>
@@ -85,22 +86,7 @@ export default async function ProgramDetailPage({ params }: Props) {
             <h2 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "28px" }}>
               How it works
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "52px" }}>
-              {program.howItWorks.map((s) => (
-                <div
-                  key={s.step}
-                  style={{ backgroundColor: "#fff", borderRadius: "18px", border: "1px solid rgba(16,35,63,.1)", padding: "24px 26px", display: "flex", gap: "20px" }}
-                >
-                  <div style={{ width: "36px", height: "36px", borderRadius: "9px", backgroundColor: "#F4F7FD", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <span style={{ fontWeight: 800, fontSize: "12px", color: "#2D46AF", letterSpacing: "0.05em" }}>{s.step}</span>
-                  </div>
-                  <div>
-                    <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "6px" }}>{s.title}</h3>
-                    <p style={{ fontSize: "14.5px", color: "rgba(16,35,63,.7)", lineHeight: 1.6, margin: 0 }}>{s.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <Stages stages={program.howItWorks} formSlug={program.formSlug ?? null} />
 
             {/* Testimonial */}
             {program.testimonial && (

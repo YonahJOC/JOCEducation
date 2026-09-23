@@ -7,7 +7,7 @@ export type Program = {
   heroColor: string;
   meta: string;
   available: string[];
-  howItWorks: { step: string; title: string; description: string }[];
+  howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   whatsIncluded: string[];
   /** A real quote from a real school. Never a written one — the five that
    *  used to sit here were invented and attributed to named rebbeim. */

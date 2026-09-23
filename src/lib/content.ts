@@ -223,6 +223,8 @@ export async function getPublishedPrograms(): Promise<Program[]> {
         step: s.step,
         title: s.title,
         description: s.description,
+        linkLabel: s.linkLabel,
+        linkUrl: s.linkUrl,
       })),
       cta: p.cta,
       external: Boolean(p.externalHref),

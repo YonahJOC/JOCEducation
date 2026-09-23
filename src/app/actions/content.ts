@@ -304,7 +304,7 @@ export async function saveProgram(input: {
   meta: string;
   available: string[];
   whatsIncluded: string[];
-  howItWorks: { step: string; title: string; description: string }[];
+  howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref?: string | null;
   cta: string;
   published: boolean;
@@ -345,6 +345,8 @@ export async function saveProgram(input: {
           step: s.step.trim() || String(order + 1).padStart(2, "0"),
           title: s.title.trim(),
           description: s.description.trim(),
+          linkLabel: s.linkLabel?.trim() || null,
+          linkUrl: s.linkUrl?.trim() || null,
           order,
         })),
     };

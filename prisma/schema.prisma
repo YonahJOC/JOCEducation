@@ -798,6 +798,10 @@ model ProgramStep {
   step        String
   title       String
   description String @db.Text
+  /// Optional call to action on the stage — "Book a time", "Register and pay".
+  linkLabel   String?
+  /// Where it goes. "{form}" resolves to this program's own sign-up form.
+  linkUrl     String?
   order       Int    @default(0)
 
   program ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
