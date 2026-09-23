@@ -102,6 +102,29 @@ export default async function SchoolProgramsPage() {
         in theirs.
       </p>
 
+      {groups.size > 0 && (
+        <p style={{ margin: "0 0 18px" }}>
+          {/* A plain link: the browser does the whole job, and the route takes
+              no id, so there is nothing to point at another school. */}
+          <a
+            href="/api/school/sign-ups/export"
+            download
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "8px",
+              fontSize: "13.5px", fontWeight: 600, color: BLUE,
+              backgroundColor: "rgba(45,70,175,.08)", borderRadius: "9999px",
+              padding: "10px 18px", minHeight: "44px", textDecoration: "none",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 1.5v9m0 0L4.5 7M8 10.5 11.5 7M2 12.5v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"
+                stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Download as a spreadsheet
+          </a>
+        </p>
+      )}
+
       {groups.size === 0 ? (
         <div style={{ backgroundColor: "#fff", border: `1px dashed rgba(16,35,63,.2)`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: MUTED, margin: "0 0 6px" }}>Nobody has signed up yet.</p>

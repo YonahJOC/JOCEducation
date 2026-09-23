@@ -52,3 +52,60 @@ export function responsesToCsv(
   // what stops Excel reading a UTF-8 name as mojibake.
   return `﻿${[header.map(cell).join(","), ...body].join("\r\n")}\r\n`;
 }
+
+/** One row as a school sees it: which program, who, when, and their answers. */
+export type SchoolSignUp = {
+  programName: string;
+  createdAt: Date;
+  name: string | null;
+  email: string | null;
+  paid: boolean;
+  amountCents: number | null;
+  charged: boolean;
+  answers: { label: string; value: string }[];
+};
+
+/**
+ * A school's own sign-ups, across every program, as one spreadsheet.
+ *
+ * Flat rather than grouped, with the program in the first column. A school
+ * putting this in front of a principal or merging it into their own register
+ * wants one table to sort, not seven.
+ */
+export function schoolSignUpsToCsv(rows: SchoolSignUp[]): string {
+  // Every question anybody at this school has answered, in the order first
+  // met. A school running four programs has four sets of questions and needs
+  // all of them side by side.
+  const columns = rows
+    .flatMap((r) => r.answers.map((a) => a.label))
+    .filter((v, i, a) => a.indexOf(v) === i);
+
+  const charges = rows.some((r) => r.charged);
+
+  const header = [
+    "Program",
+    "Submitted",
+    "Name",
+    "Email",
+    ...(charges ? ["Paid", "Amount"] : []),
+    ...columns,
+  ];
+
+  const body = rows.map((r) =>
+    [
+      r.programName,
+      r.createdAt.toISOString(),
+      r.name ?? "",
+      r.email ?? "",
+      ...(charges
+        ? [
+            r.charged ? (r.paid ? "paid" : "unpaid") : "",
+            r.amountCents != null ? (r.amountCents / 100).toFixed(2) : "",
+          ]
+        : []),
+      ...columns.map((c) => r.answers.find((a) => a.label === c)?.value ?? ""),
+    ].map(cell).join(","),
+  );
+
+  return `\ufeff${[header.map(cell).join(","), ...body].join("\r\n")}\r\n`;
+}
