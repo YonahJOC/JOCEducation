@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { logSchoolTouch } from "@/app/actions/school-status";
+import { syncAppNow } from "@/app/actions/app-sync";
 import { hours, type Flag } from "@/lib/app-flags";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
@@ -62,6 +63,8 @@ export function AppActivityPanel({ data }: { data: AppActivity }) {
       ) : (
         <p style={{ fontSize: "12.5px", color: MUTED, margin: "0 0 14px" }}>{data.sync.text}</p>
       )}
+
+      <ReadNow connected={data.sync.connected} />
 
       {data.unmatchedSchools > 0 && (
         <Notice tone="info" title={`${data.unmatchedSchools} ${data.unmatchedSchools === 1 ? "school is" : "schools are"} not matched to the app`}>
@@ -466,6 +469,58 @@ function LogCall({
       {err && <span style={{ fontSize: "12px", color: RED }}>{err}</span>}
       {lastCall && !err && (
         <span style={{ fontSize: "11.5px", color: MUTED }}>Last called {when(lastCall.at)}</span>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Read the app now.
+ *
+ * Shown whether or not the app is connected, on purpose — before it is
+ * connected this is the only way to find out what is missing, and it says so
+ * rather than being hidden until it would have worked.
+ */
+function ReadNow({ connected }: { connected: boolean }) {
+  const [pending, start] = useTransition();
+  const [msg, setMsg] = useState<{ good: boolean; text: string } | null>(null);
+
+  return (
+    <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", margin: "0 0 14px" }}>
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() => {
+          setMsg(null);
+          start(async () => {
+            const r = await syncAppNow();
+            setMsg(
+              r.ok
+                ? {
+                    good: true,
+                    text:
+                      `Read ${r.rows} school${r.rows === 1 ? "" : "s"}` +
+                      (r.unmatched > 0
+                        ? ` · ${r.unmatched} record${r.unmatched === 1 ? "" : "s"} from the app had no school here`
+                        : ""),
+                  }
+                : { good: false, text: r.error },
+            );
+          });
+        }}
+        style={{
+          fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
+          color: INK, backgroundColor: "rgba(16,35,63,.06)", border: "none",
+          borderRadius: "9999px", padding: "9px 16px", minHeight: "40px",
+          cursor: pending ? "wait" : "pointer",
+        }}
+      >
+        {pending ? "Reading…" : connected ? "Read the app now" : "Test the connection"}
+      </button>
+      {msg && (
+        <span style={{ fontSize: "12.5px", color: msg.good ? GREEN : ORANGE_TEXT, lineHeight: 1.45, maxWidth: "52ch" }}>
+          {msg.text}
+        </span>
       )}
     </div>
   );

@@ -102,6 +102,23 @@ export function ProgramAdminClient({
         </div>
       )}
 
+      {!asCoordinator && (view.canEditForm || view.canSetCoordinators) && (
+        <p style={{ margin: "12px 0 0" }}>
+          <Link
+            href={`/admin/programs/${view.slug}?as=coordinator`}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "7px",
+              fontSize: "13px", fontWeight: 600, color: INK,
+              backgroundColor: "rgba(16,35,63,.06)", borderRadius: "9999px",
+              padding: "9px 16px", minHeight: "40px", textDecoration: "none",
+            }}
+          >
+            <span aria-hidden="true">👁</span>
+            See this as its coordinator does
+          </Link>
+        </p>
+      )}
+
       {!asCoordinator && view.asLead && (
         <p style={{ fontSize: "13.5px", color: "#9A5405", backgroundColor: "#FDEEDA", borderRadius: "10px", padding: "10px 14px", margin: "12px 0 0", maxWidth: "62ch", lineHeight: 1.5 }}>
           You are down as running this program, so you can see its sign-ups. Everything else in the
