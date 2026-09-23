@@ -156,8 +156,87 @@ body {
   .joc-stage-body { padding-right: 0 !important; padding-bottom: 26px; }
 }
 
-/* Program page: the sidebar drops under the article on narrow screens. It was
-   a fixed 340px column at every width, which pushed the page off a phone. */
-@media (max-width: 900px) {
-  .joc-program-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 34px !important; }
+
+/* ── Program page ──────────────────────────────────────────────────────────
+   The page is its own container, so the layout answers to the page's width
+   rather than the window's — the console renders this same markup inside a
+   narrower column. */
+.joc-program { container-type: inline-size; }
+
+/* The step bar sitting over the hero. */
+.joc-stepbar {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(16, 35, 63, .1), 0 2px 6px rgba(16, 35, 63, .06);
+  padding: 20px;
+}
+.joc-stepbar-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.joc-stepbar-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+/* Body: one column, in reading order — intro, then the panels a school checks
+   against, then the path. */
+.joc-program-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "intro" "side" "rest";
+  gap: 34px 56px;
+  align-items: start;
+}
+.joc-program-side { align-self: start; }
+
+/* ── Stages ──────────────────────────────────────────────────────────────── */
+.joc-stages { display: grid; gap: 0; }
+.joc-stage {
+  display: grid;
+  grid-template-columns: clamp(40px, 5cqi, 48px) minmax(0, 1fr);
+  gap: 16px;
+}
+.joc-stage-node-col { display: flex; flex-direction: column; align-items: center; }
+.joc-stage-node {
+  width: clamp(40px, 5cqi, 48px); height: clamp(40px, 5cqi, 48px);
+  border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-outfit); font-size: 15px; font-weight: 600;
+}
+.joc-stage-rail { width: 2px; flex: 1; min-height: 20px; }
+.joc-stage-card {
+  background: #fff; border: 1px solid rgba(16, 35, 63, .1); border-radius: 14px;
+  padding: 18px 20px; margin-bottom: 18px; min-width: 0;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.joc-stage:last-child .joc-stage-card { margin-bottom: 0; }
+.joc-stage-action { min-width: 0; }
+
+/* Deep links from the step bar say which step you landed on. */
+.joc-stage:target .joc-stage-card {
+  box-shadow: 0 0 0 3px #2D46AF;
+  border-color: transparent;
+}
+
+@container (min-width: 720px) {
+  .joc-stepbar { padding: 22px 24px; }
+  .joc-stepbar-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* The action moves beside the words once there is room for both. */
+  .joc-stage-card { flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; }
+  .joc-stage-action { flex-shrink: 0; min-width: 210px; width: auto; }
+}
+
+@container (min-width: 960px) {
+  .joc-program-grid {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas: "intro side" "rest side";
+    gap: 0 56px;
+  }
+  .joc-program-side { position: sticky; top: 24px; }
+}
+
+/* Focus has to be visible on paper, on white cards and on the coloured hero. */
+.joc-program a:focus-visible {
+  outline: 3px solid #10233F;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #fff;
+  border-radius: 4px;
 }
