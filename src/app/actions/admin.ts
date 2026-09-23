@@ -286,8 +286,17 @@ export async function revokeInvitation(invitationId: string, schoolId: string): 
   }
 }
 
+/**
+ * A school, from a name and a country.
+ *
+ * Everything else — city, region, size, type, domains, contacts — is asked
+ * for on the school's own page once it exists. Five fields at the door meant
+ * somebody had to decide the enrollment band before they were allowed to
+ * write the name down, and the answer to that is usually "I will find out".
+ */
 export async function createSchool(input: {
   name: string;
+  country?: string;
   region?: string;
   city?: string;
   enrollment?: string;
@@ -307,6 +316,7 @@ export async function createSchool(input: {
       data: {
         name,
         slug,
+        country: input.country?.trim() || "United States",
         region: input.region?.trim() || null,
         city: input.city?.trim() || null,
         enrollment: (input.enrollment ?? "MEDIUM") as never,

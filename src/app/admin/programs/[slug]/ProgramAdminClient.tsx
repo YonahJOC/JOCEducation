@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { setProgramForm, setProgramLead, saveProgramForm } from "@/app/actions/forms";
+import { setProgramForm, setProgramLead, saveProgramForm, addProgramCoordinator } from "@/app/actions/forms";
 import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
 import { FIELD_TYPE_LABELS } from "@/lib/forms";
@@ -250,6 +250,8 @@ export function ProgramAdminClient({
               );
             })}
           </div>
+
+          <AddCoordinator programId={view.id} />
         </div>
       )}
 
@@ -323,5 +325,102 @@ function Pill({ color, children }: { color: string; children: React.ReactNode })
     <span style={{ fontSize: "11px", fontWeight: 700, color, backgroundColor: `${color}1f`, borderRadius: "9999px", padding: "3px 9px" }}>
       {children}
     </span>
+  );
+}
+
+/**
+ * Adding somebody who does not have an account yet.
+ *
+ * The tick list above only offers people who have already signed in, which
+ * left a chicken and an egg: the person who runs the JOC App could not be
+ * named until they signed in, and had no reason to sign in until they ran
+ * something. Name and email is all it takes.
+ */
+function AddCoordinator({ programId }: { programId: number }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [pending, start] = useTransition();
+  const [err, setErr] = useState<string | null>(null);
+  const router = useRouter();
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{
+          fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE,
+          background: "none", border: "none", padding: "14px 0 0", cursor: "pointer", minHeight: "44px",
+        }}
+      >
+        + Add someone who is not on this list
+      </button>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: `1px solid ${RULE}` }}>
+      <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "58ch" }}>
+        Their name and email. It makes them an account and puts them down as running this program.
+        They sign in with that address — no password is set here.
+      </p>
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "10px" }}>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Name"
+          disabled={pending}
+          autoFocus
+          style={{
+            fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK, backgroundColor: "#fff",
+            border: `1px solid ${RULE}`, borderRadius: "10px", padding: "10px 12px",
+            minHeight: "42px", outline: "none", flex: "1 1 170px", minWidth: 0,
+          }}
+        />
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="name@justonechesed.org"
+          type="email"
+          disabled={pending}
+          style={{
+            fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK, backgroundColor: "#fff",
+            border: `1px solid ${RULE}`, borderRadius: "10px", padding: "10px 12px",
+            minHeight: "42px", outline: "none", flex: "2 1 230px", minWidth: 0,
+          }}
+        />
+      </div>
+      <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+        <button
+          type="button"
+          disabled={pending || !name.trim() || !email.trim()}
+          onClick={() => {
+            setErr(null);
+            start(async () => {
+              const r = await addProgramCoordinator(programId, { name, email });
+              if (r.ok) { setName(""); setEmail(""); setOpen(false); router.refresh(); }
+              else setErr(r.error);
+            });
+          }}
+          style={{
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
+            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            minHeight: "42px", cursor: pending ? "wait" : "pointer",
+            opacity: name.trim() && email.trim() ? 1 : 0.5,
+          }}
+        >
+          {pending ? "Adding…" : "Add them"}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setOpen(false); setErr(null); }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+        >
+          Cancel
+        </button>
+        {err && <span style={{ fontSize: "13px", color: RED, lineHeight: 1.4 }}>{err}</span>}
+      </div>
+    </div>
   );
 }

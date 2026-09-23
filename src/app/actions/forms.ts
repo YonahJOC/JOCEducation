@@ -412,3 +412,65 @@ export async function saveProgramForm(
     return { ok: false, error: e instanceof Error ? e.message : "Could not save that form." };
   }
 }
+
+/**
+ * Add somebody as a coordinator by name and email.
+ *
+ * Naming a coordinator used to mean the person already had an account, which
+ * put a chicken and an egg in the way: you could not name the person who runs
+ * the JOC App until they had signed in, and they had no reason to sign in
+ * until they ran something. This creates the account and names them in one
+ * act.
+ *
+ * No password is set. A @justonechesed.org address signs in with Google; a
+ * school address is sent a reset by whoever set them up. Either way an
+ * account with no password cannot be signed into by guessing one.
+ */
+export async function addProgramCoordinator(
+  programId: number,
+  input: { name: string; email: string },
+): Promise<Result> {
+  try {
+    if (!isDatabaseConfigured()) return { ok: false, error: "Database not connected" };
+    const session = await safeAuth();
+    if (isAuthConfigured && !can(session?.user, "coordinators")) {
+      return { ok: false, error: "Your admin type does not include setting coordinators." };
+    }
+
+    const name = input.name.trim();
+    const email = input.email.trim().toLowerCase();
+    if (!name) return { ok: false, error: "Give their name." };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      return { ok: false, error: "That does not look like an email address." };
+    }
+
+    const program = await prisma.programPage.findUnique({ where: { id: programId }, select: { id: true, name: true } });
+    if (!program) return { ok: false, error: "That program no longer exists." };
+
+    // Somebody who already has an account keeps it, name and role untouched —
+    // this must never quietly rewrite an existing person.
+    let user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email,
+          name,
+          role: email.endsWith("@justonechesed.org") ? "STAFF" : "TEACHER",
+        },
+        select: { id: true },
+      });
+    }
+
+    await prisma.programPage.update({
+      where: { id: programId },
+      data: { leads: { connect: { id: user.id } } },
+    });
+
+    revalidatePath(`/admin/programs`);
+    revalidatePath(`/admin/my-programs`);
+    revalidatePath(`/admin/users`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not add them." };
+  }
+}

@@ -4,26 +4,44 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createSchool } from "@/app/actions/admin";
 
+/**
+ * Adding a school: a name and a country.
+ *
+ * It used to ask for city, region, type and enrollment band as well. All four
+ * are real, and all four are things somebody often does not know at the
+ * moment they want to write a school down — so the form stood between them
+ * and the one fact they did have. Everything else is asked for on the
+ * school's own page, which is where it belongs.
+ */
+
 const INK = "#10233F";
 const BLUE = "#2D46AF";
 const RULE = "rgba(16,35,63,.15)";
 
 const field: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
+  fontSize: "14px", color: INK, backgroundColor: "#fff",
+  border: `1px solid ${RULE}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600, color: "rgba(16,35,63,.6)", marginBottom: "5px",
 };
 
+/** The ones JOC actually works in. Anything else is typed. */
+const COUNTRIES = [
+  "United States",
+  "Israel",
+  "Canada",
+  "United Kingdom",
+  "Australia",
+  "South Africa",
+];
+
 export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [city, setCity] = useState("");
-  const [region, setRegion] = useState("");
-  const [type, setType] = useState("DAY_SCHOOL");
-  const [enrollment, setEnrollment] = useState("MEDIUM");
+  const [country, setCountry] = useState("United States");
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
   const router = useRouter();
@@ -32,10 +50,11 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
     e.preventDefault();
     setMsg(null);
     start(async () => {
-      const r = await createSchool({ name, city, region, type, enrollment });
+      const r = await createSchool({ name, country });
       if (r.ok) {
-        setName(""); setCity(""); setRegion("");
+        setName("");
         setOpen(false);
+        // Straight to the school, which is where the rest gets filled in.
         if (r.id) router.push(`/admin/schools/${r.id}`);
         else router.refresh();
       } else {
@@ -53,7 +72,6 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
           fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
           backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
           minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
-          whiteSpace: "nowrap",
         }}
       >
         + Add school
@@ -65,47 +83,46 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
     <form
       onSubmit={submit}
       style={{
-        backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px",
-        padding: "20px", marginBottom: "16px", width: "100%",
+        backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.12)",
+        borderRadius: "16px", padding: "20px", maxWidth: "460px",
       }}
     >
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
-        New school
+      <p style={{ fontSize: "15px", fontWeight: 700, color: INK, margin: "0 0 4px" }}>Add a school</p>
+      <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "0 0 16px" }}>
+        The name and where it is. Everything else — the city, the size, who runs chesed there — is
+        on the school&rsquo;s own page once it exists.
       </p>
 
       <div style={{ marginBottom: "12px" }}>
-        <label style={label}>School name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Yeshiva Darchei Torah" style={field} autoFocus />
+        <label style={label} htmlFor="new-school-name">School name</label>
+        <input
+          id="new-school-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Yeshiva Darchei Torah"
+          required
+          autoFocus
+          disabled={pending}
+          style={field}
+        />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px", marginBottom: "16px" }}>
-        <div>
-          <label style={label}>City</label>
-          <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Brooklyn, NY" style={field} />
-        </div>
-        <div>
-          <label style={label}>Region</label>
-          <input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Brooklyn" style={field} />
-        </div>
-        <div>
-          <label style={label}>Type</label>
-          <select value={type} onChange={(e) => setType(e.target.value)} style={field}>
-            <option value="DAY_SCHOOL">Day school</option>
-            <option value="YESHIVA">Yeshiva</option>
-            <option value="SEMINARY">Seminary</option>
-            <option value="CHEDER">Cheder</option>
-            <option value="HIGH_SCHOOL">High school</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </div>
-        <div>
-          <label style={label}>Enrollment</label>
-          <select value={enrollment} onChange={(e) => setEnrollment(e.target.value)} style={field}>
-            <option value="SMALL">Under 150</option>
-            <option value="MEDIUM">150–400</option>
-            <option value="LARGE">400+</option>
-          </select>
-        </div>
+      <div style={{ marginBottom: "16px" }}>
+        <label style={label} htmlFor="new-school-country">Country</label>
+        <input
+          id="new-school-country"
+          list="joc-countries"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          placeholder="United States"
+          disabled={pending}
+          style={field}
+        />
+        <datalist id="joc-countries">
+          {COUNTRIES.map((c) => (
+            <option key={c} value={c} />
+          ))}
+        </datalist>
       </div>
 
       <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
@@ -114,25 +131,21 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
           disabled={pending || !name.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 22px",
-            minHeight: "44px", cursor: !name.trim() ? "not-allowed" : "pointer",
-            opacity: pending || !name.trim() ? 0.5 : 1,
+            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 22px",
+            minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: name.trim() ? 1 : 0.5,
           }}
         >
-          {pending ? "Creating…" : "Create school"}
+          {pending ? "Adding…" : "Create school"}
         </button>
         <button
           type="button"
           onClick={() => { setOpen(false); setMsg(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "rgba(16,35,63,.6)", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
         >
           Cancel
         </button>
         {msg && <span style={{ fontSize: "13px", color: "#B8321E" }}>{msg}</span>}
       </div>
-      <p style={{ fontSize: "12.5px", color: "rgba(16,35,63,.55)", margin: "12px 0 0", lineHeight: 1.5 }}>
-        Created as a prospect with no plan. Set the plan, invite staff and log activity on the school&rsquo;s page.
-      </p>
     </form>
   );
 }
