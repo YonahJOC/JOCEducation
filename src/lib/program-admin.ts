@@ -81,7 +81,17 @@ export type ProgramAdminView = {
   canEditForm: boolean;
 };
 
-export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | null | "denied"> {
+/**
+ * Look at a program the way its coordinator does.
+ *
+ * Only ever takes things away — the three permissions are forced off and the
+ * lead banner forced on. A preview that could show more than the real thing
+ * would be worse than no preview, because somebody would trust it.
+ */
+export async function getProgramAdmin(
+  slug: string,
+  opts: { asCoordinator?: boolean } = {},
+): Promise<ProgramAdminView | null | "denied"> {
   if (!isDatabaseConfigured()) return null;
 
   const session = await safeAuth();
@@ -169,10 +179,10 @@ export async function getProgramAdmin(slug: string): Promise<ProgramAdminView | 
         audience: e.audience,
       })),
       leads: p.leads,
-      asLead: isLead && !managesPrograms && !readsForms && !namesCoordinators,
-      canEditProgram: open || managesPrograms,
-      canSetCoordinators: open || namesCoordinators,
-      canEditForm: open || managesPrograms || readsForms || namesCoordinators,
+      asLead: opts.asCoordinator || (isLead && !managesPrograms && !readsForms && !namesCoordinators),
+      canEditProgram: !opts.asCoordinator && (open || managesPrograms),
+      canSetCoordinators: !opts.asCoordinator && (open || namesCoordinators),
+      canEditForm: !opts.asCoordinator && (open || managesPrograms || readsForms || namesCoordinators),
     };
   } catch {
     return null;

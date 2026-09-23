@@ -3,7 +3,7 @@ import Image from "next/image";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { leadsAnyProgram, canOpenConsole } from "@/lib/program-admin";
 import {
-  canAccessConsole, canManageAccounts, canManageCalendar, canManageContent,
+  can, canAccessConsole, canManageAccounts, canManageCalendar, canManageContent,
   canManageUsers, ROLE_LABELS, type Role,
 } from "@/lib/access";
 import { usingSampleData } from "@/lib/admin-data";
@@ -53,9 +53,13 @@ const CONTENT_NAV: NavItem[] = [
   { label: "Forms", href: "/admin/forms", hint: "Registrations, sign-ups and feedback" },
 ];
 
-/** For whoever runs a program, whether or not they hold an admin type. */
+/**
+ * The program consoles. A coordinator sees the one they run; anybody who may
+ * see programs gets the same page with all of them on it — the same screen,
+ * not a second one built to describe it.
+ */
 const MINE_NAV = [
-  { label: "Your programs", href: "/admin/my-programs", hint: "Sign-ups for the programs you run" },
+  { label: "Program consoles", href: "/admin/my-programs", hint: "Sign-ups, forms and dates, per program" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -109,7 +113,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const showPeople = open || canManageUsers(session?.user);
   const showCalendar = open || canManageCalendar(session?.user);
   const showContent = open || canManageContent(session?.user);
-  const showMine = leadsProgram;
+  // Coordinators reach it by running something; everybody else by being able
+  // to see programs at all. listProgramsForAdmin narrows the list either way.
+  const showMine =
+    leadsProgram || open || can(session?.user, "programs") || can(session?.user, "forms") || can(session?.user, "coordinators");
 
   return (
     <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>

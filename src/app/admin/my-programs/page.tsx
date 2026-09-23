@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { listProgramsForAdmin } from "@/lib/program-admin";
+import { safeAuth, isAuthConfigured } from "@/auth";
+import { can } from "@/lib/access";
 
 /**
  * Your programs.
@@ -13,7 +15,7 @@ import { listProgramsForAdmin } from "@/lib/program-admin";
  * listProgramsForAdmin already narrows the list to that person's own.
  */
 
-export const metadata = { title: "Your programs — JOC Console" };
+export const metadata = { title: "Program consoles — JOC Console" };
 export const dynamic = "force-dynamic";
 
 const INK = "#10233F";
@@ -22,14 +24,24 @@ const MUTED = "rgba(16,35,63,.6)";
 
 export default async function MyProgramsPage() {
   const programs = await listProgramsForAdmin();
+  // An admin sees every program here; a coordinator sees only theirs. The
+  // wording follows, so the page never calls somebody else's programs "yours".
+  const session = await safeAuth();
+  const all =
+    !isAuthConfigured ||
+    can(session?.user, "programs") ||
+    can(session?.user, "forms") ||
+    can(session?.user, "coordinators");
 
   return (
     <div>
       <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 6px" }}>
-        Your programs
+        {all ? "Program consoles" : "Your programs"}
       </h1>
       <p style={{ fontSize: "15px", color: MUTED, lineHeight: 1.6, margin: "0 0 24px", maxWidth: "62ch" }}>
-        The programs you run. Open one to work on its sign-up form and see who has signed up.
+        {all
+          ? "Every program's own console — the same page its coordinator opens, with all of them here rather than just theirs. Open one for its sign-up form, its sign-ups and its dates."
+          : "The programs you run. Open one to work on its sign-up form and see who has signed up."}
       </p>
 
       {programs.length === 0 ? (

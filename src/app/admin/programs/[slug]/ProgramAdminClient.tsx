@@ -26,7 +26,7 @@ const cell: React.CSSProperties = {
 };
 
 export function ProgramAdminClient({
-  view, forms, team, feeLabel, paymentsOn, appActivity = null,
+  view, forms, team, feeLabel, paymentsOn, appActivity = null, asCoordinator = false,
 }: {
   view: ProgramAdminView;
   forms: { id: string; title: string; responseCount: number }[];
@@ -35,6 +35,8 @@ export function ProgramAdminClient({
   paymentsOn: boolean;
   /** Only the JOC App has these, and only for whoever may see them. */
   appActivity?: AppActivity | null;
+  /** Previewing the coordinator's view rather than your own. */
+  asCoordinator?: boolean;
 }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -85,7 +87,22 @@ export function ProgramAdminClient({
         {!view.published && " · draft"}
         {view.comingSoon && " · coming soon"}
       </p>
-      {view.asLead && (
+      {asCoordinator && (
+        <div style={{ backgroundColor: "#0B1A31", borderRadius: "12px", padding: "12px 16px", margin: "12px 0 0", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ fontSize: "13.5px", color: "#fff", lineHeight: 1.5, flex: 1, minWidth: "min(100%, 300px)" }}>
+            You are seeing this the way <strong>whoever runs this program</strong> sees it — no
+            editing the form, no coordinators panel, no app figures.
+          </span>
+          <Link
+            href={`/admin/programs/${view.slug}`}
+            style={{ fontSize: "13px", fontWeight: 700, color: "#0B1A31", backgroundColor: "#FA912D", borderRadius: "9999px", padding: "9px 16px", textDecoration: "none", whiteSpace: "nowrap" }}
+          >
+            Back to your own view
+          </Link>
+        </div>
+      )}
+
+      {!asCoordinator && view.asLead && (
         <p style={{ fontSize: "13.5px", color: "#9A5405", backgroundColor: "#FDEEDA", borderRadius: "10px", padding: "10px 14px", margin: "12px 0 0", maxWidth: "62ch", lineHeight: 1.5 }}>
           You are down as running this program, so you can see its sign-ups. Everything else in the
           console stays as it was.

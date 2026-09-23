@@ -12,9 +12,17 @@ import { can } from "@/lib/access";
 export const metadata = { title: "Program — JOC Console" };
 export const dynamic = "force-dynamic";
 
-export default async function ProgramAdminPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const view = await getProgramAdmin(slug);
+export default async function ProgramAdminPage({
+  params, searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ as?: string }>;
+}) {
+  const [{ slug }, { as }] = await Promise.all([params, searchParams]);
+
+  // ?as=coordinator shows the page as whoever runs this program sees it.
+  const asCoordinator = as === "coordinator";
+  const view = await getProgramAdmin(slug, { asCoordinator });
 
   if (view === null) notFound();
   if (view === "denied") {
