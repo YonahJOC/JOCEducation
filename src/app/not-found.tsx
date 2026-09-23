@@ -1,16 +1,12 @@
 import Link from "next/link";
-import { LogoMark } from "@/components/ui/LogoMark";
+import { BrandLockup } from "@/components/ui/Brand";
 
 export default function NotFound() {
   return (
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
       <div style={{ maxWidth: "520px", textAlign: "center" }}>
         <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "12px", textDecoration: "none", marginBottom: "40px" }}>
-          <LogoMark size={44} />
-          <div style={{ textAlign: "left", lineHeight: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: "17px", letterSpacing: "-0.025em", color: "#10233F" }}>JustOneChesed</div>
-            <div style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase" as const, color: "#C96C00", marginTop: "3px" }}>EDUCATION</div>
-          </div>
+          <BrandLockup height={20} />
         </Link>
 
         <div style={{ fontWeight: 800, fontSize: "96px", lineHeight: 1, letterSpacing: "-0.05em", color: "#F4F7FD", marginBottom: "24px" }}>

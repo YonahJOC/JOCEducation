@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { LogoMark } from "@/components/ui/LogoMark";
+import { BrandLockup } from "@/components/ui/Brand";
 import { safeAuth, isGoogleConfigured, isPasswordConfigured } from "@/auth";
 import { LoginForm } from "./LoginForm";
 
@@ -17,11 +17,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", backgroundColor: "#FBF9F4" }}>
       <div style={{ width: "100%", maxWidth: "420px" }}>
         <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "12px", textDecoration: "none", marginBottom: "36px" }}>
-          <LogoMark size={40} />
-          <div style={{ lineHeight: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: "16px", letterSpacing: "-0.025em", color: "#10233F" }}>JustOneChesed</div>
-            <div style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginTop: "2px" }}>EDUCATION</div>
-          </div>
+          <BrandLockup height={20} />
         </Link>
 
         <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>

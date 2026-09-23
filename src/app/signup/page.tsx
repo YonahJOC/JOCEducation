@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { createAccount } from "@/app/actions/signup";
-import { LogoMark } from "@/components/ui/LogoMark";
+import { BrandLockup } from "@/components/ui/Brand";
 
 const ROLES = [
   { value: "teacher", label: "Classroom teacher" },
@@ -65,11 +65,7 @@ export default function SignupPage() {
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", backgroundColor: "#FBF9F4" }}>
       <div style={{ width: "100%", maxWidth: "460px" }}>
         <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "12px", textDecoration: "none", marginBottom: "32px" }}>
-          <LogoMark size={40} />
-          <div style={{ lineHeight: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: "16px", letterSpacing: "-0.025em", color: "#10233F" }}>JustOneChesed</div>
-            <div style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase" as const, color: "#C96C00", marginTop: "2px" }}>EDUCATION</div>
-          </div>
+          <BrandLockup height={20} />
         </Link>
 
         <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>

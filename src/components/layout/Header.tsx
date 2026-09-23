@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { LogoMark } from "@/components/ui/LogoMark";
+import { BrandLockup } from "@/components/ui/Brand";
 import { signOutAction } from "@/app/actions/auth";
 
 const NAV = [
@@ -67,16 +67,8 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
           style={{ maxWidth: "1280px" }}
         >
           {/* Brand */}
-          <Link href={account ? "/home" : "/"} className="flex items-center gap-3" style={{ textDecoration: "none" }}>
-            <LogoMark size={40} />
-            <div className="leading-none">
-              <div style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "16.5px", letterSpacing: "-0.025em", color: "#10233F" }}>
-                JustOneChesed
-              </div>
-              <div style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginTop: "2px" }}>
-                EDUCATION
-              </div>
-            </div>
+          <Link href={account ? "/home" : "/"} className="flex items-center" style={{ textDecoration: "none", flexShrink: 0 }}>
+            <BrandLockup height={21} />
           </Link>
 
           {/* Desktop nav */}
@@ -199,9 +191,8 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
           >
             {/* Drawer header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", borderBottom: "1px solid rgba(16,35,63,.1)" }}>
-              <Link href={account ? "/home" : "/"} style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
-                <LogoMark size={34} />
-                <div style={{ fontWeight: 700, fontSize: "15px", letterSpacing: "-0.02em", color: "#10233F" }}>JOC Education</div>
+              <Link href={account ? "/home" : "/"} style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+                <BrandLockup height={18} priority={false} />
               </Link>
               <button onClick={() => setOpen(false)} aria-label="Close menu" style={{ border: "none", background: "none", cursor: "pointer", fontSize: "22px", color: "#10233F", lineHeight: 1, padding: "4px" }}>
                 ×
