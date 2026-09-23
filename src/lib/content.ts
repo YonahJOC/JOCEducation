@@ -22,8 +22,16 @@ export type PublicLesson = Omit<Lesson, "files"> & {
   cycleWeek?: number | null;
 };
 
+/**
+ * Nothing, rather than the starter set.
+ *
+ * The static lessons carry file *names* with no files behind them, so serving
+ * them advertises downloads that 404. The library page already says the
+ * library is being built; that is the truth when the database cannot be read
+ * as well as when it is empty.
+ */
 function staticLessons(): PublicLesson[] {
-  return LESSONS.map((l) => ({ ...l, files: l.files.map((name) => ({ name, url: null })) }));
+  return [];
 }
 
 export async function getPublishedLessons(): Promise<PublicLesson[]> {
@@ -196,14 +204,16 @@ export async function getCycleContent(cycleSlug: string) {
  * without a developer.
  */
 export async function getPublishedPrograms(): Promise<Program[]> {
-  if (!isDatabaseConfigured()) return PROGRAMS;
+  // No stale list. PROGRAMS drifted to six against eight real ones, and a
+  // school has no way to tell which it is looking at.
+  if (!isDatabaseConfigured()) return [];
   try {
     const rows = await prisma.programPage.findMany({
       where: { published: true },
       orderBy: [{ sort: "asc" }, { id: "asc" }],
       include: { steps: { orderBy: { order: "asc" } }, form: { select: { slug: true, published: true, closed: true } } },
     });
-    if (rows.length === 0) return PROGRAMS;
+    if (rows.length === 0) return [];
 
     return rows.map((p) => ({
       slug: p.slug,
@@ -232,7 +242,7 @@ export async function getPublishedPrograms(): Promise<Program[]> {
       externalHref: p.externalHref ?? undefined,
     }));
   } catch {
-    return PROGRAMS;
+    return [];
   }
 }
 

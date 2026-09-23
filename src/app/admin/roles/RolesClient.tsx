@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { saveAdminRole, deleteAdminRole } from "@/app/actions/admin-roles";
 import { PageIntro } from "@/components/admin/PageIntro";
 import {
@@ -231,7 +231,7 @@ function RoleForm({
       >
         ← All admin types
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
+      <h1 style={pageTitle}>
         {d.id ? d.name : "New admin type"}
       </h1>
 

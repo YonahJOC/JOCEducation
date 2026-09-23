@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, label  } from "@/lib/joc-tokens";
+import { C, label, pageTitle } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import {
   getSchool, STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, ENROLLMENT_LABELS, usingSampleData,
@@ -69,7 +69,7 @@ async function Inner({ slug }: { slug: string }) {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", margin: "12px 0 22px" }}>
         <div>
-          <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: C.ink, margin: "0 0 6px" }}>
+          <h1 style={pageTitle}>
             {s.name}
           </h1>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", fontSize: "13.5px", color: "#4A5A74" }}>

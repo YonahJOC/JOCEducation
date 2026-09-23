@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { LessonEditor, EMPTY_LESSON, type LessonDraft, type CycleRef } from "@/components/admin/LessonEditor";
 import { BulkImport } from "@/components/admin/BulkImport";
@@ -29,7 +29,7 @@ export function LessonsClient({
         >
           ← All lessons
         </button>
-        <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
+        <h1 style={pageTitle}>
           {editing.id ? "Edit lesson" : "New lesson"}
         </h1>
         <LessonEditor

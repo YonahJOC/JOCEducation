@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { safeAuth } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
@@ -187,7 +187,7 @@ export default async function GuidePage() {
 
   return (
     <div style={{ maxWidth: "860px" }}>
-      <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: C.ink, margin: "0 0 8px" }}>
+      <h1 style={pageTitle}>
         {firstName ? `Start here, ${firstName}.` : "Start here."}
       </h1>
       <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.65, margin: "0 0 12px", maxWidth: "68ch" }}>

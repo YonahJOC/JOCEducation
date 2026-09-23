@@ -1,5 +1,5 @@
 import { requireSchoolPanel } from "../account-only";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { mySchool, myActivity } from "@/lib/school-data";
 import { getCycles } from "@/lib/cycle-data";
 
@@ -33,7 +33,7 @@ export default async function SchoolActivityPage() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+      <h1 style={pageTitle}>
         Chesed activity
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>

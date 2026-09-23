@@ -20,22 +20,20 @@ const EDUCATION = [
  * nowhere else. A footer that has to be edited in code every time the team
  * adds a program is a footer that is wrong most of the time.
  */
-const FALLBACK_PROGRAMS = [
-  { label: "Kindness Booth",  href: "/programs/kindness-booth" },
-  { label: "Bake for Chesed", href: "/programs/bake-for-chesed" },
-  { label: "Just One Tutor",  href: "/programs/just-one-tutor" },
-  { label: "Chesed Match",    href: "/programs/chesed-match" },
-  { label: "JOC Center Trip", href: "/programs/joc-center-trip" },
-];
-
-/** At most six, so one long column does not unbalance the footer. */
+/**
+ * At most six, so one long column does not unbalance the footer.
+ *
+ * There is no hardcoded list behind this any more. A third copy of the
+ * programs — after the database and the static fallback — meant the footer
+ * could name a program the site no longer ran, and quietly link to a 404.
+ * An empty list is an honest footer.
+ */
 async function programLinks() {
   try {
     const rows = await getPublishedPrograms();
-    if (rows.length === 0) return FALLBACK_PROGRAMS;
     return rows.slice(0, 6).map((p) => ({ label: p.name, href: `/programs/${p.slug}` }));
   } catch {
-    return FALLBACK_PROGRAMS;
+    return [];
   }
 }
 

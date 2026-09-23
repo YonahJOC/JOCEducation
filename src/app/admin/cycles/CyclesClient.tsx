@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveCycle, deleteCycle, importStaticCycles } from "@/app/actions/cycles";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
@@ -286,7 +286,7 @@ function CycleForm({
       >
         ← All cycles
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
+      <h1 style={pageTitle}>
         {d.id ? `Cycle ${initial.num} — ${initial.theme}` : "New cycle"}
       </h1>
 

@@ -1,4 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { pageTitle } from "@/lib/joc-tokens";
 import { isPreviewing } from "@/lib/site-content";
 import { SITE_FIELDS, sitePages } from "@/lib/site-fields";
 import { SiteEditor, type EditorField, type EditorPage } from "./SiteEditor";
@@ -48,7 +49,7 @@ async function Inner() {
   if (!isDatabaseConfigured()) {
     return (
       <div style={{ maxWidth: "560px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", margin: "0 0 10px" }}>
+        <h1 style={pageTitle}>
           Site content
         </h1>
         <p style={{ fontSize: "15px", lineHeight: 1.65, color: "#4A5A74" }}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { saveEvent, deleteEvent, cancelEvent } from "@/app/actions/events";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -282,7 +282,7 @@ function EventForm({
       >
         ← All programming
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
+      <h1 style={pageTitle}>
         {d.id ? d.title || "Edit event" : "New event"}
       </h1>
 

@@ -634,23 +634,9 @@ enum SiteFieldType {
   REPEATABLE
 }
 
-// ─── Site statistics ──────────────────────────────────────────────────────────
-// Every number shown publicly comes from here, with a source and an as-of date,
-// so nothing on the site is a figure nobody can account for.
-
-model Stat {
-  id        String   @id @default(cuid())
-  key       String   @unique
-  label     String
-  value     String
-  /// Where the number came from: JOC App export, manual count, CRM
-  source    String?
-  asOf      DateTime
-  published Boolean  @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+// Site statistics lived here as a Stat model — a good idea nobody wired up.
+// SiteField won that job, so every public figure is editable at /admin/site
+// with its own history. The table was empty and referenced nowhere.
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 

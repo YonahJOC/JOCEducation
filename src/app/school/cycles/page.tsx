@@ -1,5 +1,5 @@
 import { requireSchoolPanel } from "../account-only";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { mySchool, myCycleProgress } from "@/lib/school-data";
 
 export const metadata = { title: "Cycle progress" };
@@ -17,7 +17,7 @@ export default async function SchoolCyclesPage() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+      <h1 style={pageTitle}>
         Cycle progress
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>

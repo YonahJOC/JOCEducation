@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useState } from "react";
 import { saveForm, deleteForm } from "@/app/actions/forms";
@@ -181,7 +181,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
       <Link href="/admin/forms" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
         ← All forms
       </Link>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "12px 0 4px" }}>
+      <h1 style={pageTitle}>
         {form.title}
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
