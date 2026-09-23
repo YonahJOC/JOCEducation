@@ -1,289 +1,39 @@
-import { SchoolsGuard } from "@/components/admin/Guard";
-import { C, label  } from "@/lib/joc-tokens";
-import { Absent } from "@/components/Absent";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
-import { canManageAccounts, canAccessConsole } from "@/lib/access";
-import { leadsAnyProgram } from "@/lib/program-admin";
-import {
-  getSchools, getPipeline, getRecentActivity, getDemoRequests,
-  STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, type SchoolRow,
-} from "@/lib/admin-data";
+import { canAccessConsole } from "@/lib/access";
+import { leadsAnyProgram, listProgramsForAdmin } from "@/lib/program-admin";
+import { getToday } from "@/lib/today";
+import { TodayPage } from "@/components/admin/TodayPage";
 
-const CARD: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px",
-};
+/**
+ * Today.
+ *
+ * This was an overview: a board of every school, their statuses and a
+ * pipeline. That is something to browse, and nobody opens a console to
+ * browse — they open it because something needs them, and the page could not
+ * say what.
+ *
+ * It is now the same shape for every role, built from capabilities: rows that
+ * are true right now, each with a figure, a sentence and one action. The
+ * board it replaced is still there, under Schools, where somebody looking for
+ * a board would look.
+ */
 
-function ago(date: Date | null): string {
-  if (!date) return "Not set";
-  const days = Math.floor((Date.now() - new Date(date).getTime()) / 86400000);
-  if (days <= 0) return "today";
-  if (days === 1) return "yesterday";
-  if (days < 30) return `${days}d ago`;
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
-  return `${Math.floor(days / 365)}y ago`;
-}
+export const metadata = { title: "Today — JOC Console" };
+export const dynamic = "force-dynamic";
 
-const ACTIVITY_ICON: Record<string, string> = {
-  CALL: "CALL", EMAIL: "EMAIL", MEETING: "MEETING", DEMO: "DEMO", NOTE: "NOTE",
-  PLAN_CHANGE: "PLAN", ACCESS_GRANTED: "ACCESS ON", ACCESS_REVOKED: "ACCESS OFF",
-  STATUS_CHANGE: "STATUS", VISIT: "VISIT",
-};
-
-export default async function AdminOverview() {
-  // The overview is account data, so it is super-admin only. Sending the
-  // education team to a locked door as the first thing they see was a poor
-  // welcome — they get the guide instead, which is their actual start.
+export default async function AdminToday() {
   const session = await safeAuth();
-  if (!openForReview && !canManageAccounts(session?.user)) {
-    // A program coordinator holds no capability and has one page in here.
-    // The guide is written for the education team and would be the wrong
-    // welcome, so they land on their own programs instead.
-    if (!canAccessConsole(session?.user) && (await leadsAnyProgram(session?.user?.id ?? null))) {
-      redirect("/admin/my-programs");
+
+  // A coordinator holds no capability at all. One program and they land on
+  // its console; more than one and they get the cards, which is the only
+  // page in here that is theirs.
+  if (!openForReview && !canAccessConsole(session?.user)) {
+    if (await leadsAnyProgram(session?.user?.id ?? null)) {
+      const mine = await listProgramsForAdmin();
+      redirect(mine.length === 1 ? `/admin/programs/${mine[0].slug}` : "/admin/my-programs");
     }
-    redirect("/admin/guide");
   }
-  return <SchoolsGuard>{await Inner()}</SchoolsGuard>;
-}
-async function Inner() {
-  const schools = await getSchools();
-  const pipeline = await getPipeline(schools);
-  const activity = await getRecentActivity(8);
-  const demos = await getDemoRequests();
 
-  const active = schools.filter((s) => s.status === "ACTIVE");
-  const newDemos = demos.filter((d) => d.status === "NEW");
-  const attention = schools.filter(
-    (s) => s.status === "LAPSED" || s.planStatus === "PAST_DUE" ||
-      (s.status === "TRIAL" && s.renewsOn && new Date(s.renewsOn) < new Date())
-  );
-  const needsAttention = attention.length > 0 || newDemos.length > 0;
-  const students = active.reduce((n, s) => n + (s.studentCount ?? 0), 0);
-  const seats = active.reduce((n, s) => n + (s.seats ?? 0), 0);
-
-  return (
-    <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
-        Overview
-      </h1>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 24px" }}>
-        Where every school stands, and what needs attention today.
-      </p>
-
-      {/* Headline numbers */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "12px", marginBottom: "24px" }}>
-        <Metric label="Active schools" value={String(active.length)} sub={`${schools.length} accounts total`} />
-        <Metric label="Students reached" value={students.toLocaleString()} sub="at active schools" />
-        <Metric label="Seats sold" value={String(seats)} sub="across active plans" />
-        <Metric label="New demo requests" value={String(newDemos.length)} sub="waiting for a reply" accent={newDemos.length > 0} />
-      </div>
-
-      {/* Needs attention */}
-      {needsAttention && (
-        <div style={{ ...CARD, borderColor: "rgba(184,50,30,.28)", padding: "18px 20px", marginBottom: "24px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#A3261A", margin: "0 0 12px" }}>
-            Needs attention
-          </p>
-          {/* One verb per row — what to actually do about it */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
-            {attention.map((s) => {
-              const issue =
-                s.planStatus === "PAST_DUE"
-                  ? { severity: "#A3261A", why: "Payment overdue", verb: "Call" }
-                  : s.status === "LAPSED"
-                  ? { severity: "#C96C00", why: "Lapsed — no active plan", verb: "Call" }
-                  : { severity: "#FA912D", why: "Trial has run out", verb: "Confirm" };
-              return (
-                <div key={s.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-                    <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: issue.severity, flexShrink: 0 }} />
-                    <span style={{ minWidth: 0 }}>
-                      <span style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, display: "block" }}>{s.name}</span>
-                      <span style={{ fontSize: "12.5px", color: issue.severity }}>{issue.why}</span>
-                    </span>
-                  </span>
-                  <Link
-                    href={`/admin/schools/${s.id}`}
-                    style={{
-                      fontSize: "12.5px", fontWeight: 700, color: "#fff", backgroundColor: C.ink,
-                      borderRadius: "9999px", padding: "8px 16px", textDecoration: "none",
-                      minHeight: "38px", display: "inline-flex", alignItems: "center", flexShrink: 0,
-                    }}
-                  >
-                    {issue.verb}
-                  </Link>
-                </div>
-              );
-            })}
-            {newDemos.length > 0 && (
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "14px", flexWrap: "wrap", paddingTop: "11px", borderTop: "1px solid rgba(16,35,63,.07)" }}>
-                <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#FA912D", flexShrink: 0 }} />
-                  <span>
-                    <span style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, display: "block" }}>
-                      {newDemos.length} demo request{newDemos.length === 1 ? "" : "s"}
-                    </span>
-                    <span style={{ fontSize: "12.5px", color: "#C96C00" }}>Waiting for a reply</span>
-                  </span>
-                </span>
-                <Link
-                  href="/admin/demos"
-                  style={{
-                    fontSize: "12.5px", fontWeight: 700, color: "#fff", backgroundColor: C.ink,
-                    borderRadius: "9999px", padding: "8px 16px", textDecoration: "none",
-                    minHeight: "38px", display: "inline-flex", alignItems: "center", flexShrink: 0,
-                  }}
-                >
-                  Convert
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
-        {/* Pipeline */}
-        <div style={{ ...CARD, padding: "20px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
-            Pipeline
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
-            {pipeline.map((p) => {
-              const max = Math.max(...pipeline.map((x) => x.count), 1);
-              return (
-                <div key={p.status}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-                    <span style={{ fontSize: "13.5px", color: C.ink, fontWeight: 500 }}>{STATUS_LABELS[p.status]}</span>
-                    <span style={{ fontSize: "13px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
-                      {p.count}{p.students > 0 ? ` · ${p.students.toLocaleString()} students` : ""}
-                    </span>
-                  </div>
-                  <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.07)", overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${(p.count / max) * 100}%`, backgroundColor: STATUS_COLORS[p.status], borderRadius: "9999px" }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Recent activity */}
-        <div style={{ ...CARD, padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
-              Recent activity
-            </p>
-          </div>
-          {activity.length === 0 ? (
-            <p style={{ fontSize: "14px", color: "#4A5A74" }}>Nothing logged yet.</p>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "13px" }}>
-              {activity.map((a) => (
-                <div key={a.id} style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
-                  <span style={{
-                    ...label, flexShrink: 0, width: "84px", textAlign: "center",
-                    backgroundColor: "#F4F7FD", color: "#2D46AF",
-                    borderRadius: "6px", padding: "4px 6px", lineHeight: 1.5,
-                  }}>
-                    {ACTIVITY_ICON[a.type] ?? "OTHER"}
-                  </span>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <p style={{ fontSize: "14px", color: C.ink, margin: 0, lineHeight: 1.4 }}>{a.summary}</p>
-                    <p style={{ fontSize: "12px", color: "#4A5A74", margin: "2px 0 0" }}>
-                      {a.schoolName ? `${a.schoolName} · ` : ""}{ago(a.occurredAt)}{a.author ? ` · ${a.author}` : ""}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Schools snapshot */}
-      <div style={{ ...CARD, marginTop: "16px", overflow: "hidden" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 20px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
-            Schools
-          </p>
-          <Link href="/admin/schools" style={{ fontSize: "13px", color: "#2D46AF", textDecoration: "none", fontWeight: 600 }}>
-            View all →
-          </Link>
-        </div>
-        <SchoolTable schools={schools.slice(0, 6)} />
-      </div>
-    </div>
-  );
-}
-
-function Metric({ label, value, sub, accent }: { label: string; value: string; sub: string; accent?: boolean }) {
-  return (
-    <div style={{ ...CARD, padding: "16px 18px", borderColor: accent ? "rgba(250,145,45,.4)" : "rgba(16,35,63,.09)" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
-        {label}
-      </p>
-      <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: accent ? "#C96C00" : C.ink, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
-        {value}
-      </p>
-      <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
-    </div>
-  );
-}
-
-export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
-  if (schools.length === 0) {
-    return <p style={{ padding: "22px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>No schools yet.</p>;
-  }
-  return (
-    <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "720px" }}>
-        <thead>
-          <tr>
-            {["School", "Status", "Plan", "Seats", "Staff", "Last contact"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "10px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {schools.map((s) => (
-            <tr key={s.id}>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                <Link href={`/admin/schools/${s.id}`} style={{ color: C.ink, fontWeight: 600, textDecoration: "none" }}>
-                  {s.name}
-                </Link>
-                <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "2px" }}>
-                  {s.city ?? s.region ?? "Place not recorded"}{s.studentCount ? ` · ${s.studentCount} students` : ""}
-                </span>
-              </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                <span style={{ display: "inline-block", fontSize: "11.5px", fontWeight: 700, padding: "3px 9px", borderRadius: "9999px", color: STATUS_COLORS[s.status], backgroundColor: `${STATUS_COLORS[s.status]}1a`, whiteSpace: "nowrap" }}>
-                  {STATUS_LABELS[s.status]}
-                </span>
-              </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
-                {s.plan ? PLAN_LABELS[s.plan] : <Absent>No plan</Absent>}
-                {s.grantedManually && (
-                  <span style={{ display: "block", fontSize: "11px", color: "#1D6B37", fontWeight: 600 }}>granted</span>
-                )}
-              </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
-                {s.seats ?? <Absent>Not set</Absent>}
-              </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
-                {s.memberCount}
-              </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
-                {ago(s.lastActivityAt)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return <TodayPage data={await getToday()} />;
 }

@@ -28,6 +28,52 @@
  * Imported for its side effect by the root layout.
  */
 
+/**
+ * Every variable that switches a feature off by being absent, and what it
+ * costs while it is.
+ *
+ * A feature switched off this way is invisible: it simply never runs, and
+ * nothing anywhere says why. The console's Today page reads this so a super
+ * admin finds out from the portal rather than from a school asking why
+ * nothing arrived.
+ */
+export function missingEnv(): { name: string; costs: string }[] {
+  const out: { name: string; costs: string }[] = [];
+
+  if (!process.env.CRON_SECRET) {
+    out.push({
+      name: "CRON_SECRET",
+      costs: "nothing scheduled runs — the JOC App is never read and the traffic light is never recomputed overnight",
+    });
+  }
+  if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
+    out.push({
+      name: "RESEND_API_KEY",
+      costs: "no mail is sent at all, so a password reset dead-ends",
+    });
+  }
+  if (!process.env.STRIPE_SECRET_KEY) {
+    out.push({
+      name: "STRIPE_SECRET_KEY",
+      costs: "no school can pay, and a paid form refuses to publish",
+    });
+  }
+  if (!process.env.JOC_APP_API_URL || !process.env.JOC_APP_API_KEY) {
+    out.push({
+      name: "JOC_APP_API_URL",
+      costs: "the JOC App is never read, so its console has no figures",
+    });
+  }
+  if (!process.env.AUTH_GOOGLE_ID) {
+    out.push({
+      name: "AUTH_GOOGLE_ID",
+      costs: "Google sign-in is not offered, so everybody needs a password",
+    });
+  }
+
+  return out;
+}
+
 const missing: string[] = [];
 if (!process.env.DATABASE_URL) missing.push("DATABASE_URL");
 if (!process.env.AUTH_SECRET) missing.push("AUTH_SECRET");

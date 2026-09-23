@@ -309,3 +309,26 @@ body {
 @media (min-width: 1000px) {
   .joc-today { grid-template-columns: minmax(0, 1fr) 300px; gap: 26px; }
 }
+
+/* One shell, both sides. The rail becomes a scrolling top bar on phones and
+   tablets, so content gets the full width instead of eighty pixels. */
+@media (max-width: 860px) {
+  .joc-shell      { flex-direction: column !important; }
+  .joc-shell-rail { width: 100% !important; padding: 10px 0 0 !important; }
+  .joc-shell-brand { padding: 0 16px 10px !important; margin-bottom: 8px !important; }
+
+  .joc-shell-nav  { overflow-x: auto; scrollbar-width: none; padding: 0 8px 6px; }
+  .joc-shell-nav::-webkit-scrollbar { display: none; }
+  .joc-shell-nav nav { flex-direction: row !important; }
+  .joc-shell-nav nav a {
+    white-space: nowrap;
+    border-left: none !important;
+    border-bottom: 3px solid transparent;
+  }
+  .joc-shell-nav nav a[aria-current="page"] { border-bottom-color: #FA912D; }
+
+  .joc-shell-who  { margin-top: 0 !important; padding: 10px 16px !important;
+                    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .joc-shell-who p { margin: 0 !important; }
+  .joc-shell-body { padding: 18px 16px 48px !important; }
+}

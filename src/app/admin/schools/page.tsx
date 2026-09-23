@@ -2,7 +2,7 @@ import { SchoolsGuard } from "@/components/admin/Guard";
 import { C } from "@/lib/joc-tokens";
 import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
 import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
-import { SchoolTable } from "../page";
+import { SchoolTable } from "@/components/admin/SchoolTable";
 import { PageIntro } from "@/components/admin/PageIntro";
 
 export const metadata = { title: "Schools — JOC Console" };

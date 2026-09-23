@@ -11,7 +11,6 @@ import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const BODY2 = "#34445E";
 
 // Programs are editable in the console, so the set of addresses is not known
 // at build time.
