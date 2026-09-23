@@ -724,3 +724,71 @@ export async function setMessageHandled(id: string, handled: boolean): Promise<R
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
 }
+
+/**
+ * Add a member of staff at a school.
+ *
+ * Adding, not inviting. An invitation is a message to somebody who has not
+ * agreed to hear from us, and until JOC launches, no school is to get one.
+ * This writes the account and leaves it there; the person is told by whoever
+ * at JOC is already talking to them.
+ *
+ * No email, no token, no link. Nothing leaves the building.
+ */
+export async function addSchoolStaff(input: {
+  schoolId: string;
+  name: string;
+  email: string;
+  role?: "TEACHER" | "SCHOOL_ADMIN";
+}): Promise<Result & { id?: string }> {
+  try {
+    const me = await requireAccountManager();
+    const name = input.name.trim();
+    const email = input.email.trim().toLowerCase();
+    if (!name) return { ok: false, error: "Give their name." };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      return { ok: false, error: "That does not look like an email address." };
+    }
+
+    const school = await prisma.school.findUnique({ where: { id: input.schoolId }, select: { id: true, name: true } });
+    if (!school) return { ok: false, error: "That school no longer exists." };
+
+    const existing = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, schoolId: true, name: true },
+    });
+
+    // Somebody already on the system keeps their name and their role. They are
+    // moved to this school only if they are not already at one — quietly
+    // reassigning a teacher from another school would be a real mistake made
+    // by a typo.
+    if (existing) {
+      if (existing.schoolId && existing.schoolId !== school.id) {
+        return { ok: false, error: `${existing.name ?? email} is already at another school. Move them from their own school's page.` };
+      }
+      if (existing.schoolId === school.id) {
+        return { ok: false, error: `${existing.name ?? email} is already at ${school.name}.` };
+      }
+      await prisma.user.update({ where: { id: existing.id }, data: { schoolId: school.id } });
+      await log(school.id, "NOTE", `${existing.name ?? email} added to the school`, null, me?.id ?? null);
+      revalidatePath(`/admin/schools/${school.id}`);
+      return { ok: true, id: existing.id };
+    }
+
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        role: input.role === "SCHOOL_ADMIN" ? "SCHOOL_ADMIN" : "TEACHER",
+        schoolId: school.id,
+      },
+      select: { id: true },
+    });
+    await log(school.id, "NOTE", `${name} added as staff`, null, me?.id ?? null);
+    revalidatePath(`/admin/schools/${school.id}`);
+    revalidatePath("/admin/users");
+    return { ok: true, id: user.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not add them." };
+  }
+}

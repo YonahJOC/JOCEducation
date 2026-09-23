@@ -27,8 +27,8 @@ function hashToken(token: string): string {
 
 export type RequestResult =
   | { ok: true; sent: true }
-  /** No mail service yet — the caller must not claim anything was sent. */
-  | { ok: true; sent: false; reason: "email-not-configured" }
+  /** Nothing went out — the caller must not claim anything was sent. */
+  | { ok: true; sent: false; reason: "email-not-configured" | "held-before-launch" }
   | { ok: false; error: string };
 
 export async function requestPasswordReset(email: string): Promise<RequestResult> {
@@ -70,7 +70,7 @@ export async function requestPasswordReset(email: string): Promise<RequestResult
     const link = `${siteUrl()}/reset-password?token=${token}&email=${encodeURIComponent(address)}`;
     const firstName = user.name?.trim().split(/\s+/)[0];
 
-    await sendEmail({
+    const sendResult = await sendEmail({
       to: address,
       subject: "Reset your JOC Education password",
       text:
@@ -89,7 +89,16 @@ export async function requestPasswordReset(email: string): Promise<RequestResult
       }),
     });
 
-    return { ok: true, sent: true };
+    // Honest about whether anything actually went out. The wording shown to
+    // a visitor stays deliberately vague either way, so this never reveals
+    // whether the address has an account — but a JOC staffer testing a reset
+    // should not be told a message was sent when the gate held it.
+    if (sendResult.ok) return { ok: true, sent: true };
+    return {
+      ok: true,
+      sent: false,
+      reason: sendResult.notConfigured ? "email-not-configured" : "held-before-launch",
+    };
   } catch {
     return { ok: false, error: "Something went wrong. Please try again." };
   }

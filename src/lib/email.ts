@@ -17,6 +17,39 @@ export const isEmailConfigured = Boolean(
   process.env.RESEND_API_KEY && process.env.EMAIL_FROM
 );
 
+/** JOC's own domain. Everything inside it is "us". */
+const OUR_DOMAIN = "justonechesed.org";
+
+/**
+ * Nothing leaves the building until JOC says so.
+ *
+ * Until launch, every JOC address still receives mail — the team has to be
+ * able to test password resets and order receipts on themselves — and mail to
+ * anybody else is held rather than sent. A school that gets a notification
+ * from a platform it has not been told about yet is a conversation nobody
+ * wanted to have on that day.
+ *
+ * Set EMAIL_LAUNCHED=true to open it, once schools are meant to hear from us.
+ *
+ * This is one gate rather than a rule each caller remembers, because the next
+ * feature that sends mail will be written by somebody who never read this
+ * comment.
+ */
+export const emailLaunched = process.env.EMAIL_LAUNCHED === "true";
+
+export function isOurs(address: string): boolean {
+  return address.trim().toLowerCase().endsWith(`@${OUR_DOMAIN}`);
+}
+
+/** Who on this list we are currently allowed to write to. */
+function deliverable(to: string[]): { allowed: string[]; held: string[] } {
+  if (emailLaunched) return { allowed: to, held: [] };
+  return {
+    allowed: to.filter(isOurs),
+    held: to.filter((a) => !isOurs(a)),
+  };
+}
+
 /** Where links in emails point. */
 export function siteUrl(): string {
   const base =
@@ -28,7 +61,7 @@ export function siteUrl(): string {
 
 export type SendResult =
   | { ok: true; id: string | null }
-  | { ok: false; error: string; notConfigured?: true };
+  | { ok: false; error: string; notConfigured?: true; held?: true };
 
 export async function sendEmail(input: {
   to: string | string[];
@@ -42,6 +75,24 @@ export async function sendEmail(input: {
     return { ok: false, error: "Email is not switched on yet.", notConfigured: true };
   }
 
+  const recipients = (Array.isArray(input.to) ? input.to : [input.to]).filter(Boolean);
+  const { allowed, held } = deliverable(recipients);
+
+  if (held.length > 0) {
+    // Logged rather than swallowed: somebody has to be able to find out that
+    // a message was meant to go and did not.
+    console.warn(
+      `[email held] before launch, only @${OUR_DOMAIN} receives mail. Held from: ${held.join(", ")} — subject: ${input.subject}`,
+    );
+  }
+  if (allowed.length === 0) {
+    return {
+      ok: false,
+      held: true,
+      error: `Nothing was sent. Until launch, only @${OUR_DOMAIN} addresses receive mail.`,
+    };
+  }
+
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -51,7 +102,7 @@ export async function sendEmail(input: {
       },
       body: JSON.stringify({
         from: process.env.EMAIL_FROM,
-        to: Array.isArray(input.to) ? input.to : [input.to],
+        to: allowed,
         subject: input.subject,
         text: input.text,
         ...(input.html ? { html: input.html } : {}),
