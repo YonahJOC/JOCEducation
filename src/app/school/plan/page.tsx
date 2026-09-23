@@ -1,3 +1,4 @@
+import { requireAccountHolder } from "../account-only";
 import { mySchool, myPlanRequests } from "@/lib/school-data";
 import { SchoolPlanPanel } from "@/components/school/PlanPanel";
 

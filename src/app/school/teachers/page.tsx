@@ -1,3 +1,4 @@
+import { requireAccountHolder } from "../account-only";
 import { safeAuth } from "@/auth";
 import { mySchool } from "@/lib/school-data";
 import { TeachersPanel } from "@/components/school/TeachersPanel";
