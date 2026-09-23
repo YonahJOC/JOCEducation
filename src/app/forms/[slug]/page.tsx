@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedForm } from "@/lib/forms";
@@ -40,7 +40,7 @@ export default async function FormPage({ params, searchParams }: Props) {
         )}
 
         {form.feeCents && (
-          <p style={{ display: "inline-block", fontSize: "14.5px", fontWeight: 600, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "8px 16px", margin: "0 0 22px" }}>
+          <p style={{ display: "inline-block", fontSize: "14.5px", fontWeight: 600, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "8px 16px", margin: "0 0 22px" }}>
             {money(form.feeCents)}{form.feeLabel ? ` — ${form.feeLabel}` : ""}
           </p>
         )}
@@ -66,7 +66,7 @@ export default async function FormPage({ params, searchParams }: Props) {
             </p>
             <Link
               href={`/?next=${encodeURIComponent(`/forms/${form.slug}`)}`}
-              style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "12px 24px", textDecoration: "none" }}
+              style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "12px 24px", textDecoration: "none" }}
             >
               Sign in
             </Link>

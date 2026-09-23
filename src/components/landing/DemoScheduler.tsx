@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { C } from "@/lib/joc-tokens";
+import { ROW_SHADOW, R, C } from "@/lib/joc-tokens";
 
 export type DemoDay = { key: string; weekday: string; day: string; month: string };
 
@@ -110,7 +110,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         <button
           onClick={() => { setDone(false); setSlot(null); }}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px",
+            fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px",
             color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "44px",
           }}
         >
@@ -125,13 +125,13 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
       onSubmit={submit}
       style={{
         backgroundColor: "#fff",
-        border: "1px solid rgba(16,35,63,.09)",
+        border: `1px solid ${C.hairline}`,
         borderRadius: "24px",
-        boxShadow: "0 14px 36px rgba(16,35,63,.1)",
+        boxShadow: ROW_SHADOW,
         padding: "26px",
       }}
     >
-      <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "14px" }}>
+      <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "14px" }}>
         PICK A TIME
       </p>
 
@@ -156,7 +156,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
                 transition: "background .15s",
               }}
             >
-              <span style={{ fontSize: "10.5px", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", opacity: on ? 0.85 : 0.5 }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", opacity: on ? 0.85 : 0.5 }}>
                 {d.weekday}
               </span>
               <span style={{ fontSize: "17px", fontWeight: 700, lineHeight: 1 }}>{d.day}</span>
@@ -176,7 +176,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
               onClick={() => { setSlot(s); setError(null); }}
               aria-pressed={on}
               style={{
-                fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
+                fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
                 padding: "12px 8px", minHeight: "44px", borderRadius: "11px", cursor: "pointer",
                 border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                 backgroundColor: on ? "rgba(45,70,175,.08)" : "#fff",
@@ -214,7 +214,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         disabled={sending}
         style={{
           width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-          color: "#fff", backgroundColor: C.ink, border: "none", borderRadius: "9999px",
+          color: "#fff", backgroundColor: C.ink, border: "none", borderRadius: R.chip,
           padding: "15px 20px", minHeight: "44px", cursor: sending ? "default" : "pointer", opacity: sending ? 0.7 : 1,
         }}
       >

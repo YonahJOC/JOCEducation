@@ -4,6 +4,7 @@ import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { getSchoolStatus } from "@/lib/school-status";
 import { StatusBoard } from "./StatusBoard";
+import { C, R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "School status — JOC Console" };
 export const dynamic = "force-dynamic";
@@ -61,8 +62,8 @@ function Count({ n, label, warn }: { n: number; label: string; warn?: boolean })
         fontSize: "13px", fontWeight: 600,
         color: warn ? "#C96C00" : "#4A5A74",
         backgroundColor: warn ? "#FFF0E0" : "#fff",
-        border: `1px solid ${warn ? "rgba(154,84,5,.25)" : "rgba(16,35,63,.1)"}`,
-        borderRadius: "9999px", padding: "6px 13px",
+        border: `1px solid ${warn ? "rgba(154,84,5,.25)" : C.hairline}`,
+        borderRadius: R.chip, padding: "6px 13px",
       }}
     >
       <strong style={{ fontWeight: 700 }}>{n}</strong> {label}

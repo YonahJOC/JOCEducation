@@ -8,7 +8,7 @@ import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
   fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE",
-  border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   outline: "none", fontFamily: "var(--font-outfit)",
 };
 
@@ -37,7 +37,7 @@ export function LoginForm({
             {next && <input type="hidden" name="next" value={next} />}
             <button
               type="submit"
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.18)", backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "14.5px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "14.5px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
             >
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
                 <path d="M17.64 9.2a10.34 10.34 0 0 0-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z" fill="#4285F4" />
@@ -50,9 +50,9 @@ export function LoginForm({
           </form>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(16,35,63,.1)" }} />
+            <div style={{ flex: 1, height: "1px", backgroundColor: C.panel }} />
             <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>or</span>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(16,35,63,.1)" }} />
+            <div style={{ flex: 1, height: "1px", backgroundColor: C.panel }} />
           </div>
         </>
       )}
@@ -61,7 +61,7 @@ export function LoginForm({
         <form action={action} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {next && <input type="hidden" name="next" value={next} />}
           <div>
-            <label htmlFor="email" style={{ display: "block", fontWeight: 600, fontSize: "13.5px", color: C.ink, marginBottom: "6px" }}>
+            <label htmlFor="email" style={{ display: "block", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "6px" }}>
               Email
             </label>
             <input id="email" name="email" type="email" placeholder="you@school.edu" autoComplete="email" required style={inputStyle} />
@@ -69,7 +69,7 @@ export function LoginForm({
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <label htmlFor="password" style={{ fontWeight: 600, fontSize: "13.5px", color: C.ink }}>Password</label>
+              <label htmlFor="password" style={{ fontWeight: 600, fontSize: "15px", color: C.ink }}>Password</label>
               <Link href="/forgot-password" style={{ fontSize: "13px", color: C.blue, textDecoration: "none" }}>
                 Forgot password?
               </Link>
@@ -78,7 +78,7 @@ export function LoginForm({
           </div>
 
           {state?.error && (
-            <p style={{ fontSize: "13.5px", color: "#B91C1C", backgroundColor: "#FEF2F2", borderRadius: "10px", padding: "10px 14px", margin: 0 }}>
+            <p style={{ fontSize: "15px", color: "#B91C1C", backgroundColor: "#FEF2F2", borderRadius: "10px", padding: "10px 14px", margin: 0 }}>
               {state.error}
             </p>
           )}

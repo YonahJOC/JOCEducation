@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { ROLE_LABELS, ROLE_DESCRIPTIONS, canRunOwnSchool, type Role } from "@/lib/access";
@@ -10,11 +10,11 @@ import { signOutAction } from "@/app/actions/auth";
 export const metadata = { title: "Your account", robots: { index: false, follow: false } };
 
 const CARD: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "20px", padding: "24px", marginBottom: "16px",
 };
 const LABEL: React.CSSProperties = {
-  fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase",
+  fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase",
   fontWeight: 700, color: "#4A5A74", margin: "0 0 12px",
 };
 
@@ -45,7 +45,7 @@ export default async function AccountPage() {
 
   return (
     <div style={{ maxWidth: "640px", margin: "0 auto", padding: "48px 26px 72px" }}>
-      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
+      <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
         YOUR ACCOUNT
       </p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, marginBottom: "28px" }}>
@@ -57,7 +57,7 @@ export default async function AccountPage() {
         <Row label="Email" value={u.email ?? "Not recorded"} />
         <Row label="Name" value={u.name ?? "Not set"} />
         <Row label="Role" value={ROLE_LABELS[role] ?? role} />
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "10px 0 0" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "10px 0 0" }}>
           {ROLE_DESCRIPTIONS[role]}
         </p>
       </div>
@@ -81,7 +81,7 @@ export default async function AccountPage() {
         </p>
         <Link
           href="/account/password"
-          style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", textDecoration: "none" }}
+          style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 22px", textDecoration: "none" }}
         >
           Change password
         </Link>

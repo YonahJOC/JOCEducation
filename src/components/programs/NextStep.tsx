@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, R, label, F } from "@/lib/joc-tokens";
+import { ROW_SHADOW, C, R, label, F } from "@/lib/joc-tokens";
 import { STEPS, STEP_SHORT, STEP_TITLE, STEP_NEXT, type SchoolStep } from "@/lib/program-step";
 
 /**
@@ -28,7 +28,7 @@ export function NextStep({
     backgroundColor: C.paper,
     borderRadius: R.hero,
     padding: "26px 24px",
-    boxShadow: "0 2px 0 #E3E6EF, 0 18px 40px rgba(16,35,63,.10)",
+    boxShadow: ROW_SHADOW,
   };
 
   const primary: React.CSSProperties = {
@@ -100,7 +100,7 @@ export function NextStep({
           <span
             key={i}
             style={{
-              flex: 1, height: "5px", borderRadius: "9999px",
+              flex: 1, height: "5px", borderRadius: R.chip,
               backgroundColor: i < step ? accent : C.hairline,
             }}
           />

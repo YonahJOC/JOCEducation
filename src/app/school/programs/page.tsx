@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
@@ -108,8 +108,8 @@ export default async function SchoolProgramsPage() {
             download
             style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
-              fontSize: "13.5px", fontWeight: 600, color: C.blue,
-              backgroundColor: "rgba(45,70,175,.08)", borderRadius: "9999px",
+              fontSize: "15px", fontWeight: 600, color: C.blue,
+              backgroundColor: "rgba(45,70,175,.08)", borderRadius: R.chip,
               padding: "10px 18px", minHeight: "44px", textDecoration: "none",
             }}
           >
@@ -123,9 +123,9 @@ export default async function SchoolProgramsPage() {
       )}
 
       {groups.size === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed rgba(16,35,63,.2)`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px" }}>Nobody has signed up yet.</p>
-          <p style={{ fontSize: "13.5px", color: C.muted, margin: 0 }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>
             <Link href="/programs" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
               See what JOC runs →
             </Link>
@@ -151,7 +151,7 @@ export default async function SchoolProgramsPage() {
               </div>
 
               <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "520px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "520px" }}>
                   <thead>
                     <tr>
                       {["When", "Name", "Email", ...(g.rows[0]?.form?.feeCents ? ["Paid"] : [])].map((h) => (
@@ -169,7 +169,7 @@ export default async function SchoolProgramsPage() {
                         <td style={{ ...td, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                         {r.form?.feeCents ? (
                           <td style={td}>
-                            <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                            <span style={{ fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                               {r.paid ? "paid" : "unpaid"}
                             </span>
                           </td>
@@ -190,7 +190,7 @@ export default async function SchoolProgramsPage() {
         <p style={{ fontSize: "14px", fontWeight: 600, color: C.ink, margin: "0 0 5px" }}>
           Chesed hours are not here yet
         </p>
-        <p style={{ fontSize: "13.5px", color: C.muted, lineHeight: 1.6, margin: 0, maxWidth: "62ch" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: 0, maxWidth: "62ch" }}>
           Hours your students log, and anything waiting for you to approve, live in the JOC App.
           This portal cannot read them yet. When the two are joined up they will appear on this
           page, under your programs.
@@ -204,11 +204,11 @@ const h1: React.CSSProperties = {
   fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 6px",
 };
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "10px 18px", fontSize: "10.5px", letterSpacing: "0.14em",
+  textAlign: "left", padding: "10px 18px", fontSize: "11px", letterSpacing: "0.04em",
   textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
-  borderBottom: `1px solid rgba(16,35,63,.08)`, backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
+  borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
-  padding: "11px 18px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74",
+  padding: "11px 18px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74",
   verticalAlign: "top",
 };

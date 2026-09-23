@@ -47,7 +47,7 @@ function EventRow({ e }: { e: PublicEvent }) {
           {formatEventDate(e.startsAt, e.endsAt)}
         </p>
         {cancelled && (
-          <p style={{ fontSize: "11.5px", fontWeight: 700, color: "#A3261A", margin: "3px 0 0", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <p style={{ fontSize: "12px", fontWeight: 700, color: "#A3261A", margin: "3px 0 0", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Cancelled
           </p>
         )}
@@ -57,7 +57,7 @@ function EventRow({ e }: { e: PublicEvent }) {
         <p style={{ fontSize: "17px", fontWeight: 700, color: C.ink, margin: "0 0 4px", letterSpacing: "-0.02em", textDecoration: cancelled ? "line-through" : "none" }}>
           {e.title}
         </p>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 8px" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 8px" }}>
           {[e.schoolName ?? (e.kind === "JOC_EVENT" ? "Open to every school" : null), e.audience, e.location]
             .filter(Boolean)
             .join(" · ")}
@@ -70,7 +70,7 @@ function EventRow({ e }: { e: PublicEvent }) {
         {e.programSlug && (
           <Link
             href={`/programs/${e.programSlug}`}
-            style={{ display: "inline-block", fontSize: "13.5px", fontWeight: 600, color: C.blue, textDecoration: "none", marginTop: "8px" }}
+            style={{ display: "inline-block", fontSize: "15px", fontWeight: 600, color: C.blue, textDecoration: "none", marginTop: "8px" }}
           >
             About {e.programName} →
           </Link>
@@ -85,7 +85,7 @@ function Months({ months }: { months: { label: string; events: PublicEvent[] }[]
     <>
       {months.map((m) => (
         <div key={m.label} style={{ marginBottom: "34px" }}>
-          <h3 style={{ fontWeight: 800, fontSize: "13px", letterSpacing: "0.18em", textTransform: "uppercase", color: "#4A5A74", margin: "0 0 4px" }}>
+          <h3 style={{ fontWeight: 800, fontSize: "13px", letterSpacing: "0.04em", textTransform: "uppercase", color: "#4A5A74", margin: "0 0 4px" }}>
             {m.label}
           </h3>
           {m.events.map((e) => (
@@ -130,7 +130,7 @@ export default async function ProgrammingPage() {
   return (
     <div style={{ backgroundColor: C.paper, minHeight: "70vh" }}>
       <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "52px 26px 20px" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
+        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
           Calendar
         </p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4.6vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: C.ink, margin: "0 0 16px", maxWidth: "18ch" }}>

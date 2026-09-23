@@ -1,5 +1,5 @@
 import { requireSchoolPanel } from "../account-only";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, pageTitle } from "@/lib/joc-tokens";
 import { mySchool, myCycleProgress } from "@/lib/school-data";
 
 export const metadata = { title: "Cycle progress" };
@@ -30,7 +30,7 @@ export default async function SchoolCyclesPage() {
           borderRadius: "14px", padding: "13px 16px", marginBottom: "20px",
         }}
       >
-        <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.ink, margin: 0 }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.55, color: C.ink, margin: 0 }}>
           The grey bar is the median across all JOC schools. Individual schools are never named or
           identified — only the spread.
         </p>
@@ -48,20 +48,20 @@ export default async function SchoolCyclesPage() {
                   <span style={{ fontSize: "14px", color: C.ink, fontWeight: isCurrent ? 700 : 500 }}>
                     <span style={{ color: c.color, fontWeight: 700 }}>{c.num}.</span> {c.theme}
                     {isCurrent && (
-                      <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: "9999px", padding: "2px 8px", marginLeft: "9px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "9px" }}>
                         Now
                       </span>
                     )}
                   </span>
-                  <span style={{ fontSize: "12.5px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontSize: "13px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                     {c.state === "upcoming" ? `${c.lessons} lessons ready` : `${ours}% of your teachers · network ${median}%`}
                   </span>
                 </div>
 
                 {/* Ours, with the network median as a marker behind it */}
-                <div style={{ position: "relative", height: "8px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.07)", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", inset: 0, width: `${median}%`, backgroundColor: "rgba(16,35,63,.16)" }} />
-                  <div style={{ position: "absolute", inset: 0, width: `${ours}%`, backgroundColor: c.color, borderRadius: "9999px" }} />
+                <div style={{ position: "relative", height: "8px", borderRadius: R.chip, backgroundColor: C.panel, overflow: "hidden" }}>
+                  <div style={{ position: "absolute", inset: 0, width: `${median}%`, backgroundColor: C.panel }} />
+                  <div style={{ position: "absolute", inset: 0, width: `${ours}%`, backgroundColor: c.color, borderRadius: R.chip }} />
                 </div>
               </div>
             );
@@ -71,7 +71,7 @@ export default async function SchoolCyclesPage() {
 
       {/* What would move this */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           What would move this
         </p>
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>

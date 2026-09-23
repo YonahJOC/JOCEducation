@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, pageTitle } from "@/lib/joc-tokens";
 import { saveEvent, deleteEvent, cancelEvent } from "@/app/actions/events";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -57,7 +57,7 @@ const label: React.CSSProperties = {
   color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -115,7 +115,7 @@ export function ProgrammingClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -157,7 +157,7 @@ function Group({
 }) {
   return (
     <div>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
         {title}
       </p>
       {events.length === 0 ? (
@@ -167,13 +167,13 @@ function Group({
           </div>
         ) : null
       ) : (
-        <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden", opacity: dim ? 0.75 : 1 }}>
+        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", opacity: dim ? 0.75 : 1 }}>
           {events.map((e, i) => (
             <div
               key={e.id}
               style={{
                 display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap",
-                padding: "14px 18px", borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)",
+                padding: "14px 18px", borderTop: i === 0 ? "none" : `1px solid ${C.hairline}`,
               }}
             >
               <span style={{ flex: "0 0 92px", fontSize: "13px", fontWeight: 700, color: C.ink }}>
@@ -183,12 +183,12 @@ function Group({
                 <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {e.title}
                   {!e.published && (
-                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
                       draft
                     </span>
                   )}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                   {[
                     e.schoolName ?? (e.kind === "JOC_EVENT" ? "Whole network" : "No school set"),
                     e.programName,
@@ -197,7 +197,7 @@ function Group({
                 </p>
               </div>
               <span style={{
-                fontSize: "11.5px", fontWeight: 700, padding: "3px 9px", borderRadius: "9999px",
+                fontSize: "12px", fontWeight: 700, padding: "3px 9px", borderRadius: R.chip,
                 color: STATUS_COLORS[e.status], backgroundColor: `${STATUS_COLORS[e.status]}1a`,
               }}>
                 {STATUS_LABELS[e.status] ?? e.status}
@@ -300,7 +300,7 @@ function EventForm({
                 onClick={() => set("kind", k)}
                 disabled={disabled}
                 style={{
-                  fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
+                  fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
                   padding: "10px 16px", borderRadius: "10px", minHeight: "44px",
                   cursor: disabled ? "not-allowed" : "pointer", textAlign: "left",
                   border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
@@ -446,7 +446,7 @@ function EventForm({
           disabled={disabled || pending}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -459,8 +459,8 @@ function EventForm({
             onClick={callOff}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#C96C00",
-              backgroundColor: "rgba(250,145,45,.14)", border: "none", borderRadius: "9999px",
+              fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: "#C96C00",
+              backgroundColor: "rgba(250,145,45,.14)", border: "none", borderRadius: R.chip,
               padding: "11px 18px", minHeight: "42px", cursor: "pointer",
             }}
           >
@@ -474,7 +474,7 @@ function EventForm({
             onClick={remove}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: C.redText,
+              fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.redText,
               background: "none", border: "none", cursor: "pointer", minHeight: "42px",
             }}
           >
@@ -482,7 +482,7 @@ function EventForm({
           </button>
         )}
 
-        {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{msg}</p>}
+        {msg && <p style={{ fontSize: "15px", color: C.redText, margin: 0 }}>{msg}</p>}
       </div>
     </form>
   );

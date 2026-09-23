@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/ui/Brand";
 import { ResetPasswordForm } from "./ResetPasswordForm";
+import { C } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Choose a new password", robots: { index: false, follow: false } };
 
@@ -17,7 +18,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
           <BrandLockup height={20} />
         </Link>
 
-        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
+        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px" }}>
           {usable ? (
             <ResetPasswordForm email={email} token={token} />
           ) : (

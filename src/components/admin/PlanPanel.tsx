@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { setSchoolPlan, setSchoolStatus, revokeSchoolAccess } from "@/app/actions/admin";
 
 const PLANS = [
@@ -101,16 +101,16 @@ export function PlanPanel({
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Plan &amp; access
         </p>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
             disabled={disabled}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? "rgba(16,35,63,.3)" : "#2D46AF", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? C.muted : "#2D46AF", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
           >
             {plan ? "Change" : "Grant access"}
           </button>
@@ -156,7 +156,7 @@ export function PlanPanel({
                   disabled={disabled || pending || status === v}
                   style={{
                     fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600,
-                    padding: "6px 11px", borderRadius: "9999px", minHeight: "36px",
+                    padding: "6px 11px", borderRadius: R.chip, minHeight: "36px",
                     border: status === v ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`,
                     backgroundColor: status === v ? "#F4F7FD" : "#fff",
                     color: status === v ? "#2D46AF" : "#4A5A74",
@@ -174,7 +174,7 @@ export function PlanPanel({
             <button
               onClick={revoke}
               disabled={disabled || pending}
-              style={{ marginTop: "14px", fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0 }}
+              style={{ marginTop: "14px", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0 }}
             >
               Revoke access
             </button>
@@ -214,9 +214,9 @@ export function PlanPanel({
                 onChange={(e) => { setFGranted(e.target.checked); if (!e.target.checked) setFKind(""); }}
                 style={{ marginTop: "3px", width: "16px", height: "16px" }}
               />
-              <span style={{ fontSize: "13.5px", color: C.ink, lineHeight: 1.5, fontWeight: 600 }}>
+              <span style={{ fontSize: "15px", color: C.ink, lineHeight: 1.5, fontWeight: 600 }}>
                 Give this school free access
-                <small style={{ display: "block", color: "#4A5A74", fontSize: "12.5px", fontWeight: 400 }}>
+                <small style={{ display: "block", color: "#4A5A74", fontSize: "13px", fontWeight: 400 }}>
                   No payment. Recorded on the school&rsquo;s history with who approved it.
                 </small>
               </span>
@@ -234,8 +234,8 @@ export function PlanPanel({
                         onClick={() => setFKind(v)}
                         title={why}
                         style={{
-                          fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-                          padding: "8px 13px", borderRadius: "9999px", minHeight: "40px", cursor: "pointer",
+                          fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
+                          padding: "8px 13px", borderRadius: R.chip, minHeight: "40px", cursor: "pointer",
                           border: fKind === v ? "1.5px solid #1D6B37" : `1px solid ${C.hairline}`,
                           backgroundColor: fKind === v ? "rgba(27,127,75,.1)" : "#fff",
                           color: fKind === v ? "#1D6B37" : "#4A5A74",
@@ -246,7 +246,7 @@ export function PlanPanel({
                     ))}
                   </div>
                   {fKind && (
-                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "7px 0 0" }}>
+                    <p style={{ fontSize: "13px", color: "#4A5A74", margin: "7px 0 0" }}>
                       {GRANT_KINDS.find(([v]) => v === fKind)?.[2]}
                     </p>
                   )}
@@ -277,7 +277,7 @@ export function PlanPanel({
             <button
               onClick={save}
               disabled={pending}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff", backgroundColor: "#2D46AF", border: "none", borderRadius: "9999px", padding: "11px 20px", minHeight: "42px", cursor: "pointer", opacity: pending ? 0.7 : 1 }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff", backgroundColor: "#2D46AF", border: "none", borderRadius: R.chip, padding: "11px 20px", minHeight: "42px", cursor: "pointer", opacity: pending ? 0.7 : 1 }}
             >
               {pending ? "Saving…" : "Save"}
             </button>

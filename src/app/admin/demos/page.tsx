@@ -70,7 +70,7 @@ async function Inner() {
         )}
       </p>
 
-      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden", marginBottom: "28px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", marginBottom: "28px" }}>
         <DemoTable demos={demos} disabled={usingSampleData} />
       </div>
 
@@ -86,7 +86,7 @@ async function Inner() {
         These used to be discarded on arrival — they are kept now whether or not mail is switched on.
       </p>
 
-      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         <MessagesPanel messages={messages} disabled={usingSampleData} />
       </div>
     </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { createAccount } from "@/app/actions/signup";
 import { BrandLockup } from "@/components/ui/Brand";
+import { C, R } from "@/lib/joc-tokens";
 
 const ROLES = [
   { value: "teacher", label: "Classroom teacher" },
@@ -53,7 +54,7 @@ export default function SignupPage() {
               ? "Your account is made. It has no access yet: that address should entitle you to more, but JOC cannot send the confirmation email until its mail service is switched on. Write to education@justonechesed.org and someone will open it up."
               : "Your account is made. It has no access to the library yet — ask Just One Chesed to connect you to your school."}
           </p>
-          <Link href="/login" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}>
+          <Link href="/login" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}>
             Sign in
           </Link>
         </div>
@@ -68,7 +69,7 @@ export default function SignupPage() {
           <BrandLockup height={20} />
         </Link>
 
-        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
+        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px" }}>
           <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "6px" }}>Create your account</h1>
           <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px" }}>Get access to all JOC Education resources.</p>
 
@@ -106,7 +107,7 @@ export default function SignupPage() {
               <input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="At least 10 characters" autoComplete="new-password" style={inputStyle} />
             </div>
 
-            {error && <p style={{ fontSize: "13.5px", color: "#B91C1C", backgroundColor: "#FEF2F2", borderRadius: "10px", padding: "10px 14px" }}>{error}</p>}
+            {error && <p style={{ fontSize: "15px", color: "#B91C1C", backgroundColor: "#FEF2F2", borderRadius: "10px", padding: "10px 14px" }}>{error}</p>}
 
             <button
               type="submit"
@@ -129,5 +130,5 @@ export default function SignupPage() {
 
 function Required() { return <span style={{ color: "#C96C00", marginLeft: "2px" }}>*</span>; }
 
-const labelStyle: React.CSSProperties = { display: "block", fontWeight: 600, fontSize: "13.5px", color: "#10233F", marginBottom: "6px" };
-const inputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "12px 14px", fontSize: "15px", color: "#10233F", backgroundColor: "#F8FAFE", border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" };
+const labelStyle: React.CSSProperties = { display: "block", fontWeight: 600, fontSize: "15px", color: "#10233F", marginBottom: "6px" };
+const inputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "12px 14px", fontSize: "15px", color: "#10233F", backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" };

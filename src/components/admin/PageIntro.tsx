@@ -76,7 +76,7 @@ export function PageIntro({
             onClick={toggle}
             aria-expanded={open}
             style={{
-              fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
+              fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
               color: C.blue, background: "none", border: "none", padding: "6px 0",
               cursor: "pointer", minHeight: "38px",
             }}
@@ -97,7 +97,7 @@ export function PageIntro({
                 ))}
               </ol>
               {note && (
-                <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
+                <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
                   {note}
                 </p>
               )}

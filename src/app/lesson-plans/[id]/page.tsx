@@ -72,7 +72,7 @@ export default async function LessonDetailPage({
     <>
       {isDraft && (
         <div style={{ backgroundColor: "#FFF0E0", borderBottom: "1px solid rgba(154,84,5,.25)" }}>
-          <p style={{ maxWidth: "1280px", margin: "0 auto", padding: "11px 26px", fontSize: "13.5px", color: "#7C4A00", lineHeight: 1.5 }}>
+          <p style={{ maxWidth: "1280px", margin: "0 auto", padding: "11px 26px", fontSize: "15px", color: "#7C4A00", lineHeight: 1.5 }}>
             <strong>Draft.</strong> This is how the lesson will look once published. No teacher can
             reach this page yet.{" "}
             <Link href="/admin/lessons" style={{ color: "#7C4A00", fontWeight: 700 }}>

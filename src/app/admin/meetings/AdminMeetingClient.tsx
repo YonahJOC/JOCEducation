@@ -164,7 +164,7 @@ function Meeting({ m, openByDefault = false }: { m: MeetingView; openByDefault?:
                   <h3 style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: 0 }}>
                     {items[0].programName}
                   </h3>
-                  <Link href={`/admin/programs/${items[0].programSlug}#not-in-yet`} style={{ fontSize: "13.5px", fontWeight: 700, color: C.blue, textDecoration: "none" }}>
+                  <Link href={`/admin/programs/${items[0].programSlug}#not-in-yet`} style={{ fontSize: "15px", fontWeight: 700, color: C.blue, textDecoration: "none" }}>
                     Open its console →
                   </Link>
                 </div>
@@ -217,7 +217,7 @@ function Item({ item, closed }: { item: MeetingView["items"][number]; closed: bo
           {item.outcomeNote && (
             <p style={{ fontSize: "14px", color: C.greenText, margin: "0 0 3px", lineHeight: 1.5 }}>{item.outcomeNote}</p>
           )}
-          <p style={{ fontSize: "12.5px", color: C.greenText, margin: 0, opacity: 0.8 }}>
+          <p style={{ fontSize: "13px", color: C.greenText, margin: 0, opacity: 0.8 }}>
             {item.outcomeBy ?? "Somebody at JOC"}
             {item.outcomeAt && ` · ${shortDay(item.outcomeAt)}`}
           </p>

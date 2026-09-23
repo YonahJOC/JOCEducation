@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { savePlanPrices, saveProgramPrices, importCurrentPricing } from "@/app/actions/pricing";
 import {
@@ -12,7 +12,7 @@ import {
 const TIERS: PriceTier[] = ["none", "teacher", "staff", "app", "full"];
 
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "16px",
 };
 const num: React.CSSProperties = {
@@ -98,8 +98,8 @@ export function PricingClient({
             })}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-              backgroundColor: "#C96C00", border: "none", borderRadius: "9999px",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+              backgroundColor: "#C96C00", border: "none", borderRadius: R.chip,
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -109,17 +109,17 @@ export function PricingClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: msg.includes("saved") || msg.includes("Imported") ? C.greenText : C.redText, marginBottom: "14px" }}>
+        <p style={{ fontSize: "15px", color: msg.includes("saved") || msg.includes("Imported") ? C.greenText : C.redText, marginBottom: "14px" }}>
           {msg}
         </p>
       )}
 
       {/* Plans */}
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
           Plans — price per month
         </p>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 16px" }}>
           In whole dollars. Annual billing shows {Math.round(ANNUAL_DISCOUNT * 100)}% less, worked out for you.
         </p>
 
@@ -172,10 +172,10 @@ export function PricingClient({
 
       {/* Programs */}
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
           Programs — what each one costs
         </p>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 16px" }}>
           A number for a price, <strong style={{ color: C.ink }}>inc</strong> if that plan includes it,{" "}
           <strong style={{ color: C.ink }}>na</strong> if it is not offered at that level.
         </p>
@@ -186,7 +186,7 @@ export function PricingClient({
               <tr>
                 <th style={th}>Program</th>
                 {TIERS.map((t) => (
-                  <th key={t} style={{ ...th, fontSize: "11.5px" }}>{PRICE_TIER_LABELS[t]}</th>
+                  <th key={t} style={{ ...th, fontSize: "12px" }}>{PRICE_TIER_LABELS[t]}</th>
                 ))}
                 <th style={th} />
               </tr>
@@ -219,7 +219,7 @@ export function PricingClient({
                     <button
                       onClick={() => setPrograms(programs.filter((_, n) => n !== i))}
                       disabled={disabled}
-                      style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+                      style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
                     >
                       Remove
                     </button>
@@ -233,7 +233,7 @@ export function PricingClient({
         <button
           onClick={() => setPrograms([...programs, { label: "", tiers: Object.fromEntries(TIERS.map((t) => [t, { na: true }])) }])}
           disabled={disabled}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: "12px 0 0", minHeight: "42px", cursor: "pointer", display: "block" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: "12px 0 0", minHeight: "42px", cursor: "pointer", display: "block" }}
         >
           + Add a program
         </button>
@@ -251,7 +251,7 @@ export function PricingClient({
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", fontSize: "11.5px", fontWeight: 700, letterSpacing: "0.08em",
+  textAlign: "left", fontSize: "12px", fontWeight: 700, letterSpacing: "0.08em",
   textTransform: "uppercase", color: "#4A5A74", padding: "0 6px 8px", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = { padding: "4px 6px", verticalAlign: "middle" };
@@ -259,7 +259,7 @@ const td: React.CSSProperties = { padding: "4px 6px", verticalAlign: "middle" };
 function saveButton(off: boolean): React.CSSProperties {
   return {
     marginTop: "16px", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-    color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: "9999px",
+    color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: R.chip,
     padding: "11px 22px", minHeight: "44px", cursor: off ? "not-allowed" : "pointer",
     opacity: off ? 0.5 : 1,
   };

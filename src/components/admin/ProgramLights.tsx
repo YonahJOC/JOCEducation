@@ -499,7 +499,7 @@ function NextMeeting({ data, programName }: { data: ProgramTraffic; programName:
                 <span style={{ display: "block", fontSize: "14px", color: "#C6CFF0", lineHeight: 1.5, marginTop: "2px" }}>
                   {i.note}
                 </span>
-                <span style={{ display: "block", fontSize: "12.5px", color: "rgba(255,255,255,.5)", marginTop: "3px" }}>
+                <span style={{ display: "block", fontSize: "13px", color: "rgba(255,255,255,.5)", marginTop: "3px" }}>
                   Added by {i.by ?? "somebody at JOC"}
                   {i.outcome && ` · ${i.outcome}`}
                 </span>

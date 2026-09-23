@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { updateSchoolDetails } from "@/app/actions/admin";
 
 const field: React.CSSProperties = {
@@ -62,16 +62,16 @@ export function SchoolDetailsPanel({
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           School details
         </p>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
             disabled={disabled}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? "rgba(16,35,63,.3)" : C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? C.muted : C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
           >
             Edit
           </button>
@@ -84,7 +84,7 @@ export function SchoolDetailsPanel({
           <Row k="Location" v={[city, region].filter(Boolean).join(" · ") || "Not recorded"} />
           <Row k="Type" v={type.replace(/_/g, " ").toLowerCase()} />
           <Row k="Students" v={studentCount ? String(studentCount) : "Enrolment not recorded"} />
-          <div style={{ paddingTop: "10px", marginTop: "4px", borderTop: "1px solid rgba(16,35,63,.07)" }}>
+          <div style={{ paddingTop: "10px", marginTop: "4px", borderTop: `1px solid ${C.hairline}` }}>
             <p style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", margin: "0 0 6px" }}>
               Email domains
             </p>
@@ -96,7 +96,7 @@ export function SchoolDetailsPanel({
             ) : (
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                 {emailDomains.map((d) => (
-                  <span key={d} style={{ fontSize: "12.5px", fontWeight: 600, color: C.greenText, backgroundColor: "rgba(27,127,75,.1)", borderRadius: "9999px", padding: "4px 11px" }}>
+                  <span key={d} style={{ fontSize: "13px", fontWeight: 600, color: C.greenText, backgroundColor: "rgba(27,127,75,.1)", borderRadius: R.chip, padding: "4px 11px" }}>
                     @{d}
                   </span>
                 ))}
@@ -158,7 +158,7 @@ export function SchoolDetailsPanel({
               placeholder="darcheitorah.org, staff.darcheitorah.org"
               style={field}
             />
-            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
               Anyone signing in with an address on these joins this school automatically. Separate several
               with commas. A domain can only belong to one school.
             </p>
@@ -171,7 +171,7 @@ export function SchoolDetailsPanel({
               placeholder="The id this school has inside the JOC App"
               style={field}
             />
-            <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
               How this school is matched to the JOC App. Until it is set, the app reports nothing
               for them — no hours, no approvals, nothing on the app console. Matching is by id and
               never by name: &ldquo;Yeshiva Darchei Torah&rdquo; and &ldquo;Darchei Torah&rdquo; are
@@ -184,7 +184,7 @@ export function SchoolDetailsPanel({
               disabled={pending || !f.name.trim()}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+                backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
                 minHeight: "44px", cursor: "pointer", opacity: pending || !f.name.trim() ? 0.5 : 1,
               }}
             >

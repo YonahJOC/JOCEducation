@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { listOpenForms } from "@/lib/forms";
 import { money } from "@/lib/payments";
@@ -17,7 +17,7 @@ export default async function FormsPage() {
           Forms
         </h1>
         {forms.length === 0 ? (
-          <p style={{ fontSize: "15.5px", color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", margin: 0 }}>
             Nothing open at the moment.
           </p>
         ) : (
@@ -31,7 +31,7 @@ export default async function FormsPage() {
                 <p style={{ fontSize: "17px", fontWeight: 700, color: C.ink, margin: "0 0 4px", letterSpacing: "-0.02em" }}>
                   {f.title}
                   {f.feeCents && (
-                    <span style={{ fontSize: "12.5px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "3px 10px", marginLeft: "10px" }}>
+                    <span style={{ fontSize: "13px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "3px 10px", marginLeft: "10px" }}>
                       {money(f.feeCents)}
                     </span>
                   )}
@@ -41,7 +41,7 @@ export default async function FormsPage() {
                     {f.description.split("\n")[0]}
                   </p>
                 )}
-                <span style={{ display: "inline-block", fontSize: "13.5px", fontWeight: 600, color: C.blue, marginTop: "8px" }}>
+                <span style={{ display: "inline-block", fontSize: "15px", fontWeight: 600, color: C.blue, marginTop: "8px" }}>
                   Open →
                 </span>
               </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { saveLesson } from "@/app/actions/content";
 import type { CycleRef } from "@/components/admin/LessonEditor";
 
@@ -148,7 +148,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
         onClick={() => setOpen(true)}
         disabled={disabled}
         style={{
-          fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue,
+          fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue,
           background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer",
           padding: "6px 0", minHeight: "40px", opacity: disabled ? 0.5 : 1,
         }}
@@ -161,7 +161,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
   return (
     <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Import from the workbook
         </p>
         <button
@@ -185,15 +185,15 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
             rows={6}
             placeholder={"Title\tTheme\tGrade\tMinutes\tCycle\nSeeing the Person…\tBein Adam LaChaveiro\tES\t20\tCheshbon Hanefesh"}
             style={{
-              width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "12.5px",
-              color: C.ink, backgroundColor: "#FAFBFD", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+              width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "13px",
+              color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "10px",
               padding: "12px", outline: "none", resize: "vertical", marginBottom: "14px",
             }}
           />
 
           {columnCount > 0 && (
             <>
-              <p style={{ fontSize: "12.5px", fontWeight: 600, color: "#4A5A74", margin: "0 0 9px" }}>
+              <p style={{ fontSize: "13px", fontWeight: 600, color: "#4A5A74", margin: "0 0 9px" }}>
                 What is each column?
               </p>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "14px" }}>
@@ -223,7 +223,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                 disabled={!mapping.includes("title")}
                 style={{
                   fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                  backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
+                  backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
                   minHeight: "44px", cursor: mapping.includes("title") ? "pointer" : "not-allowed",
                   opacity: mapping.includes("title") ? 1 : 0.5,
                 }}
@@ -231,7 +231,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                 Preview {table.length} row{table.length === 1 ? "" : "s"}
               </button>
               {!mapping.includes("title") && (
-                <p style={{ fontSize: "12.5px", color: C.orangeText, margin: "9px 0 0" }}>
+                <p style={{ fontSize: "13px", color: C.orangeText, margin: "9px 0 0" }}>
                   One column has to be the title.
                 </p>
               )}
@@ -254,8 +254,8 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                   style={{
                     display: "grid", gridTemplateColumns: "20px minmax(0,1fr)", gap: "11px",
                     alignItems: "start", padding: "10px 12px", borderRadius: "10px",
-                    backgroundColor: r.problem && !r.title ? "rgba(184,50,30,.05)" : "#FAFBFD",
-                    border: `1px solid ${r.problem && !r.title ? "rgba(184,50,30,.25)" : "rgba(16,35,63,.07)"}`,
+                    backgroundColor: r.problem && !r.title ? "rgba(184,50,30,.05)" : C.panel,
+                    border: `1px solid ${r.problem && !r.title ? "rgba(184,50,30,.25)" : C.hairline}`,
                     cursor: r.title ? "pointer" : "not-allowed",
                   }}
                 >
@@ -270,7 +270,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                     <span style={{ fontSize: "14px", fontWeight: 600, color: C.ink, display: "block" }}>
                       {r.title || <em style={{ color: C.redText, fontWeight: 400 }}>No title</em>}
                     </span>
-                    <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>
+                    <span style={{ fontSize: "13px", color: "#4A5A74" }}>
                       {[r.theme, r.grade.toUpperCase(), `${r.minutes} min`, cycle ? cycle.theme : null]
                         .filter(Boolean)
                         .join(" · ")}
@@ -292,7 +292,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
               disabled={pending || rows.filter((r) => r.include).length === 0}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
+                backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
                 minHeight: "44px", cursor: "pointer", opacity: pending ? 0.6 : 1,
               }}
             >

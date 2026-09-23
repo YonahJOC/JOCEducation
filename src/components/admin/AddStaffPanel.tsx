@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { useRouter } from "next/navigation";
 import { addSchoolStaff } from "@/app/actions/admin";
 
@@ -49,11 +49,11 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
         Add a member of staff
       </p>
-      <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
+      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
         Their name and email makes them an account at this school. <strong style={{ color: C.ink }}>No
         message is sent to them</strong> — nothing goes out to a school until JOC launches. Tell
         them yourself, whenever you are ready.
@@ -106,7 +106,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
             disabled={disabled || pending || !name.trim() || !email.trim()}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
+              backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
               minHeight: "44px", cursor: pending ? "wait" : "pointer",
               opacity: name.trim() && email.trim() && !disabled ? 1 : 0.5,
             }}

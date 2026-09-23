@@ -148,7 +148,7 @@ export function Stages({
                 <div className="joc-stage-action">
                   <StageButton link={link} label={s.linkLabel} primary={primary} />
                   {link.note && (
-                    <p style={{ fontSize: "12.5px", color: C.muted, margin: "8px 0 0", lineHeight: 1.45 }}>
+                    <p style={{ fontSize: "13px", color: C.muted, margin: "8px 0 0", lineHeight: 1.45 }}>
                       {link.note}
                     </p>
                   )}

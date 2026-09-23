@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { submitForm } from "@/app/actions/forms";
 import type { PublicForm } from "@/lib/forms";
 
@@ -41,7 +41,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
         <h2 style={{ fontWeight: 800, fontSize: "21px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 8px" }}>
           {paid ? "Paid, and received" : "Sent"}
         </h2>
-        <p style={{ fontSize: "15.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>{done}</p>
+        <p style={{ fontSize: "16px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>{done}</p>
       </div>
     );
   }
@@ -114,7 +114,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
                     disabled={pending}
                     style={{
                       fontFamily: "var(--font-outfit)", fontSize: "14.5px", fontWeight: 600,
-                      padding: "11px 24px", borderRadius: "9999px", minHeight: "46px", cursor: "pointer",
+                      padding: "11px 24px", borderRadius: R.chip, minHeight: "46px", cursor: "pointer",
                       border: values[f.id] === o ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                       backgroundColor: values[f.id] === o ? "rgba(45,70,175,.07)" : "#fff",
                       color: values[f.id] === o ? C.blue : "#4A5A74",
@@ -143,7 +143,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
           disabled={pending}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip,
             padding: "14px 28px", minHeight: "48px", cursor: pending ? "wait" : "pointer",
           }}
         >
@@ -172,7 +172,7 @@ function Labelled({
         {required && <span style={{ color: "#C96C00", marginLeft: "5px" }} aria-label="required">*</span>}
       </label>
       {help && (
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 7px", lineHeight: 1.5 }}>{help}</p>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 7px", lineHeight: 1.5 }}>{help}</p>
       )}
       {children}
     </div>

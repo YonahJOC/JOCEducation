@@ -1,3 +1,4 @@
+import { R } from "@/lib/joc-tokens";
 export default function ProgramsLoading() {
   return (
     <div>
@@ -6,7 +7,7 @@ export default function ProgramsLoading() {
         <Skel style={{ width: "200px", height: "14px", marginBottom: "18px" }} />
         <div style={{ display: "flex", gap: "10px", marginBottom: "28px" }}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skel key={i} style={{ width: "120px", height: "46px", borderRadius: "9999px" }} />
+            <Skel key={i} style={{ width: "120px", height: "46px", borderRadius: R.chip }} />
           ))}
         </div>
         <Skel style={{ height: "280px", borderRadius: "26px", marginBottom: "64px" }} />

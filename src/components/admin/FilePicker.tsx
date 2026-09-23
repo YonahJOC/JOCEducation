@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { uploadFile } from "@/app/actions/files";
 
 /**
@@ -61,9 +61,9 @@ export function FilePicker({
           onClick={() => input.current?.click()}
           disabled={disabled || pending}
           style={{
-            fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
-            color: disabled ? "rgba(16,35,63,.35)" : C.blue, backgroundColor: "#F4F7FD",
-            border: "none", borderRadius: "9999px", padding: "10px 18px", minHeight: "42px",
+            fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
+            color: disabled ? C.muted : C.blue, backgroundColor: "#F4F7FD",
+            border: "none", borderRadius: R.chip, padding: "10px 18px", minHeight: "42px",
             cursor: disabled || pending ? "not-allowed" : "pointer",
           }}
         >
@@ -84,7 +84,7 @@ export function FilePicker({
               type="button"
               onClick={() => { onChange(null); setName(null); }}
               disabled={disabled}
-              style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "36px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "36px" }}
             >
               Remove
             </button>
@@ -99,8 +99,8 @@ export function FilePicker({
         disabled={disabled || isUpload}
         style={{
           width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-          fontSize: "13.5px", color: C.ink, backgroundColor: isUpload ? "#FBF9F4" : "#fff",
-          border: "1px solid rgba(16,35,63,.15)", borderRadius: "10px",
+          fontSize: "15px", color: C.ink, backgroundColor: isUpload ? "#FBF9F4" : "#fff",
+          border: `1px solid ${C.hairline}`, borderRadius: "10px",
           padding: "10px 12px", minHeight: "42px", outline: "none",
         }}
       />
@@ -110,7 +110,7 @@ export function FilePicker({
           Uploaded to JOC. Only signed-in accounts with access can open it.
         </p>
       )}
-      {error && <p style={{ fontSize: "12.5px", color: C.redText, margin: "6px 0 0" }}>{error}</p>}
+      {error && <p style={{ fontSize: "13px", color: C.redText, margin: "6px 0 0" }}>{error}</p>}
     </div>
   );
 }

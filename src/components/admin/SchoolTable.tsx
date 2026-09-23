@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, label } from "@/lib/joc-tokens";
+import { R, C, label } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, type SchoolRow } from "@/lib/admin-data";
 
@@ -27,11 +27,11 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
   }
   return (
     <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "720px" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "720px" }}>
         <thead>
           <tr>
             {["School", "Status", "Plan", "Seats", "Staff", "Last contact"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "10px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+              <th key={h} style={{ textAlign: "left", padding: "10px 20px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                 {h}
               </th>
             ))}
@@ -40,7 +40,7 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
         <tbody>
           {schools.map((s) => (
             <tr key={s.id}>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}` }}>
                 <Link href={`/admin/schools/${s.id}`} style={{ color: C.ink, fontWeight: 600, textDecoration: "none" }}>
                   {s.name}
                 </Link>
@@ -48,24 +48,24 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
                   {s.city ?? s.region ?? "Place not recorded"}{s.studentCount ? ` · ${s.studentCount} students` : ""}
                 </span>
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                <span style={{ display: "inline-block", fontSize: "11.5px", fontWeight: 700, padding: "3px 9px", borderRadius: "9999px", color: STATUS_COLORS[s.status], backgroundColor: `${STATUS_COLORS[s.status]}1a`, whiteSpace: "nowrap" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}` }}>
+                <span style={{ display: "inline-block", fontSize: "12px", fontWeight: 700, padding: "3px 9px", borderRadius: R.chip, color: STATUS_COLORS[s.status], backgroundColor: `${STATUS_COLORS[s.status]}1a`, whiteSpace: "nowrap" }}>
                   {STATUS_LABELS[s.status]}
                 </span>
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
                 {s.plan ? PLAN_LABELS[s.plan] : <Absent>No plan</Absent>}
                 {s.grantedManually && (
                   <span style={{ display: "block", fontSize: "11px", color: "#1D6B37", fontWeight: 600 }}>granted</span>
                 )}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                 {s.seats ?? <Absent>Not set</Absent>}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                 {s.memberCount}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
                 {ago(s.lastActivityAt)}
               </td>
             </tr>

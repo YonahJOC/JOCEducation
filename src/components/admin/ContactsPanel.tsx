@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { saveSchoolContact, deleteSchoolContact } from "@/app/actions/admin";
 
 export type ContactRow = {
@@ -68,16 +68,16 @@ export function ContactsPanel({
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Contacts
         </p>
         {!draft && (
           <button
             onClick={() => setDraft({ ...BLANK, isPrimary: contacts.length === 0 })}
             disabled={disabled}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? "rgba(16,35,63,.3)" : C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? C.muted : C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
           >
             + Add
           </button>
@@ -106,7 +106,7 @@ export function ContactsPanel({
               <input value={draft.phone ?? ""} onChange={(e) => set({ phone: e.target.value })} style={field} />
             </div>
           </div>
-          <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "13.5px", color: C.ink, marginBottom: "12px" }}>
+          <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "15px", color: C.ink, marginBottom: "12px" }}>
             <input type="checkbox" checked={draft.isPrimary} onChange={(e) => set({ isPrimary: e.target.checked })} style={{ width: "16px", height: "16px" }} />
             Main contact for this school
           </label>
@@ -115,8 +115,8 @@ export function ContactsPanel({
               onClick={save}
               disabled={pending || !draft.name.trim()}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "10px 20px",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+                backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "10px 20px",
                 minHeight: "42px", cursor: "pointer", opacity: pending || !draft.name.trim() ? 0.5 : 1,
               }}
             >
@@ -124,7 +124,7 @@ export function ContactsPanel({
             </button>
             <button
               onClick={() => { setDraft(null); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
             >
               Cancel
             </button>
@@ -144,12 +144,12 @@ export function ContactsPanel({
                 <p style={{ fontSize: "14px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {c.name}
                   {c.isPrimary && (
-                    <span style={{ fontSize: "10.5px", fontWeight: 700, color: C.greenText, backgroundColor: "rgba(27,127,75,.1)", padding: "2px 7px", borderRadius: "9999px", marginLeft: "8px", letterSpacing: "0.06em" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 700, color: C.greenText, backgroundColor: "rgba(27,127,75,.1)", padding: "2px 7px", borderRadius: R.chip, marginLeft: "8px", letterSpacing: "0.06em" }}>
                       MAIN
                     </span>
                   )}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
                   {[c.title, c.email, c.phone].filter(Boolean).join(" · ") || "No details"}
                 </p>
               </div>
@@ -157,14 +157,14 @@ export function ContactsPanel({
                 <button
                   onClick={() => setDraft(c)}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => remove(c)}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
                 >
                   Remove
                 </button>

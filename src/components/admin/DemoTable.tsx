@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { setDemoStatus, convertDemoToSchool } from "@/app/actions/admin";
@@ -33,12 +33,12 @@ function fmt(d: Date | string | null, withTime = false) {
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "11px 20px", fontSize: "10.5px", letterSpacing: "0.16em",
+  textAlign: "left", padding: "11px 20px", fontSize: "11px", letterSpacing: "0.04em",
   textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
-  borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
+  borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
-  padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", verticalAlign: "middle",
+  padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, verticalAlign: "middle",
 };
 
 export function DemoTable({ demos, disabled }: { demos: DemoRowT[]; disabled?: boolean }) {
@@ -51,7 +51,7 @@ export function DemoTable({ demos, disabled }: { demos: DemoRowT[]; disabled?: b
   }
   return (
     <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "760px" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "760px" }}>
         <thead>
           <tr>
             <th style={th}>Who</th>
@@ -106,7 +106,7 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
     <tr>
       <td style={td}>
         <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{demo.name}</span>
-        <a href={`mailto:${demo.email}`} style={{ fontSize: "12.5px", color: "#2D46AF", textDecoration: "none", wordBreak: "break-all" }}>
+        <a href={`mailto:${demo.email}`} style={{ fontSize: "13px", color: "#2D46AF", textDecoration: "none", wordBreak: "break-all" }}>
           {demo.email}
         </a>
         {msg && <span style={{ display: "block", fontSize: "12px", color: "#A3261A", marginTop: "3px" }}>{msg}</span>}
@@ -117,8 +117,8 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
       <td style={td}>
         {converted ? (
           <span style={{
-            display: "inline-block", fontSize: "11.5px", fontWeight: 700, padding: "3px 10px",
-            borderRadius: "9999px", color: STATUS_COLOR.CONVERTED, backgroundColor: `${STATUS_COLOR.CONVERTED}1a`,
+            display: "inline-block", fontSize: "12px", fontWeight: 700, padding: "3px 10px",
+            borderRadius: R.chip, color: STATUS_COLOR.CONVERTED, backgroundColor: `${STATUS_COLOR.CONVERTED}1a`,
           }}>
             converted
           </span>
@@ -146,8 +146,8 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
             onClick={convert}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 700,
-              color: "#fff", backgroundColor: "#2D46AF", border: "none", borderRadius: "9999px",
+              fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 700,
+              color: "#fff", backgroundColor: "#2D46AF", border: "none", borderRadius: R.chip,
               padding: "8px 14px", minHeight: "38px",
               cursor: disabled ? "not-allowed" : "pointer", opacity: disabled || pending ? 0.5 : 1,
             }}

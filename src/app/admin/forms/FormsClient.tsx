@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { chip, R, C, pageTitle } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useState } from "react";
 import { saveForm, deleteForm } from "@/app/actions/forms";
@@ -21,7 +21,7 @@ const label: React.CSSProperties = {
   color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -94,7 +94,7 @@ export function FormsClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -107,23 +107,23 @@ export function FormsClient({
           <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>No forms yet.</p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
           {forms.map((f, i) => (
             <div
               key={f.id}
               style={{
                 display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap",
-                padding: "15px 18px", borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)",
+                padding: "15px 18px", borderTop: i === 0 ? "none" : `1px solid ${C.hairline}`,
               }}
             >
               <div style={{ minWidth: 0, flex: 1 }}>
                 <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {f.title}
-                  {!f.published && <Pill color="#C96C00">draft</Pill>}
-                  {f.closed && <Pill color="#A3261A">closed</Pill>}
-                  {f.feeCents ? <Pill color="#1D6B37">${(f.feeCents / 100).toFixed(2)}</Pill> : null}
+                  {!f.published && <Pill tone="warn">draft</Pill>}
+                  {f.closed && <Pill tone="bad">closed</Pill>}
+                  {f.feeCents ? <Pill tone="good">${(f.feeCents / 100).toFixed(2)}</Pill> : null}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "3px 0 0" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "3px 0 0" }}>
                   /forms/{f.slug} · {f.fields.length} question{f.fields.length === 1 ? "" : "s"} ·{" "}
                   {f.responseCount === 0 ? "no answers yet" : `${f.responseCount} answer${f.responseCount === 1 ? "" : "s"}`}
                 </p>
@@ -160,9 +160,14 @@ export function FormsClient({
   );
 }
 
-function Pill({ color, children }: { color: string; children: React.ReactNode }) {
+function Pill({ tone, children }: { tone: "good" | "warn" | "bad"; children: React.ReactNode }) {
+  const tint =
+    tone === "good" ? { bg: C.greenTint, fg: C.greenText }
+    : tone === "bad" ? { bg: C.redTint, fg: C.redText }
+    : { bg: C.orangeTint, fg: C.orangeText };
+
   return (
-    <span style={{ fontSize: "11px", fontWeight: 700, color, backgroundColor: `${color}1f`, borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
+    <span style={{ ...chip, color: tint.fg, backgroundColor: tint.bg, marginLeft: "8px" }}>
       {children}
     </span>
   );
@@ -191,12 +196,12 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
 
       {rows.length > 0 && <Download formId={form.id} />}
 
-      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "760px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "760px" }}>
           <thead>
             <tr>
               {["When", "Name", "Email", ...(form.feeCents ? ["Paid"] : []), ...columns].map((h) => (
-                <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+                <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                   {h}
                 </th>
               ))}
@@ -210,7 +215,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
                 <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                 {form.feeCents ? (
                   <td style={cell}>
-                    <span style={{ fontSize: "11.5px", fontWeight: 700, borderRadius: "9999px", padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                    <span style={{ fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                       {r.paid ? "paid" : "unpaid"}
                     </span>
                   </td>
@@ -231,7 +236,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
 
 const cell: React.CSSProperties = {
   padding: "12px 16px",
-  borderBottom: "1px solid rgba(16,35,63,.05)",
+  borderBottom: `1px solid ${C.hairline}`,
   color: "#4A5A74",
   verticalAlign: "top",
 };

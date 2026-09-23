@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, F, label } from "@/lib/joc-tokens";
+import { R, C, F, label } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
 import { heroFg, deepFrom } from "@/lib/hero-color";
@@ -112,7 +112,7 @@ export default async function ProgramDetailPage({ params }: Props) {
                     key={fact}
                     style={{
                       ...label, color: fg, border: "1.5px solid currentColor",
-                      borderRadius: "9999px", padding: "6px 13px", opacity: 0.9,
+                      borderRadius: R.chip, padding: "6px 13px", opacity: 0.9,
                     }}
                   >
                     {fact}
@@ -266,7 +266,7 @@ export default async function ProgramDetailPage({ params }: Props) {
                     <span style={{ display: "block", fontSize: "15px", fontWeight: 600, color: C.ink, letterSpacing: "-0.01em" }}>
                       {p.name}
                     </span>
-                    <span style={{ display: "block", fontSize: "12.5px", color: C.muted, marginTop: "2px" }}>
+                    <span style={{ display: "block", fontSize: "13px", color: C.muted, marginTop: "2px" }}>
                       {p.tag}{p.comingSoon ? " · Coming soon" : ""}
                     </span>
                   </span>

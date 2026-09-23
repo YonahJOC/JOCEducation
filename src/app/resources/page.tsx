@@ -5,6 +5,7 @@ import { siteContent } from "@/lib/site-content";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { ResourceLibrary } from "./ResourceLibrary";
+import { C, R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Resources" };
 
@@ -21,7 +22,7 @@ export default async function ResourcesPage() {
 
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 26px 72px" }}>
-      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
+      <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
         {c.text("hero.eyebrow", "RESOURCE LIBRARY")}
       </p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px" }}>
@@ -40,10 +41,10 @@ export default async function ResourcesPage() {
             <strong>Full access</strong> is included with any JOC Education subscription.
           </p>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-            <Link href="/login" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "12px 20px", textDecoration: "none" }}>
+            <Link href="/login" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "12px 20px", textDecoration: "none" }}>
               Sign in to download
             </Link>
-            <Link href="/pricing" style={{ color: "#2D46AF", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "12px 20px", textDecoration: "none", border: "1px solid #2D46AF" }}>
+            <Link href="/pricing" style={{ color: "#2D46AF", fontWeight: 600, fontSize: "15px", borderRadius: R.chip, padding: "12px 20px", textDecoration: "none", border: "1px solid #2D46AF" }}>
               See plans
             </Link>
           </div>
@@ -51,11 +52,11 @@ export default async function ResourcesPage() {
       )}
 
       {resources.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "22px", padding: "56px 32px", textAlign: "center", marginBottom: "48px" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "22px", padding: "56px 32px", textAlign: "center", marginBottom: "48px" }}>
           <h2 style={{ fontWeight: 700, fontSize: "21px", color: "#10233F", margin: "0 0 10px" }}>
             {c.text("empty.heading", "The library is being built.")}
           </h2>
-          <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "52ch", margin: "0 auto" }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "52ch", margin: "0 auto" }}>
             {c.text(
               "empty.body",
               "The JOC Education team is preparing the first set of worksheets, activities and source sheets. They will appear here as they are published — nothing is hidden behind a paywall that is not yet ready."
@@ -75,7 +76,7 @@ export default async function ResourcesPage() {
             Every resource is included in any JOC Education subscription.
           </p>
         </div>
-        <Link href="/pricing" style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
+        <Link href="/pricing" style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
           See plans and pricing →
         </Link>
       </div>

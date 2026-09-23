@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { setMessageHandled } from "@/app/actions/admin";
 
 export type MessageRow = {
@@ -33,18 +33,18 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
   return (
     <div>
       {messages.map((m, i) => (
-        <div key={m.id} style={{ borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)", padding: "16px 18px" }}>
+        <div key={m.id} style={{ borderTop: i === 0 ? "none" : `1px solid ${C.hairline}`, padding: "16px 18px" }}>
           <div style={{ display: "flex", gap: "12px", alignItems: "flex-start", flexWrap: "wrap" }}>
             <div style={{ minWidth: 0, flex: 1 }}>
               <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
                 {m.subject || "No subject"}
                 {!m.handled && (
-                  <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.15)", padding: "2px 8px", borderRadius: "9999px", marginLeft: "8px", letterSpacing: "0.06em" }}>
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.15)", padding: "2px 8px", borderRadius: R.chip, marginLeft: "8px", letterSpacing: "0.06em" }}>
                     NEW
                   </span>
                 )}
               </p>
-              <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
+              <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
                 {m.name} · {m.email}
                 {m.schoolName ? ` · ${m.schoolName}` : ""}
                 {m.role ? ` · ${m.role}` : ""} · {m.when}

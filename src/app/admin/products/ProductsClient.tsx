@@ -135,7 +135,7 @@ export function ProductsClient({ products, disabled }: { products: ProductRow[];
       renderRow={(p) => (
         <>
           <p style={{ fontWeight: 600, color: C.ink, margin: 0, fontSize: "14.5px" }}>{p.name}</p>
-          <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+          <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
             {p.priceDollars > 0 ? `$${p.priceDollars.toFixed(2)} ${p.unit}` : "no price set"}
             {` · ${p.category}`}
             {p.fileUrl ? " · download" : ""}

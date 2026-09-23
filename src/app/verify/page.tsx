@@ -22,7 +22,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
           <BrandLockup height={20} />
         </Link>
 
-        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px", textAlign: "center" }}>
+        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px", textAlign: "center" }}>
           {!result ? (
             <>
               <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>

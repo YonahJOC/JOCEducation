@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { useRouter } from "next/navigation";
 import { createSchool } from "@/app/actions/admin";
 
@@ -67,7 +67,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
         disabled={disabled}
         style={{
           fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-          backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+          backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
           minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
         }}
       >
@@ -80,12 +80,12 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
     <form
       onSubmit={submit}
       style={{
-        backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.12)",
+        backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
         borderRadius: "16px", padding: "20px", maxWidth: "460px",
       }}
     >
       <p style={{ fontSize: "15px", fontWeight: 700, color: C.ink, margin: "0 0 4px" }}>Add a school</p>
-      <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 16px" }}>
+      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 16px" }}>
         The name and where it is. Everything else — the city, the size, who runs chesed there — is
         on the school&rsquo;s own page once it exists.
       </p>
@@ -128,7 +128,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
           disabled={pending || !name.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: name.trim() ? 1 : 0.5,
           }}
         >
@@ -137,7 +137,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
         <button
           type="button"
           onClick={() => { setOpen(false); setMsg(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
         >
           Cancel
         </button>

@@ -81,7 +81,7 @@ export function ForgotPasswordForm() {
 
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <div>
-          <label style={{ display: "block", fontWeight: 600, fontSize: "13.5px", color: C.ink, marginBottom: "6px" }}>
+          <label style={{ display: "block", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "6px" }}>
             Email address
           </label>
           <input
@@ -90,11 +90,11 @@ export function ForgotPasswordForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@school.edu"
             autoComplete="email"
-            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px", fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE", border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" }}
+            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px", fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" }}
           />
         </div>
 
-        {error && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: "15px", color: C.redText, margin: 0 }}>{error}</p>}
 
         <button
           type="submit"

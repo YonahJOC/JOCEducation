@@ -2,6 +2,7 @@ import { PricingSection } from "@/components/sections/PricingSection";
 import { getPlanPricing, getProgramPricing } from "@/lib/pricing";
 import { siteContent, type RepeatItem } from "@/lib/site-content";
 import Link from "next/link";
+import { C, R } from "@/lib/joc-tokens";
 
 export const metadata = {
   title: { absolute: "Pricing — JOC Education" },
@@ -20,7 +21,7 @@ export default async function PricingPage() {
     <div>
       {/* Page hero */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "56px 26px 0" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
+        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px", maxWidth: "16ch" }}>
           {c.text("hero.headline", "Simple, transparent pricing.")}
         </h1>
@@ -34,7 +35,7 @@ export default async function PricingPage() {
         {/* What every plan includes. The trust bar that stood here quoted
             partner-school, teacher and chesed-hour figures nobody had counted;
             what a school actually gets is both true and more useful. */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "28px", paddingBottom: "48px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "28px", paddingBottom: "48px", borderBottom: `1px solid ${C.hairline}` }}>
           {[
             ["Every plan", "includes the full resource library"],
             ["No school turned away", "full and partial scholarships"],
@@ -42,7 +43,7 @@ export default async function PricingPage() {
           ].map(([stat, label]) => (
             <div key={label}>
               <div style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: "#10233F" }}>{stat}</div>
-              <div style={{ fontSize: "13.5px", color: "#4A5A74", fontWeight: 500, marginTop: "2px" }}>{label}</div>
+              <div style={{ fontSize: "15px", color: "#4A5A74", fontWeight: 500, marginTop: "2px" }}>{label}</div>
             </div>
           ))}
         </div>
@@ -68,7 +69,7 @@ export default async function PricingPage() {
             <p style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "5px" }}>Still have questions?</p>
             <p style={{ fontSize: "14.5px", color: "#4A5A74" }}>Our team is happy to walk through the options for your school.</p>
           </div>
-          <a href="mailto:education@justonechesed.org" style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
+          <a href="mailto:education@justonechesed.org" style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
             Contact us
           </a>
         </div>
@@ -79,8 +80,8 @@ export default async function PricingPage() {
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <div style={{ padding: "24px 28px", border: "1px solid rgba(16,35,63,.08)", borderRadius: "0" }}>
-      <p style={{ fontWeight: 700, fontSize: "15.5px", color: "#10233F", marginBottom: "8px" }}>{q}</p>
+    <div style={{ padding: "24px 28px", border: `1px solid ${C.hairline}`, borderRadius: "0" }}>
+      <p style={{ fontWeight: 700, fontSize: "16px", color: "#10233F", marginBottom: "8px" }}>{q}</p>
       <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>{a}</p>
     </div>
   );

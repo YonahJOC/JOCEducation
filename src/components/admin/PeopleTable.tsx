@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { setUserAdminRole } from "@/app/actions/admin-roles";
 import { setUserRole, setUserActive, assignUserToSchool, resetUserPassword } from "@/app/actions/admin";
 import { setProgramLead } from "@/app/actions/forms";
@@ -42,12 +42,12 @@ function ago(d: Date | string | null) {
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "10px 20px", fontSize: "10.5px", letterSpacing: "0.16em",
+  textAlign: "left", padding: "10px 20px", fontSize: "11px", letterSpacing: "0.04em",
   textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
-  borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
+  borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
-  padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", verticalAlign: "middle",
+  padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, verticalAlign: "middle",
 };
 
 export function PeopleTable({
@@ -66,15 +66,15 @@ export function PeopleTable({
   canSetCoordinators?: boolean;
 }) {
   return (
-    <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
         {title}
       </p>
       {people.length === 0 ? (
         <p style={{ padding: "20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nobody yet.</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: showSchool ? "720px" : "600px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: showSchool ? "720px" : "600px" }}>
             <thead>
               <tr>
                 <th style={th}>Name</th>
@@ -165,7 +165,7 @@ function Row({
     <tr style={{ opacity: active ? 1 : 0.55 }}>
       <td style={td}>
         <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{person.name ?? "No name on the account"}</span>
-        <span style={{ fontSize: "12.5px", color: "#4A5A74", wordBreak: "break-all" }}>{person.email}</span>
+        <span style={{ fontSize: "13px", color: "#4A5A74", wordBreak: "break-all" }}>{person.email}</span>
       {/* Which programs they run. Not an admin type and not a role — a
           coordinator holds no permission at all; being named here is the
           whole of their access, and it reaches one program's sign-ups.
@@ -175,7 +175,7 @@ function Row({
           there is nothing in it. */}
       {programs.length > 0 && (canSetCoordinators || runs.length > 0) && (
         <span style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", marginTop: "8px" }}>
-          <span style={{ fontSize: "11.5px", color: "#4A5A74", marginRight: "1px" }}>Runs</span>
+          <span style={{ fontSize: "12px", color: "#4A5A74", marginRight: "1px" }}>Runs</span>
 
           {runs.map((pid) => {
             const prog = programs.find((x) => x.id === pid);
@@ -186,7 +186,7 @@ function Row({
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "2px",
                   fontSize: "12px", fontWeight: 600, color: C.blue,
-                  backgroundColor: "rgba(45,70,175,.09)", borderRadius: "9999px",
+                  backgroundColor: "rgba(45,70,175,.09)", borderRadius: R.chip,
                   padding: canSetCoordinators ? "3px 3px 3px 10px" : "3px 10px",
                   lineHeight: 1.5, maxWidth: "100%",
                 }}
@@ -247,7 +247,7 @@ function Row({
                   appearance: "none", WebkitAppearance: "none", MozAppearance: "none",
                   fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600,
                   color: "#4A5A74", backgroundColor: "transparent",
-                  border: `1px dashed rgba(16,35,63,.28)`, borderRadius: "9999px",
+                  border: `1px dashed ${C.hairline}`, borderRadius: R.chip,
                   padding: "4px 11px", lineHeight: 1.5,
                   cursor: disabled || pending ? "not-allowed" : "pointer", outline: "none",
                 }}
@@ -328,7 +328,7 @@ function Row({
         ) : (
           <span style={{
             display: "inline-block", fontSize: "11px", fontWeight: 700, padding: "3px 9px",
-            borderRadius: "9999px", letterSpacing: "0.04em", whiteSpace: "nowrap",
+            borderRadius: R.chip, letterSpacing: "0.04em", whiteSpace: "nowrap",
             color: ROLE_COLOR[role] ?? "#7A8699", backgroundColor: `${ROLE_COLOR[role] ?? "#7A8699"}1a`,
           }}>
             {ROLE_LABELS[role as Role] ?? role}
@@ -394,7 +394,7 @@ function Row({
               disabled={disabled || pending}
               title="Issue a new password and show it once"
               style={{
-                fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                 color: "#2D46AF", background: "none", border: "none",
                 cursor: disabled ? "not-allowed" : "pointer", padding: "6px 0", minHeight: "38px",
               }}
@@ -405,7 +405,7 @@ function Row({
               onClick={toggleActive}
               disabled={disabled || pending}
               style={{
-                fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                 color: active ? "#A3261A" : "#1D6B37", background: "none", border: "none",
                 cursor: disabled ? "not-allowed" : "pointer", padding: "6px 0", minHeight: "38px",
               }}

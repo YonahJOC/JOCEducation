@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import {
   FIELD_TYPES, FIELD_TYPE_LABELS, NEEDS_OPTIONS, type FieldType,
 } from "@/lib/forms";
@@ -17,7 +17,7 @@ const label: React.CSSProperties = {
   color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -144,10 +144,10 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
           Questions
         </p>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
           Name and email are always asked for — you do not need to add them.
         </p>
 
@@ -200,7 +200,7 @@ export function FormBuilder({
               )}
 
               <div style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>
-                <label style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "13.5px", color: C.ink, cursor: "pointer" }}>
+                <label style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "15px", color: C.ink, cursor: "pointer" }}>
                   <input type="checkbox" checked={f.required} onChange={(e) => setField(i, { required: e.target.checked })} disabled={disabled} style={{ width: "16px", height: "16px" }} />
                   Must be answered
                 </label>
@@ -221,18 +221,18 @@ export function FormBuilder({
           type="button"
           onClick={() => setD((p) => ({ ...p, fields: [...p.fields, { label: "", help: "", type: "SHORT_TEXT", required: false, options: [] }] }))}
           disabled={disabled}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", marginTop: "12px", padding: 0 }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", marginTop: "12px", padding: 0 }}
         >
           + Add a question
         </button>
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 12px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 12px" }}>
           Payment
         </p>
         {!paymentsOn && (
-          <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "10px", padding: "11px 14px", margin: "0 0 12px", lineHeight: 1.55 }}>
+          <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "10px", padding: "11px 14px", margin: "0 0 12px", lineHeight: 1.55 }}>
             Card payment is not switched on yet. You can set an amount, but the form will not publish
             until Stripe is connected — better that than taking registrations and never charging anyone.
           </p>
@@ -268,7 +268,7 @@ export function FormBuilder({
           disabled={disabled || pending || !d.title.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -279,14 +279,14 @@ export function FormBuilder({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
           >
             Delete
           </button>
         )}
-        {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
+        {msg && <p style={{ fontSize: "15px", color: C.redText, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
         {saved && !msg && (
-          <p style={{ fontSize: "13.5px", fontWeight: 600, color: "#1D6B37", margin: 0 }}>Saved.</p>
+          <p style={{ fontSize: "15px", fontWeight: 600, color: "#1D6B37", margin: 0 }}>Saved.</p>
         )}
       </div>
     </form>

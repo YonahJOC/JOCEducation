@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { useRouter } from "next/navigation";
 import { changeOwnPassword } from "@/app/actions/account";
 import { passwordProblem } from "@/lib/password";
@@ -12,7 +12,7 @@ const field: React.CSSProperties = {
   padding: "12px 14px", outline: "none", minHeight: "46px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12.5px", fontWeight: 600, color: "#4A5A74", marginBottom: "6px",
+  display: "block", fontSize: "13px", fontWeight: 600, color: "#4A5A74", marginBottom: "6px",
 };
 
 export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; forced: boolean }) {
@@ -56,7 +56,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
           href="/home"
           style={{
             display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700,
-            fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none",
+            fontSize: "14.5px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none",
           }}
         >
           Continue
@@ -86,7 +86,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
           style={{ ...field, borderColor: next && strength ? "#C96C00" : C.hairline }}
           autoFocus={forced}
         />
-        <p style={{ fontSize: "12.5px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? "#C96C00" : C.greenText) : "#4A5A74" }}>
+        <p style={{ fontSize: "13px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? "#C96C00" : C.greenText) : "#4A5A74" }}>
           {next ? (strength ?? "That will do.") : "At least 10 characters. Avoid anything with the organisation's name in it."}
         </p>
       </div>
@@ -99,7 +99,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
           style={{ ...field, borderColor: mismatch ? "#C96C00" : C.hairline }}
         />
         {mismatch && (
-          <p style={{ fontSize: "12.5px", color: "#C96C00", margin: "6px 0 0" }}>These do not match yet.</p>
+          <p style={{ fontSize: "13px", color: "#C96C00", margin: "6px 0 0" }}>These do not match yet.</p>
         )}
       </div>
 
@@ -108,7 +108,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
         disabled={pending || !next || Boolean(strength) || mismatch || (hasPassword && !current)}
         style={{
           width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-          color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: "9999px",
+          color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: R.chip,
           padding: "14px 22px", minHeight: "48px",
           cursor: pending ? "default" : "pointer",
           opacity: pending || !next || Boolean(strength) || mismatch || (hasPassword && !current) ? 0.5 : 1,
@@ -118,7 +118,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
       </button>
 
       {err && (
-        <p role="alert" style={{ fontSize: "13.5px", lineHeight: 1.5, color: "#A3261A", backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px", padding: "11px 14px", margin: "14px 0 0" }}>
+        <p role="alert" style={{ fontSize: "15px", lineHeight: 1.5, color: "#A3261A", backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px", padding: "11px 14px", margin: "14px 0 0" }}>
           {err}
         </p>
       )}

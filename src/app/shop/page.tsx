@@ -1,6 +1,7 @@
 import { getPublishedProducts } from "@/lib/content";
 import { ShopClient, type ShopProduct } from "./ShopClient";
 import { siteContent } from "@/lib/site-content";
+import { R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Shop" };
 
@@ -27,7 +28,7 @@ export default async function ShopPage() {
   if (products.length === 0) {
     return (
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "72px 26px 96px", textAlign: "center" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>SCHOOL SHOP</p>
+        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>SCHOOL SHOP</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "14px" }}>
           The shop is not open yet.
         </h1>
@@ -37,7 +38,7 @@ export default async function ShopPage() {
         </p>
         <a
           href="mailto:education@justonechesed.org"
-          style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}
+          style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
         >
           education@justonechesed.org
         </a>

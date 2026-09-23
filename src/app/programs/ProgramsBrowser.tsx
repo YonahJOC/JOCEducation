@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Program } from "@/lib/programs";
 import { siteContent } from "@/lib/site-content";
+import { C, R } from "@/lib/joc-tokens";
 
 
 export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Program[] }) {
@@ -12,7 +13,7 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
       {/* Hero */}
       <div style={{ backgroundColor: "#10233F", padding: "64px 26px 56px" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginBottom: "12px" }}>CHESED PROGRAMS</p>
+          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginBottom: "12px" }}>CHESED PROGRAMS</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 54px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#fff", maxWidth: "16ch", marginBottom: "18px" }}>
             {c.text("hero.headline", "Chesed your school can actually run.")}
           </h1>
@@ -28,7 +29,7 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "52px 26px 0" }}>
         {/* JOC Programs */}
         <div style={{ marginBottom: "64px" }}>
-          <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>JOC-ORGANIZED PROGRAMS</p>
+          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>JOC-ORGANIZED PROGRAMS</p>
           <h2 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 38px)", lineHeight: 1.06, letterSpacing: "-0.03em", color: "#10233F", marginBottom: "8px" }}>
             Programs JOC runs for your school.
           </h2>
@@ -40,21 +41,21 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "18px" }}>
             {PROGRAMS.map((p) => (
-              <div key={p.slug} style={{ backgroundColor: "#fff", borderRadius: "22px", border: "1px solid rgba(16,35,63,.1)", padding: "26px", display: "flex", flexDirection: "column" }}>
+              <div key={p.slug} style={{ backgroundColor: "#fff", borderRadius: "22px", border: `1px solid ${C.hairline}`, padding: "26px", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                  <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>{p.tag}</span>
+                  <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 12px" }}>{p.tag}</span>
                   {p.comingSoon && (
-                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#C96C00", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 12px" }}>Coming soon</span>
+                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#C96C00", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 12px" }}>Coming soon</span>
                   )}
                 </div>
                 <h3 style={{ fontWeight: 700, fontSize: "21px", color: "#10233F", marginBottom: "10px" }}>{p.name}</h3>
                 <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "12px", flex: 1 }}>{p.description}</p>
-                <p style={{ fontSize: "12.5px", color: "#C96C00", fontWeight: 600, marginBottom: "20px" }}>{p.meta}</p>
-                <div style={{ fontSize: "12.5px", color: "#4A5A74", marginBottom: "20px" }}>
+                <p style={{ fontSize: "13px", color: "#C96C00", fontWeight: 600, marginBottom: "20px" }}>{p.meta}</p>
+                <div style={{ fontSize: "13px", color: "#4A5A74", marginBottom: "20px" }}>
                   <span style={{ fontWeight: 600 }}>Included with: </span>{p.available.join(", ")}
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <Link href={`/programs/${p.slug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                  <Link href={`/programs/${p.slug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: R.chip, padding: "10px 16px", textDecoration: "none" }}>
                     {p.comingSoon ? "Read more" : "Learn more"}
                   </Link>
                   {/* Same order as the program's own page: its own sign-up
@@ -62,15 +63,15 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
                       that said Register while the page said Sign up would be
                       two answers to the same question. */}
                   {p.comingSoon ? null : p.formSlug ? (
-                    <Link href={`/forms/${p.formSlug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                    <Link href={`/forms/${p.formSlug}`} style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "10px 16px", textDecoration: "none" }}>
                       Sign up
                     </Link>
                   ) : p.external ? (
-                    <a href={p.externalHref} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                    <a href={p.externalHref} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "10px 16px", textDecoration: "none" }}>
                       Visit ↗
                     </a>
                   ) : (
-                    <Link href="/pricing" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "13.5px", borderRadius: "9999px", padding: "10px 16px", textDecoration: "none" }}>
+                    <Link href="/pricing" style={{ flex: 1, display: "block", textAlign: "center", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "10px 16px", textDecoration: "none" }}>
                       Register
                     </Link>
                   )}
@@ -88,7 +89,7 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
               Most schools start with JOC App + JOC Education. Choose your plan and you're up and running within a week.
             </p>
           </div>
-          <Link href="/pricing" style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
+          <Link href="/pricing" style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}>
             See pricing →
           </Link>
         </div>

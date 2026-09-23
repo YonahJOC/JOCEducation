@@ -28,10 +28,10 @@ export function LegalPage({
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 42px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 10px" }}>
           {title}
         </h1>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 34px", paddingBottom: "22px", borderBottom: `1px solid ${C.hairline}` }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 34px", paddingBottom: "22px", borderBottom: `1px solid ${C.hairline}` }}>
           Last updated {updated}
         </p>
-        <div style={{ fontSize: "16px", lineHeight: 1.7, color: "rgba(16,35,63,.82)" }}>{children}</div>
+        <div style={{ fontSize: "16px", lineHeight: 1.7, color: C.ink }}>{children}</div>
 
         <p style={{ marginTop: "44px", paddingTop: "22px", borderTop: `1px solid ${C.hairline}`, fontSize: "14px" }}>
           <Link href="/" style={{ color: C.blue, textDecoration: "none", fontWeight: 600 }}>

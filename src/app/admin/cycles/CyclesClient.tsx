@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, pageTitle } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveCycle, deleteCycle, importStaticCycles } from "@/app/actions/cycles";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
@@ -46,7 +46,7 @@ const label: React.CSSProperties = {
   color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -92,7 +92,7 @@ export function CyclesClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -113,8 +113,8 @@ export function CyclesClient({
             })}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-              backgroundColor: "#C96C00", border: "none", borderRadius: "9999px",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+              backgroundColor: "#C96C00", border: "none", borderRadius: R.chip,
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -124,11 +124,11 @@ export function CyclesClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: msg === "Imported." ? C.greenText : C.redText, marginBottom: "14px" }}>{msg}</p>
+        <p style={{ fontSize: "15px", color: msg === "Imported." ? C.greenText : C.redText, marginBottom: "14px" }}>{msg}</p>
       )}
 
       {cycles.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
         </div>
       ) : (
@@ -141,7 +141,7 @@ export function CyclesClient({
               <div
                 key={c.id}
                 style={{
-                  backgroundColor: "#fff", border: running ? `1.5px solid ${c.color}` : "1px solid rgba(16,35,63,.09)",
+                  backgroundColor: "#fff", border: running ? `1.5px solid ${c.color}` : `1px solid ${C.hairline}`,
                   borderRadius: "16px", padding: "16px 18px",
                   display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap",
                   opacity: past ? 0.65 : 1,
@@ -151,10 +151,10 @@ export function CyclesClient({
                   {c.num}
                 </span>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <p style={{ fontSize: "15.5px", fontWeight: 700, color: C.ink, margin: 0 }}>
+                  <p style={{ fontSize: "16px", fontWeight: 700, color: C.ink, margin: 0 }}>
                     {c.theme}
                     {running && (
-                      <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#fff", backgroundColor: c.color, borderRadius: "9999px", padding: "2px 9px", marginLeft: "9px", letterSpacing: "0.06em" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 9px", marginLeft: "9px", letterSpacing: "0.06em" }}>
                         RUNNING NOW
                       </span>
                     )}
@@ -162,8 +162,8 @@ export function CyclesClient({
                       <span
                         key={t}
                         style={{
-                          fontSize: "10.5px", fontWeight: 700, color: "#4A5A74",
-                          backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px",
+                          fontSize: "11px", fontWeight: 700, color: "#4A5A74",
+                          backgroundColor: C.panel, borderRadius: R.chip,
                           padding: "2px 8px", marginLeft: "8px", letterSpacing: "0.04em",
                         }}
                       >
@@ -171,7 +171,7 @@ export function CyclesClient({
                       </span>
                     ))}
                   </p>
-                  <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+                  <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                     {c.range} · {c.weeks} weeks · {c.hebrew} ·{" "}
                     {c.lessonCount > 0
                       ? `${c.lessonCount} lesson${c.lessonCount === 1 ? "" : "s"}`
@@ -321,7 +321,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           When it runs
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px", marginBottom: "12px" }}>
@@ -396,7 +396,7 @@ function CycleForm({
                 </p>
               ))}
             </div>
-            <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "9px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontSize: "13px", color: "#4A5A74", margin: "9px 0 0", lineHeight: 1.5 }}>
               Each one keeps its own length. You do not need to edit them yourself.
             </p>
           </div>
@@ -421,7 +421,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           About this cycle
         </p>
         <textarea value={d.desc} onChange={(e) => set("desc", e.target.value)} rows={3} placeholder="A paragraph a teacher reads to understand what these weeks are for." disabled={disabled} style={{ ...field, resize: "vertical" }} />
@@ -431,7 +431,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
           Lesson plan breakdown
         </p>
         {/* This used to read "The dates give 8 weeks. You have written 4.",
@@ -439,7 +439,7 @@ function CycleForm({
             stages a cycle moves through, not one entry per week. Cycle 1 runs
             eight weeks in four stages on purpose. It says what it is now, and
             stops telling anybody off. */}
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
           The stages this cycle moves through, in order — what a teacher reads to see how it runs.
           {derivedWeeks
             ? ` These ${d.weekPlan.length} stage${d.weekPlan.length === 1 ? "" : "s"} spread across ${derivedWeeks} week${derivedWeeks === 1 ? "" : "s"}; there is no need for one each.`
@@ -464,7 +464,7 @@ function CycleForm({
                   type="button"
                   onClick={() => set("weekPlan", d.weekPlan.filter((_, n) => n !== i))}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
                 >
                   Remove
                 </button>
@@ -483,7 +483,7 @@ function CycleForm({
             type="button"
             onClick={() => set("weekPlan", [...d.weekPlan, { title: "", body: "" }])}
             disabled={disabled}
-            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
           >
             + Add a week
           </button>
@@ -496,7 +496,7 @@ function CycleForm({
           disabled={disabled || pending || !d.theme.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "46px", cursor: pending ? "wait" : "pointer",
             opacity: disabled || pending || !d.theme.trim() ? 0.5 : 1,
           }}
@@ -511,14 +511,14 @@ function CycleForm({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "46px" }}
+            style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "46px" }}
           >
             Delete
           </button>
         )}
       </div>
 
-      {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{msg}</p>}
+      {msg && <p style={{ fontSize: "15px", color: C.redText, margin: 0 }}>{msg}</p>}
     </form>
   );
 }
@@ -557,7 +557,7 @@ function Lines({
         type="button"
         onClick={() => onChange([...items, ""])}
         disabled={disabled}
-        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
       >
         + Add
       </button>
@@ -603,7 +603,7 @@ function TagPicker({
                 display: "inline-flex", alignItems: "center", gap: "7px",
                 fontSize: "13px", fontWeight: 600, color: C.blue,
                 backgroundColor: "rgba(45,70,175,.08)", border: `1px solid rgba(45,70,175,.25)`,
-                borderRadius: "9999px", padding: "6px 8px 6px 13px",
+                borderRadius: R.chip, padding: "6px 8px 6px 13px",
               }}
             >
               {t}
@@ -635,7 +635,7 @@ function TagPicker({
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 500,
               color: "#4A5A74", backgroundColor: "#fff",
-              border: `1px dashed ${C.hairline}`, borderRadius: "9999px",
+              border: `1px dashed ${C.hairline}`, borderRadius: R.chip,
               padding: "6px 13px", minHeight: "36px",
               cursor: disabled ? "not-allowed" : "pointer",
             }}

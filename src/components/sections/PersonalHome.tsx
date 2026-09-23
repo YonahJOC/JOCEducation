@@ -84,8 +84,8 @@ export async function PersonalHome({ data }: { data: HomeData }) {
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
               <span style={{ ...label, color: "#C6CFF0" }}>{cycle.range}</span>
             </div>
-            <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden", marginBottom: "20px" }}>
-              <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: C.orange }} />
+            <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden", marginBottom: "20px" }}>
+              <div style={{ height: "100%", width: `${pct}%`, borderRadius: R.chip, backgroundColor: C.orange }} />
             </div>
             <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: "#C6CFF0", margin: "0 0 18px" }}>
               Everything published for these weeks points at this one middah.
@@ -94,7 +94,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
               href={`/cycles/${cycle.slug}`}
               style={{
                 display: "inline-block", backgroundColor: C.orange, color: C.ink, fontWeight: 700,
-                fontSize: "14.5px", borderRadius: "9999px", padding: "12px 22px", textDecoration: "none",
+                fontSize: "14.5px", borderRadius: R.chip, padding: "12px 22px", textDecoration: "none",
               }}
             >
               See this Cycle&rsquo;s plan
@@ -144,7 +144,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px" }}>
         {/* New since last visit */}
         <section style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "20px", padding: "22px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
             New since you were last here
           </p>
           {data.newSinceLastVisit.length === 0 ? (
@@ -158,7 +158,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
                   <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orange, flexShrink: 0, marginTop: "7px" }} />
                   <div>
                     <p style={{ fontSize: "14.5px", color: C.ink, margin: 0, lineHeight: 1.45 }}>{n.title}</p>
-                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>{n.kind}</p>
+                    <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>{n.kind}</p>
                   </div>
                 </div>
               ))}
@@ -169,7 +169,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
         {/* Saved lessons */}
         <section style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "20px", padding: "22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+            <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
               Your saved lessons
             </p>
             <Link href="/lesson-plans" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
@@ -187,7 +187,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
                 return (
                   <Link key={l.id} href={`/lesson-plans/${l.id}`} style={{ textDecoration: "none" }}>
                     <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>{l.title}</p>
-                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {GRADE_LABEL[l.grade] ?? l.grade}{c ? ` · ${c.theme}` : ""}
                     </p>
                   </Link>
@@ -201,7 +201,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       {/* My school — read only */}
       {data.schoolName && (
         <section style={{ backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "22px", marginTop: "16px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
+          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
             Your school
           </p>
           <p style={{ fontWeight: 700, fontSize: "19px", color: C.ink, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
@@ -232,7 +232,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
 
       {/* Where to go */}
       <section style={{ marginTop: "26px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 14px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 14px" }}>
           Where to go
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px" }}>

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { BrandLockup } from "@/components/ui/Brand";
 import { signOutAction } from "@/app/actions/auth";
+import { C, ROW_SHADOW, R } from "@/lib/joc-tokens";
 
 const NAV = [
   { label: "Programs",        href: "/programs" },
@@ -59,7 +60,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
           backgroundColor: "rgba(251,249,244,.94)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          borderColor: "rgba(16,35,63,.1)",
+          borderColor: C.hairline,
         }}
       >
         <div
@@ -102,7 +103,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                     className="hidden xl:inline-flex"
                     style={{
                       fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-                      color: "#fff", backgroundColor: "#10233F", borderRadius: "9999px",
+                      color: "#fff", backgroundColor: "#10233F", borderRadius: R.chip,
                       padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
                     }}
                   >
@@ -115,7 +116,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                     className="hidden xl:inline-flex"
                     style={{
                       fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-                      color: "#10233F", backgroundColor: "#F4F7FD", borderRadius: "9999px",
+                      color: "#10233F", backgroundColor: "#F4F7FD", borderRadius: R.chip,
                       padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
                     }}
                   >
@@ -136,7 +137,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                     fontSize: "14px",
                     color: "#10233F",
                     backgroundColor: "#FA912D",
-                    borderRadius: "9999px",
+                    borderRadius: R.chip,
                     padding: "11px 22px",
                     textDecoration: "none",
                     whiteSpace: "nowrap",
@@ -175,7 +176,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
       {open && (
         <div
           className="xl:hidden fixed inset-0 z-50"
-          style={{ backgroundColor: "rgba(16,35,63,.35)" }}
+          style={{ backgroundColor: C.muted }}
           onClick={() => setOpen(false)}
         >
           <div
@@ -185,12 +186,12 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
               backgroundColor: "#FBF9F4",
               display: "flex",
               flexDirection: "column",
-              boxShadow: "-8px 0 32px rgba(16,35,63,.18)",
+              boxShadow: ROW_SHADOW,
             }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", borderBottom: "1px solid rgba(16,35,63,.1)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", borderBottom: `1px solid ${C.hairline}` }}>
               <Link href={account ? "/home" : "/"} style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
                 <BrandLockup height={18} priority={false} />
               </Link>
@@ -222,7 +223,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
 
               {account && (account.console || account.school) && (
                 <>
-                  <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "14px 24px 4px" }}>
+                  <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "14px 24px 4px" }}>
                     {account.roleLabel}
                   </p>
                   {account.console && (
@@ -240,16 +241,16 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
             </nav>
 
             {/* Drawer footer */}
-            <div style={{ padding: "20px 24px", borderTop: "1px solid rgba(16,35,63,.1)", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ padding: "20px 24px", borderTop: `1px solid ${C.hairline}`, display: "flex", flexDirection: "column", gap: "12px" }}>
               {account ? (
                 <>
                   <Link
                     href="/account"
-                    style={{ display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 24px", textDecoration: "none" }}
+                    style={{ display: "block", textAlign: "center", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 24px", textDecoration: "none" }}
                   >
                     Your account
                   </Link>
-                  <p style={{ fontSize: "12.5px", color: "#4A5A74", textAlign: "center", margin: 0, wordBreak: "break-all" }}>{account.email}</p>
+                  <p style={{ fontSize: "13px", color: "#4A5A74", textAlign: "center", margin: 0, wordBreak: "break-all" }}>{account.email}</p>
                   <form action={signOutAction}>
                     <button
                       type="submit"
@@ -263,7 +264,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
                 <>
                   <Link
                     href="/pricing"
-                    style={{ display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 24px", textDecoration: "none" }}
+                    style={{ display: "block", textAlign: "center", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 24px", textDecoration: "none" }}
                   >
                     Bring JOC to your school
                   </Link>
@@ -306,7 +307,7 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
         aria-label="Your account"
         aria-expanded={open}
         style={{
-          width: "38px", height: "38px", borderRadius: "9999px", border: "1px solid rgba(16,35,63,.15)",
+          width: "38px", height: "38px", borderRadius: R.chip, border: `1px solid ${C.hairline}`,
           backgroundColor: "#2D46AF", color: "#fff", fontFamily: "var(--font-outfit)",
           fontWeight: 700, fontSize: "15px", cursor: "pointer",
         }}
@@ -318,21 +319,21 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
         <div
           style={{
             position: "absolute", right: 0, top: "46px", width: "250px",
-            backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.12)", borderRadius: "14px",
-            boxShadow: "0 14px 38px rgba(16,35,63,.16)", padding: "14px", zIndex: 50,
+            backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "14px",
+            boxShadow: ROW_SHADOW, padding: "14px", zIndex: 50,
           }}
         >
           <p style={{ fontSize: "14px", fontWeight: 700, color: "#10233F", margin: 0 }}>
             {account.name ?? account.email}
           </p>
-          <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-all" }}>
+          <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-all" }}>
             {account.email}
           </p>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#C96C00", margin: "6px 0 0" }}>
+          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#C96C00", margin: "6px 0 0" }}>
             {account.roleLabel}
           </p>
 
-          <div style={{ borderTop: "1px solid rgba(16,35,63,.1)", margin: "12px 0", paddingTop: "4px" }}>
+          <div style={{ borderTop: `1px solid ${C.hairline}`, margin: "12px 0", paddingTop: "4px" }}>
             <MenuLink href="/home">Your home</MenuLink>
             {account.console && <MenuLink href="/admin">JOC Console</MenuLink>}
             {account.school && <MenuLink href="/school">My school</MenuLink>}

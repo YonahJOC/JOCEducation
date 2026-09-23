@@ -62,7 +62,7 @@ export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "sch
                 ...label,
                 color: dark ? C.ink : C.white,
                 backgroundColor: dark ? C.orange : C.orangeText,
-                borderRadius: "9999px", padding: "2px 7px", flexShrink: 0,
+                borderRadius: R.chip, padding: "2px 7px", flexShrink: 0,
               }}>
                 {i.need}
               </span>

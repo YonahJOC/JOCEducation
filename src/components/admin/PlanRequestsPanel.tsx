@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { respondToPlanRequest } from "@/app/actions/admin";
 
 export type PlanRequestRow = {
@@ -34,11 +34,11 @@ export function PlanRequestsPanel({
     <div
       style={{
         backgroundColor: "#fff",
-        border: open.length > 0 ? "1.5px solid #FA912D" : "1px solid rgba(16,35,63,.09)",
+        border: open.length > 0 ? "1.5px solid #FA912D" : `1px solid ${C.hairline}`,
         borderRadius: "16px", padding: "20px",
       }}
     >
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: open.length > 0 ? C.orangeText : "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: open.length > 0 ? C.orangeText : "#4A5A74", margin: "0 0 14px" }}>
         {open.length > 0 ? `${open.length} request${open.length === 1 ? "" : "s"} waiting` : "Plan requests"}
       </p>
 
@@ -68,13 +68,13 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
   }
 
   return (
-    <div style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(16,35,63,.06)" }}>
+    <div style={{ paddingBottom: "16px", borderBottom: `1px solid ${C.hairline}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "5px" }}>
-        <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>
+        <span style={{ fontSize: "13px", color: "#4A5A74" }}>
           {request.from} · {fmt(request.createdAt)}
         </span>
         <span style={{
-          fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
+          fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
           color: done ? C.greenText : C.orangeText,
         }}>
           {done ? "Answered" : "Waiting"}
@@ -86,7 +86,7 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
       {saved && (
         <div style={{ paddingLeft: "13px", borderLeft: `3px solid ${C.blue}`, marginBottom: "10px" }}>
           <p style={{ fontSize: "12px", color: "#4A5A74", margin: "0 0 3px" }}>Your reply</p>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.8)", margin: 0 }}>{saved}</p>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.ink, margin: 0 }}>{saved}</p>
         </div>
       )}
 
@@ -96,7 +96,7 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "9px 18px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "9px 18px",
             minHeight: "40px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -125,8 +125,8 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
                   key={v}
                   onClick={() => setStatus(v)}
                   style={{
-                    fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-                    padding: "7px 13px", borderRadius: "9999px", minHeight: "38px", cursor: "pointer",
+                    fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
+                    padding: "7px 13px", borderRadius: R.chip, minHeight: "38px", cursor: "pointer",
                     border: status === v ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                     backgroundColor: status === v ? "#F4F7FD" : "#fff",
                     color: status === v ? C.blue : "#4A5A74",
@@ -142,8 +142,8 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
               onClick={send}
               disabled={pending || !text.trim()}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "10px 20px",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+                backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "10px 20px",
                 minHeight: "42px", cursor: text.trim() ? "pointer" : "not-allowed",
                 opacity: pending || !text.trim() ? 0.5 : 1,
               }}
@@ -152,11 +152,11 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
             </button>
             <button
               onClick={() => { setReplying(false); setErr(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
             >
               Cancel
             </button>
-            {err && <span style={{ fontSize: "12.5px", color: "#A3261A" }}>{err}</span>}
+            {err && <span style={{ fontSize: "13px", color: "#A3261A" }}>{err}</span>}
           </div>
           <p style={{ fontSize: "12px", color: "#4A5A74", margin: 0, lineHeight: 1.5 }}>
             They see this on their Plan &amp; seats page. Changing the plan itself is separate — do that above.

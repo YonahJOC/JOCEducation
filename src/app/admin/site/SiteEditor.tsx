@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { saveDraft, discardDraft, publishDrafts, setPreview } from "@/app/actions/site";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -109,8 +109,8 @@ export function SiteEditor({
         <div className="joc-site-grid" style={{ display: "grid", gridTemplateColumns: "190px minmax(0,1fr) 280px", gap: "16px", alignItems: "start" }}>
 
           {/* Pane 1 — pages */}
-          <nav style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "10px", position: "sticky", top: "16px" }}>
-            <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "6px 10px 10px" }}>
+          <nav style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "10px", position: "sticky", top: "16px" }}>
+            <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "6px 10px 10px" }}>
               Pages
             </p>
             {pages.map((p) => {
@@ -122,7 +122,7 @@ export function SiteEditor({
                   style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px",
                     width: "100%", textAlign: "left", fontFamily: "var(--font-outfit)",
-                    fontSize: "13.5px", fontWeight: on ? 700 : 500,
+                    fontSize: "15px", fontWeight: on ? 700 : 500,
                     color: on ? C.blue : "#4A5A74",
                     backgroundColor: on ? "#F4F7FD" : "transparent",
                     border: "none", borderRadius: "10px", padding: "10px 10px",
@@ -131,7 +131,7 @@ export function SiteEditor({
                 >
                   <span>{p.label}</span>
                   {p.drafts > 0 && (
-                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: C.orange, borderRadius: "9999px", padding: "2px 7px", flexShrink: 0 }}>
+                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: C.orange, borderRadius: R.chip, padding: "2px 7px", flexShrink: 0 }}>
                       {p.drafts}
                     </span>
                   )}
@@ -143,8 +143,8 @@ export function SiteEditor({
           {/* Pane 2 — fields */}
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
             {sections.map(([section, sectionLabel]) => (
-              <div key={section} style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
-                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
+              <div key={section} style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+                <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
                   {sectionLabel}
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -167,7 +167,7 @@ export function SiteEditor({
           {/* Pane 3 — publish */}
           <aside style={{ position: "sticky", top: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ backgroundColor: DEEP, borderRadius: "16px", padding: "20px", color: "rgba(255,255,255,.8)" }}>
-              <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.5)", margin: "0 0 12px" }}>
+              <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.5)", margin: "0 0 12px" }}>
                 Unpublished
               </p>
               <p style={{ fontWeight: 800, fontSize: "34px", lineHeight: 1, color: allDirty.length ? C.orange : "#fff", margin: "0 0 4px", fontVariantNumeric: "tabular-nums" }}>
@@ -180,7 +180,7 @@ export function SiteEditor({
               {allDirty.length > 0 && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "7px", marginBottom: "16px", maxHeight: "180px", overflowY: "auto" }}>
                   {allDirty.map((f) => (
-                    <div key={f.id} style={{ fontSize: "12.5px", lineHeight: 1.4 }}>
+                    <div key={f.id} style={{ fontSize: "13px", lineHeight: 1.4 }}>
                       <span style={{ color: "rgba(255,255,255,.5)" }}>{f.sectionLabel} → </span>
                       <span style={{ color: "#fff" }}>{f.label}</span>
                     </div>
@@ -195,7 +195,7 @@ export function SiteEditor({
                   width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
                   color: allDirty.length ? C.ink : "rgba(255,255,255,.4)",
                   backgroundColor: allDirty.length ? C.orange : "rgba(255,255,255,.08)",
-                  border: "none", borderRadius: "9999px", padding: "13px 18px", minHeight: "44px",
+                  border: "none", borderRadius: R.chip, padding: "13px 18px", minHeight: "44px",
                   cursor: allDirty.length && !disabled ? "pointer" : "default",
                   marginBottom: "8px",
                 }}
@@ -208,9 +208,9 @@ export function SiteEditor({
                   type="submit"
                   disabled={disabled}
                   style={{
-                    width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px",
+                    width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px",
                     color: "#fff", backgroundColor: "transparent",
-                    border: "1px solid rgba(255,255,255,.25)", borderRadius: "9999px",
+                    border: "1px solid rgba(255,255,255,.25)", borderRadius: R.chip,
                     padding: "11px 18px", minHeight: "44px", cursor: "pointer",
                   }}
                 >
@@ -231,7 +231,7 @@ export function SiteEditor({
               </p>
             )}
 
-            <p style={{ fontSize: "12.5px", color: "#4A5A74", lineHeight: 1.55, margin: 0 }}>
+            <p style={{ fontSize: "13px", color: "#4A5A74", lineHeight: 1.55, margin: 0 }}>
               Every field keeps its full history, so any change can be rolled back after publishing.
             </p>
           </aside>
@@ -267,13 +267,13 @@ function FieldRow({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
         <label style={{ fontSize: "13px", fontWeight: 600, color: C.ink }}>
           {field.label}
-          <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#4A5A74", marginLeft: "9px" }}>
+          <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#4A5A74", marginLeft: "9px" }}>
             {TYPE_LABEL[field.type] ?? field.type}
           </span>
         </label>
         {dirty && (
           <span style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: C.orange, borderRadius: "9999px", padding: "2px 8px" }}>
+            <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: C.orange, borderRadius: R.chip, padding: "2px 8px" }}>
               Draft
             </span>
             <button
@@ -288,7 +288,7 @@ function FieldRow({
       </div>
 
       {field.help && (
-        <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "0 0 8px", lineHeight: 1.5 }}>{field.help}</p>
+        <p style={{ fontSize: "13px", color: "#4A5A74", margin: "0 0 8px", lineHeight: 1.5 }}>{field.help}</p>
       )}
 
       {isList ? (
@@ -322,7 +322,7 @@ function FieldRow({
       )}
 
       {field.updatedBy && !dirty && (
-        <p style={{ fontSize: "11.5px", color: "#4A5A74", margin: "6px 0 0" }}>
+        <p style={{ fontSize: "12px", color: "#4A5A74", margin: "6px 0 0" }}>
           Last edited by {field.updatedBy}
         </p>
       )}
@@ -407,7 +407,7 @@ function IconBtn({
       style={{
         width: "30px", height: "28px", display: "flex", alignItems: "center", justifyContent: "center",
         background: "none", border: "none", borderRadius: "6px",
-        color: disabled ? "rgba(16,35,63,.2)" : danger ? "#A3261A" : "#4A5A74",
+        color: disabled ? C.hairline : danger ? "#A3261A" : "#4A5A74",
         cursor: disabled ? "default" : "pointer", fontSize: "15px",
       }}
     >

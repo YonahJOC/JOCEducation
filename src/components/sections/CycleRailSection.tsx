@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getCycleState, getCurrentWeek, type Cycle } from "@/lib/cycles";
 import { CurrentCycleSection } from "./CurrentCycleSection";
+import { ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 
 const CARD_WIDTH = 300;
 const CARD_GAP = 12;
@@ -29,13 +30,13 @@ function RailCard({
         flexShrink: 0,
         width: `${CARD_WIDTH}px`,
         scrollSnapAlign: "start",
-        backgroundColor: active ? "#fff" : "rgba(16,35,63,.03)",
-        border: active ? `1px solid ${cycle.color}` : "1px solid rgba(16,35,63,.1)",
+        backgroundColor: active ? "#fff" : C.hairline,
+        border: active ? `1px solid ${cycle.color}` : `1px solid ${C.hairline}`,
         borderRadius: "20px",
         padding: "20px",
         textAlign: "left",
         cursor: "pointer",
-        boxShadow: active ? `0 6px 20px rgba(16,35,63,.1)` : "none",
+        boxShadow: active ? ROW_SHADOW : "none",
         transition: "all .2s",
         outline: "none",
         userSelect: "none",
@@ -48,7 +49,7 @@ function RailCard({
             width: "28px",
             height: "28px",
             borderRadius: "8px",
-            backgroundColor: active ? cycle.color : "rgba(16,35,63,.08)",
+            backgroundColor: active ? cycle.color : C.hairline,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -76,7 +77,7 @@ function RailCard({
               color: "#1D6B37",
               background: "rgba(27,127,75,.1)",
               padding: "3px 8px",
-              borderRadius: "9999px",
+              borderRadius: R.chip,
             }}
           >
             <span
@@ -109,9 +110,9 @@ function RailCard({
       {/* Hebrew month */}
       <p
         style={{
-          fontSize: "10.5px",
+          fontSize: "11px",
           fontWeight: 700,
-          letterSpacing: "0.18em",
+          letterSpacing: "0.04em",
           textTransform: "uppercase",
           color: active ? cycle.color : "#4A5A74",
           marginBottom: "4px",
@@ -133,23 +134,23 @@ function RailCard({
       >
         {cycle.theme}
       </p>
-      <p style={{ fontSize: "12.5px", color: "#4A5A74", marginBottom: "14px", lineHeight: 1.4 }}>
+      <p style={{ fontSize: "13px", color: "#4A5A74", marginBottom: "14px", lineHeight: 1.4 }}>
         {cycle.gloss}
       </p>
 
       {/* Progress bar */}
       <div>
-        <div style={{ height: "4px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.08)", overflow: "hidden" }}>
+        <div style={{ height: "4px", borderRadius: R.chip, backgroundColor: C.panel, overflow: "hidden" }}>
           <div
             style={{
               height: "100%",
-              borderRadius: "9999px",
+              borderRadius: R.chip,
               backgroundColor:
                 state === "past"
-                  ? "rgba(16,35,63,.25)"
+                  ? C.hairline
                   : active
                   ? cycle.color
-                  : "rgba(16,35,63,.2)",
+                  : C.hairline,
               width:
                 state === "past"
                   ? "100%"
@@ -283,7 +284,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
       <p
         style={{
           fontWeight: 700,
-          fontSize: "11.5px",
+          fontSize: "12px",
           letterSpacing: "0.22em",
           textTransform: "uppercase",
           color: "#C96C00",
@@ -332,7 +333,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
       <div
         style={{
           backgroundColor: "#fff",
-          border: "1px solid rgba(16,35,63,.1)",
+          border: `1px solid ${C.hairline}`,
           borderRadius: "26px",
           padding: "32px",
           marginBottom: "20px",
@@ -360,12 +361,12 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
             onClick={handleJumpToday}
             aria-label="Jump to current cycle"
             style={{
-              fontSize: "12.5px",
+              fontSize: "13px",
               fontWeight: 600,
               color: "#2D46AF",
               background: "rgba(45,70,175,.08)",
               border: "none",
-              borderRadius: "9999px",
+              borderRadius: R.chip,
               padding: "8px 16px",
               cursor: "pointer",
             }}
@@ -380,7 +381,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
               width: "36px",
               height: "36px",
               borderRadius: "50%",
-              border: "1px solid rgba(16,35,63,.15)",
+              border: `1px solid ${C.hairline}`,
               background: "#fff",
               cursor: selected === 0 ? "default" : "pointer",
               opacity: selected === 0 ? 0.3 : 1,
@@ -401,7 +402,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
               width: "36px",
               height: "36px",
               borderRadius: "50%",
-              border: "1px solid rgba(16,35,63,.15)",
+              border: `1px solid ${C.hairline}`,
               background: "#fff",
               cursor: selected === CYCLES.length - 1 ? "default" : "pointer",
               opacity: selected === CYCLES.length - 1 ? 0.3 : 1,

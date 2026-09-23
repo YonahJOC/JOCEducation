@@ -1,3 +1,4 @@
+import { R } from "@/lib/joc-tokens";
 export default function ContactLoading() {
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "60px 26px 80px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "60px" }}>
@@ -21,7 +22,7 @@ export default function ContactLoading() {
           <Skel style={{ height: "48px", borderRadius: "12px" }} />
         </div>
         <Skel style={{ height: "130px", borderRadius: "12px" }} />
-        <Skel style={{ height: "48px", borderRadius: "9999px" }} />
+        <Skel style={{ height: "48px", borderRadius: R.chip }} />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import Image from "next/image";
 import Link from "next/link";
 import { getCycleState, getCurrentWeek } from "@/lib/cycles";
@@ -118,7 +118,7 @@ export default async function EducatorLanding({
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "11px", textDecoration: "none", flexShrink: 0 }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={168} height={20} priority className="joc-wordmark" style={{ height: "20px", width: "auto" }} />
             <span aria-hidden="true" className="joc-brand-sub" style={{ width: "1px", height: "20px", backgroundColor: C.hairline }} />
-            <span className="joc-brand-sub" style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
+            <span className="joc-brand-sub" style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -138,7 +138,7 @@ export default async function EducatorLanding({
               className="joc-header-signin"
               style={{
                 fontSize: "14px", fontWeight: 600, color: C.ink, textDecoration: "none",
-                border: `1.5px solid ${C.hairline}`, borderRadius: "9999px", padding: "9px 18px",
+                border: `1.5px solid ${C.hairline}`, borderRadius: R.chip, padding: "9px 18px",
                 display: "inline-flex", alignItems: "center", minHeight: "44px",
               }}
             >
@@ -148,7 +148,7 @@ export default async function EducatorLanding({
               href="#demo"
               style={{
                 fontSize: "14px", fontWeight: 700, color: C.ink, backgroundColor: C.orange,
-                borderRadius: "9999px", padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
+                borderRadius: R.chip, padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
                 display: "inline-flex", alignItems: "center", minHeight: "44px",
               }}
             >
@@ -169,9 +169,9 @@ export default async function EducatorLanding({
             <span
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",
-                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "9999px",
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: R.chip,
                 padding: "7px 15px", marginBottom: "22px",
-                fontSize: "13.5px", fontWeight: 500, color: C.ink,
+                fontSize: "15px", fontWeight: 500, color: C.ink,
               }}
             >
               <span className="joc-pulse" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orange, flexShrink: 0 }} />
@@ -221,7 +221,7 @@ export default async function EducatorLanding({
                 padding: "16px 18px", marginBottom: "26px", maxWidth: "46ch",
               }}
             >
-              <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 7px" }}>
+              <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 7px" }}>
                 In development
               </p>
               <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
@@ -244,7 +244,7 @@ export default async function EducatorLanding({
                   borderRadius: "14px", padding: "13px 16px", marginBottom: "12px",
                 }}
               >
-                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.ink, margin: 0 }}>
+                <p style={{ fontSize: "15px", lineHeight: 1.55, color: C.ink, margin: 0 }}>
                   Sign in to continue. We&rsquo;ll take you where you were going.
                 </p>
               </div>
@@ -257,7 +257,7 @@ export default async function EducatorLanding({
                   borderRadius: "14px", padding: "13px 16px", marginBottom: "12px",
                 }}
               >
-                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
+                <p style={{ fontSize: "15px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
                   <strong>That account isn&rsquo;t attached to a school yet.</strong> Sign in with your school
                   email address, or <a href="#demo" style={{ color: "#C96C00", fontWeight: 700 }}>book a walkthrough</a>.
                 </p>
@@ -297,19 +297,19 @@ export default async function EducatorLanding({
             </div>
 
             <div>
-              <p style={{ fontSize: "15.5px", lineHeight: 1.65, color: "rgba(255,255,255,.76)", margin: "0 0 24px" }}>
+              <p style={{ fontSize: "16px", lineHeight: 1.65, color: "rgba(255,255,255,.76)", margin: "0 0 24px" }}>
                 The JOC year runs as {allCycles.length} consecutive Cycles, from the first week of school through Shavuos. Each one takes a single
                 middah and one guiding question, and every lesson, program and resource for those weeks points at it. The whole school is
                 working on the same thing at the same time.
               </p>
 
               <div style={{ marginBottom: "26px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12.5px", color: "rgba(255,255,255,.6)", marginBottom: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "rgba(255,255,255,.6)", marginBottom: "8px" }}>
                   <span>Week {week} of {cycle.weeks}</span>
                   <span>{cycle.range}</span>
                 </div>
-                <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: C.orange, transition: "width .4s ease" }} />
+                <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${pct}%`, borderRadius: R.chip, backgroundColor: C.orange, transition: "width .4s ease" }} />
                 </div>
               </div>
 
@@ -321,8 +321,8 @@ export default async function EducatorLanding({
                     <span
                       key={c.slug}
                       style={{
-                        fontSize: "12.5px", fontWeight: on ? 700 : 500,
-                        padding: "7px 13px", borderRadius: "9999px",
+                        fontSize: "13px", fontWeight: on ? 700 : 500,
+                        padding: "7px 13px", borderRadius: R.chip,
                         backgroundColor: on ? C.orange : "rgba(255,255,255,.09)",
                         color: on ? C.ink : done ? "rgba(255,255,255,.42)" : "rgba(255,255,255,.8)",
                         border: on ? "none" : "1px solid rgba(255,255,255,.14)",
@@ -340,7 +340,7 @@ export default async function EducatorLanding({
 
       {/* 5 — What's inside */}
       <section id="inside" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 20px" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
+        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
           What&rsquo;s inside
         </p>
         <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 34px" }}>
@@ -354,7 +354,7 @@ export default async function EducatorLanding({
             <div
               key={`${card.title}-${i}`}
               style={{
-                backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.09)`,
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
                 borderRadius: "22px", overflow: "hidden", display: "flex", flexDirection: "column",
               }}
             >
@@ -376,7 +376,7 @@ export default async function EducatorLanding({
       <section id="demo" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 72px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "48px", alignItems: "start" }}>
           <div>
-            <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
+            <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
               Book a walkthrough
             </p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 18px" }}>
@@ -443,16 +443,16 @@ export default async function EducatorLanding({
                 height={21}
                 style={{ height: "20px", width: "auto", display: "block", marginBottom: "6px" }}
               />
-              <p style={{ fontWeight: 700, fontSize: "12px", color: C.orange, margin: 0, letterSpacing: "0.2em", textTransform: "uppercase" }}>
+              <p style={{ fontWeight: 700, fontSize: "12px", color: C.orange, margin: 0, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                 Education
               </p>
-              <p style={{ fontSize: "12.5px", margin: "3px 0 0" }}>
+              <p style={{ fontSize: "13px", margin: "3px 0 0" }}>
                 A 501(c)(3) nonprofit organization
               </p>
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: "22px", flexWrap: "wrap", fontSize: "13.5px" }}>
+          <div style={{ display: "flex", gap: "22px", flexWrap: "wrap", fontSize: "15px" }}>
             <Link href="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
             <Link href="/terms" style={{ color: "inherit", textDecoration: "none" }}>Terms</Link>
             <a href="mailto:education@justonechesed.org" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>

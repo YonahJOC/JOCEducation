@@ -1,3 +1,4 @@
+import { R } from "@/lib/joc-tokens";
 export default function PortalLoading() {
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 26px 72px" }}>
@@ -7,8 +8,8 @@ export default function PortalLoading() {
           <Skel style={{ width: "300px", height: "38px" }} />
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
-          <Skel style={{ width: "130px", height: "42px", borderRadius: "9999px" }} />
-          <Skel style={{ width: "130px", height: "42px", borderRadius: "9999px" }} />
+          <Skel style={{ width: "130px", height: "42px", borderRadius: R.chip }} />
+          <Skel style={{ width: "130px", height: "42px", borderRadius: R.chip }} />
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", marginBottom: "36px" }}>

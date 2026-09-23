@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import { GRADE_LABELS, TIME_LABELS, STRIPE_COLORS } from "@/lib/lessons";
 import type { PublicLesson } from "@/lib/content";
+import { ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 
 const PREP_LABELS: Record<string, string> = { all: "Any prep", Minimal: "Minimal", Moderate: "Moderate", Substantial: "Substantial" };
 
@@ -33,14 +34,14 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
   return (
     <>
       {/* Search + filters */}
-      <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", padding: "20px 24px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "20px 24px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ position: "relative" }}>
           <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: "#4A5A74", pointerEvents: "none" }}>⌕</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by topic, theme, or keyword…"
-            style={{ width: "100%", boxSizing: "border-box", paddingLeft: "38px", paddingRight: "14px", paddingTop: "11px", paddingBottom: "11px", fontSize: "15px", color: "#10233F", backgroundColor: "#F8FAFE", border: "1px solid rgba(16,35,63,.15)", borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)" }}
+            style={{ width: "100%", boxSizing: "border-box", paddingLeft: "38px", paddingRight: "14px", paddingTop: "11px", paddingBottom: "11px", fontSize: "15px", color: "#10233F", backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)" }}
           />
         </div>
 
@@ -50,19 +51,19 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
               <Chip key={k} label={v} active={grade === k} onClick={() => setGrade(k)} />
             ))}
           </FilterGroup>
-          <div style={{ width: "1px", height: "28px", backgroundColor: "rgba(16,35,63,.12)", flexShrink: 0 }} />
+          <div style={{ width: "1px", height: "28px", backgroundColor: C.panel, flexShrink: 0 }} />
           <FilterGroup label="Time">
             {Object.entries(TIME_LABELS).map(([k, v]) => (
               <Chip key={k} label={v} active={time === k} onClick={() => setTime(k)} />
             ))}
           </FilterGroup>
-          <div style={{ width: "1px", height: "28px", backgroundColor: "rgba(16,35,63,.12)", flexShrink: 0 }} />
+          <div style={{ width: "1px", height: "28px", backgroundColor: C.panel, flexShrink: 0 }} />
           <FilterGroup label="Prep">
             {Object.entries(PREP_LABELS).map(([k, v]) => (
               <Chip key={k} label={v} active={prep === k} onClick={() => setPrep(k)} />
             ))}
           </FilterGroup>
-          <span style={{ marginLeft: "auto", fontWeight: 600, fontSize: "13.5px", color: "#4A5A74", whiteSpace: "nowrap" }}>
+          <span style={{ marginLeft: "auto", fontWeight: 600, fontSize: "15px", color: "#4A5A74", whiteSpace: "nowrap" }}>
             {filtered.length} {filtered.length === 1 ? "plan" : "plans"}
           </span>
         </div>
@@ -79,7 +80,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
           {lessons.length > 0 && (
             <button
               onClick={() => { setGrade("all"); setTime("all"); setPrep("all"); setQuery(""); }}
-              style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "9999px", padding: "11px 22px", border: "none", cursor: "pointer" }}
+              style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: R.chip, padding: "11px 22px", border: "none", cursor: "pointer" }}
             >
               Clear all filters
             </button>
@@ -109,7 +110,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
   return (
     <button
       onClick={onClick}
-      style={{ fontWeight: 600, fontSize: "13.5px", padding: "9px 16px", borderRadius: "9999px", border: active ? "1.5px solid #10233F" : "1px solid rgba(16,35,63,.2)", backgroundColor: active ? "#10233F" : "#fff", color: active ? "#fff" : "#10233F", cursor: "pointer", whiteSpace: "nowrap" }}
+      style={{ fontWeight: 600, fontSize: "15px", padding: "9px 16px", borderRadius: R.chip, border: active ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: active ? "#10233F" : "#fff", color: active ? "#fff" : "#10233F", cursor: "pointer", whiteSpace: "nowrap" }}
     >
       {label}
     </button>
@@ -128,23 +129,23 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
   return (
     <Link
       href={`/lesson-plans/${lesson.id}`}
-      style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden", transition: "border-color .15s, box-shadow .15s, transform .15s" }}
+      style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, overflow: "hidden", transition: "border-color .15s, box-shadow .15s, transform .15s" }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLAnchorElement;
         el.style.borderColor = "#2D46AF";
-        el.style.boxShadow = "0 10px 28px rgba(16,35,63,.11)";
+        el.style.boxShadow = ROW_SHADOW;
         el.style.transform = "translateY(-2px)";
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget as HTMLAnchorElement;
-        el.style.borderColor = "rgba(16,35,63,.1)";
+        el.style.borderColor = C.hairline;
         el.style.boxShadow = "none";
         el.style.transform = "translateY(0)";
       }}
     >
       <div style={{ height: "8px", backgroundColor: STRIPE_COLORS[colorIndex] }} />
       <div style={{ padding: "20px" }}>
-        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "5px 12px", marginBottom: "10px" }}>
+        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: R.chip, padding: "5px 12px", marginBottom: "10px" }}>
           {lesson.theme}
         </span>
         <h2 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: "#10233F", marginBottom: "8px" }}>{lesson.title}</h2>
@@ -154,7 +155,7 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
           <MetaChip label={`${lesson.time} min`} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
           <MetaChip label={`${lesson.prep} prep`} style={{ backgroundColor: prepStyle.bg, color: prepStyle.text }} />
         </div>
-        <div style={{ borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "13px", color: "#4A5A74" }}>
             {lesson.files.length} file{lesson.files.length !== 1 ? "s" : ""} included
           </span>
@@ -166,5 +167,5 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
 }
 
 function MetaChip({ label, style: s }: { label: string; style: React.CSSProperties }) {
-  return <span style={{ fontWeight: 600, fontSize: "12.5px", padding: "5px 10px", borderRadius: "8px", ...s }}>{label}</span>;
+  return <span style={{ fontWeight: 600, fontSize: "13px", padding: "5px 10px", borderRadius: "8px", ...s }}>{label}</span>;
 }

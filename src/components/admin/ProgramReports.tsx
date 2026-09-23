@@ -129,7 +129,7 @@ export function ProgramReports({
                       <strong style={{ color: C.ink }}>Would change:</strong> {r.wouldChange}
                     </p>
                   )}
-                  <p style={{ fontSize: "12.5px", color: C.muted, margin: "8px 0 0" }}>
+                  <p style={{ fontSize: "13px", color: C.muted, margin: "8px 0 0" }}>
                     Written by an ambassador at {r.schoolName}.
                   </p>
                 </div>

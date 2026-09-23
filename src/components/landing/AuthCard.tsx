@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useActionState } from "react";
-import { C } from "@/lib/joc-tokens";
+import { ROW_SHADOW, R, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
 
@@ -19,7 +19,7 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   display: "block",
-  fontSize: "12.5px",
+  fontSize: "13px",
   fontWeight: 600,
   color: "#4A5A74",
   marginBottom: "6px",
@@ -67,8 +67,8 @@ export function AuthCard({
       style={{
         backgroundColor: "#fff",
         borderRadius: "24px",
-        border: "1px solid rgba(16,35,63,.09)",
-        boxShadow: "0 18px 44px rgba(16,35,63,.13)",
+        border: `1px solid ${C.hairline}`,
+        boxShadow: ROW_SHADOW,
         padding: "26px",
       }}
     >
@@ -81,7 +81,7 @@ export function AuthCard({
           gridTemplateColumns: "1fr 1fr",
           gap: "4px",
           backgroundColor: "#F4F7FD",
-          borderRadius: "9999px",
+          borderRadius: R.chip,
           padding: "4px",
           marginBottom: "22px",
         }}
@@ -97,13 +97,13 @@ export function AuthCard({
               fontWeight: 600,
               fontSize: "14px",
               padding: "10px 12px",
-              borderRadius: "9999px",
+              borderRadius: R.chip,
               border: "none",
               cursor: "pointer",
               minHeight: "44px",
               backgroundColor: tab === t ? "#fff" : "transparent",
               color: tab === t ? C.ink : "#4A5A74",
-              boxShadow: tab === t ? "0 1px 3px rgba(16,35,63,.12)" : "none",
+              boxShadow: tab === t ? ROW_SHADOW : "none",
               transition: "background .15s, color .15s",
             }}
           >
@@ -134,7 +134,7 @@ export function AuthCard({
           color: C.ink,
           backgroundColor: "#fff",
           border: `1.5px solid ${C.hairline}`,
-          borderRadius: "9999px",
+          borderRadius: R.chip,
           padding: "13px 18px",
           minHeight: "44px",
           cursor: "pointer",
@@ -163,7 +163,7 @@ export function AuthCard({
           the first, and the first would win. */}
       {tab === "signup" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          <p style={{ fontSize: "13.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
             Anyone can make an account. It starts with nothing attached to it — what you can see
             follows your school, once your address is verified.
           </p>
@@ -172,7 +172,7 @@ export function AuthCard({
             style={{
               display: "flex", alignItems: "center", justifyContent: "center",
               width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-              color: "#fff", backgroundColor: C.blue, borderRadius: "9999px",
+              color: "#fff", backgroundColor: C.blue, borderRadius: R.chip,
               padding: "14px 20px", minHeight: "44px", textDecoration: "none",
             }}
           >
@@ -204,7 +204,7 @@ export function AuthCard({
             <label htmlFor="password" style={labelStyle}>Password</label>
             <Link
               href="/forgot-password"
-              style={{ fontSize: "12.5px", color: C.blue, textDecoration: "none", fontWeight: 500 }}
+              style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 500 }}
             >
               Forgot?
             </Link>
@@ -229,7 +229,7 @@ export function AuthCard({
             color: "#fff",
             backgroundColor: C.blue,
             border: "none",
-            borderRadius: "9999px",
+            borderRadius: R.chip,
             padding: "14px 20px",
             minHeight: "44px",
             cursor: signingIn || !passwordEnabled ? "default" : "pointer",
@@ -282,7 +282,7 @@ export function AuthCard({
 
       <p
         style={{
-          fontSize: "12.5px",
+          fontSize: "13px",
           lineHeight: 1.55,
           color: "#4A5A74",
           marginTop: "18px",

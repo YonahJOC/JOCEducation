@@ -7,11 +7,11 @@ import { placeOrder } from "@/app/actions/orders";
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
   fontSize: "14.5px", color: C.ink, backgroundColor: "#fff",
-  border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "11px 13px", minHeight: "44px", outline: "none",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "12.5px", fontWeight: 600,
+  display: "block", fontSize: "13px", fontWeight: 600,
   color: "#4A5A74", marginBottom: "5px",
 };
 
@@ -114,7 +114,7 @@ export function OrderForm({
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} style={{ ...field, resize: "vertical" }} />
       </div>
 
-      {error && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{error}</p>}
+      {error && <p style={{ fontSize: "15px", color: C.redText, margin: 0 }}>{error}</p>}
 
       <button
         type="submit"

@@ -129,7 +129,7 @@ function MakeCode({
           </p>
           <p style={{
             fontFamily: "var(--font-outfit)", fontSize: "40px", fontWeight: 800,
-            letterSpacing: "0.14em", color: C.blue, margin: "0 0 12px",
+            letterSpacing: "0.04em", color: C.blue, margin: "0 0 12px",
           }}>
             {made.code}
           </p>

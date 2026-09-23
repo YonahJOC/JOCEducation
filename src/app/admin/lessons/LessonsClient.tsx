@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, pageTitle } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { LessonEditor, EMPTY_LESSON, type LessonDraft, type CycleRef } from "@/components/admin/LessonEditor";
 import { BulkImport } from "@/components/admin/BulkImport";
@@ -61,7 +61,7 @@ export function LessonsClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "42px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -73,18 +73,18 @@ export function LessonsClient({
         <BulkImport cycles={cycles} disabled={disabled} />
       </div>
 
-      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         {lessons.length === 0 ? (
           <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
             No lessons yet.
           </p>
         ) : (
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "700px" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "700px" }}>
               <thead>
                 <tr>
                   {["Title", "Grade", "Time", "Cycle", "Status", ""].map((h, i) => (
-                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: "1px solid rgba(16,35,63,.08)", backgroundColor: "#FAFBFD", whiteSpace: "nowrap" }}>
+                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                       {h}
                     </th>
                   ))}
@@ -95,17 +95,17 @@ export function LessonsClient({
                   const cycle = cycles.find((c) => c.slug === l.cycleSlug);
                   return (
                     <tr key={l.id}>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}` }}>
                         <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{l.title}</span>
-                        <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{l.theme}</span>
+                        <span style={{ fontSize: "13px", color: "#4A5A74" }}>{l.theme}</span>
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
                         {GRADE_LABELS[l.grade] ?? l.grade}
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
                         {l.timeMinutes} min
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74" }}>
                         {cycle ? (
                           <>
                             {cycle.num}. {cycle.theme}
@@ -116,19 +116,19 @@ export function LessonsClient({
                             </span>
                           </>
                         ) : (
-                          <span style={{ color: "rgba(16,35,63,.35)" }}>—</span>
+                          <span style={{ color: C.muted }}>—</span>
                         )}
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}` }}>
                         <span style={{
-                          display: "inline-block", fontSize: "11.5px", fontWeight: 700, padding: "3px 9px", borderRadius: "9999px",
+                          display: "inline-block", fontSize: "12px", fontWeight: 700, padding: "3px 9px", borderRadius: R.chip,
                           color: l.published ? "#1D6B37" : "#C96C00",
                           backgroundColor: l.published ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
                         }}>
                           {l.published ? "published" : "draft"}
                         </span>
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, whiteSpace: "nowrap" }}>
                         <button
                           onClick={() => setEditing(l)}
                           style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, marginRight: "12px" }}

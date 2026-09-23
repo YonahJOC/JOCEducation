@@ -226,12 +226,12 @@ export default async function GuidePage() {
 function Group({ title, sections }: { title: string; sections: Section[] }) {
   return (
     <div style={{ marginBottom: "36px" }}>
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
         {title}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {sections.map((s) => (
-          <div key={s.href} style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "22px" }}>
+          <div key={s.href} style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
             <Link
               href={s.href}
               style={{ fontWeight: 700, fontSize: "17.5px", letterSpacing: "-0.02em", color: C.ink, textDecoration: "none" }}
@@ -243,11 +243,11 @@ function Group({ title, sections }: { title: string; sections: Section[] }) {
             </p>
             <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "7px" }}>
               {s.steps.map((step, i) => (
-                <li key={i} style={{ fontSize: "14px", color: "rgba(16,35,63,.82)", lineHeight: 1.6 }}>{step}</li>
+                <li key={i} style={{ fontSize: "14px", color: C.ink, lineHeight: 1.6 }}>{step}</li>
               ))}
             </ol>
             {s.note && (
-              <p style={{ fontSize: "13.5px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
+              <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
                 {s.note}
               </p>
             )}

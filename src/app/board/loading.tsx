@@ -1,3 +1,4 @@
+import { R } from "@/lib/joc-tokens";
 export default function BoardLoading() {
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 26px 72px" }}>
@@ -7,7 +8,7 @@ export default function BoardLoading() {
           <Skel style={{ width: "100%", height: "48px", marginBottom: "12px" }} />
           <Skel style={{ width: "80%", height: "20px" }} />
         </div>
-        <Skel style={{ width: "140px", height: "46px", borderRadius: "9999px" }} />
+        <Skel style={{ width: "140px", height: "46px", borderRadius: R.chip }} />
       </div>
       <Skel style={{ height: "64px", borderRadius: "20px", marginBottom: "24px" }} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "18px" }}>

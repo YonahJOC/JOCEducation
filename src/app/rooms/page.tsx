@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
@@ -82,7 +82,7 @@ export default async function RoomsPage() {
 
   return (
     <div style={{ maxWidth: "980px", margin: "0 auto", padding: "48px 26px 72px" }}>
-      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
+      <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
         STAFF ROOM
       </p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: C.ink, marginBottom: "12px" }}>
@@ -95,15 +95,15 @@ export default async function RoomsPage() {
       </p>
 
       {rooms.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "22px", padding: "48px 30px", textAlign: "center" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "22px", padding: "48px 30px", textAlign: "center" }}>
           <h2 style={{ fontWeight: 700, fontSize: "20px", color: C.ink, margin: "0 0 10px" }}>
             No rooms yet.
           </h2>
-          <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "50ch", margin: "0 auto 20px" }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "50ch", margin: "0 auto 20px" }}>
             The JOC education team opens the rooms. Tell them what you would want to talk about and
             they can start one.
           </p>
-          <Link href="/contact" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none" }}>
+          <Link href="/contact" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none" }}>
             Suggest a room
           </Link>
         </div>

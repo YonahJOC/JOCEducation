@@ -5,6 +5,7 @@ import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { getCycleContent, type PublicLesson, type PublicResource } from "@/lib/content";
 import { siteContent } from "@/lib/site-content";
+import { C, R } from "@/lib/joc-tokens";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -69,7 +70,7 @@ export default async function CycleDetailPage({ params }: Props) {
                 display: "inline-block",
                 background: "rgba(255,255,255,.18)",
                 border: "1px solid rgba(255,255,255,.35)",
-                borderRadius: "9999px",
+                borderRadius: R.chip,
                 padding: "5px 14px",
                 fontSize: "12px",
                 fontWeight: 600,
@@ -86,7 +87,7 @@ export default async function CycleDetailPage({ params }: Props) {
                   marginLeft: "8px",
                   background: "rgba(255,255,255,.18)",
                   border: "1px solid rgba(255,255,255,.35)",
-                  borderRadius: "9999px",
+                  borderRadius: R.chip,
                   padding: "5px 14px",
                   fontSize: "12px",
                   fontWeight: 600,
@@ -172,7 +173,7 @@ export default async function CycleDetailPage({ params }: Props) {
             <h2
               style={{
                 fontWeight: 700,
-                fontSize: "10.5px",
+                fontSize: "11px",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
                 color: cycle.color,
@@ -201,7 +202,7 @@ export default async function CycleDetailPage({ params }: Props) {
                         top: "32px",
                         bottom: 0,
                         width: "1px",
-                        backgroundColor: "rgba(16,35,63,.1)",
+                        backgroundColor: C.panel,
                       }}
                     />
                   )}
@@ -264,7 +265,7 @@ export default async function CycleDetailPage({ params }: Props) {
               <p
                 style={{
                   fontWeight: 700,
-                  fontSize: "10.5px",
+                  fontSize: "11px",
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
                   color: "#10233F",
@@ -273,14 +274,14 @@ export default async function CycleDetailPage({ params }: Props) {
               >
                 {c.text("headings.about", "About this cycle")}
               </p>
-              <p style={{ fontSize: "15px", color: "rgba(16,35,63,.8)", lineHeight: 1.65 }}>{cycle.desc}</p>
+              <p style={{ fontSize: "15px", color: C.ink, lineHeight: 1.65 }}>{cycle.desc}</p>
             </div>
 
             {/* Programming */}
             <div
               style={{
                 backgroundColor: "#fff",
-                border: "1px solid rgba(16,35,63,.1)",
+                border: `1px solid ${C.hairline}`,
                 borderRadius: "20px",
                 padding: "26px",
               }}
@@ -288,7 +289,7 @@ export default async function CycleDetailPage({ params }: Props) {
               <p
                 style={{
                   fontWeight: 700,
-                  fontSize: "10.5px",
+                  fontSize: "11px",
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
                   color: "#10233F",
@@ -329,7 +330,7 @@ export default async function CycleDetailPage({ params }: Props) {
             <div
               style={{
                 backgroundColor: "#fff",
-                border: "1px solid rgba(16,35,63,.1)",
+                border: `1px solid ${C.hairline}`,
                 borderRadius: "20px",
                 padding: "26px",
               }}
@@ -337,7 +338,7 @@ export default async function CycleDetailPage({ params }: Props) {
               <p
                 style={{
                   fontWeight: 700,
-                  fontSize: "10.5px",
+                  fontSize: "11px",
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
                   color: "#10233F",
@@ -365,7 +366,7 @@ export default async function CycleDetailPage({ params }: Props) {
             {nextCycle && (
               <div
                 style={{
-                  border: "1px dashed rgba(16,35,63,.22)",
+                  border: `1px dashed ${C.hairline}`,
                   borderRadius: "20px",
                   padding: "22px 26px",
                 }}
@@ -373,7 +374,7 @@ export default async function CycleDetailPage({ params }: Props) {
                 <p
                   style={{
                     fontWeight: 700,
-                    fontSize: "10.5px",
+                    fontSize: "11px",
                     letterSpacing: "0.22em",
                     textTransform: "uppercase",
                     color: "#4A5A74",
@@ -403,8 +404,8 @@ export default async function CycleDetailPage({ params }: Props) {
                     border: `1px solid ${nextCycle.color}`,
                     color: nextCycle.color,
                     fontWeight: 600,
-                    fontSize: "13.5px",
-                    borderRadius: "9999px",
+                    fontSize: "15px",
+                    borderRadius: R.chip,
                     padding: "9px 18px",
                     textDecoration: "none",
                   }}
@@ -424,7 +425,7 @@ export default async function CycleDetailPage({ params }: Props) {
                 color: "#fff",
                 fontWeight: 700,
                 fontSize: "15px",
-                borderRadius: "9999px",
+                borderRadius: R.chip,
                 padding: "16px 24px",
                 textDecoration: "none",
               }}
@@ -456,10 +457,10 @@ function CycleMaterials({
   if (lessons.length === 0 && resources.length === 0) return null;
 
   return (
-    <div style={{ marginTop: "12px", paddingTop: "28px", borderTop: "1px solid rgba(16,35,63,.1)" }}>
+    <div style={{ marginTop: "12px", paddingTop: "28px", borderTop: `1px solid ${C.hairline}` }}>
       <h2
         style={{
-          fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em",
+          fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em",
           textTransform: "uppercase", color, marginBottom: "18px",
         }}
       >
@@ -473,7 +474,7 @@ function CycleMaterials({
             href={`/lesson-plans/${l.id}`}
             style={{
               display: "flex", gap: "14px", alignItems: "center", textDecoration: "none",
-              backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+              backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
               borderRadius: "14px", padding: "14px 18px",
             }}
           >
@@ -496,7 +497,7 @@ function CycleMaterials({
             href="/resources"
             style={{
               display: "flex", gap: "14px", alignItems: "center", textDecoration: "none",
-              backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+              backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
               borderRadius: "14px", padding: "14px 18px",
             }}
           >
@@ -533,7 +534,7 @@ function WeekLessons({ lessons, color }: { lessons: PublicLesson[]; color: strin
           href={`/lesson-plans/${l.id}`}
           style={{
             display: "flex", gap: "10px", alignItems: "center", textDecoration: "none",
-            backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+            backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
             borderRadius: "12px", padding: "10px 14px",
           }}
         >

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { PageIntro } from "@/components/admin/PageIntro";
@@ -75,9 +75,9 @@ async function Inner() {
         note="This counts published lessons only. A draft you are still writing will not show here."
       />
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.09)`, borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", minWidth: "660px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "660px" }}>
             <thead>
               <tr>
                 <th style={{ ...th, textAlign: "left", minWidth: "220px" }}>Cycle</th>
@@ -98,7 +98,7 @@ async function Inner() {
                         {c.num}. {c.theme}
                       </span>
                       {state === "current" && (
-                        <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
                           Now
                         </span>
                       )}
@@ -115,7 +115,7 @@ async function Inner() {
                             <span style={{
                               display: "inline-flex", alignItems: "center", justifyContent: "center",
                               minWidth: "34px", height: "30px", borderRadius: "9px",
-                              backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "13.5px",
+                              backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px",
                             }}>
                               {n}
                             </span>
@@ -157,13 +157,13 @@ async function Inner() {
 }
 
 const th: React.CSSProperties = {
-  padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase",
+  padding: "11px 16px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase",
   fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`,
-  backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
+  backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 
 const td: React.CSSProperties = {
-  padding: "12px 16px", borderBottom: "1px solid rgba(16,35,63,.05)", verticalAlign: "middle",
+  padding: "12px 16px", borderBottom: `1px solid ${C.hairline}`, verticalAlign: "middle",
 };
 
 export default async function CoveragePage() {

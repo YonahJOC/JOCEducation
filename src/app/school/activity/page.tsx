@@ -1,5 +1,5 @@
 import { requireSchoolPanel } from "../account-only";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, pageTitle } from "@/lib/joc-tokens";
 import { mySchool, myActivity } from "@/lib/school-data";
 import { getCycles } from "@/lib/cycle-data";
 
@@ -48,7 +48,7 @@ export default async function SchoolActivityPage() {
 
       {/* Grades */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           By grade band
         </p>
         {activity.recent.length === 0 ? (
@@ -63,19 +63,19 @@ export default async function SchoolActivityPage() {
                 const max = Math.max(...byGrade.map((x) => x.count), 1);
                 return (
                   <div key={g.grade}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13.5px", marginBottom: "5px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "15px", marginBottom: "5px" }}>
                       <span style={{ color: C.ink }}>{g.label}</span>
                       <span style={{ color: "#4A5A74" }}>{g.count}</span>
                     </div>
-                    <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.07)", overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: `${(g.count / max) * 100}%`, backgroundColor: g.count ? C.blue : "transparent", borderRadius: "9999px" }} />
+                    <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: C.panel, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${(g.count / max) * 100}%`, backgroundColor: g.count ? C.blue : "transparent", borderRadius: R.chip }} />
                     </div>
                   </div>
                 );
               })}
             </div>
             {notStarted.length > 0 && started.length > 0 && (
-              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: "#C96C00", margin: "14px 0 0" }}>
+              <p style={{ fontSize: "15px", lineHeight: 1.55, color: "#C96C00", margin: "14px 0 0" }}>
                 {notStarted.map((g) => g.label).join(" and ")} {notStarted.length === 1 ? "has" : "have"} not
                 started yet.
               </p>
@@ -86,7 +86,7 @@ export default async function SchoolActivityPage() {
 
       {/* Feed */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           Recently
         </p>
         {activity.recent.length === 0 ? (
@@ -97,12 +97,12 @@ export default async function SchoolActivityPage() {
               const cycle = cycles.find((c) => c.slug === r.cycleSlug);
               return (
                 <div key={i} style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
-                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: cycle?.color ?? "rgba(16,35,63,.3)", flexShrink: 0, marginTop: "7px" }} />
+                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: cycle?.color ?? C.muted, flexShrink: 0, marginTop: "7px" }} />
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontSize: "14px", color: C.ink, margin: 0, lineHeight: 1.45 }}>
                       <strong style={{ fontWeight: 600 }}>{r.who}</strong> saved {r.lesson}
                     </p>
-                    <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {GRADE_LABEL[r.grade] ?? r.grade}
                       {cycle ? ` · ${cycle.theme}` : ""} · {ago(r.when)}
                     </p>
@@ -120,13 +120,13 @@ export default async function SchoolActivityPage() {
 function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "16px 18px" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
         {label}
       </p>
       <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: C.ink, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </p>
-      <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
+      <p style={{ fontSize: "13px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
     </div>
   );
 }

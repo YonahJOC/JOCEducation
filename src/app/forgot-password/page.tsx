@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/ui/Brand";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
+import { C } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Reset your password", robots: { index: false, follow: false } };
 
@@ -12,7 +13,7 @@ export default function ForgotPasswordPage() {
           <BrandLockup height={20} />
         </Link>
 
-        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
+        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px" }}>
           <ForgotPasswordForm />
 
           <p style={{ marginTop: "24px", textAlign: "center", fontSize: "14px", color: "#4A5A74" }}>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, pageTitle } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveProgram, deleteProgram, seedProgramsFromStatic } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
@@ -54,7 +54,7 @@ const label: React.CSSProperties = {
   color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -111,7 +111,7 @@ export function ProgramsClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -130,8 +130,8 @@ export function ProgramsClient({
             onClick={importStatic}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-              backgroundColor: "#C96C00", border: "none", borderRadius: "9999px",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+              backgroundColor: "#C96C00", border: "none", borderRadius: R.chip,
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -141,21 +141,21 @@ export function ProgramsClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: msg === "Imported." ? C.greenText : C.redText, marginBottom: "14px" }}>{msg}</p>
+        <p style={{ fontSize: "15px", color: msg === "Imported." ? C.greenText : C.redText, marginBottom: "14px" }}>{msg}</p>
       )}
 
       {programs.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
           {programs.map((p, i) => (
             <div
               key={p.id}
               style={{
                 display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap",
-                padding: "14px 18px", borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)",
+                padding: "14px 18px", borderTop: i === 0 ? "none" : `1px solid ${C.hairline}`,
               }}
             >
               <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: p.heroColor, flexShrink: 0 }} />
@@ -169,11 +169,11 @@ export function ProgramsClient({
                 >
                   {p.name}
                 </Link>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                   {p.tag} · /programs/{p.slug}
                   {p.published ? "" : " · draft"}{p.comingSoon ? " · coming soon" : ""}
                 </p>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "3px 0 0" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "3px 0 0" }}>
                   {p.leadCount
                     ? `${p.leadCount} coordinator${p.leadCount === 1 ? "" : "s"}`
                     : "No coordinator yet"}
@@ -283,7 +283,7 @@ function ProgramForm({
               disabled={disabled}
               style={field}
             />
-            <p style={{ fontSize: "11.5px", color: "#4A5A74", margin: "4px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "4px 0 0" }}>
               /programs/{d.slug || slugify(d.name) || "…"}
             </p>
           </div>
@@ -384,7 +384,7 @@ function ProgramForm({
                   type="button"
                   onClick={() => set("howItWorks", d.howItWorks.filter((_, n) => n !== i))}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
                 >
                   Remove
                 </button>
@@ -418,7 +418,7 @@ function ProgramForm({
               </div>
             </div>
           ))}
-          <p style={{ fontSize: "12.5px", color: "#4A5A74", lineHeight: 1.5, margin: "2px 0 0", maxWidth: "62ch" }}>
+          <p style={{ fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, margin: "2px 0 0", maxWidth: "62ch" }}>
             Write <strong>{"{form}"}</strong> as the address to mean this program&rsquo;s own sign-up
             form — then it keeps working if the form is renamed. A stage with no button text just
             shows its words.
@@ -427,7 +427,7 @@ function ProgramForm({
             type="button"
             onClick={() => set("howItWorks", [...d.howItWorks, { step: String(d.howItWorks.length + 1).padStart(2, "0"), title: "", description: "", linkLabel: "", linkUrl: "" }])}
             disabled={disabled}
-            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
           >
             + Add a step
           </button>
@@ -436,7 +436,7 @@ function ProgramForm({
 
       <div style={card}>
         <label style={label}>Promo video</label>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
           Paste the link — whatever you have. The one in the browser bar, the Share button&rsquo;s
           short link, a Vimeo page. It plays at the top of the program page, above How it works.
           Leave it empty and nothing shows: no empty box.
@@ -452,7 +452,7 @@ function ProgramForm({
 
       <div style={card}>
         <label style={label}>Runs on another JOC site</label>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
           For a program that does not sign up here — Chesed Match, for instance, which runs on
           chesedmatch.org. The orange button on the card and the page opens that address in a new
           tab instead of sending the school to pricing. Leave it empty for anything JOC runs on
@@ -492,7 +492,7 @@ function ProgramForm({
           disabled={disabled || pending || !d.name.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer",
             opacity: disabled || pending || !d.name.trim() ? 0.5 : 1,
           }}
@@ -504,14 +504,14 @@ function ProgramForm({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "44px", marginLeft: "auto" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "44px", marginLeft: "auto" }}
           >
             Delete
           </button>
         )}
       </div>
 
-      {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{msg}</p>}
+      {msg && <p style={{ fontSize: "15px", color: C.redText, margin: 0 }}>{msg}</p>}
     </form>
   );
 }
@@ -551,7 +551,7 @@ function Lines({
         type="button"
         onClick={() => onChange([...items, ""])}
         disabled={disabled}
-        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
       >
         + Add
       </button>

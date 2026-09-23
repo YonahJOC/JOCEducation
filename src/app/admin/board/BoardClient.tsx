@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { setBoardPostApproved, deleteBoardPost } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -72,7 +72,7 @@ export function BoardClient({ posts, disabled }: { posts: BoardRow[]; disabled?:
 function SectionHead({ label, accent }: { label: string; accent?: boolean }) {
   return (
     <p style={{
-      fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700,
+      fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700,
       color: accent ? "#C96C00" : "#4A5A74", margin: "0 0 10px",
     }}>
       {label}
@@ -111,7 +111,7 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
     <div
       style={{
         backgroundColor: "#fff",
-        border: approved ? "1px solid rgba(16,35,63,.09)" : "1px solid rgba(250,145,45,.45)",
+        border: approved ? `1px solid ${C.hairline}` : "1px solid rgba(250,145,45,.45)",
         borderRadius: "14px", padding: "16px 18px",
       }}
     >
@@ -131,7 +131,7 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13px",
             color: "#fff", backgroundColor: approved ? "#7A8699" : "#1D6B37",
-            border: "none", borderRadius: "9999px", padding: "9px 16px", minHeight: "40px",
+            border: "none", borderRadius: R.chip, padding: "9px 16px", minHeight: "40px",
             cursor: disabled ? "not-allowed" : "pointer", opacity: disabled || pending ? 0.6 : 1,
           }}
         >
@@ -147,7 +147,7 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
         >
           Delete
         </button>
-        {msg && <span style={{ fontSize: "12.5px", color: "#A3261A" }}>{msg}</span>}
+        {msg && <span style={{ fontSize: "13px", color: "#A3261A" }}>{msg}</span>}
       </div>
     </div>
   );

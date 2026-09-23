@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { toggleRoomMembership } from "@/app/actions/rooms";
 
@@ -60,7 +60,7 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
       </div>
 
       {shown.length === 0 ? (
-        <p style={{ fontSize: "15.5px", color: "#4A5A74", padding: "40px 0", textAlign: "center" }}>
+        <p style={{ fontSize: "16px", color: "#4A5A74", padding: "40px 0", textAlign: "center" }}>
           You are not following any rooms yet. Follow one and it will show up here.
         </p>
       ) : (
@@ -69,7 +69,7 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
             <div
               key={r.id}
               style={{
-                backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
                 borderRadius: "18px", padding: "20px",
                 opacity: r.archived ? 0.72 : 1,
               }}
@@ -86,12 +86,12 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                       {r.name}
                     </Link>
                     {r.unread > 0 && (
-                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: "#FA912D", borderRadius: "9999px", padding: "2px 9px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: "#FA912D", borderRadius: R.chip, padding: "2px 9px" }}>
                         {r.unread} new
                       </span>
                     )}
                     {r.archived && (
-                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: "9999px", padding: "2px 9px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: R.chip, padding: "2px 9px" }}>
                         closed
                       </span>
                     )}
@@ -102,14 +102,14 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                   </p>
 
                   {r.lastBody ? (
-                    <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0, lineHeight: 1.5 }}>
                       <strong style={{ color: "#4A5A74", fontWeight: 600 }}>{r.lastBy}</strong>
                       {" · "}{ago(r.lastAt)}{" — "}
                       {r.lastBody}
                       {r.lastBody.length >= 140 ? "…" : ""}
                     </p>
                   ) : (
-                    <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: 0 }}>
+                    <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>
                       Nothing said yet — be the first.
                     </p>
                   )}
@@ -121,8 +121,8 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                     disabled={pending}
                     style={{
                       fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-                      padding: "9px 16px", minHeight: "42px", borderRadius: "9999px",
-                      border: joined[r.id] ? "1px solid rgba(16,35,63,.2)" : `1.5px solid ${C.blue}`,
+                      padding: "9px 16px", minHeight: "42px", borderRadius: R.chip,
+                      border: joined[r.id] ? `1px solid ${C.hairline}` : `1.5px solid ${C.blue}`,
                       backgroundColor: joined[r.id] ? "#F4F7FD" : "#fff",
                       color: joined[r.id] ? "#4A5A74" : C.blue,
                       cursor: "pointer", whiteSpace: "nowrap",
@@ -148,9 +148,9 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
     <button
       onClick={onClick}
       style={{
-        fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px",
-        padding: "9px 18px", minHeight: "44px", borderRadius: "9999px",
-        border: active ? "1.5px solid #10233F" : "1px solid rgba(16,35,63,.2)",
+        fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px",
+        padding: "9px 18px", minHeight: "44px", borderRadius: R.chip,
+        border: active ? "1.5px solid #10233F" : `1px solid ${C.hairline}`,
         backgroundColor: active ? "#10233F" : "#fff",
         color: active ? "#fff" : "#10233F", cursor: "pointer",
       }}

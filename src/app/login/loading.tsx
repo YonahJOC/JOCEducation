@@ -1,3 +1,4 @@
+import { R } from "@/lib/joc-tokens";
 export default function LoginLoading() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
@@ -5,7 +6,7 @@ export default function LoginLoading() {
         <Skel style={{ width: "120px", height: "32px", borderRadius: "10px", marginBottom: "8px" }} />
         <Skel style={{ height: "48px", borderRadius: "12px" }} />
         <Skel style={{ height: "48px", borderRadius: "12px" }} />
-        <Skel style={{ height: "48px", borderRadius: "9999px" }} />
+        <Skel style={{ height: "48px", borderRadius: R.chip }} />
         <Skel style={{ height: "16px", width: "180px", margin: "0 auto" }} />
       </div>
     </div>

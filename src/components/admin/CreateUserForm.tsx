@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { createUserAccount } from "@/app/actions/admin";
 import { ASSIGNABLE_ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
 
@@ -60,7 +60,7 @@ export function CreateUserForm({
   if (created) {
     return (
       <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.greenText}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.greenText, margin: "0 0 12px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.greenText, margin: "0 0 12px" }}>
           Account created
         </p>
         <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
@@ -69,7 +69,7 @@ export function CreateUserForm({
           they first sign in.
         </p>
         <div style={{ backgroundColor: "#F4F7FD", borderRadius: "12px", padding: "14px 16px", marginBottom: "16px" }}>
-          <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "13.5px", color: C.ink, margin: "0 0 5px", wordBreak: "break-all" }}>
+          <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "15px", color: C.ink, margin: "0 0 5px", wordBreak: "break-all" }}>
             {created.email}
           </p>
           <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "17px", fontWeight: 700, color: C.blue, margin: 0, letterSpacing: "0.01em" }}>
@@ -81,7 +81,7 @@ export function CreateUserForm({
             onClick={() => navigator.clipboard?.writeText(`${created.email}\n${created.password}`)}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: C.ink, border: "none", borderRadius: "9999px", padding: "11px 20px",
+              backgroundColor: C.ink, border: "none", borderRadius: R.chip, padding: "11px 20px",
               minHeight: "44px", cursor: "pointer",
             }}
           >
@@ -111,7 +111,7 @@ export function CreateUserForm({
         disabled={disabled}
         style={{
           fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-          backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+          backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
           minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           whiteSpace: "nowrap",
         }}
@@ -126,7 +126,7 @@ export function CreateUserForm({
       onSubmit={submit}
       style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
     >
-      <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
         Create an account
       </p>
 
@@ -181,7 +181,7 @@ export function CreateUserForm({
           disabled={pending || !email.includes("@")}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 22px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 22px",
             minHeight: "44px", cursor: email.includes("@") ? "pointer" : "not-allowed",
             opacity: pending || !email.includes("@") ? 0.5 : 1,
           }}

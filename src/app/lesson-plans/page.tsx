@@ -12,7 +12,7 @@ export default async function LessonPlansPage() {
 
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 26px 64px" }}>
-      <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>LESSON LIBRARY</p>
+      <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>LESSON LIBRARY</p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "12px" }}>
         Every lesson plan we have.
       </h1>

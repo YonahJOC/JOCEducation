@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { C, label } from "@/lib/joc-tokens";
+import { R, C, label } from "@/lib/joc-tokens";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -40,7 +40,7 @@ export default function ContactPage() {
         <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "28px" }}>
           Thank you for reaching out. Someone from the JOC Education team will be in touch within one business day.
         </p>
-        <Link href="/" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 28px", textDecoration: "none" }}>
+        <Link href="/" style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 28px", textDecoration: "none" }}>
           Back to home
         </Link>
       </div>
@@ -52,7 +52,7 @@ export default function ContactPage() {
 
       {/* Left — context */}
       <div>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>GET IN TOUCH</p>
+        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>GET IN TOUCH</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "18px" }}>
           Talk to the<br />JOC Education team.
         </h1>
@@ -69,12 +69,12 @@ export default function ContactPage() {
             <Link
               key={link.href}
               href={link.href}
-              style={{ display: "flex", gap: "16px", alignItems: "flex-start", padding: "18px", backgroundColor: "#fff", borderRadius: "16px", border: "1px solid rgba(16,35,63,.1)", textDecoration: "none" }}
+              style={{ display: "flex", gap: "16px", alignItems: "flex-start", padding: "18px", backgroundColor: "#fff", borderRadius: "16px", border: `1px solid ${C.hairline}`, textDecoration: "none" }}
             >
               <span style={{ fontSize: "22px", flexShrink: 0 }}>{link.icon}</span>
               <div>
                 <div style={{ fontWeight: 600, fontSize: "15px", color: "#10233F", marginBottom: "3px" }}>{link.title}</div>
-                <div style={{ fontSize: "13.5px", color: "#4A5A74" }}>{link.description}</div>
+                <div style={{ fontSize: "15px", color: "#4A5A74" }}>{link.description}</div>
               </div>
             </Link>
           ))}
@@ -144,11 +144,11 @@ export default function ContactPage() {
           <button
             type="submit"
             disabled={state === "submitting"}
-            style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", border: "none", cursor: state === "submitting" ? "not-allowed" : "pointer", opacity: state === "submitting" ? 0.7 : 1 }}
+            style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", border: "none", cursor: state === "submitting" ? "not-allowed" : "pointer", opacity: state === "submitting" ? 0.7 : 1 }}
           >
             {state === "submitting" ? "Sending…" : "Send message"}
           </button>
-          <p style={{ fontSize: "12.5px", color: "#4A5A74", textAlign: "center" }}>
+          <p style={{ fontSize: "13px", color: "#4A5A74", textAlign: "center" }}>
             We respond within one business day. No spam, ever.
           </p>
         </form>
@@ -169,7 +169,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   backgroundColor: "#F8FAFE",
-  border: "1px solid rgba(16,35,63,.18)",
+  border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "12px 16px",
   fontSize: "14.5px",

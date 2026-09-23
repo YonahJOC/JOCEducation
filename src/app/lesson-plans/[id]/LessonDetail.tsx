@@ -6,6 +6,7 @@ import { STRIPE_COLORS } from "@/lib/lessons";
 import { toggleSavedLesson } from "@/app/actions/saved";
 import { RichText } from "@/components/ui/RichText";
 import type { PublicLesson } from "@/lib/content";
+import { ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 
 const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Middle school", hs: "High school" };
 
@@ -90,7 +91,7 @@ export function LessonDetail({
         {/* Main content */}
         <div>
           {/* Theme pill */}
-          <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "6px 14px", marginBottom: "14px" }}>
+          <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: R.chip, padding: "6px 14px", marginBottom: "14px" }}>
             {lesson.theme}
           </span>
 
@@ -129,7 +130,7 @@ export function LessonDetail({
           <Section title={headings.objectives}>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
               {lesson.objectives.map((obj, i) => (
-                <li key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", fontSize: "15.5px", color: "#10233F", lineHeight: 1.55 }}>
+                <li key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", fontSize: "16px", color: "#10233F", lineHeight: 1.55 }}>
                   <span style={{ width: "22px", height: "22px", borderRadius: "50%", backgroundColor: stripeColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "1px" }}>
                     <span style={{ color: "#fff", fontSize: "11px", fontWeight: 700 }}>{i + 1}</span>
                   </span>
@@ -159,13 +160,13 @@ export function LessonDetail({
                   {/* Timeline */}
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "24px" }}>
                     <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: stripeColor, marginTop: "4px", flexShrink: 0 }} />
-                    {i < lesson.steps.length - 1 && <div style={{ width: "2px", flex: 1, backgroundColor: "rgba(16,35,63,.1)", minHeight: "24px" }} />}
+                    {i < lesson.steps.length - 1 && <div style={{ width: "2px", flex: 1, backgroundColor: C.panel, minHeight: "24px" }} />}
                   </div>
                   {/* Content */}
                   <div style={{ paddingBottom: "24px", flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "baseline", gap: "10px", marginBottom: "6px" }}>
                       <span style={{ fontWeight: 700, fontSize: "16px", color: "#10233F" }}>{step.title}</span>
-                      <span style={{ fontWeight: 600, fontSize: "12.5px", color: stripeColor, backgroundColor: `${stripeColor}18`, padding: "3px 10px", borderRadius: "9999px" }}>{step.duration}</span>
+                      <span style={{ fontWeight: 600, fontSize: "13px", color: stripeColor, backgroundColor: `${stripeColor}18`, padding: "3px 10px", borderRadius: R.chip }}>{step.duration}</span>
                     </div>
                     <RichText text={step.description} style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6 }} />
                   </div>
@@ -183,7 +184,7 @@ export function LessonDetail({
                       heading above is now the team's to rename — a plain
                       number reads correctly whatever they call it. */}
                   <span style={{ fontWeight: 800, fontSize: "14px", color: stripeColor, flexShrink: 0, marginTop: "2px" }}>{i + 1}.</span>
-                  <p style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.55, margin: 0 }}>{point}</p>
+                  <p style={{ fontSize: "16px", color: "#10233F", lineHeight: 1.55, margin: 0 }}>{point}</p>
                 </div>
               ))}
             </div>
@@ -193,7 +194,7 @@ export function LessonDetail({
           {lesson.extension && (
             <Section title={headings.extension}>
               <div style={{ borderLeft: "3px solid #FA912D", paddingLeft: "18px" }}>
-                <RichText text={lesson.extension} style={{ fontSize: "15.5px", color: "#10233F", lineHeight: 1.6 }} />
+                <RichText text={lesson.extension} style={{ fontSize: "16px", color: "#10233F", lineHeight: 1.6 }} />
               </div>
             </Section>
           )}
@@ -202,7 +203,7 @@ export function LessonDetail({
         {/* Sidebar */}
         <aside style={{ alignSelf: "start", position: "sticky", top: "80px" }}>
           {/* Downloads */}
-          <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", padding: "24px", marginBottom: "20px" }}>
+          <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "24px", marginBottom: "20px" }}>
             <h3 style={{ fontWeight: 700, fontSize: "15px", color: "#10233F", marginBottom: "16px" }}>
               Downloads ({lesson.files.length} file{lesson.files.length !== 1 ? "s" : ""})
             </h3>
@@ -214,20 +215,20 @@ export function LessonDetail({
                     href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.15)", backgroundColor: "#F8FAFE", textDecoration: "none", width: "100%", boxSizing: "border-box" }}
+                    style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: "#F8FAFE", textDecoration: "none", width: "100%", boxSizing: "border-box" }}
                   >
                     <span style={{ fontSize: "18px" }}>📄</span>
-                    <span style={{ fontSize: "13.5px", color: "#10233F", fontWeight: 500 }}>{file.name}</span>
+                    <span style={{ fontSize: "15px", color: "#10233F", fontWeight: 500 }}>{file.name}</span>
                     <span style={{ marginLeft: "auto", fontSize: "12px", color: "#2D46AF", fontWeight: 600 }}>↓</span>
                   </a>
                 ) : (
                   <div
                     key={i}
-                    style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.12)", backgroundColor: "#F8FAFE" }}
+                    style={{ display: "flex", alignItems: "center", gap: "10px", padding: "11px 14px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: "#F8FAFE" }}
                   >
                     <span style={{ fontSize: "18px", opacity: 0.5 }}>📄</span>
-                    <span style={{ fontSize: "13.5px", color: "#4A5A74", fontWeight: 500 }}>{file.name}</span>
-                    <span style={{ marginLeft: "auto", fontSize: "11.5px", color: "#4A5A74", fontWeight: 600 }}>
+                    <span style={{ fontSize: "15px", color: "#4A5A74", fontWeight: 500 }}>{file.name}</span>
+                    <span style={{ marginLeft: "auto", fontSize: "12px", color: "#4A5A74", fontWeight: 600 }}>
                       {file.url ? "sign in" : "not yet uploaded"}
                     </span>
                   </div>
@@ -236,7 +237,7 @@ export function LessonDetail({
             </div>
             {!canDownload && (
               <>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", marginTop: "14px" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", marginTop: "14px" }}>
                   Sign in with a JOC Education account to download.
                 </p>
                 <Link
@@ -252,7 +253,7 @@ export function LessonDetail({
           {/* Save lesson */}
           <div style={{ backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "20px 24px", marginBottom: "20px" }}>
             <p style={{ fontWeight: 600, fontSize: "14px", color: "#10233F", marginBottom: "8px" }}>Save for later</p>
-            <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.5, marginBottom: "14px" }}>
+            <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.5, marginBottom: "14px" }}>
               {signedIn
                 ? "Saved lessons are waiting for you on your home page."
                 : "Sign in to add this lesson to your saved plans."}
@@ -270,18 +271,18 @@ export function LessonDetail({
                     });
                   }}
                   disabled={saving}
-                  style={{ width: "100%", fontFamily: "var(--font-outfit)", backgroundColor: saved ? "#10233F" : "#fff", color: saved ? "#fff" : "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", minHeight: "44px", border: saved ? "1px solid #10233F" : "1px solid rgba(16,35,63,.2)", cursor: saving ? "wait" : "pointer" }}
+                  style={{ width: "100%", fontFamily: "var(--font-outfit)", backgroundColor: saved ? "#10233F" : "#fff", color: saved ? "#fff" : "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", minHeight: "44px", border: saved ? "1px solid #10233F" : `1px solid ${C.hairline}`, cursor: saving ? "wait" : "pointer" }}
                 >
                   {saved ? "★ Saved" : "☆ Save this lesson"}
                 </button>
                 {saveError && (
-                  <p style={{ fontSize: "12.5px", color: "#A3261A", margin: "8px 0 0" }}>{saveError}</p>
+                  <p style={{ fontSize: "13px", color: "#A3261A", margin: "8px 0 0" }}>{saveError}</p>
                 )}
               </>
             ) : (
               <Link
                 href="/login"
-                style={{ display: "block", textAlign: "center", backgroundColor: "#fff", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", border: "1px solid rgba(16,35,63,.2)", textDecoration: "none" }}
+                style={{ display: "block", textAlign: "center", backgroundColor: "#fff", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: "10px", padding: "11px", border: `1px solid ${C.hairline}`, textDecoration: "none" }}
               >
                 ☆ Sign in to save
               </Link>
@@ -289,11 +290,11 @@ export function LessonDetail({
           </div>
 
           {/* Share lesson */}
-          <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: "1px solid rgba(16,35,63,.1)", padding: "20px 24px" }}>
+          <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "20px 24px" }}>
             <p style={{ fontWeight: 600, fontSize: "14px", color: "#10233F", marginBottom: "10px" }}>Share with a colleague</p>
             <button
               onClick={() => { navigator.clipboard?.writeText(window.location.href); }}
-              style={{ width: "100%", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "13.5px", borderRadius: "10px", padding: "11px", border: "none", cursor: "pointer" }}
+              style={{ width: "100%", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: "10px", padding: "11px", border: "none", cursor: "pointer" }}
             >
               Copy link
             </button>
@@ -303,7 +304,7 @@ export function LessonDetail({
 
       {/* Related lessons */}
       {related.length > 0 && (
-        <div style={{ marginTop: "64px", borderTop: "1px solid rgba(16,35,63,.1)", paddingTop: "48px" }}>
+        <div style={{ marginTop: "64px", borderTop: `1px solid ${C.hairline}`, paddingTop: "48px" }}>
           <h2 style={{ fontWeight: 700, fontSize: "22px", color: "#10233F", marginBottom: "24px" }}>
             More {GRADE_LABELS[lesson.grade].toLowerCase()} lessons
           </h2>
@@ -312,15 +313,15 @@ export function LessonDetail({
               <Link
                 key={rel.id}
                 href={`/lesson-plans/${rel.id}`}
-                style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "18px", border: "1px solid rgba(16,35,63,.1)", overflow: "hidden", transition: "border-color .15s, box-shadow .15s" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#2D46AF"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(16,35,63,.09)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(16,35,63,.1)"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none"; }}
+                style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "18px", border: `1px solid ${C.hairline}`, overflow: "hidden", transition: "border-color .15s, box-shadow .15s" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#2D46AF"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = ROW_SHADOW; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = C.hairline; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none"; }}
               >
                 <div style={{ height: "6px", backgroundColor: STRIPE_COLORS[(rel.id - 1) % STRIPE_COLORS.length] }} />
                 <div style={{ padding: "18px" }}>
-                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", borderRadius: "9999px", padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
+                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10px", letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", lineHeight: 1.25, marginBottom: "6px" }}>{rel.title}</h3>
-                  <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: 0 }}>{rel.time} min · {rel.prep} prep</p>
+                  <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>{rel.time} min · {rel.prep} prep</p>
                 </div>
               </Link>
             ))}
@@ -334,7 +335,7 @@ export function LessonDetail({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: "40px" }}>
-      <h2 style={{ fontWeight: 700, fontSize: "19px", letterSpacing: "-0.02em", color: "#10233F", marginBottom: "18px", paddingBottom: "10px", borderBottom: "1px solid rgba(16,35,63,.08)" }}>
+      <h2 style={{ fontWeight: 700, fontSize: "19px", letterSpacing: "-0.02em", color: "#10233F", marginBottom: "18px", paddingBottom: "10px", borderBottom: `1px solid ${C.hairline}` }}>
         {title}
       </h2>
       {children}
@@ -343,5 +344,5 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function MetaChip({ label, style: s }: { label: string; style: React.CSSProperties }) {
-  return <span style={{ fontWeight: 600, fontSize: "13px", padding: "6px 12px", borderRadius: "9999px", ...s }}>{label}</span>;
+  return <span style={{ fontWeight: 600, fontSize: "13px", padding: "6px 12px", borderRadius: R.chip, ...s }}>{label}</span>;
 }

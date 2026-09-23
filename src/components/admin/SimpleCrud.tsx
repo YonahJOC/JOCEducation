@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { PageIntro } from "@/components/admin/PageIntro";
 
 export const crudField: React.CSSProperties = {
@@ -69,7 +69,7 @@ export function CrudShell<T extends { id: string | number }>({
             disabled={disabled}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+              backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
               minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
               whiteSpace: "nowrap",
             }}
@@ -88,7 +88,7 @@ export function CrudShell<T extends { id: string | number }>({
               disabled={pending}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 22px",
+                backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 22px",
                 minHeight: "44px", cursor: "pointer", opacity: pending ? 0.6 : 1,
               }}
             >
@@ -105,10 +105,10 @@ export function CrudShell<T extends { id: string | number }>({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", marginBottom: "12px", color: msg === "Saved." ? "#1D6B37" : "#A3261A" }}>{msg}</p>
+        <p style={{ fontSize: "15px", marginBottom: "12px", color: msg === "Saved." ? "#1D6B37" : "#A3261A" }}>{msg}</p>
       )}
 
-      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         {items.length === 0 ? (
           <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
         ) : (
@@ -118,7 +118,7 @@ export function CrudShell<T extends { id: string | number }>({
                 key={item.id}
                 style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px",
-                  padding: "14px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", flexWrap: "wrap",
+                  padding: "14px 20px", borderBottom: `1px solid ${C.hairline}`, flexWrap: "wrap",
                 }}
               >
                 <div style={{ minWidth: 0, flex: 1 }}>{renderRow(item)}</div>

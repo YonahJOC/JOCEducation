@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { C, R } from "@/lib/joc-tokens";
 
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -22,16 +23,16 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
       <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
         <button
           onClick={reset}
-          style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "13px 26px", border: "none", cursor: "pointer" }}
+          style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 26px", border: "none", cursor: "pointer" }}
         >
           Try again
         </button>
-        <Link href="/" style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: "9999px", padding: "13px 26px", textDecoration: "none" }}>
+        <Link href="/" style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: R.chip, padding: "13px 26px", textDecoration: "none" }}>
           Go home
         </Link>
       </div>
       {error.digest && (
-        <p style={{ marginTop: "24px", fontSize: "12px", color: "rgba(16,35,63,.35)", fontFamily: "monospace" }}>
+        <p style={{ marginTop: "24px", fontSize: "12px", color: C.muted, fontFamily: "monospace" }}>
           Error ID: {error.digest}
         </p>
       )}

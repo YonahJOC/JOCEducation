@@ -1,6 +1,6 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
 import { SectionLinks } from "@/components/admin/SectionLinks";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
 import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
 import { SchoolTable } from "@/components/admin/SchoolTable";
@@ -64,7 +64,7 @@ async function Inner(searchParams: Search) {
           placeholder="Search by name, city or region"
           style={{
             flex: "1 1 220px", maxWidth: "320px", fontFamily: "var(--font-outfit)", fontSize: "14px",
-            padding: "10px 14px", borderRadius: "10px", border: "1px solid rgba(16,35,63,.15)",
+            padding: "10px 14px", borderRadius: "10px", border: `1px solid ${C.hairline}`,
             backgroundColor: "#fff", color: C.ink, outline: "none", minHeight: "40px",
           }}
         />
@@ -80,9 +80,9 @@ async function Inner(searchParams: Search) {
                 value={s}
                 type="submit"
                 style={{
-                  fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
-                  padding: "8px 13px", borderRadius: "9999px", cursor: "pointer", minHeight: "40px",
-                  border: on ? `1.5px solid ${color}` : "1px solid rgba(16,35,63,.14)",
+                  fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
+                  padding: "8px 13px", borderRadius: R.chip, cursor: "pointer", minHeight: "40px",
+                  border: on ? `1.5px solid ${color}` : `1px solid ${C.hairline}`,
                   backgroundColor: on ? `${color}14` : "#fff",
                   color: on ? color : "#4A5A74",
                   whiteSpace: "nowrap",
@@ -95,7 +95,7 @@ async function Inner(searchParams: Search) {
         </div>
       </form>
 
-      <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         <SchoolTable schools={rows} />
       </div>
     </div>

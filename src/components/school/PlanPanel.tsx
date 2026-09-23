@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { requestPlanChange } from "@/app/actions/school";
 
 const PLAN_LABELS: Record<string, string> = {
@@ -77,18 +77,18 @@ export function SchoolPlanPanel({
             </div>
 
             {seats !== null && (
-              <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.08)", overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${Math.min(100, (seatsUsed / seats) * 100)}%`, backgroundColor: C.blue, borderRadius: "9999px" }} />
+              <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: C.panel, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${Math.min(100, (seatsUsed / seats) * 100)}%`, backgroundColor: C.blue, borderRadius: R.chip }} />
               </div>
             )}
 
             {grantedManually && (
-              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.greenText, backgroundColor: "rgba(27,127,75,.08)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
+              <p style={{ fontSize: "15px", lineHeight: 1.55, color: C.greenText, backgroundColor: "rgba(27,127,75,.08)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
                 Just One Chesed has granted this access. There is nothing to pay.
               </p>
             )}
             {planStatus === "PAST_DUE" && (
-              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.orangeText, backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
+              <p style={{ fontSize: "15px", lineHeight: 1.55, color: C.orangeText, backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
                 There is an outstanding payment. {contact} will be in touch.
               </p>
             )}
@@ -105,7 +105,7 @@ export function SchoolPlanPanel({
         onSubmit={submit}
         style={{ backgroundColor: "#FFFBF3", border: `1px solid ${C.orange}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}
       >
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 12px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 12px" }}>
           Ask for a change
         </p>
         <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
@@ -126,7 +126,7 @@ export function SchoolPlanPanel({
         />
 
         <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-          <label style={{ fontSize: "13.5px", color: "#4A5A74" }}>
+          <label style={{ fontSize: "15px", color: "#4A5A74" }}>
             Seats needed (optional){" "}
             <input
               value={wantsSeats}
@@ -144,7 +144,7 @@ export function SchoolPlanPanel({
             disabled={pending || !message.trim()}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
+              backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
               minHeight: "44px", cursor: !message.trim() ? "not-allowed" : "pointer",
               opacity: pending || !message.trim() ? 0.5 : 1,
             }}
@@ -160,14 +160,14 @@ export function SchoolPlanPanel({
       {/* Past requests */}
       {requests.length > 0 && (
         <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-          <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
+          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
             Requests you have sent
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {requests.map((r) => (
-              <div key={r.id} style={{ paddingBottom: "16px", borderBottom: "1px solid rgba(16,35,63,.06)" }}>
+              <div key={r.id} style={{ paddingBottom: "16px", borderBottom: `1px solid ${C.hairline}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "5px" }}>
-                  <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{fmt(r.createdAt)}</span>
+                  <span style={{ fontSize: "13px", color: "#4A5A74" }}>{fmt(r.createdAt)}</span>
                   <span style={{
                     fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
                     color: r.status === "OPEN" ? C.orangeText : C.greenText,
@@ -181,7 +181,7 @@ export function SchoolPlanPanel({
                     <p style={{ fontSize: "12px", color: "#4A5A74", margin: "0 0 3px" }}>
                       Just One Chesed replied {fmt(r.respondedAt)}
                     </p>
-                    <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(16,35,63,.8)", margin: 0 }}>{r.response}</p>
+                    <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.ink, margin: 0 }}>{r.response}</p>
                   </div>
                 )}
               </div>
@@ -196,7 +196,7 @@ export function SchoolPlanPanel({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
+      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
         {label}
       </p>
       <p style={{ fontSize: "16px", fontWeight: 600, color: C.ink, margin: 0, letterSpacing: "-0.02em" }}>{value}</p>

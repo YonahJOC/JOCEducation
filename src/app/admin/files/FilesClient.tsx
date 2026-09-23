@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { C } from "@/lib/joc-tokens";
+import { R, C } from "@/lib/joc-tokens";
 import { uploadFile, removeFile } from "@/app/actions/files";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -68,7 +68,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
           disabled={disabled || pending}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled || pending ? "not-allowed" : "pointer",
             opacity: disabled ? 0.5 : 1,
           }}
@@ -84,25 +84,25 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
       )}
 
       {files.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15.5px", color: "#4A5A74", margin: 0 }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: "16px", color: "#4A5A74", margin: 0 }}>
             Nothing uploaded yet.
           </p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
           {files.map((f, i) => (
             <div
               key={f.id}
               style={{
                 display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap",
                 padding: "14px 18px",
-                borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)",
+                borderTop: i === 0 ? "none" : `1px solid ${C.hairline}`,
               }}
             >
               <div style={{ minWidth: 0, flex: 1 }}>
                 <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0, wordBreak: "break-word" }}>{f.name}</p>
-                <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                   {f.size} · {f.when}
                   {f.uploadedBy ? ` · ${f.uploadedBy}` : ""}
                 </p>

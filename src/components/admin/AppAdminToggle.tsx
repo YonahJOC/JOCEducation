@@ -45,7 +45,7 @@ export function AppAdminToggle({
         />
         Runs the app
       </label>
-      {err && <span style={{ fontSize: "11.5px", color: "#A3261A", maxWidth: "24ch", textAlign: "right", lineHeight: 1.35 }}>{err}</span>}
+      {err && <span style={{ fontSize: "12px", color: "#A3261A", maxWidth: "24ch", textAlign: "right", lineHeight: 1.35 }}>{err}</span>}
     </span>
   );
 }

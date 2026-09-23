@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { type Cycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
+import { C, R } from "@/lib/joc-tokens";
 
 function anchorStyle(tagged?: boolean): React.CSSProperties {
   return tagged
     ? { background: "#F4F7FD", color: "#2D46AF", border: "1px solid rgba(45,70,175,.25)" }
-    : { background: "rgba(16,35,63,.05)", color: "#4A5A74", border: "1px solid rgba(16,35,63,.1)" };
+    : { background: C.hairline, color: "#4A5A74", border: `1px solid ${C.hairline}` };
 }
 
 export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCycle: Cycle | null }) {
@@ -54,7 +55,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 fontWeight: 600,
                 fontSize: "12px",
                 padding: "5px 11px",
-                borderRadius: "9999px",
+                borderRadius: R.chip,
                 letterSpacing: "0.01em",
               }}
             >
@@ -80,8 +81,8 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 fontSize: "12px",
                 fontWeight: 600,
                 padding: "5px 11px",
-                borderRadius: "9999px",
-                background: "rgba(16,35,63,.06)",
+                borderRadius: R.chip,
+                background: C.hairline,
                 color: "#4A5A74",
               }}
             >
@@ -96,7 +97,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               fontSize: "12px",
               fontWeight: 500,
               padding: "5px 11px",
-              borderRadius: "9999px",
+              borderRadius: R.chip,
               ...anchorStyle((cycle.tags ?? []).length > 0),
             }}
           >
@@ -108,7 +109,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         <p
           style={{
             fontWeight: 700,
-            fontSize: "11.5px",
+            fontSize: "12px",
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             color: cycle.color,
@@ -167,8 +168,8 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             <div
               style={{
                 height: "5px",
-                borderRadius: "9999px",
-                backgroundColor: "rgba(16,35,63,.1)",
+                borderRadius: R.chip,
+                backgroundColor: C.panel,
                 overflow: "hidden",
               }}
             >
@@ -176,7 +177,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 style={{
                   height: "100%",
                   width: `${progress}%`,
-                  borderRadius: "9999px",
+                  borderRadius: R.chip,
                   backgroundColor: cycle.color,
                   transition: "width .4s ease",
                 }}
@@ -188,7 +189,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         {/* Meta row */}
         <p
           style={{
-            fontSize: "13.5px",
+            fontSize: "15px",
             color: "#4A5A74",
             marginBottom: "22px",
           }}
@@ -206,7 +207,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               color: "#fff",
               fontWeight: 700,
               fontSize: "14.5px",
-              borderRadius: "9999px",
+              borderRadius: R.chip,
               padding: "13px 24px",
               textDecoration: "none",
               whiteSpace: "nowrap",
@@ -243,7 +244,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
           <p
             style={{
               fontWeight: 700,
-              fontSize: "10.5px",
+              fontSize: "11px",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
               color: "#10233F",
@@ -252,7 +253,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
           >
             WHAT THIS CYCLE IS ABOUT
           </p>
-          <p style={{ fontSize: "15px", color: "rgba(16,35,63,.8)", lineHeight: 1.65 }}>{cycle.desc}</p>
+          <p style={{ fontSize: "15px", color: C.ink, lineHeight: 1.65 }}>{cycle.desc}</p>
         </div>
 
         {/* Focus */}
@@ -260,14 +261,14 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
           style={{
             backgroundColor: "#fff",
             borderRadius: "20px",
-            border: "1px solid rgba(16,35,63,.1)",
+            border: `1px solid ${C.hairline}`,
             padding: "24px",
           }}
         >
           <p
             style={{
               fontWeight: 700,
-              fontSize: "10.5px",
+              fontSize: "11px",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
               color: "#10233F",
@@ -301,7 +302,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             style={{
               backgroundColor: "#fff",
               borderRadius: "20px",
-              border: "1px solid rgba(16,35,63,.1)",
+              border: `1px solid ${C.hairline}`,
               padding: "20px 24px",
               display: "flex",
               gap: "20px",
@@ -323,7 +324,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               </span>
               <span style={{ fontSize: "13px", color: "#4A5A74" }}>{cycle.stats.label}</span>
             </div>
-            <div style={{ width: "1px", height: "40px", backgroundColor: "rgba(16,35,63,.1)" }} />
+            <div style={{ width: "1px", height: "40px", backgroundColor: C.panel }} />
             <div>
               <span
                 style={{
@@ -346,7 +347,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         {nextCycle && (
           <div
             style={{
-              border: "1px dashed rgba(16,35,63,.22)",
+              border: `1px dashed ${C.hairline}`,
               borderRadius: "24px",
               padding: "20px 24px",
             }}
@@ -354,7 +355,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             <p
               style={{
                 fontWeight: 700,
-                fontSize: "10.5px",
+                fontSize: "11px",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
                 color: "#4A5A74",
@@ -376,8 +377,8 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 border: `1px solid ${nextCycle.color}`,
                 color: nextCycle.color,
                 fontWeight: 600,
-                fontSize: "13.5px",
-                borderRadius: "9999px",
+                fontSize: "15px",
+                borderRadius: R.chip,
                 padding: "9px 18px",
                 textDecoration: "none",
               }}

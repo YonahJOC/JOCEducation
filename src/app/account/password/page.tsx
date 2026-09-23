@@ -50,7 +50,7 @@ export default async function ChangePasswordPage({
       <main style={{ maxWidth: "520px", margin: "0 auto", padding: "48px 26px 70px" }}>
         {isForced && (
           <div style={{ backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "14px 16px", marginBottom: "20px" }}>
-            <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
+            <p style={{ fontSize: "15px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
               <strong>Choose your own password.</strong> The one you have was issued by an administrator,
               so somebody else has seen it.
             </p>

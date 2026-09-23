@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/ui/Brand";
+import { R } from "@/lib/joc-tokens";
 
 export default function NotFound() {
   return (
@@ -23,13 +24,13 @@ export default function NotFound() {
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
           <Link
             href="/"
-            style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}
+            style={{ backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
           >
             Back to home
           </Link>
           <Link
             href="/lesson-plans"
-            style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: "9999px", padding: "14px 28px", textDecoration: "none" }}
+            style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
           >
             Browse lesson plans
           </Link>

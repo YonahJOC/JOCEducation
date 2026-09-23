@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { BrandLockup } from "@/components/ui/Brand";
 import { safeAuth, isGoogleConfigured, isPasswordConfigured } from "@/auth";
 import { LoginForm } from "./LoginForm";
+import { C } from "@/lib/joc-tokens";
 
 type Search = Promise<{ next?: string }>;
 
@@ -20,7 +21,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
           <BrandLockup height={20} />
         </Link>
 
-        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px" }}>
+        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px" }}>
           <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "6px" }}>Welcome back</h1>
           <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px" }}>Sign in to your JOC Education account.</p>
 
