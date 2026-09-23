@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { inviteTeacher, cancelInvitation, removeTeacher, setTeacherRole } from "@/app/actions/school";
+import { addTeacher, cancelInvitation, removeTeacher, setTeacherRole } from "@/app/actions/school";
 
 const INK = "#10233F";
 const BLUE = "#2D46AF";
@@ -41,19 +41,25 @@ export function TeachersPanel({
   meId: string;
 }) {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState<"TEACHER" | "SCHOOL_ADMIN">("TEACHER");
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
-  const full = Boolean(seats && seatsUsed + invitations.filter((i) => i.status === "PENDING").length >= seats);
+  const full = Boolean(seats && seatsUsed >= seats);
 
-  function invite(e: React.FormEvent) {
+  function add(e: React.FormEvent) {
     e.preventDefault();
     setMsg(null);
     start(async () => {
-      const r = await inviteTeacher(email, role);
-      if (r.ok) { setEmail(""); setMsg({ kind: "ok", text: "Invitation created." }); }
-      else setMsg({ kind: "err", text: r.error });
+      const r = await addTeacher(name, email, role);
+      if (r.ok) {
+        const who = name.trim();
+        setName(""); setEmail("");
+        setMsg({ kind: "ok", text: `${who} added. Tell them to sign in with that address — nothing is sent to them.` });
+      } else {
+        setMsg({ kind: "err", text: r.error });
+      }
     });
   }
 
@@ -97,17 +103,26 @@ export function TeachersPanel({
 
       {/* Invite */}
       <form
-        onSubmit={invite}
+        onSubmit={add}
         style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}
       >
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(16,35,63,.45)", margin: "0 0 14px" }}>
-          Invite a teacher
+          Add a teacher
+        </p>
+        <p style={{ fontSize: "13.5px", color: "rgba(16,35,63,.6)", lineHeight: 1.55, margin: "-6px 0 14px", maxWidth: "56ch" }}>
+          Their name and email gives them a login here. <strong style={{ color: INK }}>No message
+          is sent to them</strong> — tell them yourself, and they sign in with that address.
         </p>
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           <input
+            value={name} onChange={(e) => setName(e.target.value)}
+            placeholder="Morah Leah Stein"
+            style={{ ...field, flex: "1 1 150px", minWidth: "140px" }}
+          />
+          <input
             value={email} onChange={(e) => setEmail(e.target.value)}
-            type="email" placeholder="teacher@yourschool.org"
-            style={{ ...field, flex: "1 1 220px", minWidth: "180px" }}
+            type="email" placeholder="leah@yourschool.org"
+            style={{ ...field, flex: "1 1 200px", minWidth: "170px" }}
           />
           <select value={role} onChange={(e) => setRole(e.target.value as typeof role)} style={{ ...field, width: "auto" }}>
             <option value="TEACHER">Teacher</option>
@@ -115,7 +130,7 @@ export function TeachersPanel({
           </select>
           <button
             type="submit"
-            disabled={pending || full || !email.includes("@")}
+            disabled={pending || full || !email.includes("@") || !name.trim()}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
               backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 22px",
@@ -123,7 +138,7 @@ export function TeachersPanel({
               opacity: pending || full || !email.includes("@") ? 0.5 : 1,
             }}
           >
-            Invite
+            {pending ? "Adding…" : "Add"}
           </button>
         </div>
         {full && (

@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { sendInvitation } from "@/lib/notify";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { canRunOwnSchool, scopedSchoolId } from "@/lib/access";
@@ -28,46 +27,64 @@ async function ownSchool(): Promise<{ userId: string; schoolId: string }> {
   return { userId: user.id, schoolId };
 }
 
-/** Invite a teacher to this school. */
-export async function inviteTeacher(email: string, role: "TEACHER" | "SCHOOL_ADMIN"): Promise<Result> {
+/**
+ * Add a teacher to this school.
+ *
+ * Adding, not inviting. The old version wrote an invitation and emailed a
+ * link — and since nothing may reach a school before JOC launches, the email
+ * was held and the school admin was shown an error, while a pending
+ * invitation nobody would ever receive sat on the system. Broken twice: it
+ * looked like it had failed, and it had half worked.
+ *
+ * The account is simply created. They sign in with that address. The school
+ * admin tells them, which they were going to do anyway.
+ */
+export async function addTeacher(
+  name: string,
+  email: string,
+  role: "TEACHER" | "SCHOOL_ADMIN",
+): Promise<Result> {
   try {
-    const { userId, schoolId } = await ownSchool();
+    const { schoolId } = await ownSchool();
     const clean = email.trim().toLowerCase();
-    if (!clean.includes("@")) return { ok: false, error: "Enter a valid email address" };
+    const person = name.trim();
+    if (!person) return { ok: false, error: "Give their name." };
+    if (!/^[^s@]+@[^s@]+.[^s@]{2,}$/.test(clean)) {
+      return { ok: false, error: "That does not look like an email address." };
+    }
 
     // Seat limit is the school's, and it is theirs to respect.
     const [sub, used] = await Promise.all([
       prisma.subscription.findUnique({ where: { schoolId }, select: { seats: true } }),
       prisma.user.count({ where: { schoolId } }),
     ]);
-    const pending = await prisma.invitation.count({ where: { schoolId, status: "PENDING" } });
-    if (sub?.seats && used + pending >= sub.seats) {
+    if (sub?.seats && used >= sub.seats) {
       return { ok: false, error: `All ${sub.seats} seats are taken. Ask JOC for more.` };
     }
 
-    const existing = await prisma.user.findUnique({ where: { email: clean }, select: { schoolId: true } });
-    if (existing?.schoolId === schoolId) return { ok: false, error: "They are already on your team" };
-
-    await prisma.invitation.create({
-      data: {
-        schoolId,
-        email: clean,
-        role: role as never,
-        expiresAt: new Date(Date.now() + 30 * 86400000),
-        invitedById: userId,
-      },
+    const existing = await prisma.user.findUnique({
+      where: { email: clean },
+      select: { id: true, schoolId: true, name: true },
     });
-    const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { name: true } });
-    const emailed = await sendInvitation({
-      to: clean,
-      schoolName: school?.name ?? "your school",
-      role,
+
+    if (existing) {
+      if (existing.schoolId === schoolId) return { ok: false, error: "They are already on your team." };
+      if (existing.schoolId) {
+        return { ok: false, error: `${existing.name ?? clean} is already at another school. JOC can move them.` };
+      }
+      // On the system but at no school — join them to this one, keeping the
+      // name and role they already have.
+      await prisma.user.update({ where: { id: existing.id }, data: { schoolId } });
+      revalidatePath("/school/teachers");
+      return { ok: true };
+    }
+
+    await prisma.user.create({
+      data: { email: clean, name: person, role: role as never, schoolId },
     });
 
     revalidatePath("/school/teachers");
-    return emailed
-      ? { ok: true }
-      : { ok: false, error: `Added to your team, but no email was sent — JOC has not switched on mail yet. Tell ${clean} to sign up at the site with this address.` };
+    return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Failed" };
   }
