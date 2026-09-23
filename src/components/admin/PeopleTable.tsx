@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { setUserAdminRole } from "@/app/actions/admin-roles";
 import { setUserRole, setUserActive, assignUserToSchool, resetUserPassword } from "@/app/actions/admin";
+import { setProgramLead } from "@/app/actions/forms";
 import { ROLE_LABELS, ROLE_DESCRIPTIONS, ASSIGNABLE_ROLES, type Role } from "@/lib/access";
 
 const INK = "#10233F";
@@ -26,10 +27,13 @@ export type PersonRow = {
   hasPassword?: boolean;
   /** Which admin type they hold, if any. */
   adminRoleId?: string | null;
+  /** The programs they are down as running. Not an admin type — see below. */
+  programIds?: number[];
 };
 
 export type SchoolRef = { id: string; name: string };
 export type AdminTypeRef = { id: string; name: string };
+export type ProgramRef = { id: number; name: string };
 
 function ago(d: Date | string | null) {
   if (!d) return "never";
@@ -50,7 +54,7 @@ const td: React.CSSProperties = {
 };
 
 export function PeopleTable({
-  title, people, showSchool, canEditRoles, disabled, schools = [], adminTypes = [],
+  title, people, showSchool, canEditRoles, disabled, schools = [], adminTypes = [], programs = [], canSetCoordinators = false,
 }: {
   title: string;
   people: PersonRow[];
@@ -60,6 +64,9 @@ export function PeopleTable({
   schools?: SchoolRef[];
   /** Offered on JOC rows only; a teacher has no console access to grant. */
   adminTypes?: AdminTypeRef[];
+  programs?: ProgramRef[];
+  /** Needs the Coordinators permission — not the one that edits roles. */
+  canSetCoordinators?: boolean;
 }) {
   return (
     <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", overflow: "hidden" }}>
@@ -77,13 +84,14 @@ export function PeopleTable({
                 {showSchool && <th style={th}>School</th>}
                 <th style={th}>Role</th>
                 {adminTypes.length > 0 && <th style={th}>Admin type</th>}
+                {programs.length > 0 && <th style={th}>Runs</th>}
                 <th style={th}>Last seen</th>
                 <th style={th} />
               </tr>
             </thead>
             <tbody>
               {people.map((p) => (
-                <Row key={p.id} person={p} showSchool={showSchool} canEditRoles={canEditRoles} disabled={disabled} schools={schools} adminTypes={adminTypes} />
+                <Row key={p.id} person={p} showSchool={showSchool} canEditRoles={canEditRoles} disabled={disabled} schools={schools} adminTypes={adminTypes} programs={programs} canSetCoordinators={canSetCoordinators} />
               ))}
             </tbody>
           </table>
@@ -94,7 +102,7 @@ export function PeopleTable({
 }
 
 function Row({
-  person, showSchool, canEditRoles, disabled, schools, adminTypes,
+  person, showSchool, canEditRoles, disabled, schools, adminTypes, programs, canSetCoordinators,
 }: {
   person: PersonRow;
   showSchool: boolean;
@@ -102,8 +110,12 @@ function Row({
   disabled?: boolean;
   schools: SchoolRef[];
   adminTypes: AdminTypeRef[];
+  programs: ProgramRef[];
+  canSetCoordinators: boolean;
 }) {
   const [role, setRole] = useState(person.role);
+  const [runs, setRuns] = useState<number[]>(person.programIds ?? []);
+  const [runsError, setRunsError] = useState<string | null>(null);
   const [adminType, setAdminType] = useState(person.adminRoleId ?? "");
   const [typeError, setTypeError] = useState<string | null>(null);
   const [active, setActive] = useState(person.active);
@@ -270,6 +282,95 @@ function Row({
             <span style={{ fontSize: "13px", color: "rgba(16,35,63,.6)" }}>
               {adminTypes.find((t) => t.id === adminType)?.name ?? "—"}
             </span>
+          )}
+        </td>
+      )}
+
+      {/* Which programs they run. This is not an admin type and not a role —
+          a coordinator holds no permission at all; being named here is the
+          whole of their access, and it reaches one program's sign-ups. */}
+      {programs.length > 0 && (
+        <td style={td}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center", maxWidth: "260px" }}>
+            {runs.map((pid) => {
+              const prog = programs.find((x) => x.id === pid);
+              if (!prog) return null;
+              return (
+                <span
+                  key={pid}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "5px",
+                    fontSize: "12px", fontWeight: 600, color: "#0B5E57",
+                    backgroundColor: "rgba(15,110,104,.1)", borderRadius: "9999px",
+                    padding: "3px 4px 3px 10px",
+                  }}
+                >
+                  {prog.name}
+                  {canSetCoordinators && (
+                    <button
+                      type="button"
+                      aria-label={`Stop ${person.name ?? person.email} running ${prog.name}`}
+                      onClick={() => {
+                        const prev = runs;
+                        setRuns(runs.filter((x) => x !== pid));
+                        setRunsError(null);
+                        start(async () => {
+                          const r = await setProgramLead(pid, person.id, false);
+                          if (!r.ok) { setRuns(prev); setRunsError(r.error); }
+                        });
+                      }}
+                      disabled={disabled || pending}
+                      style={{
+                        border: "none", background: "none", cursor: "pointer", color: "#0B5E57",
+                        fontSize: "15px", lineHeight: 1, padding: "3px 6px", borderRadius: "9999px",
+                      }}
+                    >
+                      ×
+                    </button>
+                  )}
+                </span>
+              );
+            })}
+
+            {canSetCoordinators && runs.length < programs.length && (
+              <select
+                value=""
+                onChange={(e) => {
+                  const pid = Number(e.target.value);
+                  if (!pid) return;
+                  const prev = runs;
+                  setRuns([...runs, pid]);
+                  setRunsError(null);
+                  start(async () => {
+                    const r = await setProgramLead(pid, person.id, true);
+                    if (!r.ok) { setRuns(prev); setRunsError(r.error); }
+                  });
+                }}
+                disabled={disabled || pending}
+                style={{
+                  fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
+                  color: "rgba(16,35,63,.6)", backgroundColor: "#fff",
+                  border: `1px solid ${RULE}`, borderRadius: "9px", padding: "6px 8px",
+                  minHeight: "36px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                }}
+              >
+                <option value="">+ Add a program</option>
+                {programs
+                  .filter((x) => !runs.includes(x.id))
+                  .map((x) => (
+                    <option key={x.id} value={x.id}>{x.name}</option>
+                  ))}
+              </select>
+            )}
+
+            {!canSetCoordinators && runs.length === 0 && (
+              <span style={{ fontSize: "13px", color: "rgba(16,35,63,.4)" }}>—</span>
+            )}
+          </div>
+          {runsError && (
+            <p style={{ fontSize: "12px", color: "#B8321E", margin: "5px 0 0", maxWidth: "26ch", lineHeight: 1.4 }}>
+              {runsError}
+            </p>
           )}
         </td>
       )}

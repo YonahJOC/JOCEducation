@@ -1,10 +1,10 @@
 import { UsersGuard } from "@/components/admin/Guard";
-import { PeopleTable, type PersonRow, type SchoolRef } from "@/components/admin/PeopleTable";
+import { PeopleTable, type PersonRow, type SchoolRef, type ProgramRef } from "@/components/admin/PeopleTable";
 import { CreateUserForm } from "@/components/admin/CreateUserForm";
 import { usingSampleData } from "@/lib/admin-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, isAuthConfigured } from "@/auth";
-import { canManageRoles, JOC_STAFF_DOMAIN, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
+import { canManageRoles, can, JOC_STAFF_DOMAIN, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { ensureAdminRoles, listAdminRoles } from "@/lib/admin-roles";
 
@@ -20,9 +20,13 @@ export default async function UsersPage() {
 async function Inner() {
   const session = await safeAuth();
   const canEditRoles = !isAuthConfigured || canManageRoles(session?.user);
+  // Naming coordinators is its own permission — the programming team holds it
+  // and does not hold the one that changes roles.
+  const canSetCoordinators = !isAuthConfigured || can(session?.user, "coordinators");
 
   let users: PersonRow[] = [];
   let schools: SchoolRef[] = [];
+  let programs: ProgramRef[] = [];
   // Offered on the JOC rows below, so somebody can be given console access
   // from the same place their role is set.
   await ensureAdminRoles();
@@ -37,16 +41,22 @@ async function Inner() {
           id: true, name: true, email: true, role: true, active: true,
           lastSeenAt: true, schoolId: true, passwordHash: true, adminRoleId: true,
           school: { select: { name: true } },
+          programsLed: { select: { id: true } },
         },
       }),
       prisma.school.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
     ]);
+    programs = await prisma.programPage.findMany({
+      orderBy: { sort: "asc" },
+      select: { id: true, name: true },
+    });
     users = rows.map((u) => ({
       id: u.id, name: u.name, email: u.email, role: u.role, active: u.active,
       lastSeenAt: u.lastSeenAt, schoolId: u.schoolId,
       schoolName: u.school?.name ?? null,
       hasPassword: Boolean(u.passwordHash),
       adminRoleId: u.adminRoleId,
+      programIds: u.programsLed.map((p) => p.id),
     }));
     schools = schoolRows;
   }
@@ -113,6 +123,8 @@ async function Inner() {
         disabled={usingSampleData}
         schools={schools}
         adminTypes={adminTypes}
+        programs={programs}
+        canSetCoordinators={canSetCoordinators}
       />
       <div style={{ height: "16px" }} />
       <PeopleTable
