@@ -136,15 +136,15 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
     <div data-school={row.schoolId} style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch" }}>
         <div style={{
-          flex: "1 1 170px", minWidth: 0, padding: "16px 18px",
+          flex: "1 1 170px", minWidth: 0, padding: "14px 18px",
           backgroundColor: band.bg, color: band.fg,
           display: "flex", flexDirection: "column", justifyContent: "center", gap: "3px",
         }}>
           <span style={{ ...bandLabel, color: band.fg }}>
-            {f ? f.label : "Taken this week"}
+            {f ? f.label : "Opportunities this week"}
           </span>
           <span style={{ ...bandFigure, color: band.fg }}>
-            {f ? f.figure : String(row.stats?.opportunitiesThisWeek ?? 0)}
+            {f ? f.figure : `${row.stats?.opportunitiesThisWeek ?? 0} taken`}
           </span>
         </div>
 
@@ -197,8 +197,12 @@ function Badges({ row }: { row: AppRow }) {
     row.payment.state === "paid" || row.payment.state === "granted"
       ? { backgroundColor: C.blueTint, color: C.blue }
       : row.payment.state === "unpaid"
-      ? { backgroundColor: C.redTint, color: C.redText }
-      : { backgroundColor: C.orangeTint, color: C.orangeText };
+      ? { backgroundColor: C.orange, color: C.ink }
+      : { backgroundColor: C.white, color: C.orangeText, boxShadow: `inset 0 0 0 1.5px ${C.orange}` };
+
+  // The panel chip is the ordinary one. Orange text on it is the whole
+  // signal: this figure is stale, or the school never opened the thing.
+  const plain = { backgroundColor: C.panel, color: C.ink };
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -207,17 +211,17 @@ function Badges({ row }: { row: AppRow }) {
       </span>
 
       {st?.storeRedeemedThisMonth == null ? (
-        <span style={{ ...chip, backgroundColor: C.orangeTint, color: C.orangeText }}>Prize store not open</span>
+        <span style={{ ...chip, ...plain, color: C.orangeText }}>Prize store not open</span>
       ) : (
-        <span style={{ ...chip, backgroundColor: C.panel, color: C.ink }}>
+        <span style={{ ...chip, ...plain }}>
           Prize store · {st.storeRedeemedThisMonth} redeemed this month
         </span>
       )}
 
       {!st ? null : st.unapprovedMinutes === 0 ? (
-        <span style={{ ...chip, backgroundColor: C.greenTint, color: C.greenText }}>All approved</span>
+        <span style={{ ...chip, ...plain }}>All approved</span>
       ) : (
-        <span style={{ ...chip, ...(oldHours ? { backgroundColor: C.orangeTint, color: C.orangeText } : { backgroundColor: C.panel, color: C.ink }) }}>
+        <span style={{ ...chip, ...plain, color: oldHours ? C.orangeText : C.ink }}>
           {hours(st.unapprovedMinutes)} h to approve
         </span>
       )}

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can } from "@/lib/access";
+import { recomputeSchoolLights } from "@/lib/program-lights";
 
 /**
  * Recording where a school is up to.
@@ -104,6 +105,9 @@ export async function logSchoolTouch(
     await prisma.schoolActivity.create({
       data: { schoolId, type: kind, summary: text, authorId: me?.id ?? null, occurredAt: new Date() },
     });
+    // A call logged here turns this school amber on every program console.
+    // Waiting for tonight would leave another coordinator ringing them today.
+    await recomputeSchoolLights(schoolId);
     revalidatePath("/admin/schools");
     revalidatePath(`/admin/schools/${schoolId}`);
     return { ok: true };

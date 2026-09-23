@@ -62,6 +62,15 @@ const MINE_NAV = [
   { label: "Program consoles", href: "/admin/my-programs", hint: "Sign-ups, forms and dates, per program" },
 ];
 
+/**
+ * The admin meeting. Its own section rather than a line under Accounts,
+ * because it is the one place a coordinator's question gets answered — and
+ * an agenda nobody can find is an agenda nobody works through.
+ */
+const MEETING_NAV: NavItem[] = [
+  { label: "Admin meeting", href: "/admin/meetings", hint: "Schools coordinators have sent for a decision" },
+];
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
 
@@ -117,6 +126,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // to see programs at all. listProgramsForAdmin narrows the list either way.
   const showMine =
     leadsProgram || open || can(session?.user, "programs") || can(session?.user, "forms") || can(session?.user, "coordinators");
+  const showMeeting = open || can(session?.user, "run_admin_agenda");
 
   return (
     <div className="joc-admin-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F7F8FB" }}>
@@ -170,6 +180,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="joc-admin-nav">
           <SideNav label="" items={START_NAV} />
           {showMine && <SideNav label="Yours" items={MINE_NAV} />}
+          {showMeeting && <SideNav label="Decisions" items={MEETING_NAV} />}
           {showAccounts && <SideNav label="Accounts" items={ACCOUNTS_NAV} />}
           {showCalendar && <SideNav label="Planning" items={CALENDAR_NAV} />}
           {showContent && <SideNav label="Content" items={CONTENT_NAV} />}

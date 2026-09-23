@@ -8,7 +8,9 @@ import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
 import { FIELD_TYPE_LABELS } from "@/lib/forms";
 import { AppActivityPanel } from "@/components/admin/AppActivityPanel";
+import { ProgramLights } from "@/components/admin/ProgramLights";
 import type { AppActivity } from "@/lib/app-activity";
+import type { ProgramTraffic } from "@/lib/program-traffic";
 import type { ProgramAdminView } from "@/lib/program-admin";
 
 const INK = "#10233F";
@@ -26,7 +28,7 @@ const cell: React.CSSProperties = {
 };
 
 export function ProgramAdminClient({
-  view, forms, team, feeLabel, paymentsOn, appActivity = null, asCoordinator = false,
+  view, forms, team, feeLabel, paymentsOn, appActivity = null, asCoordinator = false, traffic = null,
 }: {
   view: ProgramAdminView;
   forms: { id: string; title: string; responseCount: number }[];
@@ -37,6 +39,8 @@ export function ProgramAdminClient({
   appActivity?: AppActivity | null;
   /** Previewing the coordinator's view rather than your own. */
   asCoordinator?: boolean;
+  /** Every school not in this program yet, and whether to approach it. */
+  traffic?: ProgramTraffic | null;
 }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -212,6 +216,10 @@ export function ProgramAdminClient({
       </div>
 
       {appActivity && <AppActivityPanel data={appActivity} />}
+
+      {traffic && (
+        <ProgramLights programId={view.id} slug={view.slug} programName={view.name} data={traffic} />
+      )}
 
       {/* ── Where it is running ────────────────────────────────────────── */}
       <div style={card}>

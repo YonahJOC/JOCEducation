@@ -198,12 +198,13 @@ export function isInternal(user: U): boolean {
 export const CAPABILITIES = [
   // Educational material
   "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity",
+  "set_program_light",
   // The calendar
   "programming", "cycles", "coordinators",
   // School accounts
   "schools", "demos", "orders", "pricing",
   // Access
-  "users",
+  "users", "run_admin_agenda",
 ] as const;
 export type Capability = (typeof CAPABILITIES)[number];
 
@@ -216,11 +217,14 @@ export type Capability = (typeof CAPABILITIES)[number];
 export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] = [
   {
     label: "Educational material",
-    capabilities: ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity"],
+    capabilities: [
+      "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
+      "app_activity", "set_program_light",
+    ],
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
   { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing"] },
-  { label: "Access", capabilities: ["users"] },
+  { label: "Access", capabilities: ["users", "run_admin_agenda"] },
 ];
 
 export const CAPABILITY_LABELS: Record<Capability, string> = {
@@ -233,6 +237,8 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   site: "Words on the public pages",
   forms: "Forms and their answers",
   app_activity: "JOC App activity",
+  set_program_light: "The traffic light",
+  run_admin_agenda: "The admin meeting",
   programming: "Programming calendar",
   cycles: "Chesed Cycle dates",
   coordinators: "Program coordinators",
@@ -253,6 +259,10 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   site: "The wording on the public pages, with drafts and history.",
   forms: "Build forms — registrations, sign-ups, feedback — and read what comes back.",
   app_activity: "What every school is doing in the JOC App, and who needs a call about it.",
+  set_program_light:
+    "Overrule the traffic light on a school: hold a program off, or clear one to be approached. A coordinator can act on a light without this; only this changes one.",
+  run_admin_agenda:
+    "Run the admin meeting — the schools coordinators have sent for a decision, and what was decided about each.",
   programming: "What is running and where — the events at each school.",
   cycles: "The eight Chesed Cycles, their dates and their weekly plan.",
   coordinators: "Say who runs each program. A coordinator then sees that one program's sign-ups — and nothing else in the console.",
@@ -271,7 +281,10 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
  * still works correctly before any type has been assigned, and if the
  * AdminRole table were ever emptied nobody would be locked out.
  */
-const CONTENT: Capability[] = ["lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity"];
+const CONTENT: Capability[] = [
+  "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
+  "app_activity", "set_program_light",
+];
 const CALENDAR: Capability[] = ["programming", "cycles", "coordinators"];
 const ACCOUNTS: Capability[] = ["schools", "demos", "orders", "pricing"];
 
@@ -279,7 +292,9 @@ export const DEFAULT_CAPABILITIES: Record<Role, Capability[]> = {
   TEACHER: [],
   SCHOOL_ADMIN: [],
   STAFF: [],
-  PROGRAM_STAFF: [...CALENDAR, ...ACCOUNTS],
+  // The programming team sets the lights and runs the meeting: deciding
+  // which school hears about which program is the whole of their job.
+  PROGRAM_STAFF: [...CALENDAR, ...ACCOUNTS, "set_program_light", "run_admin_agenda"],
   ADMIN: [...CONTENT, ...CALENDAR],
   SUPER_ADMIN: [...CAPABILITIES],
 };
@@ -362,7 +377,12 @@ export function canManageRoles(user: U): boolean {
  * there this person is allowed to do. STAFF cannot; they just use the site.
  */
 export function canAccessConsole(user: U): boolean {
-  return canManageContent(user) || canManageCalendar(user) || canManageAccounts(user);
+  return (
+    canManageContent(user) ||
+    canManageCalendar(user) ||
+    canManageAccounts(user) ||
+    can(user, "run_admin_agenda")
+  );
 }
 
 // ─── School-scoped ───────────────────────────────────────────────────────────

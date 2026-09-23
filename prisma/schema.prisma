@@ -85,6 +85,9 @@ model School {
   appChallenges AppChallengeStat[]
   appMessages   AppSchoolMessage[]
 
+  programLights SchoolProgramLight[]
+  agendaItems   AdminMeetingItem[]
+
   @@index([status])
   @@index([accountManagerId])
 }
@@ -271,6 +274,10 @@ model User {
   planRequests     PlanChangeRequest[] @relation("PlanRequester")
   planResponses    PlanChangeRequest[] @relation("PlanResponder")
   accessGrants     Subscription[]      @relation("AccessGranter")
+
+  lightsSet        SchoolProgramLight[] @relation("LightSetBy")
+  agendaRaised     AdminMeetingItem[]   @relation("AgendaRaisedBy")
+  agendaDecided    AdminMeetingItem[]   @relation("AgendaDecidedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -818,6 +825,10 @@ model ProgramPage {
   leads User[] @relation("ProgramLeads")
 
   sort Int @default(0)
+
+  /// Whether each school may be approached about this program, and why.
+  lights      SchoolProgramLight[]
+  agendaItems AdminMeetingItem[]
 
   /// A promo video for the top of the program page. YouTube, Vimeo or a
   /// direct file — whatever the team has.
@@ -1447,4 +1458,141 @@ enum AppSyncStatus {
   RUNNING
   OK
   FAILED
+}
+
+// ─── The traffic light ───────────────────────────────────────────────────────
+
+/// Whether a coordinator may approach this school about this program.
+///
+/// One row per school per program, and there is a row for every pair — a
+/// school with no row would be a school nobody knows what to do about, which
+/// is the thing this table exists to abolish.
+///
+/// Most rows are written by the nightly rules. A row somebody set by hand
+/// beats the rules and stays until it is changed or until `until` passes.
+model SchoolProgramLight {
+  id        String  @id @default(cuid())
+  schoolId  String
+  programId Int
+
+  light ProgramLight
+
+  /// Why, in the words the console shows. Always present: a light with no
+  /// reason is a coordinator guessing.
+  reason String @db.Text
+
+  source LightSource @default(RULE)
+
+  /// Who set it, for a manual light. Null for the rules.
+  setById String?
+  setBy   User?   @relation("LightSetBy", fields: [setById], references: [id], onDelete: SetNull)
+  setAt   DateTime @default(now())
+
+  /// A manual light may be temporary — "hold off until after Pesach". When
+  /// this passes the rules take the row back.
+  until DateTime?
+
+  /// Set when the person who put the manual light on has been told it
+  /// expired. Null means they still need telling.
+  expiryToldAt DateTime?
+
+  school  School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  program ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([schoolId, programId])
+  @@index([programId, light])
+  @@index([source, until])
+}
+
+enum ProgramLight {
+  /// Reach out.
+  GREEN
+  /// Discuss first.
+  AMBER
+  /// Hold off.
+  RED
+}
+
+enum LightSource {
+  /// Written by the nightly rules.
+  RULE
+  /// Set by a person, and therefore untouchable by the rules.
+  MANUAL
+}
+
+/// The admin meeting an amber or red school gets taken to.
+///
+/// A date and nothing else, most of the time. It exists as a row rather than
+/// a setting so that a coordinator can be told which meeting their school is
+/// on — "the next one" is not an answer anybody can plan around.
+model AdminMeeting {
+  id      String   @id @default(cuid())
+  meetsAt DateTime
+  note    String?  @db.Text
+
+  /// Set when the meeting has been worked through. A closed meeting stops
+  /// collecting items; the next one starts.
+  closedAt DateTime?
+
+  items AdminMeetingItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([meetsAt])
+}
+
+/// One school, on one meeting's agenda, about one program.
+model AdminMeetingItem {
+  id        String @id @default(cuid())
+  meetingId String
+  schoolId  String
+  programId Int
+
+  /// The light at the moment it was raised, so the agenda still reads
+  /// correctly after somebody changes it.
+  light ProgramLight
+  kind  AgendaKind
+
+  note String @db.Text
+
+  createdById String?
+  createdBy   User?   @relation("AgendaRaisedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  /// What the admins decided. Null until the meeting works through it.
+  outcome     AgendaOutcome?
+  outcomeNote String?        @db.Text
+  outcomeAt   DateTime?
+  outcomeById String?
+  outcomeBy   User?          @relation("AgendaDecidedBy", fields: [outcomeById], references: [id], onDelete: SetNull)
+
+  meeting AdminMeeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  school  School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  program ProgramPage  @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@index([meetingId])
+  @@index([programId])
+  @@index([schoolId])
+}
+
+enum AgendaKind {
+  /// "Let's review" — an amber school the coordinator wants a steer on.
+  REVIEW
+  /// A red school sent back for the admins to look at again.
+  SEND_FOR_REVIEW
+  /// A red school the coordinator thinks should be reconsidered.
+  SUGGEST_APPEAL
+}
+
+enum AgendaOutcome {
+  /// The light stands.
+  KEEP_LIGHT
+  /// The light was changed. The reason is in outcomeNote.
+  CHANGE_LIGHT
+  /// Closed with nothing changed.
+  CLOSED
 }

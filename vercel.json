@@ -3,6 +3,10 @@
     {
       "path": "/api/app-sync",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/lights",
+      "schedule": "0 5 * * *"
     }
   ]
 }

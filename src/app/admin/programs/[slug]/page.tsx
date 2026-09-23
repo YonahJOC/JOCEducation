@@ -6,6 +6,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { money, isPaymentConfigured } from "@/lib/payments";
 import { ProgramAdminClient } from "./ProgramAdminClient";
 import { getAppActivity } from "@/lib/app-activity";
+import { getProgramTraffic } from "@/lib/program-traffic";
 import { safeAuth, isAuthConfigured } from "@/auth";
 import { can } from "@/lib/access";
 
@@ -48,6 +49,13 @@ export default async function ProgramAdminPage({
       ? await getAppActivity()
       : null;
 
+  // The traffic light. On every console, including the coordinator's own
+  // preview — it is the one part of this page a coordinator works from, so
+  // hiding it in the preview would make the preview a lie.
+  const traffic = await getProgramTraffic(view.id, {
+    canSetLight: !asCoordinator && (!isAuthConfigured || can(session?.user, "set_program_light")),
+  });
+
   // Only offered to somebody who may actually rewire the program.
   const forms = view.canEditProgram ? await listForms() : [];
   const team = view.canSetCoordinators && isDatabaseConfigured()
@@ -67,6 +75,7 @@ export default async function ProgramAdminPage({
       paymentsOn={isPaymentConfigured}
       asCoordinator={asCoordinator}
       appActivity={asCoordinator ? null : appActivity}
+      traffic={traffic}
     />
   );
 }
