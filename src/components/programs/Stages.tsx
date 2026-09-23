@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { C, F, label } from "@/lib/joc-tokens";
 import { resolveStageUrl, type Stage } from "@/lib/stages";
 
 /**
@@ -64,7 +64,7 @@ export function stageLink(
 }
 
 export function Stages({
-  stages, formSlug, comingSoon = false, externalHref, deep,
+  stages, formSlug, comingSoon = false, externalHref, deep, currentStep = null,
 }: {
   stages: Stage[];
   formSlug: string | null;
@@ -72,6 +72,12 @@ export function Stages({
   externalHref?: string | null;
   /** The hero colour carried down the page. */
   deep: string;
+  /**
+   * Which station this school is standing at, 1 to 4, where we know. Null for
+   * a visitor — the path then reads as a description of how it goes, rather
+   * than as a claim about them.
+   */
+  currentStep?: number | null;
 }) {
   if (stages.length === 0) return null;
 
@@ -82,6 +88,11 @@ export function Stages({
         const link = stageLink(s, i, { formSlug, comingSoon, externalHref: externalHref ?? null });
         const primary = comingSoon ? i === 0 : isRegisterStage(s);
 
+        // Where this school actually is. Without a step we know nothing about
+        // them, so no station is marked and the path is just the path.
+        const here = currentStep != null && i + 1 === currentStep;
+        const done = currentStep != null && i + 1 < currentStep;
+
         return (
           <li key={s.step || i} id={`step-${i + 1}`} className="joc-stage">
             {/* The rail: node, then a line down to the next one. */}
@@ -89,12 +100,17 @@ export function Stages({
               <span
                 className="joc-stage-node"
                 style={{
-                  // Locked beats last: a filled orange "you made it" node on a
-                  // stage that cannot be reached yet says two opposite things.
-                  backgroundColor: last && !link.locked ? C.orange : C.paper,
-                  color: link.locked ? C.muted : C.ink,
+                  fontFamily: F.data, fontWeight: 500,
+                  // Locked beats everything: a filled "you are here" node on a
+                  // station that cannot be reached says two opposite things.
+                  backgroundColor: link.locked ? C.paper : here ? deep : done ? C.greenTint : C.paper,
+                  color: link.locked ? C.muted : here ? C.white : done ? C.greenText : C.ink,
                   border: link.locked
                     ? `2px dashed ${LOCKED}`
+                    : here
+                    ? `3px solid ${C.orange}`
+                    : done
+                    ? `2px solid ${C.green}`
                     : last
                     ? `2px solid ${C.orange}`
                     : `2px solid ${C.ink}`,
@@ -111,15 +127,19 @@ export function Stages({
               )}
             </div>
 
-            <div className="joc-stage-card">
+            <div className="joc-stage-card" style={here ? { borderTop: `3px solid ${C.orange}` } : undefined}>
               <div style={{ minWidth: 0 }}>
-                <p style={{ fontSize: "13px", color: C.muted, margin: "0 0 5px", fontWeight: 500 }}>
-                  Step {s.step} of {stages.length} · {stageShort(i)}
+                <p style={{ ...label, color: done ? C.greenText : here ? C.orangeText : C.muted, margin: "0 0 6px" }}>
+                  {done
+                    ? "Done"
+                    : link.locked
+                    ? `Opens after ${stageShort(Math.max(0, i - 1))}`
+                    : `Step ${s.step} of ${stages.length} · ${stageShort(i)}`}
                 </p>
-                <h3 style={{ fontSize: "18px", fontWeight: 600, letterSpacing: "-0.015em", color: C.ink, margin: "0 0 7px", lineHeight: 1.3 }}>
+                <h3 style={{ fontFamily: F.ui, fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 7px", lineHeight: 1.3 }}>
                   {s.title}
                 </h3>
-                <p style={{ fontSize: "15.5px", color: BODY2, lineHeight: 1.6, margin: 0, maxWidth: "56ch" }}>
+                <p style={{ fontFamily: F.read, fontSize: "17px", color: C.ink, lineHeight: 1.6, margin: 0, maxWidth: "56ch" }}>
                   {s.description}
                 </p>
               </div>

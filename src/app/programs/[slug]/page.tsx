@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { C, F, label } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
 import { heroFg, deepFrom } from "@/lib/hero-color";
 import { Stages } from "@/components/programs/Stages";
-import { StepBar } from "@/components/programs/StepBar";
 import { PromoVideo } from "@/components/programs/PromoVideo";
+import { NextStep } from "@/components/programs/NextStep";
+import { myStepOn } from "@/lib/program-step";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -37,6 +38,11 @@ export default async function ProgramDetailPage({ params }: Props) {
   // The hero colour is chosen per program in the console, so the text on it
   // and the accents drawn from it are both worked out rather than assumed.
   const fg = heroFg(program.heroColor);
+
+  // Where this visitor's school has got to, if they are signed in and their
+  // school is on it. Null covers a visitor, somebody with no school, and a
+  // school this program has not reached — one state, not three.
+  const mine = await myStepOn(slug);
   const deep = deepFrom(program.heroColor);
   const comingSoon = Boolean(program.comingSoon);
   const formSlug = program.formSlug ?? null;
@@ -56,8 +62,8 @@ export default async function ProgramDetailPage({ params }: Props) {
     <div className="joc-program">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <div style={{ backgroundColor: program.heroColor, color: fg, padding: "44px 26px 104px" }}>
+      {/* ── Hero: what it is on the left, what to do about it on the right ── */}
+      <div style={{ backgroundColor: program.heroColor, color: fg, padding: "44px 26px 52px" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <Link
             href="/programs"
@@ -70,162 +76,169 @@ export default async function ProgramDetailPage({ params }: Props) {
             ← All programs
           </Link>
 
-          <div style={{ display: "flex", gap: "9px", alignItems: "center", flexWrap: "wrap", margin: "12px 0 16px" }}>
-            <span style={{
-              border: "1.5px solid currentColor", borderRadius: "9999px", padding: "4px 13px",
-              fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
-            }}>
-              {program.tag}
-            </span>
-            {comingSoon && (
-              <span style={{
-                backgroundColor: C.paper, color: C.ink, borderRadius: "9999px", padding: "5px 14px",
-                fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
+          <div className="joc-program-hero">
+            <div style={{ minWidth: 0 }}>
+              <p style={{ ...label, color: fg, opacity: 0.85, margin: "12px 0 14px" }}>
+                Program · {program.tag}
+                {comingSoon && " · Coming soon"}
+              </p>
+
+              <h1 style={{
+                fontFamily: F.ui, fontWeight: 700, fontSize: "clamp(40px, 8vw, 84px)", lineHeight: 0.98,
+                letterSpacing: "-0.04em", margin: "0 0 16px", textWrap: "balance",
               }}>
-                Coming soon
-              </span>
-            )}
+                {program.name}
+              </h1>
+
+              <p style={{
+                fontFamily: F.read, fontStyle: "italic", fontSize: "clamp(20px, 2.6vw, 28px)",
+                lineHeight: 1.35, maxWidth: "30ch", margin: "0 0 18px", opacity: 0.92,
+              }}>
+                {program.tagline}
+              </p>
+
+              {/* The description reads here on a wide screen. On a phone it
+                  collapses further down, under "What is this?", so the card
+                  is reachable without scrolling past three paragraphs. */}
+              <p className="joc-program-blurb" style={{
+                fontFamily: F.read, fontSize: "19px", lineHeight: 1.6,
+                maxWidth: "52ch", margin: "0 0 20px", opacity: 0.9,
+              }}>
+                {program.description}
+              </p>
+
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {[...program.meta.split("·").map((m) => m.trim()).filter(Boolean), ...program.available.slice(0, 1)].map((fact) => (
+                  <span
+                    key={fact}
+                    style={{
+                      ...label, color: fg, border: "1.5px solid currentColor",
+                      borderRadius: "9999px", padding: "6px 13px", opacity: 0.9,
+                    }}
+                  >
+                    {fact}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="joc-program-next" style={{ minWidth: 0 }}>
+              <NextStep
+                mine={mine}
+                formSlug={formSlug}
+                comingSoon={comingSoon}
+                externalHref={program.externalHref}
+                programName={program.name}
+                accent={program.heroColor}
+              />
+            </div>
           </div>
-
-          <h1 style={{
-            fontWeight: 600, fontSize: "clamp(38px, 6vw, 68px)", lineHeight: 1.03,
-            letterSpacing: "-0.035em", margin: "0 0 14px", textWrap: "balance",
-          }}>
-            {program.name}
-          </h1>
-          <p style={{
-            fontFamily: "var(--font-newsreader)", fontStyle: "italic", fontSize: "clamp(18px, 2.4vw, 22px)",
-            lineHeight: 1.45, maxWidth: "36ch", margin: 0, opacity: 0.88,
-          }}>
-            {program.tagline}
-          </p>
         </div>
-      </div>
-
-      {/* ── Step bar, lifted over the hero ───────────────────────────── */}
-      <div style={{ maxWidth: "1280px", margin: "-72px auto 0", padding: "0 26px", position: "relative" }}>
-        <StepBar
-          stages={program.howItWorks}
-          formSlug={formSlug}
-          comingSoon={comingSoon}
-          externalHref={program.externalHref}
-        />
       </div>
 
       {/* ── Body ─────────────────────────────────────────────────────── */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "44px 26px 20px" }}>
-        <div className="joc-program-grid">
+        {/* The path, once. */}
+        <section id="how" style={{ scrollMarginTop: "20px" }}>
+          <p style={{ ...label, color: deep, margin: "0 0 8px" }}>Your path</p>
+          <h2 style={{
+            fontFamily: F.ui, fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 700,
+            letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px",
+          }}>
+            How it works
+          </h2>
+          <p style={{ fontFamily: F.read, fontSize: "18px", color: C.muted, lineHeight: 1.6, margin: "0 0 26px", maxWidth: "56ch" }}>
+            The same four stages on every JOC program, so a school that has run one already knows
+            how the next one goes.
+          </p>
+          <Stages
+            stages={program.howItWorks}
+            formSlug={formSlug}
+            comingSoon={comingSoon}
+            externalHref={program.externalHref}
+            deep={deep}
+            currentStep={mine?.step ?? null}
+          />
+        </section>
 
-          {/* Intro: video, then the description */}
-          <div style={{ gridArea: "intro", minWidth: 0 }}>
+        {/* What it is, on a phone. On a wide screen this already read in the
+            hero, so it is not repeated there. */}
+        <details className="joc-program-what" style={{ marginTop: "34px" }}>
+          <summary style={{
+            fontFamily: F.ui, fontSize: "18px", fontWeight: 700, color: C.ink,
+            cursor: "pointer", minHeight: "44px", display: "flex", alignItems: "center",
+          }}>
+            What is {program.name}?
+          </summary>
+          <p style={{ fontFamily: F.read, fontSize: "18px", lineHeight: 1.65, color: C.ink, margin: "10px 0 0" }}>
+            {program.description}
+          </p>
+        </details>
+
+        {/* The video beside what a school actually gets. */}
+        <section className="joc-program-box" style={{ marginTop: "44px" }}>
+          <div style={{ minWidth: 0 }}>
             <PromoVideo url={program.videoUrl} title={program.name} />
-            <SectionLabel deep={deep}>About the program</SectionLabel>
-            <p style={{ fontSize: "clamp(18px, 1.6vw, 20px)", lineHeight: 1.6, color: BODY2, margin: 0, maxWidth: "62ch" }}>
-              {program.description}
-            </p>
           </div>
 
-          {/* Sidebar */}
-          <aside className="joc-program-side" style={{ gridArea: "side", minWidth: 0 }}>
-            <div style={{
-              backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderTop: `6px solid ${deep}`,
-              borderRadius: "14px", padding: "22px", marginBottom: "14px",
+          <div style={{ minWidth: 0 }}>
+            <p style={{ ...label, color: deep, margin: "0 0 8px" }}>In the box</p>
+            <h2 style={{
+              fontFamily: F.ui, fontSize: "clamp(22px, 2.4vw, 28px)", fontWeight: 700,
+              letterSpacing: "-0.025em", color: C.ink, margin: "0 0 6px",
             }}>
-              <div style={{ display: "flex", gap: "10px", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px", flexWrap: "wrap" }}>
-                <p style={{ fontSize: "16px", fontWeight: 600, color: C.ink, margin: 0, letterSpacing: "-0.015em" }}>
-                  At a glance
-                </p>
-                <span style={{
-                  border: `1.5px solid ${C.hairline}`, color: C.muted, borderRadius: "9999px", padding: "3px 10px",
-                  fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-                }}>
-                  {program.tag}
-                </span>
-              </div>
+              What your school gets
+            </h2>
+            <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.6, margin: "0 0 18px" }}>
+              {comingSoon ? "What it will come with." : "Everything below comes with it."}
+            </p>
 
-              <p style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, margin: "0 0 10px" }}>
-                {comingSoon ? "Will be included in" : "Included in"}
+            {program.whatsIncluded.length === 0 ? (
+              <p style={{ fontFamily: F.read, fontSize: "17px", color: C.orangeText, lineHeight: 1.6, margin: 0 }}>
+                Nobody has written down what comes with this one yet.
               </p>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 18px", display: "grid", gap: "9px" }}>
-                {program.available.map((a) => (
-                  <li key={a} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "14px", color: C.ink, lineHeight: 1.45, minWidth: 0 }}>
-                    {/* A ringed tick, so inclusion is not carried by colour alone. */}
-                    <span aria-hidden="true" style={{
-                      width: "22px", height: "22px", borderRadius: "50%", flexShrink: 0,
-                      border: `1.5px solid ${deep}`, color: deep,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "11px", fontWeight: 700, marginTop: "1px",
-                    }}>
-                      ✓
+            ) : (
+              <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "14px" }}>
+                {program.whatsIncluded.map((item, i) => (
+                  <li key={item} style={{ display: "flex", gap: "14px", alignItems: "flex-start", minWidth: 0 }}>
+                    <span style={{ ...label, color: deep, flexShrink: 0, paddingTop: "4px", width: "24px" }}>
+                      {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span style={{ minWidth: 0 }}>{a}</span>
+                    <span style={{ fontFamily: F.read, fontSize: "18px", lineHeight: 1.55, color: C.ink, minWidth: 0 }}>
+                      {item}
+                    </span>
                   </li>
                 ))}
-              </ul>
-
-              <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "14px" }}>
-                <p style={{ fontSize: "13px", color: C.muted, margin: "0 0 10px", lineHeight: 1.5 }}>{program.meta}</p>
-                <Link href="/pricing" style={{ fontSize: "14px", fontWeight: 600, color: C.blue, textDecoration: "none", minHeight: "44px", display: "inline-flex", alignItems: "center" }}>
-                  See all plans →
-                </Link>
-              </div>
-            </div>
-
-            {program.whatsIncluded.length > 0 && (
-              <div style={{ backgroundColor: C.panel, borderRadius: "14px", padding: "22px" }}>
-                <p style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, margin: "0 0 12px" }}>
-                  What&rsquo;s included
-                </p>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "10px" }}>
-                  {program.whatsIncluded.map((item, i) => (
-                    <li key={i} style={{ display: "flex", gap: "11px", alignItems: "flex-start", fontSize: "14px", color: BODY2, lineHeight: 1.5, minWidth: 0 }}>
-                      <span aria-hidden="true" style={{ width: "8px", height: "2px", backgroundColor: C.ink, flexShrink: 0, marginTop: "10px", opacity: 0.55 }} />
-                      <span style={{ minWidth: 0 }}>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              </ol>
             )}
-          </aside>
 
-          {/* The rest of the article */}
-          <div style={{ gridArea: "rest", minWidth: 0 }}>
-            <section id="how" style={{ scrollMarginTop: "20px", paddingTop: "34px" }}>
-              <SectionLabel deep={deep}>How it works</SectionLabel>
-              <p style={{ fontSize: "15.5px", color: C.muted, lineHeight: 1.6, margin: "0 0 24px", maxWidth: "58ch" }}>
-                The same four stages on every JOC program, so a school that has run one already
-                knows how the next one goes.
-              </p>
-              <Stages
-                stages={program.howItWorks}
-                formSlug={formSlug}
-                comingSoon={comingSoon}
-                externalHref={program.externalHref}
-                deep={deep}
-              />
-            </section>
-
-            {program.testimonial && (
-              <figure style={{ backgroundColor: C.ink, borderRadius: "18px", padding: "clamp(26px, 4vw, 38px)", margin: "42px 0 0" }}>
-                <span aria-hidden="true" style={{ display: "block", fontFamily: "var(--font-newsreader)", fontSize: "54px", lineHeight: 0.6, color: "#FA912D" }}>
-                  &ldquo;
-                </span>
-                <blockquote style={{ margin: "14px 0 18px" }}>
-                  <p style={{
-                    fontFamily: "var(--font-newsreader)", fontStyle: "italic",
-                    fontSize: "clamp(22px, 2.6vw, 30px)", lineHeight: 1.4, color: "#fff",
-                    margin: 0, maxWidth: "34ch",
-                  }}>
-                    {program.testimonial.quote}
-                  </p>
-                </blockquote>
-                <figcaption style={{ fontSize: "14px", color: "#C3CCDD", lineHeight: 1.5 }}>
-                  <Attribution value={program.testimonial.attribution} />
-                </figcaption>
-              </figure>
-            )}
+            <p style={{ marginTop: "20px" }}>
+              <Link href="/pricing" style={{ fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.blue, textDecoration: "underline", minHeight: "44px", display: "inline-flex", alignItems: "center" }}>
+                Which plans include it
+              </Link>
+            </p>
           </div>
-        </div>
+        </section>
+
+        {program.testimonial && (
+          <figure style={{ backgroundColor: C.ink, borderRadius: "18px", padding: "clamp(26px, 4vw, 38px)", margin: "48px 0 0" }}>
+            <span aria-hidden="true" style={{ display: "block", fontFamily: F.read, fontSize: "54px", lineHeight: 0.6, color: C.orange }}>
+              &ldquo;
+            </span>
+            <blockquote style={{ margin: "14px 0 18px" }}>
+              <p style={{
+                fontFamily: F.read, fontStyle: "italic",
+                fontSize: "clamp(22px, 2.6vw, 30px)", lineHeight: 1.4, color: C.white,
+                margin: 0, maxWidth: "34ch",
+              }}>
+                {program.testimonial.quote}
+              </p>
+            </blockquote>
+            <figcaption style={{ fontSize: "14px", color: "#C6CFF0", lineHeight: 1.5 }}>
+              <Attribution value={program.testimonial.attribution} />
+            </figcaption>
+          </figure>
+        )}
       </div>
 
       {/* ── Other programs ───────────────────────────────────────────── */}

@@ -171,18 +171,41 @@ body {
    narrower column. */
 .joc-program { container-type: inline-size; }
 
-/* The step bar sitting over the hero. */
-.joc-stepbar {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(16, 35, 63, .1), 0 2px 6px rgba(16, 35, 63, .06);
-  padding: 20px;
+/* The hero: what it is on the left, what to do about it on the right. One
+   column until the page is wide enough that two would not squeeze either. */
+.joc-program-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
 }
-.joc-stepbar-head {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+
+/* The description reads in the hero on a wide screen. On a phone it collapses
+   into "What is this?" further down, so the next-step card is reachable
+   without scrolling past three paragraphs of prose. */
+.joc-program-what { display: block; }
+
+/* The video beside what a school actually gets. */
+.joc-program-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
 }
-.joc-stepbar-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+@container (min-width: 900px) {
+  .joc-program-hero { grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 44px; }
+  .joc-program-box  { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; }
+  .joc-program-what { display: none; }
+}
+
+@container (max-width: 899px) {
+  /* Said once, and on a phone it is said in the collapsible below. */
+  .joc-program-blurb { display: none; }
+  /* The card sits over the bottom of the hero rather than under all of it. */
+  .joc-program-next { margin-bottom: -60px; }
+}
+
 
 /* Body: one column, in reading order — intro, then the panels a school checks
    against, then the path. */
@@ -225,8 +248,6 @@ body {
 }
 
 @container (min-width: 720px) {
-  .joc-stepbar { padding: 22px 24px; }
-  .joc-stepbar-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   /* The action moves beside the words once there is room for both. */
   .joc-stage-card { flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; }
   .joc-stage-action { flex-shrink: 0; min-width: 210px; width: auto; }
