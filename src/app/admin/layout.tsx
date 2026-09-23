@@ -91,7 +91,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <button
                 type="submit"
                 style={{
-                  ...label, width: "100%", color: "rgba(255,255,255,.65)",
+                  fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
+                  width: "100%", color: "rgba(255,255,255,.7)",
                   background: "none", border: "none", cursor: "pointer",
                   minHeight: "44px", textAlign: "left", padding: 0,
                 }}

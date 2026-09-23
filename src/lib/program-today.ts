@@ -1,5 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { STAGE_TONE, STAGE_LABEL, type Stage } from "@/lib/program-enrollment";
+import type { Tone } from "@/lib/joc-tokens";
 
 /**
  * What needs a program coordinator today.
@@ -27,14 +28,18 @@ export type TodayKind = "STUCK" | "NEW_SIGN_UP" | "NO_WRITE_UP" | "DECIDED" | "U
 export type TodayRow = {
   id: string;
   kind: TodayKind;
-  /** The Plex Mono label on the band: "STUCK · 61 DAYS". */
-  band: string;
+  /** Above the figure: "STUCK". */
+  label: string;
+  /** The figure: "61 days", "3". */
+  figure: string;
+  tone: Tone;
   /** How bad, for sorting. Higher first. */
   weight: number;
   schoolId: string | null;
-  schoolName: string;
-  /** One line, in the reading face. */
-  says: string;
+  /** The thing itself — nearly always a school. */
+  title: string;
+  /** One line, around ninety characters. */
+  line: string;
   action: { label: string; href: string };
 };
 
@@ -96,11 +101,13 @@ export async function getProgramToday(programId: number, slug: string): Promise<
       rows.push({
         id: `stuck:${e.school.id}`,
         kind: "STUCK",
-        band: `Stuck · ${age} days`,
+        label: "Stuck",
+        figure: `${age} days`,
+        tone: "warn",
         weight: 1000 + age,
         schoolId: e.school.id,
-        schoolName: e.school.name,
-        says: `${e.school.name} has been at ${STAGE_LABEL[stage].toLowerCase()} since ${e.stageSince.toLocaleDateString("en-US", { day: "numeric", month: "short" })}, and nothing has moved.`,
+        title: e.school.name,
+        line: `At ${STAGE_LABEL[stage].toLowerCase()} since ${e.stageSince.toLocaleDateString("en-US", { day: "numeric", month: "short" })}.`,
         action: { label: "Move it on", href: `/admin/programs/${slug}?tab=schools` },
       });
     }
@@ -127,11 +134,13 @@ export async function getProgramToday(programId: number, slug: string): Promise<
         rows.push({
           id: `signup:${r.id}`,
           kind: "NEW_SIGN_UP",
-          band: `New sign-up · ${age === 0 ? "today" : `${age} days`}`,
+          label: "New sign-up",
+          figure: age === 0 ? "Today" : `${age} days`,
+          tone: "info",
           weight: 2000 + age,
           schoolId: r.school.id,
-          schoolName: r.school.name,
-          says: `${r.school.name} filled in the form${age === 0 ? " today" : ` ${age} days ago`} and is still down as ${stage ? STAGE_LABEL[stage].toLowerCase() : "not started"}.`,
+          title: r.school.name,
+          line: `Filled in the form, still down as ${stage ? STAGE_LABEL[stage].toLowerCase() : "not started"}.`,
           action: { label: "Open the sign-ups", href: `/admin/programs/${slug}?tab=sign-ups` },
         });
       }
@@ -160,12 +169,14 @@ export async function getProgramToday(programId: number, slug: string): Promise<
           rows.push({
             id: `writeup:${e.id}`,
             kind: "NO_WRITE_UP",
-            band: `No write-up · ${age} days`,
+            label: "No write-up",
+            figure: `${age} days`,
+            tone: "warn",
             weight: 700 + age,
             schoolId: e.school?.id ?? null,
-            schoolName: e.school?.name ?? "No school on the calendar entry",
-            says: `${e.title} ran ${age} days ago and no ambassador has written it up.`,
-            action: { label: "See the reports", href: `/admin/programs/${slug}?tab=today#reports` },
+            title: e.school?.name ?? e.title,
+            line: `${e.title} ran and no ambassador has written it up.`,
+            action: { label: "See the reports", href: `/admin/programs/${slug}?tab=today` },
           });
         }
       }
@@ -191,13 +202,13 @@ export async function getProgramToday(programId: number, slug: string): Promise<
       rows.push({
         id: `decided:${d.id}`,
         kind: "DECIDED",
-        band: `Decided · ${d.outcomeAt.toLocaleDateString("en-US", { day: "numeric", month: "short" })}`,
+        label: "Decided",
+        figure: d.outcomeAt.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+        tone: "good",
         weight: 1500 - age,
         schoolId: d.school.id,
-        schoolName: d.school.name,
-        says:
-          `The admin meeting decided about ${d.school.name}.` +
-          (d.outcomeNote ? ` ${d.outcomeNote}` : ""),
+        title: d.school.name,
+        line: d.outcomeNote ?? "The admin meeting settled it.",
         action: { label: "See the light", href: `/admin/programs/${slug}?tab=not-in-yet` },
       });
     }
@@ -212,16 +223,21 @@ export async function getProgramToday(programId: number, slug: string): Promise<
       rows.push({
         id: `unannounced:${e.id}`,
         kind: "UNANNOUNCED",
-        band: `Not announced · ${until} days`,
+        label: "Not announced",
+        figure: `${until} day${until === 1 ? "" : "s"}`,
+        tone: "warn",
         weight: 1800 - until,
         schoolId: e.school?.id ?? null,
-        schoolName: e.school?.name ?? "No school on the calendar entry",
-        says: `${e.title} runs in ${until} day${until === 1 ? "" : "s"} and is still unpublished, so nobody outside the console can see it.`,
+        title: e.school?.name ?? e.title,
+        line: `${e.title} is still unpublished, so nobody outside can see it.`,
         action: { label: "Open the calendar", href: "/admin/programming" },
       });
     }
 
-    rows.sort((a, b) => b.weight - a.weight || a.schoolName.localeCompare(b.schoolName));
+    rows.sort((a, b) => b.weight - a.weight || a.title.localeCompare(b.title));
+
+    // Solid orange belongs to one row on a screen. The heaviest earns it.
+    if (rows[0] && rows[0].tone === "warn") rows[0].tone = "urgent";
 
     return {
       rows,

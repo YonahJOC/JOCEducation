@@ -127,19 +127,26 @@ export default async function ProgramAdminPage({
   ].join(" · ");
 
   return (
-    <div>
-      <ProgramConsoleHeader
-        name={view.name}
-        slug={view.slug}
-        tag={view.tag}
-        lead={lead}
-        heroColor={view.heroColor}
-        fg={heroFg(view.heroColor)}
-        counts={counts}
-        tabs={tabs}
-        active={tab}
-        asCoordinator={asCoordinator}
-      />
+    <>
+      <div className="joc-bleed">
+        <ProgramConsoleHeader
+          name={view.name}
+          slug={view.slug}
+          tag={view.tag}
+          lead={lead}
+          heroColor={view.heroColor}
+          fg={heroFg(view.heroColor)}
+          counts={counts}
+          tabs={tabs}
+          active={tab}
+          asCoordinator={asCoordinator}
+          tabCounts={{
+            schools: enrolled.length,
+            "not-in-yet": traffic.counts.all,
+            today: today.rows.length,
+          }}
+        />
+      </div>
 
       <ProgramAdminClient
         view={view}
@@ -148,22 +155,19 @@ export default async function ProgramAdminPage({
         feeLabel={view.form?.feeCents ? money(view.form.feeCents) : null}
         paymentsOn={isPaymentConfigured}
         asCoordinator={asCoordinator}
-        appActivity={null}
         traffic={traffic}
         enrolled={enrolled}
-        reporting={null}
         tab={tab}
         today={
           tab === "today" ? (
             <ProgramTodayPanel
               data={today}
               programName={view.name}
-              slug={view.slug}
               slot={slotNode}
             />
           ) : null
         }
       />
-    </div>
+    </>
   );
 }

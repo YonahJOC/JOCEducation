@@ -98,11 +98,22 @@ export const datum: React.CSSProperties = {
 /** A filled blue button. Everything primary looks like this and nothing else does. */
 export const primaryButton: React.CSSProperties = {
   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px",
-  fontFamily: font, fontSize: "15px", fontWeight: 700,
+  fontFamily: font, fontSize: "15px", fontWeight: 600,
   color: C.white, backgroundColor: C.blue, border: `2px solid ${C.blue}`,
-  borderRadius: R.button, padding: "12px 20px", minHeight: "47px",
-  textDecoration: "none", cursor: "pointer", width: "100%", boxSizing: "border-box",
+  borderRadius: R.button, padding: "12px 20px", minHeight: "46px",
+  textDecoration: "none", cursor: "pointer", boxSizing: "border-box",
+  whiteSpace: "nowrap",
 };
+
+/**
+ * A button that fills its container.
+ *
+ * Width used to be baked into the button itself, so every action on every row
+ * stretched into a full-width outlined slab and no row had a visible next
+ * step. Full width is a decision the caller makes — a form, a phone card —
+ * rather than something a button is.
+ */
+export const fullWidth: React.CSSProperties = { width: "100%" };
 
 /** Blue border, blue text, white fill. Never a black outline. */
 export const secondaryButton: React.CSSProperties = {
@@ -166,8 +177,9 @@ export const rowBody: React.CSSProperties = {
 
 /** The button and whatever sits under it. */
 export const rowAction: React.CSSProperties = {
-  flex: "1 1 200px", minWidth: 0, padding: "16px 18px",
-  display: "flex", flexDirection: "column", gap: "8px", justifyContent: "center",
+  flex: "0 0 auto", minWidth: 0, padding: "16px 18px",
+  display: "flex", flexDirection: "column", gap: "8px",
+  justifyContent: "center", alignItems: "flex-end",
 };
 
 /** What opens underneath a row. */
@@ -242,6 +254,26 @@ export function filterChip(on: boolean, tint?: { bg: string; fg: string }): Reac
     color: on ? C.white : tint ? tint.fg : C.ink,
   };
 }
+
+/**
+ * How loud a row is.
+ *
+ * Everything used to be `warn`, and `warn` was solid orange, so a page of
+ * rows read as a wall of orange and nothing stood out. Solid orange is now
+ * `urgent` and belongs to at most one row on a screen — the top-weighted one.
+ * Everything else sits on a tint.
+ */
+export type Tone = "urgent" | "warn" | "info" | "good" | "system" | "quiet";
+
+export const TONE: Record<Tone, { bg: string; fg: string }> = {
+  urgent: { bg: C.orange, fg: C.ink },
+  warn: { bg: C.orangeTint, fg: C.orangeText },
+  info: { bg: C.blueTint, fg: C.blue },
+  good: { bg: C.greenTint, fg: C.greenText },
+  system: { bg: C.redTint, fg: C.redText },
+  // Nothing is happening here, and that is not a problem to fix.
+  quiet: { bg: C.panel, fg: C.muted },
+};
 
 /** The ordinary chip: a fact about a row, on the panel fill. */
 export const plainChip: React.CSSProperties = { ...chip, backgroundColor: C.panel, color: C.ink };

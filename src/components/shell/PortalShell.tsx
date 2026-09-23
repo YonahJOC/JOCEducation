@@ -2,34 +2,38 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShellNav } from "./ShellNav";
 import { SIDE, type NavItem } from "@/lib/nav";
-import { C, R, CONTENT_MAX, label, F } from "@/lib/joc-tokens";
+import { C, R, label, F } from "@/lib/joc-tokens";
 
 /**
  * One shell, both sides of the portal.
  *
- * The console and the school panel had grown separate layouts that did the
- * same three things — a rail, a header and a content column — and had drifted
- * apart in every measurement. They are the same structure now and differ only
- * where they should: the JOC side wears ink and the school side wears panel,
- * because one of them is the staff room and the other is the school's own.
+ * The console and the school panel had grown separate layouts doing the same
+ * three things and had drifted apart in every measurement. They differ only
+ * where they should: the JOC side wears ink because it is the staff room, the
+ * school side wears panel because it is the school's own.
  *
- * The rail becomes a scrolling top bar below 860px, as it always did.
+ * `bleed` is for anything that wants the full width of the main area rather
+ * than the 1080 column — a program's colour band, which looked like a floating
+ * rectangle when it tried to escape the column with negative margins.
  */
 
 export function PortalShell({
-  side, who, role, items, action, children,
+  side, who, role, items, action, bleed, children,
 }: {
   side: "joc" | "school";
   /** The name in the rail: the school, or the signed-in person. */
   who: string;
-  /** Their role, or the school's plan, in Plex Mono under the wordmark. */
+  /** Their role, or the school's name, under the wordmark. */
   role: string;
   items: NavItem[];
   /** The way out, bottom of the rail. */
   action?: React.ReactNode;
+  /** Full-width, above the content column. */
+  bleed?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const s = SIDE[side];
+  const hairline = side === "joc" ? "rgba(255,255,255,.12)" : C.hairline;
 
   return (
     <div className="joc-shell" style={{ display: "flex", minHeight: "100vh", backgroundColor: C.paper }}>
@@ -42,11 +46,7 @@ export function PortalShell({
       >
         <div
           className="joc-shell-brand"
-          style={{
-            padding: "0 20px 18px",
-            borderBottom: `1px solid ${side === "joc" ? "rgba(255,255,255,.12)" : C.hairline}`,
-            marginBottom: "16px",
-          }}
+          style={{ padding: "0 20px 18px", borderBottom: `1px solid ${hairline}`, marginBottom: "16px" }}
         >
           <Link href={side === "joc" ? "/admin" : "/school"} style={{ display: "block", textDecoration: "none" }}>
             <Image
@@ -67,13 +67,10 @@ export function PortalShell({
 
         <div
           className="joc-shell-who"
-          style={{
-            marginTop: "auto", padding: "16px 20px 0",
-            borderTop: `1px solid ${side === "joc" ? "rgba(255,255,255,.12)" : C.hairline}`,
-          }}
+          style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: `1px solid ${hairline}` }}
         >
           <p style={{
-            fontFamily: F.read, fontSize: "14px", lineHeight: 1.5, margin: "0 0 10px",
+            fontFamily: F.ui, fontSize: "13px", lineHeight: 1.5, margin: "0 0 10px",
             color: side === "joc" ? "rgba(255,255,255,.7)" : C.muted,
             wordBreak: "break-word",
           }}>
@@ -83,8 +80,13 @@ export function PortalShell({
         </div>
       </aside>
 
-      <main className="joc-shell-body" style={{ flex: 1, minWidth: 0, padding: "18px 16px 60px" }}>
-        <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto" }}>{children}</div>
+      <main className="joc-shell-main" style={{ flex: 1, minWidth: 0 }}>
+        {bleed}
+
+        {/* A grid, not a padded box: every child sits in the 1080 column, and
+            one that asks for it — className="joc-bleed" — spans the gutters
+            too, which is how a program's colour band runs edge to edge. */}
+        <div className="joc-shell-body">{children}</div>
       </main>
     </div>
   );
@@ -97,7 +99,7 @@ export function ShellExit({ side, href, children }: { side: "joc" | "school"; hr
       href={href}
       style={{
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontFamily: F.ui, fontSize: "14px", fontWeight: 700,
+        fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
         color: side === "joc" ? C.white : C.ink,
         backgroundColor: side === "joc" ? "rgba(255,255,255,.12)" : C.white,
         border: side === "joc" ? "none" : `1px solid ${C.hairline}`,

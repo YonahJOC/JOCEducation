@@ -1,106 +1,103 @@
 import Link from "next/link";
-import {
-  C, R, ROW_SHADOW, rowCard, rowInner, rowBand, rowBody, rowAction,
-  rowTitle, label, F, secondaryButton, primaryButton,
-} from "@/lib/joc-tokens";
-import type { ProgramToday, TodayKind } from "@/lib/program-today";
+import { C, rowCard, label, F, sectionHeading } from "@/lib/joc-tokens";
+import { BandRow } from "@/components/ui/BandRow";
+import type { ProgramToday } from "@/lib/program-today";
 
 /**
  * The Today tab: what needs this program's coordinator, worst first.
  *
- * Everything here is derived from the state of the program rather than from a
- * queue of notifications, so a row that stops being true stops appearing.
- * Nobody has to mark anything as read.
+ * Two things and no more — the list, and the one panel that belongs to this
+ * program. It had become a stack of four: the list, the slot, the activity
+ * panel and the reports, so the thing you came for was a third of the way
+ * down a page you had to scroll to see.
+ *
+ * Five rows, then a disclosure. A list of nineteen is not a list of things to
+ * do, it is a wall, and nobody starts at the top of a wall.
  */
 
 const day = (d: Date | string) =>
   new Date(d).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" });
 
-/**
- * A row's colour says how it got here.
- *
- * Orange is a thing that has gone wrong on its own; blue is somebody
- * speaking to us; green is an answer coming back.
- */
-const TONE: Record<TodayKind, { bg: string; fg: string }> = {
-  STUCK: { bg: C.orange, fg: C.ink },
-  UNANNOUNCED: { bg: C.orange, fg: C.ink },
-  NEW_SIGN_UP: { bg: C.blue, fg: C.white },
-  NO_WRITE_UP: { bg: C.panel, fg: C.blue },
-  DECIDED: { bg: C.greenTint, fg: C.greenText },
-};
+/** Beyond this the list stops being a list. */
+const SHOWN = 5;
 
 export function ProgramTodayPanel({
-  data, programName, slug, slot,
+  data, programName, slot,
 }: {
   data: ProgramToday;
   programName: string;
-  slug: string;
-  /** The program's own panel, already rendered by the page. */
-  slot: React.ReactNode;
+  /** The program's own panel — the single thing under the list. */
+  slot?: React.ReactNode;
 }) {
+  const first = data.rows.slice(0, SHOWN);
+  const rest = data.rows.slice(SHOWN);
+
   return (
     <div className="joc-today">
       <div style={{ minWidth: 0 }}>
-        <h2 style={{ fontFamily: F.ui, fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 2px" }}>
-          Needs you
-        </h2>
-        <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.6, margin: "0 0 16px", maxWidth: "58ch" }}>
-          Worked out from where every school has got to. Nothing here is a notification — deal with
-          it and it stops appearing on its own.
-        </p>
+        <h2 style={{ ...sectionHeading, margin: "0 0 14px" }}>Needs you</h2>
 
         {data.rows.length === 0 ? (
-          <div style={{ ...rowCard, padding: "28px 24px" }}>
+          <div style={{ ...rowCard, padding: "24px" }}>
             <p style={{ fontFamily: F.ui, fontSize: "19px", fontWeight: 700, color: C.greenText, margin: "0 0 6px" }}>
               Nothing needs you today
             </p>
-            <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.6, margin: 0, maxWidth: "56ch" }}>
+            <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: 0, maxWidth: "56ch" }}>
               No school is stuck, no sign-up is waiting, and every run in the next fortnight is
               announced.
             </p>
           </div>
         ) : (
           <div style={{ display: "grid", gap: "10px" }}>
-            {data.rows.map((r) => {
-              const tone = TONE[r.kind];
-              return (
-                <div key={r.id} style={rowCard}>
-                  <div style={rowInner}>
-                    <div style={{ ...rowBand, backgroundColor: tone.bg, color: tone.fg }}>
-                      <span style={{ ...label, color: tone.fg }}>{r.band}</span>
-                    </div>
+            {first.map((r) => (
+              <BandRow
+                key={r.id}
+                tone={r.tone}
+                label={r.label}
+                figure={r.figure}
+                title={r.title}
+                line={r.line}
+                action={r.action}
+              />
+            ))}
 
-                    <div style={rowBody}>
-                      <p style={rowTitle}>{r.schoolName}</p>
-                      <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.55, margin: 0 }}>
-                        {r.says}
-                      </p>
-                    </div>
-
-                    <div style={rowAction}>
-                      <Link href={r.action.href} style={{ ...secondaryButton, textDecoration: "none" }}>
-                        {r.action.label}
-                      </Link>
-                    </div>
-                  </div>
+            {rest.length > 0 && (
+              <details>
+                <summary style={{
+                  fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.blue,
+                  cursor: "pointer", minHeight: "44px", display: "flex", alignItems: "center",
+                }}>
+                  Show {rest.length} more
+                </summary>
+                <div style={{ display: "grid", gap: "10px", marginTop: "10px" }}>
+                  {rest.map((r) => (
+                    <BandRow
+                      key={r.id}
+                      tone={r.tone}
+                      label={r.label}
+                      figure={r.figure}
+                      title={r.title}
+                      line={r.line}
+                      action={r.action}
+                    />
+                  ))}
                 </div>
-              );
-            })}
+              </details>
+            )}
           </div>
         )}
 
-        {/* The program's own panel, whatever it is for this one. */}
-        <div style={{ marginTop: "26px" }}>{slot}</div>
+        {/* One panel, whichever this program's is. */}
+        {slot && <div style={{ marginTop: "32px" }}>{slot}</div>}
       </div>
 
       {/* The right-hand column: what is actually in the diary. */}
       <aside style={{ minWidth: 0 }}>
         <div style={{ ...rowCard, padding: "18px 20px" }}>
-          <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>Coming up</p>
+          <p style={{ ...label, color: C.muted, margin: "0 0 12px" }}>Coming up</p>
 
           {data.comingUp.length === 0 ? (
-            <p style={{ fontFamily: F.read, fontSize: "16px", color: C.orangeText, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontFamily: F.read, fontSize: "15px", color: C.orangeText, lineHeight: 1.5, margin: 0 }}>
               {programName} is not booked in anywhere. Dates are set on the calendar.
             </p>
           ) : (
@@ -114,7 +111,7 @@ export function ProgramTodayPanel({
                   <p style={{ fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.ink, margin: 0, lineHeight: 1.35 }}>
                     {e.title}
                   </p>
-                  <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: "2px 0 0", lineHeight: 1.5 }}>
+                  <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: "2px 0 0", lineHeight: 1.45 }}>
                     {e.schoolName ?? "Open to every school"}
                   </p>
                 </li>
@@ -122,18 +119,13 @@ export function ProgramTodayPanel({
             </ol>
           )}
 
-          <p style={{ marginTop: "16px" }}>
-            <Link href="/admin/programming" style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.blue, textDecoration: "underline", minHeight: "44px", display: "inline-flex", alignItems: "center" }}>
+          <p style={{ margin: "14px 0 0" }}>
+            <Link href="/admin/programming" style={{
+              fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.blue,
+              textDecoration: "underline", minHeight: "44px", display: "inline-flex", alignItems: "center",
+            }}>
               Open the calendar
             </Link>
-          </p>
-        </div>
-
-        <div style={{ ...rowCard, padding: "18px 20px", marginTop: "12px", backgroundColor: C.panel, boxShadow: "none" }}>
-          <p style={{ ...label, color: C.muted, margin: "0 0 8px" }}>This program</p>
-          <p style={{ fontFamily: F.read, fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: 0 }}>
-            Everything on this console is {programName} and nothing else. Other coordinators cannot
-            see it, and you cannot see theirs.
           </p>
         </div>
       </aside>
@@ -145,11 +137,9 @@ export function ProgramTodayPanel({
 export function EmptySlot({ title, missing }: { title: string; missing: string }) {
   return (
     <div>
-      <h2 style={{ fontFamily: F.ui, fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 2px" }}>
-        {title}
-      </h2>
-      <div style={{ ...rowCard, padding: "22px 24px", marginTop: "12px" }}>
-        <p style={{ fontFamily: F.read, fontSize: "17px", color: C.orangeText, lineHeight: 1.6, margin: 0, maxWidth: "62ch" }}>
+      <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>{title}</h2>
+      <div style={{ ...rowCard, padding: "22px 24px" }}>
+        <p style={{ fontFamily: F.read, fontSize: "15px", color: C.orangeText, lineHeight: 1.5, margin: 0, maxWidth: "62ch" }}>
           {missing}
         </p>
       </div>

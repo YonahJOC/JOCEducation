@@ -5,12 +5,16 @@ import {
   reachOut, sendToMeeting, setLight, refreshLights, dismissExpiry,
   type Channel, type AgendaKind,
 } from "@/app/actions/program-lights";
-import { LIGHT_LABEL, LIGHT_MEANING, LIGHT_COLOR, type Light } from "@/lib/program-lights";
+import { LIGHT_LABEL, LIGHT_WORD, LIGHT_MEANING, LIGHT_COLOR, type Light } from "@/lib/program-lights";
 import {
-  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
-  rowCard, rowInner, rowBody, rowDetail, rowTitle, sectionHeading, sectionIntro,
-  field, fieldLabel, quietButton, note,
+  C, R, F, ROW_SHADOW, primaryButton, secondaryButton, chip, textButton,
+  rowCard, rowDetail, sectionHeading, sectionIntro,
+  field, fieldLabel, quietButton, note, label, bandFigure, type Tone,
 } from "@/lib/joc-tokens";
+import { BandRow } from "@/components/ui/BandRow";
+
+/** A light is one of the site's tones; it has been since the tones existed. */
+const TONE_OF: Record<Light, Tone> = { GREEN: "good", AMBER: "warn", RED: "system" };
 import type { ProgramTraffic, TrafficRow } from "@/lib/program-traffic";
 
 /**
@@ -45,8 +49,8 @@ export function ProgramLights({
   const rows = filter === "all" ? data.rows : data.rows.filter((r) => r.light === filter);
 
   return (
-    <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto 16px" }} id="not-in-yet">
-      <h2 style={sectionHeading}>
+    <div style={{ marginBottom: "16px" }} id="not-in-yet">
+      <h2 style={{ ...sectionHeading, margin: "0 0 4px" }}>
         Not in {programName} yet
       </h2>
       <p style={sectionIntro}>
@@ -125,47 +129,32 @@ function LightRow({
       : null;
 
   return (
-    <div style={rowCard}>
-      <div style={rowInner}>
-        <div style={{
-          flex: "1 1 200px", minWidth: 0, padding: "14px 18px", backgroundColor: c.tint,
-          display: "flex", gap: "12px", alignItems: "center",
-        }}>
-          <Housing light={row.light} />
-          <span style={{ fontFamily: "var(--font-outfit)", fontSize: "20px", fontWeight: 800, letterSpacing: "-0.02em", color: c.text, lineHeight: 1.15 }}>
-            {LIGHT_LABEL[row.light]}
-          </span>
-        </div>
-
-        <div style={rowBody}>
-          <p style={rowTitle}>
-            {row.name}
-            {row.place && (
-              <span style={{ fontSize: "15px", fontWeight: 400, color: C.muted }}> · {row.place}</span>
-            )}
-          </p>
-          <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px", lineHeight: 1.5 }}>
-            {row.reason}
-          </p>
-          <p style={{ fontSize: "13px", color: C.muted, margin: 0, lineHeight: 1.5 }}>
-            {row.source.kind === "rule" ? (
-              <>From the rules · {LIGHT_MEANING[row.light].toLowerCase()}</>
-            ) : (
-              <>
-                Set by {row.source.by} on {dayYear(row.source.on)}
-                {row.source.until ? (
-                  <span style={{ color: C.orangeText, fontWeight: 600 }}> · until {dayYear(row.source.until)}</span>
-                ) : (
-                  " · no end date"
-                )}
-              </>
-            )}
-          </p>
-        </div>
-
-        <div style={{ flex: "1 1 210px", minWidth: 0, padding: "16px 18px", display: "flex", flexDirection: "column", gap: "8px", justifyContent: "center" }}>
+    <BandRow
+      tone={TONE_OF[row.light]}
+      bandLead={<Housing light={row.light} />}
+      label="Light"
+      figure={LIGHT_WORD[row.light]}
+      word
+      title={
+        <>
+          {row.name}
+          {row.place && <span style={{ fontSize: "15px", fontWeight: 400, color: C.muted }}> · {row.place}</span>}
+        </>
+      }
+      line={row.reason}
+      chips={
+        <span style={{ ...chip, backgroundColor: C.panel, color: C.muted }}>
+          {row.source.kind === "rule"
+            ? `From the rules · ${LIGHT_MEANING[row.light].toLowerCase()}`
+            : `Set by ${row.source.by} on ${dayYear(row.source.on)}${
+                row.source.until ? ` · until ${dayYear(row.source.until)}` : " · no end date"
+              }`}
+        </span>
+      }
+      actionNode={
+        <>
           {done || already ? (
-            <span style={{ fontSize: "13px", fontWeight: 600, color: C.greenText, lineHeight: 1.5 }}>
+            <span style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.greenText, lineHeight: 1.45, textAlign: "right" }}>
               {done ?? already}
             </span>
           ) : (
@@ -188,21 +177,13 @@ function LightRow({
             </button>
           )}
           {canSetLight && (
-            <button
-              type="button"
-              onClick={() => setOpen(open === "light" ? null : "light")}
-              style={{
-                fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 700, color: C.blue,
-                background: "none", border: "none", textDecoration: "underline", cursor: "pointer",
-                minHeight: "44px", padding: 0,
-              }}
-            >
+            <button type="button" onClick={() => setOpen(open === "light" ? null : "light")} style={textButton}>
               {open === "light" ? "Cancel" : "Change light"}
             </button>
           )}
-        </div>
-      </div>
-
+        </>
+      }
+    >
       {open === "act" && !done && !already && (
         <div style={rowDetail}>
           {row.light === "GREEN" ? (
@@ -236,7 +217,7 @@ function LightRow({
           />
         </div>
       )}
-    </div>
+    </BandRow>
   );
 }
 
@@ -266,7 +247,6 @@ function Housing({ light }: { light: Light }) {
 // ─── The three forms ─────────────────────────────────────────────────────────
 
 
-const label: React.CSSProperties = fieldLabel;
 
 function ReachOutForm({
   programId, slug, schoolId, onDone,
@@ -284,7 +264,7 @@ function ReachOutForm({
         This records what you did after you did it. Nothing here is sent to the school.
       </p>
       <div>
-        <span style={label}>How you reached out</span>
+        <span style={fieldLabel}>How you reached out</span>
         <select value={channel} onChange={(e) => setChannel(e.target.value as Channel)} style={field}>
           <option value="CALL">Call</option>
           <option value="EMAIL">Email</option>
@@ -292,7 +272,7 @@ function ReachOutForm({
         </select>
       </div>
       <div>
-        <span style={label}>Notes</span>
+        <span style={fieldLabel}>Notes</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -347,7 +327,7 @@ function AgendaForm({
     <div style={{ display: "grid", gap: "12px", maxWidth: "56ch" }}>
       {light === "RED" && (
         <div>
-          <span style={label}>What you are asking for</span>
+          <span style={fieldLabel}>What you are asking for</span>
           <select value={kind} onChange={(e) => setKind(e.target.value as AgendaKind)} style={field}>
             <option value="SEND_FOR_REVIEW">Send for review</option>
             <option value="SUGGEST_APPEAL">Suggest an appeal</option>
@@ -355,7 +335,7 @@ function AgendaForm({
         </div>
       )}
       <div>
-        <span style={label}>
+        <span style={fieldLabel}>
           {light === "RED" ? "Comments (required)" : "What you want discussed"}
         </span>
         <textarea
@@ -408,7 +388,7 @@ function ChangeLightForm({
   return (
     <div style={{ display: "grid", gap: "12px", maxWidth: "56ch" }}>
       <div>
-        <span style={label}>The light</span>
+        <span style={fieldLabel}>The light</span>
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           {(["GREEN", "AMBER", "RED"] as const).map((l) => (
             <button
@@ -428,7 +408,7 @@ function ChangeLightForm({
         </div>
       </div>
       <div>
-        <span style={label}>Why (required)</span>
+        <span style={fieldLabel}>Why (required)</span>
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
@@ -438,7 +418,7 @@ function ChangeLightForm({
         />
       </div>
       <div>
-        <span style={label}>Until (optional)</span>
+        <span style={fieldLabel}>Until (optional)</span>
         <input type="date" value={until} onChange={(e) => setUntil(e.target.value)} style={field} />
         <span style={{ fontSize: "13px", color: C.muted, display: "block", marginTop: "5px", lineHeight: 1.5 }}>
           Leave this empty and it stays until somebody changes it. With a date, the rules take the
@@ -498,8 +478,8 @@ function NextMeeting({ data, programName }: { data: ProgramTraffic; programName:
   const m = data.meeting;
   return (
     <div style={{ backgroundColor: C.ink, borderRadius: R.row, padding: "20px 22px", marginTop: "14px" }}>
-      <p style={{ ...bandLabel, color: "#FFD8AE", margin: "0 0 4px" }}>Next admin meeting</p>
-      <p style={{ fontFamily: "var(--font-outfit)", fontSize: "22px", fontWeight: 800, letterSpacing: "-0.02em", color: C.white, margin: "0 0 10px" }}>
+      <p style={{ ...label, color: "#FFD8AE", margin: "0 0 4px" }}>Next admin meeting</p>
+      <p style={{ ...bandFigure, fontSize: "22px", color: C.white, margin: "0 0 10px" }}>
         {day(m.meetsAt)}
       </p>
 
@@ -583,7 +563,7 @@ function RunRules({ slug }: { slug: string }) {
       >
         {pending ? "Running…" : "Run the rules now"}
       </button>
-      {msg && <span style={{ fontSize: "13.5px", color: C.muted, lineHeight: 1.45 }}>{msg}</span>}
+      {msg && <span style={{ fontFamily: F.read, fontSize: "14px", color: C.muted, lineHeight: 1.45 }}>{msg}</span>}
     </>
   );
 }

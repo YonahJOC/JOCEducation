@@ -2,33 +2,41 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth } from "@/auth";
 import { can } from "@/lib/access";
 import { missingEnv } from "@/lib/boot";
+import type { Tone } from "@/lib/joc-tokens";
 
 /**
  * What needs each person at JOC today.
  *
- * /admin used to be a board of every school, which is a thing to browse
- * rather than a thing to do. Whatever your job, this is the same shape: rows
- * that are true right now, each with a figure, a sentence and one action.
- *
  * Built from capabilities rather than roles, so somebody with an unusual
  * admin type gets rows about the work they can actually do.
+ *
+ * A row is a band label, one figure, a title and one line. The figure is the
+ * point — it is what somebody reads first — and the line stops at about
+ * ninety characters, because anything longer belongs on the page the action
+ * opens rather than in a list.
  */
 
 export type TodayRow = {
   id: string;
-  /** The Plex Mono band: "OVERDUE · 3 SCHOOLS". */
-  band: string;
-  tone: "warn" | "info" | "good";
-  says: string;
+  /** Above the figure: "NOT PAID". */
+  label: string;
+  /** The figure itself: "3", "14 days", "Past due". */
+  figure?: string;
+  /** The thing itself: a school's name, or "3 features switched off". */
+  title: string;
+  /** One line, around ninety characters. */
+  line?: string;
+  tone: Tone;
   action: { label: string; href: string } | null;
   weight: number;
 };
 
-export type TodayFigure = { label: string; value: string; warn?: boolean };
+export type TodayFigure = { label: string; value: string };
 
 export type Today = {
   title: string;
   rows: TodayRow[];
+  /** Real counts only. A word where a number goes is not a figure. */
   figures: TodayFigure[];
 };
 
@@ -51,21 +59,21 @@ export async function getToday(
     const rows: TodayRow[] = [];
     const figures: TodayFigure[] = [];
 
-    // ── Anyone who keeps the lights on ────────────────────────────────────
-    // A feature that is switched off by a missing variable is invisible
-    // otherwise: it simply never runs, and nothing anywhere says why.
+    // ── Whoever keeps the lights on ───────────────────────────────────────
+    // A feature switched off by a missing variable is invisible otherwise: it
+    // simply never runs, and nothing anywhere says why.
     if (can(me, "users")) {
       const missing = missingEnv();
       if (missing.length > 0) {
         rows.push({
           id: "env",
-          band: `Switched off · ${missing.length}`,
-          tone: "warn",
+          label: "Switched off",
+          figure: String(missing.length),
+          title: `${missing.length} feature${missing.length === 1 ? "" : "s"} switched off`,
+          line: `${missing[0].name} and ${missing.length - 1} other setting${missing.length === 2 ? "" : "s"} are missing.`,
+          tone: "system",
           weight: 9000,
-          says:
-            `${missing.map((m) => m.name).join(", ")} ${missing.length === 1 ? "is" : "are"} not set, so ` +
-            missing.map((m) => m.costs).join("; ") + ".",
-          action: { label: "How to set it", href: "/admin/guide" },
+          action: { label: "See which", href: "/admin/guide" },
         });
       }
     }
@@ -82,27 +90,28 @@ export async function getToday(
         prisma.schoolContact.count(),
       ]);
 
-      if (pastDue.length > 0) {
+      for (const p of pastDue.slice(0, 3)) {
         rows.push({
-          id: "pastdue",
-          band: `Not paid · ${pastDue.length}`,
+          id: `pastdue:${p.school.id}`,
+          label: "Not paid",
+          figure: "Past due",
+          title: p.school.name,
+          line: "Their subscription is past due.",
           tone: "warn",
           weight: 5000,
-          says:
-            pastDue.length === 1
-              ? `${pastDue[0].school.name} is past due.`
-              : `${pastDue.length} schools are past due.`,
-          action: { label: "Open schools", href: "/admin/schools?status=ACTIVE" },
+          action: { label: "Open school", href: `/admin/schools/${p.school.id}` },
         });
       }
 
       if (lapsed > 0) {
         rows.push({
           id: "lapsed",
-          band: `Lapsed · ${lapsed}`,
+          label: "Lapsed",
+          figure: String(lapsed),
+          title: `${lapsed} school${lapsed === 1 ? "" : "s"} lapsed`,
+          line: "Nobody has picked them up.",
           tone: "warn",
           weight: 3000,
-          says: `${lapsed} school${lapsed === 1 ? " has" : "s have"} lapsed and nobody has picked them up.`,
           action: { label: "Open schools", href: "/admin/schools?status=LAPSED" },
         });
       }
@@ -111,10 +120,12 @@ export async function getToday(
       if (schools > 0 && contacts < schools / 2) {
         rows.push({
           id: "contacts",
-          band: `No contact · ${schools - contacts}`,
+          label: "No contact",
+          figure: String(schools - contacts),
+          title: "Most schools have nobody to ring",
+          line: `${schools - contacts} of ${schools} have no contact recorded.`,
           tone: "warn",
           weight: 2500,
-          says: `${schools - contacts} of ${schools} schools have nobody recorded to ring, so "reach out" has no phone number behind it.`,
           action: { label: "Open schools", href: "/admin/schools" },
         });
       }
@@ -127,14 +138,15 @@ export async function getToday(
       if (demos > 0) {
         rows.push({
           id: "demos",
-          band: `New request · ${demos}`,
+          label: "New request",
+          figure: String(demos),
+          title: `${demos} school${demos === 1 ? "" : "s"} asked for a walkthrough`,
+          line: "Nobody has answered them.",
           tone: "info",
           weight: 4000,
-          says: `${demos} school${demos === 1 ? " has" : "s have"} asked for a walkthrough and nobody has answered.`,
           action: { label: "Open requests", href: "/admin/demos" },
         });
       }
-      figures.push({ label: "Demo requests", value: String(demos) });
     }
 
     // ── The admin meeting ─────────────────────────────────────────────────
@@ -149,26 +161,30 @@ export async function getToday(
         const waiting = await prisma.adminMeetingItem.count({ where: { outcome: null } });
         rows.push({
           id: "no-meeting",
-          band: "No meeting booked",
+          label: "No meeting",
+          figure: waiting > 0 ? String(waiting) : "None",
+          title: "No admin meeting is booked",
+          line:
+            waiting > 0
+              ? `${waiting} school${waiting === 1 ? " is" : "s are"} waiting on a decision.`
+              : "An orange or red school has nowhere to go.",
           tone: "warn",
           weight: 3500,
-          says:
-            waiting > 0
-              ? `${waiting} school${waiting === 1 ? " is" : "s are"} waiting on a decision and there is no meeting to take them to.`
-              : "No admin meeting is booked, so a coordinator with an orange or red school has nowhere to send it.",
           action: { label: "Book one", href: "/admin/meetings" },
         });
       } else {
         const undecided = meeting.items.filter((i) => !i.outcome).length;
         rows.push({
           id: "meeting",
-          band: `Meeting · ${meeting.meetsAt.toLocaleDateString("en-US", { day: "numeric", month: "short" })}`,
+          label: "Next meeting",
+          figure: meeting.meetsAt.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+          title:
+            meeting.items.length === 0
+              ? "Nothing on the agenda yet"
+              : `${meeting.items.length} school${meeting.items.length === 1 ? "" : "s"} on the agenda`,
+          line: meeting.items.length === 0 ? undefined : `${undecided} still to decide.`,
           tone: undecided > 0 ? "info" : "good",
           weight: 2000,
-          says:
-            meeting.items.length === 0
-              ? "Nothing is on the next admin meeting yet."
-              : `${meeting.items.length} school${meeting.items.length === 1 ? "" : "s"} on the agenda, ${undecided} still to decide.`,
           action: { label: "Open the meeting", href: "/admin/meetings" },
         });
       }
@@ -189,10 +205,12 @@ export async function getToday(
       if (stale.length > 0) {
         rows.push({
           id: "unpublished",
-          band: `Unpublished · ${stale.length}`,
+          label: "Unpublished",
+          figure: String(stale.length),
+          title: `${stale.length} lesson${stale.length === 1 ? "" : "s"} still a draft`,
+          line: "Each has sat more than a fortnight. Nobody can teach a draft.",
           tone: "warn",
           weight: 2200,
-          says: `${stale.length} lesson${stale.length === 1 ? " has" : "s have"} sat unpublished for more than a fortnight. Nobody can teach a draft.`,
           action: { label: "Open lessons", href: "/admin/lessons" },
         });
       }
@@ -200,16 +218,36 @@ export async function getToday(
       if (resources === 0) {
         rows.push({
           id: "resources",
-          band: "Library empty",
+          label: "Library",
+          figure: "Empty",
+          title: "No resource is published",
+          line: "The library is what a school renews for.",
           tone: "warn",
           weight: 2600,
-          says: "No resource is published. The library is what a school renews for, and it has nothing in it.",
           action: { label: "Open resources", href: "/admin/resources" },
         });
       }
 
       figures.push({ label: "Lessons live", value: String(published) });
-      figures.push({ label: "Resources", value: String(resources), warn: resources === 0 });
+      figures.push({ label: "Resources", value: String(resources) });
+    }
+
+    // Unverified cycle dates are a row, not a figure. "Unverified" is a word,
+    // and a word in the figures strip reads as a number that failed to load.
+    if (can(me, "cycles")) {
+      const cycles = await prisma.cycle.count();
+      if (cycles > 0) {
+        rows.push({
+          id: "cycle-dates",
+          label: "Unchecked",
+          figure: String(cycles),
+          title: `${cycles} cycle dates unchecked`,
+          line: "Nobody has verified them against a 5787 luach.",
+          tone: "warn",
+          weight: 1200,
+          action: { label: "Open the cycles", href: "/admin/cycles" },
+        });
+      }
     }
 
     if (can(me, "board")) {
@@ -217,10 +255,11 @@ export async function getToday(
       if (waiting > 0) {
         rows.push({
           id: "board",
-          band: `Waiting · ${waiting}`,
+          label: "Waiting",
+          figure: String(waiting),
+          title: `${waiting} board post${waiting === 1 ? "" : "s"} to approve`,
           tone: "info",
           weight: 1500,
-          says: `${waiting} board post${waiting === 1 ? "" : "s"} waiting to be approved.`,
           action: { label: "Open the board", href: "/admin/board" },
         });
       }
@@ -235,10 +274,12 @@ export async function getToday(
       if (unannounced > 0) {
         rows.push({
           id: "unannounced",
-          band: `Not announced · ${unannounced}`,
+          label: "Not announced",
+          figure: String(unannounced),
+          title: `${unannounced} run${unannounced === 1 ? "" : "s"} this week unpublished`,
+          line: "Nobody outside the console can see them.",
           tone: "warn",
           weight: 4500,
-          says: `${unannounced} run${unannounced === 1 ? "" : "s"} in the next week ${unannounced === 1 ? "is" : "are"} still unpublished, so nobody outside the console can see ${unannounced === 1 ? "it" : "them"}.`,
           action: { label: "Open the calendar", href: "/admin/programming" },
         });
       }
@@ -247,17 +288,18 @@ export async function getToday(
       figures.push({ label: "Discuss first", value: String(amber) });
     }
 
-    if (can(me, "cycles")) {
-      figures.push({ label: "Cycle dates", value: "unverified", warn: true });
-    }
-
     rows.sort((a, b) => b.weight - a.weight);
+
+    // Solid orange belongs to one row on a screen. The heaviest earns it, and
+    // only when it is a thing that has gone wrong rather than an answer.
+    const top = rows[0];
+    if (top && (top.tone === "warn" || top.tone === "system")) top.tone = "urgent";
 
     const name = me?.name?.trim().split(/\s+/)[0];
     return {
       title: name ? `Today, ${name}` : "Today",
       rows,
-      figures,
+      figures: figures.slice(0, 4),
     };
   } catch {
     return empty;

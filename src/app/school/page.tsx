@@ -5,10 +5,8 @@ import { canRunOwnSchool } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { STAGE_LABEL, STAGE_MEANING, STAGE_TONE, type Stage } from "@/lib/program-enrollment";
 import { stepFor, STEPS, STEP_NEXT } from "@/lib/program-step";
-import {
-  C, R, rowCard, rowInner, rowBand, rowBody, rowAction,
-  rowTitle, label, F, pageTitle, secondaryButton,
-} from "@/lib/joc-tokens";
+import { C, rowCard, F, pageTitle, sectionHeading, type Tone } from "@/lib/joc-tokens";
+import { BandRow } from "@/components/ui/BandRow";
 
 /**
  * Today, for a school.
@@ -78,55 +76,90 @@ export default async function SchoolToday() {
     ? { minutes: school.unapprovedHours * 60, at: school.unapprovedCheckedAt }
     : null;
 
+  // Each one is a real count. Nothing appears here with nothing behind it.
+  const needs: {
+    label: string; figure: string; word?: boolean; title: string;
+    line?: string; tone: Tone; action?: { label: string; href: string };
+  }[] = [];
+
+  if (hours && hours.minutes > 0) {
+    needs.push({
+      label: "To approve",
+      figure: `${(hours.minutes / 60).toFixed(1)} h`,
+      tone: "warn",
+      title: "Chesed hours waiting on a teacher",
+      line: hours.at
+        ? `Read from the JOC App on ${day(hours.at)}. Teachers approve them in the app.`
+        : "Nobody has recorded when this was last checked.",
+    });
+  }
+
+  if (unread > 0) {
+    needs.push({
+      label: "Unread",
+      figure: String(unread),
+      tone: "info",
+      title: `Ambassador report${unread === 1 ? "" : "s"} nobody has read`,
+      action: { label: "Read them", href: "/school/ambassadors" },
+    });
+  }
+
+  if (runsAccount && invitations > 0) {
+    needs.push({
+      label: "Never signed in",
+      figure: String(invitations),
+      tone: "warn",
+      title: `Teacher${invitations === 1 ? " was" : "s were"} invited and never signed in`,
+      action: { label: "Open your teachers", href: "/school/teachers" },
+    });
+  }
+
+  const renews = runsAccount ? school?.subscription?.currentPeriodEnd ?? null : null;
+  if (renews) {
+    needs.push({
+      label: "Renews",
+      figure: day(renews),
+      word: true,
+      tone: daysUntil(renews) < 60 ? "warn" : "quiet",
+      title: "Your plan",
+      line: school?.subscription?.seats != null
+        ? `${school._count.members} of ${school.subscription.seats} seats used.`
+        : "Nobody has recorded how many seats this plan carries.",
+      action: { label: "Open your plan", href: "/school/plan" },
+    });
+  }
+
   return (
     <div>
       <h1 style={pageTitle}>Today</h1>
-      <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.6, margin: "0 0 22px", maxWidth: "62ch" }}>
+      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 20px", maxWidth: "62ch" }}>
         Where each of your programs has got to, and the one thing that happens next on each.
       </p>
 
-      {/* What needs somebody at the school, before the programs. */}
-      <div style={{ display: "grid", gap: "10px", marginBottom: "22px" }}>
-        {hours && hours.minutes > 0 && (
-          <Notice tone="warn">
-            <strong>{(hours.minutes / 60).toFixed(1)} hours</strong> of chesed are waiting for a
-            teacher to approve them.{" "}
-            {hours.at
-              ? `Read from the JOC App on ${day(hours.at)}.`
-              : "Nobody has recorded when this was last checked."}
-          </Notice>
-        )}
+      {/* What needs somebody at the school, before the programs. The same row
+          as everywhere else: a figure to read first, then one thing to do. */}
+      {needs.length > 0 && (
+        <div style={{ display: "grid", gap: "10px", marginBottom: "26px" }}>
+          {needs.map((n) => (
+            <BandRow
+              key={n.label}
+              tone={n.tone}
+              label={n.label}
+              figure={n.figure}
+              word={n.word}
+              title={n.title}
+              line={n.line}
+              action={n.action}
+            />
+          ))}
+        </div>
+      )}
 
-        {unread > 0 && (
-          <Notice tone="info">
-            <strong>{unread} ambassador report{unread === 1 ? "" : "s"}</strong> nobody has read.{" "}
-            <Link href="/school/ambassadors" style={{ color: C.blue, fontWeight: 700 }}>Read them</Link>
-          </Notice>
-        )}
-
-        {runsAccount && invitations > 0 && (
-          <Notice tone="warn">
-            <strong>{invitations} teacher{invitations === 1 ? "" : "s"}</strong> were invited and
-            have never signed in.{" "}
-            <Link href="/school/teachers" style={{ color: C.blue, fontWeight: 700 }}>Open your teachers</Link>
-          </Notice>
-        )}
-
-        {runsAccount && school?.subscription?.currentPeriodEnd && (
-          <Notice tone={daysUntil(school.subscription.currentPeriodEnd) < 60 ? "warn" : "info"}>
-            Your plan renews on <strong>{day(school.subscription.currentPeriodEnd)}</strong>
-            {school.subscription.seats != null && `, with ${school._count.members} of ${school.subscription.seats} seats used`}.
-          </Notice>
-        )}
-      </div>
-
-      <h2 style={{ fontFamily: F.ui, fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 12px" }}>
-        Your programs
-      </h2>
+      <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>Your programs</h2>
 
       {rows.length === 0 ? (
-        <div style={{ ...rowCard, padding: "28px 24px" }}>
-          <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, margin: 0, lineHeight: 1.6, maxWidth: "58ch" }}>
+        <div style={{ ...rowCard, padding: "24px" }}>
+          <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "58ch" }}>
             Your school is not down as running any JOC program yet. That fills in as JOC records
             them — there is nothing for you to do here.
           </p>
@@ -137,33 +170,16 @@ export default async function SchoolToday() {
             const stage = e.stage as Stage;
             const tone = STAGE_TONE[stage];
             return (
-              <div key={e.program.slug} style={rowCard}>
-                <div style={rowInner}>
-                  <div style={{
-                    ...rowBand,
-                    backgroundColor: tone === "going" ? C.greenTint : tone === "setup" ? C.blueTint : C.panel,
-                    color: tone === "going" ? C.greenText : tone === "setup" ? C.blue : C.muted,
-                  }}>
-                    <span style={{ ...label, color: "inherit" }}>Step 0{e.step} of 0{STEPS}</span>
-                    <span style={{ fontFamily: F.ui, fontSize: "20px", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.15, color: "inherit" }}>
-                      {STAGE_LABEL[stage]}
-                    </span>
-                  </div>
-
-                  <div style={rowBody}>
-                    <p style={rowTitle}>{e.program.name}</p>
-                    <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.55, margin: 0 }}>
-                      {STAGE_MEANING[stage]} {STEP_NEXT[e.step]}
-                    </p>
-                  </div>
-
-                  <div style={rowAction}>
-                    <Link href={`/programs/${e.program.slug}`} style={{ ...secondaryButton, textDecoration: "none" }}>
-                      Open the program
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <BandRow
+                key={e.program.slug}
+                tone={tone === "going" ? "good" : tone === "setup" ? "info" : "quiet"}
+                label={`Step 0${e.step} of 0${STEPS}`}
+                figure={STAGE_LABEL[stage]}
+                word
+                title={e.program.name}
+                line={`${STAGE_MEANING[stage]} ${STEP_NEXT[e.step]}`}
+                action={{ label: "Open the program", href: `/programs/${e.program.slug}` }}
+              />
             );
           })}
         </div>
@@ -174,18 +190,4 @@ export default async function SchoolToday() {
 
 function daysUntil(d: Date) {
   return Math.floor((d.getTime() - Date.now()) / 86_400_000);
-}
-
-function Notice({ tone, children }: { tone: "warn" | "info"; children: React.ReactNode }) {
-  const warn = tone === "warn";
-  return (
-    <div style={{
-      backgroundColor: warn ? C.orangeTint : C.panel,
-      borderRadius: R.form, padding: "14px 17px",
-    }}>
-      <p style={{ fontFamily: F.read, fontSize: "17px", color: warn ? C.orangeText : C.ink, margin: 0, lineHeight: 1.6 }}>
-        {children}
-      </p>
-    </div>
-  );
 }

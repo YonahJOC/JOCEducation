@@ -22,6 +22,18 @@ export const LIGHT_LABEL: Record<Light, string> = {
   RED: "Hold off",
 };
 
+/**
+ * The light itself, for the band on a row.
+ *
+ * LIGHT_LABEL is the instruction and belongs on the button. Putting it in the
+ * band as well left every row saying "Reach out" twice, six inches apart.
+ */
+export const LIGHT_WORD: Record<Light, string> = {
+  GREEN: "Green",
+  AMBER: "Amber",
+  RED: "Red",
+};
+
 export const LIGHT_MEANING: Record<Light, string> = {
   GREEN: "Fine to introduce the program",
   AMBER: "Talk it through before contacting",

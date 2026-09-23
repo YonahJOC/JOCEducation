@@ -6,7 +6,7 @@ import { can } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getProgramToday } from "@/lib/program-today";
 import { schoolsInProgram } from "@/lib/program-enrollment";
-import { C, R, ROW_SHADOW, CONTENT_MAX, label, F, pageTitle } from "@/lib/joc-tokens";
+import { C, R, ROW_SHADOW, label, bandFigure, F, pageTitle } from "@/lib/joc-tokens";
 
 /**
  * Every program console, as cards.
@@ -61,11 +61,11 @@ export default async function MyProgramsPage() {
   cards.sort((a, b) => b.need - a.need || a.name.localeCompare(b.name));
 
   return (
-    <div style={{ maxWidth: CONTENT_MAX }}>
+    <div>
       <h1 style={pageTitle}>{all ? "Program consoles" : "Your programs"}</h1>
 
       <SectionLinks section="programs" />
-      <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.6, margin: "0 0 24px", maxWidth: "62ch" }}>
+      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 22px", maxWidth: "62ch" }}>
         {all
           ? "Every program's own console — the same page its coordinator opens. Sorted by what needs somebody today."
           : "The programs you run. Sorted by what needs you today."}
@@ -73,7 +73,7 @@ export default async function MyProgramsPage() {
 
       {cards.length === 0 ? (
         <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "32px 24px" }}>
-          <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, margin: 0, lineHeight: 1.6, maxWidth: "58ch" }}>
+          <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "58ch" }}>
             You are not down as running any program yet. Whoever holds the Coordinators permission
             can add you on the program&rsquo;s own page.
           </p>
@@ -111,13 +111,19 @@ export default async function MyProgramsPage() {
                     </span>
                   </span>
 
-                  <span style={{
-                    fontFamily: F.ui, fontSize: "26px", fontWeight: 800, letterSpacing: "-0.03em",
-                    lineHeight: 1.1, color: p.need > 0 ? C.orangeText : C.greenText,
-                  }}>
-                    {p.need > 0
-                      ? `${p.need} need${p.need === 1 ? "s" : ""} you today`
-                      : "Nothing needs you"}
+                  {/* A label over a figure, the same anatomy as every row.
+                      It was a 26px sentence, which outweighed the program's
+                      own name — the thing somebody is here to click. */}
+                  <span>
+                    <span style={{ ...label, color: C.muted, display: "block", marginBottom: "2px" }}>
+                      Needs you today
+                    </span>
+                    <span style={{
+                      ...bandFigure, fontSize: "26px",
+                      color: p.need > 0 ? C.orangeText : C.greenText,
+                    }}>
+                      {p.need > 0 ? p.need : "None"}
+                    </span>
                   </span>
 
                   <span style={{ ...label, color: C.muted, display: "block" }}>{status}</span>

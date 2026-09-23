@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavItem } from "@/lib/nav";
-import { C, F, label } from "@/lib/joc-tokens";
+import { C, R, F, label } from "@/lib/joc-tokens";
 
 /**
  * The rail's links.
@@ -44,6 +44,10 @@ export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "sch
                 ? dark ? "rgba(255,255,255,.1)" : C.white
                 : "transparent",
               borderLeft: `3px solid ${active ? C.orange : "transparent"}`,
+              borderTopRightRadius: R.form,
+              borderBottomRightRadius: R.form,
+              marginRight: "10px",
+              transition: "background-color .12s",
             }}
           >
             {i.dot && (

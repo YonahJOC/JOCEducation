@@ -330,5 +330,37 @@ body {
   .joc-shell-who  { margin-top: 0 !important; padding: 10px 16px !important;
                     display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .joc-shell-who p { margin: 0 !important; }
-  .joc-shell-body { padding: 18px 16px 48px !important; }
+}
+
+/* The main column.
+   
+   It was padded 18px 16px at every width — the phone value — which left a 1280
+   screen with its content in a strip down the left and two thirds of the page
+   empty. It is a grid now, with the gutters as columns rather than as padding,
+   so a program's colour band can span the whole width by asking for it
+   (.joc-bleed) instead of fighting the column with negative margins. */
+.joc-shell-body {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(40px, 1fr)
+    [content-start] minmax(0, 1080px) [content-end]
+    minmax(40px, 1fr) [full-end];
+  align-content: start;
+  padding-bottom: 64px;
+}
+
+.joc-shell-body > *             { grid-column: content; margin-top: 32px; }
+.joc-shell-body > .joc-bleed    { grid-column: full; margin-top: 0; }
+/* A band at the very top sits flush; anything else keeps its air. */
+.joc-shell-body > .joc-bleed + * { margin-top: 26px; }
+
+@media (max-width: 860px) {
+  .joc-shell-body {
+    grid-template-columns:
+      [full-start] 16px
+      [content-start] minmax(0, 1fr) [content-end]
+      16px [full-end];
+    padding-bottom: 48px;
+  }
+  .joc-shell-body > * { margin-top: 18px; }
 }

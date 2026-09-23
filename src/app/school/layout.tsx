@@ -83,7 +83,8 @@ export default async function SchoolLayout({ children }: { children: React.React
               <button
                 type="submit"
                 style={{
-                  ...label, width: "100%", color: C.muted,
+                  fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
+                  width: "100%", color: C.muted,
                   background: "none", border: "none", cursor: "pointer",
                   minHeight: "44px", textAlign: "left", padding: 0,
                 }}
