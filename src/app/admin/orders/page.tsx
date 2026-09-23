@@ -1,4 +1,5 @@
 import { OrdersGuard } from "@/components/admin/Guard";
+import { SectionLinks } from "@/components/admin/SectionLinks";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { OrdersClient, type OrderRow } from "./OrdersClient";
 
@@ -46,5 +47,10 @@ export default async function AdminOrdersPage() {
 }
 
 async function Inner() {
-  return <OrdersClient orders={await getOrders()} disabled={!isDatabaseConfigured()} />;
+  return (
+    <>
+      <SectionLinks section="money" />
+      <OrdersClient orders={await getOrders()} disabled={!isDatabaseConfigured()} />
+    </>
+  );
 }

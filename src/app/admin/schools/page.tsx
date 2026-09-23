@@ -1,4 +1,5 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
+import { SectionLinks } from "@/components/admin/SectionLinks";
 import { C } from "@/lib/joc-tokens";
 import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
 import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
@@ -48,6 +49,8 @@ async function Inner(searchParams: Search) {
         note="Changing a plan or a status takes effect straight away for every teacher at that school. Nobody is emailed about it — tell them yourself."
       >
         <NewSchoolForm disabled={usingSampleData} />
+
+      <SectionLinks section="schools" />
       </PageIntro>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
         {all.length} accounts. Click a school to manage its plan, people and history.

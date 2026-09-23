@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SectionLinks } from "@/components/admin/SectionLinks";
 import { listProgramsForAdmin } from "@/lib/program-admin";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
@@ -62,6 +63,8 @@ export default async function MyProgramsPage() {
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
       <h1 style={pageTitle}>{all ? "Program consoles" : "Your programs"}</h1>
+
+      <SectionLinks section="programs" />
       <p style={{ fontFamily: F.read, fontSize: "17px", color: C.muted, lineHeight: 1.6, margin: "0 0 24px", maxWidth: "62ch" }}>
         {all
           ? "Every program's own console — the same page its coordinator opens. Sorted by what needs somebody today."

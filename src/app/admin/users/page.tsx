@@ -1,4 +1,5 @@
 import { UsersGuard } from "@/components/admin/Guard";
+import { SectionLinks } from "@/components/admin/SectionLinks";
 import { C } from "@/lib/joc-tokens";
 import { PeopleTable, type PersonRow, type SchoolRef, type ProgramRef } from "@/components/admin/PeopleTable";
 import { CreateUserForm } from "@/components/admin/CreateUserForm";
@@ -81,6 +82,9 @@ async function Inner() {
       >
         {canEditRoles && <CreateUserForm schools={schools} disabled={usingSampleData} />}
       </PageIntro>
+
+      <SectionLinks section="access" />
+
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 8px" }}>
         {internal.length} at Just One Chesed, {schoolUsers.length} at schools
         {unassigned > 0 && (

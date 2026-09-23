@@ -1,4 +1,5 @@
 import { getCycles } from "@/lib/cycle-data";
+import { SectionLinks } from "@/components/admin/SectionLinks";
 import { LESSONS } from "@/lib/lessons";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { LessonsClient, type LessonRow } from "./LessonsClient";
@@ -72,11 +73,14 @@ async function Inner() {
   }));
 
   return (
-    <LessonsClient
-      lessons={lessons}
-      cycles={cycles}
-      disabled={!isDatabaseConfigured()}
-    />
+    <>
+      <SectionLinks section="material" />
+      <LessonsClient
+        lessons={lessons}
+        cycles={cycles}
+        disabled={!isDatabaseConfigured()}
+      />
+    </>
   );
 }
 
