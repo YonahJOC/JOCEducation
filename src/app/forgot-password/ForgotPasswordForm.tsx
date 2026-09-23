@@ -5,10 +5,6 @@ import { C, label } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { requestPasswordReset } from "@/app/actions/reset";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-
 type State = "form" | "sent" | "no-email";
 
 export function ForgotPasswordForm() {
@@ -32,13 +28,13 @@ export function ForgotPasswordForm() {
     return (
       <div style={{ textAlign: "center" }}>
         <p style={{ ...label, color: C.orangeText, marginBottom: "12px" }}>Reset link sent</p>
-        <h2 style={{ fontWeight: 800, fontSize: "22px", color: INK, marginBottom: "10px" }}>Check your inbox</h2>
+        <h2 style={{ fontWeight: 800, fontSize: "22px", color: C.ink, marginBottom: "10px" }}>Check your inbox</h2>
         <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "24px" }}>
           If <strong>{email}</strong> has an account, a reset link is on its way. It expires in 30 minutes.
         </p>
         <button
           onClick={() => { setState("form"); setEmail(""); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", color: BLUE, background: "none", border: "none", cursor: "pointer", fontWeight: 600, minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.blue, background: "none", border: "none", cursor: "pointer", fontWeight: 600, minHeight: "44px" }}
         >
           Try a different address
         </button>
@@ -50,7 +46,7 @@ export function ForgotPasswordForm() {
   if (state === "no-email") {
     return (
       <div>
-        <h2 style={{ fontWeight: 800, fontSize: "21px", color: INK, marginBottom: "10px" }}>
+        <h2 style={{ fontWeight: 800, fontSize: "21px", color: C.ink, marginBottom: "10px" }}>
           We can&rsquo;t email you yet
         </h2>
         <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "16px" }}>
@@ -59,14 +55,14 @@ export function ForgotPasswordForm() {
         </p>
         <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "22px" }}>
           Write to{" "}
-          <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600 }}>
+          <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600 }}>
             education@justonechesed.org
           </a>{" "}
           and someone will reset it for you by hand, usually the same day.
         </p>
         <Link
           href="/login"
-          style={{ display: "block", textAlign: "center", backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+          style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
         >
           Back to sign in
         </Link>
@@ -76,7 +72,7 @@ export function ForgotPasswordForm() {
 
   return (
     <>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, marginBottom: "8px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, marginBottom: "8px" }}>
         Reset your password
       </h1>
       <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px", lineHeight: 1.55 }}>
@@ -85,7 +81,7 @@ export function ForgotPasswordForm() {
 
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <div>
-          <label style={{ display: "block", fontWeight: 600, fontSize: "13.5px", color: INK, marginBottom: "6px" }}>
+          <label style={{ display: "block", fontWeight: 600, fontSize: "13.5px", color: C.ink, marginBottom: "6px" }}>
             Email address
           </label>
           <input
@@ -94,18 +90,18 @@ export function ForgotPasswordForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@school.edu"
             autoComplete="email"
-            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px", fontSize: "15px", color: INK, backgroundColor: "#F8FAFE", border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" }}
+            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px", fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE", border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" }}
           />
         </div>
 
-        {error && <p style={{ fontSize: "13.5px", color: RED, margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{error}</p>}
 
         <button
           type="submit"
           disabled={pending || !email}
           style={{
             width: "100%", fontFamily: "var(--font-outfit)",
-            backgroundColor: !pending && email ? BLUE : "rgba(45,70,175,.4)",
+            backgroundColor: !pending && email ? C.blue : "rgba(45,70,175,.4)",
             color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px",
             padding: "14px", minHeight: "48px", border: "none",
             cursor: !pending && email ? "pointer" : "default",

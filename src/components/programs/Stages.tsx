@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { resolveStageUrl, type Stage } from "@/lib/stages";
 
 /**
@@ -12,13 +13,7 @@ import { resolveStageUrl, type Stage } from "@/lib/stages";
  * has run one program already knows how the next one goes.
  */
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const PAPER = "#FBF9F4";
-const MUTED = "#4A5A74";
 const BODY2 = "#34445E";
-const HAIRLINE = "rgba(16,35,63,.1)";
 const LOCKED = "#8793A6";
 
 /** Fixed by position, not by content — they label the path, not the copy. */
@@ -96,13 +91,13 @@ export function Stages({
                 style={{
                   // Locked beats last: a filled orange "you made it" node on a
                   // stage that cannot be reached yet says two opposite things.
-                  backgroundColor: last && !link.locked ? ORANGE : PAPER,
-                  color: link.locked ? MUTED : INK,
+                  backgroundColor: last && !link.locked ? C.orange : C.paper,
+                  color: link.locked ? C.muted : C.ink,
                   border: link.locked
                     ? `2px dashed ${LOCKED}`
                     : last
-                    ? `2px solid ${ORANGE}`
-                    : `2px solid ${INK}`,
+                    ? `2px solid ${C.orange}`
+                    : `2px solid ${C.ink}`,
                 }}
               >
                 {s.step}
@@ -118,10 +113,10 @@ export function Stages({
 
             <div className="joc-stage-card">
               <div style={{ minWidth: 0 }}>
-                <p style={{ fontSize: "13px", color: MUTED, margin: "0 0 5px", fontWeight: 500 }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "0 0 5px", fontWeight: 500 }}>
                   Step {s.step} of {stages.length} · {stageShort(i)}
                 </p>
-                <h3 style={{ fontSize: "18px", fontWeight: 600, letterSpacing: "-0.015em", color: INK, margin: "0 0 7px", lineHeight: 1.3 }}>
+                <h3 style={{ fontSize: "18px", fontWeight: 600, letterSpacing: "-0.015em", color: C.ink, margin: "0 0 7px", lineHeight: 1.3 }}>
                   {s.title}
                 </h3>
                 <p style={{ fontSize: "15.5px", color: BODY2, lineHeight: 1.6, margin: 0, maxWidth: "56ch" }}>
@@ -133,7 +128,7 @@ export function Stages({
                 <div className="joc-stage-action">
                   <StageButton link={link} label={s.linkLabel} primary={primary} />
                   {link.note && (
-                    <p style={{ fontSize: "12.5px", color: MUTED, margin: "8px 0 0", lineHeight: 1.45 }}>
+                    <p style={{ fontSize: "12.5px", color: C.muted, margin: "8px 0 0", lineHeight: 1.45 }}>
                       {link.note}
                     </p>
                   )}
@@ -163,7 +158,7 @@ function StageButton({ link, label, primary }: { link: StageLink; label: string;
         style={{
           ...base,
           border: `1.5px dashed ${LOCKED}`,
-          color: MUTED,
+          color: C.muted,
           backgroundColor: "transparent",
           cursor: "default",
         }}
@@ -174,8 +169,8 @@ function StageButton({ link, label, primary }: { link: StageLink; label: string;
   }
 
   const style: React.CSSProperties = primary
-    ? { ...base, backgroundColor: BLUE, color: "#fff", border: `1.5px solid ${BLUE}` }
-    : { ...base, backgroundColor: "transparent", color: INK, border: `1.5px solid ${INK}` };
+    ? { ...base, backgroundColor: C.blue, color: "#fff", border: `1.5px solid ${C.blue}` }
+    : { ...base, backgroundColor: "transparent", color: C.ink, border: `1.5px solid ${C.ink}` };
 
   const body = (
     <>

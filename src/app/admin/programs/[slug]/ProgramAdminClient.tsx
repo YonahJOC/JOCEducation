@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -17,11 +18,6 @@ import type { ProgramTraffic } from "@/lib/program-traffic";
 import type { EnrolledRow } from "@/lib/program-enrollment";
 import type { ProgramReporting } from "@/lib/ambassadors";
 import type { ProgramAdminView } from "@/lib/program-admin";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
 
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)",
@@ -89,11 +85,11 @@ export function ProgramAdminClient({
 
   return (
     <div>
-      <Link href="/admin/programs" style={{ fontSize: "13px", color: BLUE, textDecoration: "none", fontWeight: 600 }}>
+      <Link href="/admin/programs" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
         ← All programs
       </Link>
 
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "12px 0 4px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "12px 0 4px" }}>
         {view.name}
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 4px" }}>
@@ -122,7 +118,7 @@ export function ProgramAdminClient({
             href={`/admin/programs/${view.slug}?as=coordinator`}
             style={{
               display: "inline-flex", alignItems: "center", gap: "7px",
-              fontSize: "13px", fontWeight: 600, color: INK,
+              fontSize: "13px", fontWeight: 600, color: C.ink,
               backgroundColor: "rgba(16,35,63,.06)", borderRadius: "9999px",
               padding: "9px 16px", minHeight: "40px", textDecoration: "none",
             }}
@@ -161,7 +157,7 @@ export function ProgramAdminClient({
             ) : (
               <Pill color="#C96C00">draft — not on the program page yet</Pill>
             )}
-            <Link href={`/forms/${view.form.slug}`} target="_blank" style={{ color: BLUE, fontWeight: 600, textDecoration: "none", marginLeft: "10px" }}>
+            <Link href={`/forms/${view.form.slug}`} target="_blank" style={{ color: C.blue, fontWeight: 600, textDecoration: "none", marginLeft: "10px" }}>
               /forms/{view.form.slug}
             </Link>
             {feeLabel && <span style={{ marginLeft: "10px" }}>· {feeLabel}</span>}
@@ -189,7 +185,7 @@ export function ProgramAdminClient({
           />
         ) : view.form ? (
           <div style={card}>
-            <p style={{ fontSize: "15.5px", fontWeight: 600, color: INK, margin: "0 0 12px" }}>
+            <p style={{ fontSize: "15.5px", fontWeight: 600, color: C.ink, margin: "0 0 12px" }}>
               {view.form.title}
             </p>
             <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "1px" }}>
@@ -198,7 +194,7 @@ export function ProgramAdminClient({
                   key={f.id}
                   style={{
                     display: "flex", gap: "10px", alignItems: "baseline",
-                    padding: "9px 12px", fontSize: "14px", color: INK,
+                    padding: "9px 12px", fontSize: "14px", color: C.ink,
                     backgroundColor: i % 2 ? "transparent" : "rgba(244,247,253,.75)",
                     borderRadius: "8px",
                   }}
@@ -246,7 +242,7 @@ export function ProgramAdminClient({
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
             Where it is running
           </p>
-          <Link href="/admin/programming" style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none" }}>
+          <Link href="/admin/programming" style={{ fontSize: "13px", fontWeight: 600, color: C.blue, textDecoration: "none" }}>
             Open the calendar →
           </Link>
         </div>
@@ -275,10 +271,10 @@ export function ProgramAdminClient({
                       opacity: past ? 0.6 : 1,
                     }}
                   >
-                    <span style={{ fontSize: "13px", fontWeight: 700, color: INK, minWidth: "104px", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: "13px", fontWeight: 700, color: C.ink, minWidth: "104px", whiteSpace: "nowrap" }}>
                       {new Date(r.startsAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
-                    <span style={{ flex: 1, minWidth: 0, fontSize: "14px", color: INK }}>
+                    <span style={{ flex: 1, minWidth: 0, fontSize: "14px", color: C.ink }}>
                       {r.schoolName ?? "Open to every school"}
                       {r.audience && (
                         <span style={{ color: "#4A5A74", fontSize: "12.5px" }}> · {r.audience}</span>
@@ -328,8 +324,8 @@ export function ProgramAdminClient({
               }}
               disabled={pending}
               style={{
-                fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+                fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
                 padding: "10px 12px", minHeight: "42px", minWidth: "280px", outline: "none",
               }}
             >
@@ -358,7 +354,7 @@ export function ProgramAdminClient({
             {team.map((u) => {
               const on = leads.includes(u.id);
               return (
-                <label key={u.id} style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "14px", color: INK, cursor: "pointer" }}>
+                <label key={u.id} style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "14px", color: C.ink, cursor: "pointer" }}>
                   <input
                     type="checkbox"
                     checked={on}
@@ -387,7 +383,7 @@ export function ProgramAdminClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: RED, margin: "0 0 14px", lineHeight: 1.5 }}>{msg}</p>
+        <p style={{ fontSize: "13.5px", color: C.redText, margin: "0 0 14px", lineHeight: 1.5 }}>{msg}</p>
       )}
 
       {/* ── The sign-ups ───────────────────────────────────────────────── */}
@@ -428,7 +424,7 @@ export function ProgramAdminClient({
                     <td style={cell}>
                       {new Date(r.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
                     </td>
-                    <td style={{ ...cell, fontWeight: 600, color: INK }}>{r.name ?? <Absent>No name given</Absent>}</td>
+                    <td style={{ ...cell, fontWeight: 600, color: C.ink }}>{r.name ?? <Absent>No name given</Absent>}</td>
                     <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                     {view.form?.feeCents ? (
                       <td style={cell}>
@@ -481,7 +477,7 @@ function AddCoordinator({ programId }: { programId: number }) {
         type="button"
         onClick={() => setOpen(true)}
         style={{
-          fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE,
+          fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue,
           background: "none", border: "none", padding: "14px 0 0", cursor: "pointer", minHeight: "44px",
         }}
       >
@@ -491,7 +487,7 @@ function AddCoordinator({ programId }: { programId: number }) {
   }
 
   return (
-    <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: `1px solid ${RULE}` }}>
+    <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: `1px solid ${C.hairline}` }}>
       <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "58ch" }}>
         Their name and email. It makes them an account and puts them down as running this program.
         They sign in with that address — no password is set here.
@@ -504,8 +500,8 @@ function AddCoordinator({ programId }: { programId: number }) {
           disabled={pending}
           autoFocus
           style={{
-            fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK, backgroundColor: "#fff",
-            border: `1px solid ${RULE}`, borderRadius: "10px", padding: "10px 12px",
+            fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+            border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px",
             minHeight: "42px", outline: "none", flex: "1 1 170px", minWidth: 0,
           }}
         />
@@ -516,8 +512,8 @@ function AddCoordinator({ programId }: { programId: number }) {
           type="email"
           disabled={pending}
           style={{
-            fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK, backgroundColor: "#fff",
-            border: `1px solid ${RULE}`, borderRadius: "10px", padding: "10px 12px",
+            fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+            border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px",
             minHeight: "42px", outline: "none", flex: "2 1 230px", minWidth: 0,
           }}
         />
@@ -536,7 +532,7 @@ function AddCoordinator({ programId }: { programId: number }) {
           }}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "42px", cursor: pending ? "wait" : "pointer",
             opacity: name.trim() && email.trim() ? 1 : 0.5,
           }}
@@ -550,7 +546,7 @@ function AddCoordinator({ programId }: { programId: number }) {
         >
           Cancel
         </button>
-        {err && <span style={{ fontSize: "13px", color: RED, lineHeight: 1.4 }}>{err}</span>}
+        {err && <span style={{ fontSize: "13px", color: C.redText, lineHeight: 1.4 }}>{err}</span>}
       </div>
     </div>
   );

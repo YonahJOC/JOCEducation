@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { C } from "@/lib/joc-tokens";
 import Image from "next/image";
 import Link from "next/link";
 import { getCycleState, getCurrentWeek } from "@/lib/cycles";
@@ -8,20 +9,13 @@ import { siteContent } from "@/lib/site-content";
 import { AuthCard } from "@/components/landing/AuthCard";
 import { DemoScheduler, type DemoDay } from "@/components/landing/DemoScheduler";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const PAPER = "#FBF9F4";
-const PANEL = "#F4F7FD";
-const RULE = "rgba(16,35,63,.12)";
 const WIDTH = "1180px";
 
 /**
  * Fallbacks. Every string below is editable at /admin/site — these are what
  * renders if a field was never edited, or if the database is unreachable.
  */
-const CARD_COLORS = [BLUE, ORANGE, "#1D6B37", "#2C7AC9"];
+const CARD_COLORS = [C.blue, C.orange, "#1D6B37", "#2C7AC9"];
 
 const FALLBACK_INSIDE = [
   { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion points. Print and teach." },
@@ -29,7 +23,6 @@ const FALLBACK_INSIDE = [
   { value: "10", title: "Programs for your school", body: "Kindness Booth, Bake for Chesed, Just One Tutor and more — JOC runs the logistics." },
   { value: "∞", title: "Teachers' Board", body: "What rebbeim and morahs at other schools actually ran, and how it went." },
 ];
-
 
 const FALLBACK_BULLETS = [
   { body: "We go through the programs — Kindness Booth, Bake for Chesed, Just One Tutor and the rest — and which ones suit your grades." },
@@ -88,9 +81,9 @@ export default async function EducatorLanding({
   const days = nextSchoolDays();
 
   return (
-    <div style={{ backgroundColor: PAPER }}>
+    <div style={{ backgroundColor: C.paper }}>
       {/* 1 — Wayfinding */}
-      <div style={{ backgroundColor: PANEL, borderBottom: `1px solid ${RULE}` }}>
+      <div style={{ backgroundColor: C.panel, borderBottom: `1px solid ${C.hairline}` }}>
         <p
           style={{
             maxWidth: WIDTH, margin: "0 auto", padding: "9px 26px",
@@ -100,7 +93,7 @@ export default async function EducatorLanding({
           This is the JOC Educators Portal. Looking for the main site?{" "}
           <a
             href="https://justonechesed.org"
-            style={{ color: BLUE, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
+            style={{ color: C.blue, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
           >
             Go to JustOneChesed.org →
           </a>
@@ -113,7 +106,7 @@ export default async function EducatorLanding({
           position: "sticky", top: 0, zIndex: 40,
           backgroundColor: "rgba(251,249,244,.94)",
           backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-          borderBottom: `1px solid ${RULE}`,
+          borderBottom: `1px solid ${C.hairline}`,
         }}
       >
         <div
@@ -124,8 +117,8 @@ export default async function EducatorLanding({
         >
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "11px", textDecoration: "none", flexShrink: 0 }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={168} height={20} priority className="joc-wordmark" style={{ height: "20px", width: "auto" }} />
-            <span aria-hidden="true" className="joc-brand-sub" style={{ width: "1px", height: "20px", backgroundColor: RULE }} />
-            <span className="joc-brand-sub" style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
+            <span aria-hidden="true" className="joc-brand-sub" style={{ width: "1px", height: "20px", backgroundColor: C.hairline }} />
+            <span className="joc-brand-sub" style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -133,7 +126,7 @@ export default async function EducatorLanding({
           {/* Same-page anchors only — every other route is gated */}
           <nav className="joc-landing-nav" style={{ display: "flex", alignItems: "center", gap: "22px" }}>
             {[["What's inside", "#inside"], ["The Chesed Cycle", "#cycle"], ["Book a demo", "#demo"]].map(([label, href]) => (
-              <a key={href} href={href} style={{ fontSize: "14px", fontWeight: 500, color: INK, textDecoration: "none" }}>
+              <a key={href} href={href} style={{ fontSize: "14px", fontWeight: 500, color: C.ink, textDecoration: "none" }}>
                 {label}
               </a>
             ))}
@@ -144,8 +137,8 @@ export default async function EducatorLanding({
               href="#auth"
               className="joc-header-signin"
               style={{
-                fontSize: "14px", fontWeight: 600, color: INK, textDecoration: "none",
-                border: `1.5px solid ${RULE}`, borderRadius: "9999px", padding: "9px 18px",
+                fontSize: "14px", fontWeight: 600, color: C.ink, textDecoration: "none",
+                border: `1.5px solid ${C.hairline}`, borderRadius: "9999px", padding: "9px 18px",
                 display: "inline-flex", alignItems: "center", minHeight: "44px",
               }}
             >
@@ -154,7 +147,7 @@ export default async function EducatorLanding({
             <a
               href="#demo"
               style={{
-                fontSize: "14px", fontWeight: 700, color: INK, backgroundColor: ORANGE,
+                fontSize: "14px", fontWeight: 700, color: C.ink, backgroundColor: C.orange,
                 borderRadius: "9999px", padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",
                 display: "inline-flex", alignItems: "center", minHeight: "44px",
               }}
@@ -176,12 +169,12 @@ export default async function EducatorLanding({
             <span
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",
-                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "9999px",
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "9999px",
                 padding: "7px 15px", marginBottom: "22px",
-                fontSize: "13.5px", fontWeight: 500, color: INK,
+                fontSize: "13.5px", fontWeight: 500, color: C.ink,
               }}
             >
-              <span className="joc-pulse" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0 }} />
+              <span className="joc-pulse" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orange, flexShrink: 0 }} />
               Cycle {cycle.num} of {allCycles.length} is running now · week {week} of {cycle.weeks}
             </span>
 
@@ -208,10 +201,10 @@ export default async function EducatorLanding({
                 margin: "0 0 20px",
               }}
             >
-              <span style={{ display: "block", color: INK, whiteSpace: "nowrap" }}>
+              <span style={{ display: "block", color: C.ink, whiteSpace: "nowrap" }}>
                 Educating Towards Chesed
               </span>
-              <span style={{ display: "block", color: BLUE, whiteSpace: "nowrap" }}>
+              <span style={{ display: "block", color: C.blue, whiteSpace: "nowrap" }}>
                 Just One Student at a Time
               </span>
             </h1>
@@ -224,17 +217,17 @@ export default async function EducatorLanding({
             {/* The platform is not open to schools yet — say so plainly. */}
             <div
               style={{
-                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px",
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px",
                 padding: "16px 18px", marginBottom: "26px", maxWidth: "46ch",
               }}
             >
-              <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 7px" }}>
+              <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 7px" }}>
                 In development
               </p>
               <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
                 The teaching platform is still being built and accounts are not open to schools yet. In the
                 meantime, JOC runs 10 chesed programs your school can start this year —{" "}
-                <a href="#demo" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+                <a href="#demo" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
                   book a walkthrough
                 </a>
                 .
@@ -247,11 +240,11 @@ export default async function EducatorLanding({
               <div
                 role="status"
                 style={{
-                  backgroundColor: PANEL, border: `1px solid ${RULE}`,
+                  backgroundColor: C.panel, border: `1px solid ${C.hairline}`,
                   borderRadius: "14px", padding: "13px 16px", marginBottom: "12px",
                 }}
               >
-                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: INK, margin: 0 }}>
+                <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.ink, margin: 0 }}>
                   Sign in to continue. We&rsquo;ll take you where you were going.
                 </p>
               </div>
@@ -280,11 +273,11 @@ export default async function EducatorLanding({
       </section>
 
       {/* 4 — Chesed Cycle band */}
-      <section id="cycle" style={{ backgroundColor: INK, color: "#fff" }}>
+      <section id="cycle" style={{ backgroundColor: C.ink, color: "#fff" }}>
         <div style={{ maxWidth: WIDTH, margin: "0 auto", padding: "56px 26px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "44px", alignItems: "start" }}>
             <div>
-              <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE, margin: "0 0 14px" }}>
+              <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orange, margin: "0 0 14px" }}>
                 This Chesed Cycle · {cycle.hebrew}
               </p>
               <h2 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.04em", margin: "0 0 8px" }}>
@@ -295,7 +288,7 @@ export default async function EducatorLanding({
                 style={{
                   fontFamily: "var(--font-newsreader)", fontStyle: "italic",
                   fontSize: "clamp(18px, 2.1vw, 23px)", lineHeight: 1.5,
-                  color: "rgba(255,255,255,.94)", borderLeft: `3px solid ${ORANGE}`,
+                  color: "rgba(255,255,255,.94)", borderLeft: `3px solid ${C.orange}`,
                   paddingLeft: "20px", margin: 0, maxWidth: "34ch",
                 }}
               >
@@ -316,7 +309,7 @@ export default async function EducatorLanding({
                   <span>{cycle.range}</span>
                 </div>
                 <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: ORANGE, transition: "width .4s ease" }} />
+                  <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: C.orange, transition: "width .4s ease" }} />
                 </div>
               </div>
 
@@ -330,8 +323,8 @@ export default async function EducatorLanding({
                       style={{
                         fontSize: "12.5px", fontWeight: on ? 700 : 500,
                         padding: "7px 13px", borderRadius: "9999px",
-                        backgroundColor: on ? ORANGE : "rgba(255,255,255,.09)",
-                        color: on ? INK : done ? "rgba(255,255,255,.42)" : "rgba(255,255,255,.8)",
+                        backgroundColor: on ? C.orange : "rgba(255,255,255,.09)",
+                        color: on ? C.ink : done ? "rgba(255,255,255,.42)" : "rgba(255,255,255,.8)",
                         border: on ? "none" : "1px solid rgba(255,255,255,.14)",
                       }}
                     >
@@ -347,10 +340,10 @@ export default async function EducatorLanding({
 
       {/* 5 — What's inside */}
       <section id="inside" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 20px" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
+        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
           What&rsquo;s inside
         </p>
-        <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 34px" }}>
+        <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 34px" }}>
           Everything your school needs, in one place.
         </h2>
 
@@ -370,7 +363,7 @@ export default async function EducatorLanding({
                 <p style={{ fontWeight: 800, fontSize: "30px", letterSpacing: "-0.035em", color: accent, lineHeight: 1, margin: "0 0 12px" }}>
                   {card.value}
                 </p>
-                <p style={{ fontWeight: 700, fontSize: "16.5px", color: INK, letterSpacing: "-0.02em", margin: "0 0 7px" }}>{card.title}</p>
+                <p style={{ fontWeight: 700, fontSize: "16.5px", color: C.ink, letterSpacing: "-0.02em", margin: "0 0 7px" }}>{card.title}</p>
                 <p style={{ fontSize: "14px", lineHeight: 1.55, color: "#4A5A74", margin: 0 }}>{card.body}</p>
               </div>
             </div>
@@ -383,10 +376,10 @@ export default async function EducatorLanding({
       <section id="demo" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 72px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "48px", alignItems: "start" }}>
           <div>
-            <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
+            <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
               Book a walkthrough
             </p>
-            <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: INK, margin: "0 0 18px" }}>
+            <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 18px" }}>
               Start a chesed program this year.
             </h2>
             <p style={{ fontSize: "16px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 24px", maxWidth: "44ch" }}>
@@ -401,8 +394,8 @@ export default async function EducatorLanding({
                 "We show you where the teaching platform is up to, so you know what is coming and when.",
               ].map((t) => (
                 <li key={t} style={{ display: "flex", gap: "13px", alignItems: "flex-start" }}>
-                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "8px" }} />
-                  <span style={{ fontSize: "15px", lineHeight: 1.6, color: INK }}>{t}</span>
+                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orange, flexShrink: 0, marginTop: "8px" }} />
+                  <span style={{ fontSize: "15px", lineHeight: 1.6, color: C.ink }}>{t}</span>
                 </li>
               ))}
             </ul>
@@ -414,7 +407,7 @@ export default async function EducatorLanding({
               style={{
                 fontFamily: "var(--font-newsreader)", fontStyle: "italic",
                 fontSize: "17px", lineHeight: 1.6, color: "#4A5A74",
-                borderLeft: `3px solid ${ORANGE}`, paddingLeft: "18px", margin: "0 0 26px", maxWidth: "40ch",
+                borderLeft: `3px solid ${C.orange}`, paddingLeft: "18px", margin: "0 0 26px", maxWidth: "40ch",
               }}
             >
               Chesed stops being an assembly once the whole school is working on the same middah in the same weeks.
@@ -422,7 +415,7 @@ export default async function EducatorLanding({
 
             <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>
               Would rather just email?{" "}
-              <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+              <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
                 education@justonechesed.org
               </a>
             </p>
@@ -433,7 +426,7 @@ export default async function EducatorLanding({
       </section>
 
       {/* 7 — Footer */}
-      <footer style={{ backgroundColor: INK, color: "rgba(255,255,255,.7)" }}>
+      <footer style={{ backgroundColor: C.ink, color: "rgba(255,255,255,.7)" }}>
         <div
           style={{
             maxWidth: WIDTH, margin: "0 auto", padding: "40px 26px",
@@ -450,7 +443,7 @@ export default async function EducatorLanding({
                 height={21}
                 style={{ height: "20px", width: "auto", display: "block", marginBottom: "6px" }}
               />
-              <p style={{ fontWeight: 700, fontSize: "12px", color: ORANGE, margin: 0, letterSpacing: "0.2em", textTransform: "uppercase" }}>
+              <p style={{ fontWeight: 700, fontSize: "12px", color: C.orange, margin: 0, letterSpacing: "0.2em", textTransform: "uppercase" }}>
                 Education
               </p>
               <p style={{ fontSize: "12.5px", margin: "3px 0 0" }}>

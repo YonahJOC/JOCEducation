@@ -1,19 +1,15 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import {
   FIELD_TYPES, FIELD_TYPE_LABELS, NEEDS_OPTIONS, type FieldType,
 } from "@/lib/forms";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const label: React.CSSProperties = {
@@ -122,11 +118,11 @@ export function FormBuilder({
           <button
             type="button"
             onClick={onDone}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
           >
             {backLabel ?? "← All forms"}
           </button>
-          <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+          <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
             {heading ?? (d.id ? d.title || "Edit form" : "New form")}
           </h1>
         </>
@@ -157,7 +153,7 @@ export function FormBuilder({
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {d.fields.map((f, i) => (
-            <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "14px" }}>
+            <div key={i} style={{ border: `1px solid ${C.hairline}`, borderRadius: "12px", padding: "14px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "#4A5A74", minWidth: "26px" }}>
                   {i + 1}
@@ -204,7 +200,7 @@ export function FormBuilder({
               )}
 
               <div style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>
-                <label style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "13.5px", color: INK, cursor: "pointer" }}>
+                <label style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "13.5px", color: C.ink, cursor: "pointer" }}>
                   <input type="checkbox" checked={f.required} onChange={(e) => setField(i, { required: e.target.checked })} disabled={disabled} style={{ width: "16px", height: "16px" }} />
                   Must be answered
                 </label>
@@ -212,7 +208,7 @@ export function FormBuilder({
                   type="button"
                   onClick={() => setD((p) => ({ ...p, fields: p.fields.filter((_, j) => j !== i) }))}
                   disabled={disabled || d.fields.length === 1}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: RED, background: "none", border: "none", cursor: "pointer", marginLeft: "auto" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.redText, background: "none", border: "none", cursor: "pointer", marginLeft: "auto" }}
                 >
                   Remove
                 </button>
@@ -225,7 +221,7 @@ export function FormBuilder({
           type="button"
           onClick={() => setD((p) => ({ ...p, fields: [...p.fields, { label: "", help: "", type: "SHORT_TEXT", required: false, options: [] }] }))}
           disabled={disabled}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", marginTop: "12px", padding: 0 }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", marginTop: "12px", padding: 0 }}
         >
           + Add a question
         </button>
@@ -272,7 +268,7 @@ export function FormBuilder({
           disabled={disabled || pending || !d.title.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -283,12 +279,12 @@ export function FormBuilder({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
           >
             Delete
           </button>
         )}
-        {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
+        {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
         {saved && !msg && (
           <p style={{ fontSize: "13.5px", fontWeight: 600, color: "#1D6B37", margin: 0 }}>Saved.</p>
         )}
@@ -306,7 +302,7 @@ function Check({
   label: string;
 }) {
   return (
-    <label style={{ display: "flex", gap: "9px", alignItems: "center", fontSize: "14px", color: INK, cursor: "pointer" }}>
+    <label style={{ display: "flex", gap: "9px", alignItems: "center", fontSize: "14px", color: C.ink, cursor: "pointer" }}>
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
       {text}
     </label>

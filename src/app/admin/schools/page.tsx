@@ -1,10 +1,9 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
+import { C } from "@/lib/joc-tokens";
 import { getSchools, STATUS_LABELS, STATUS_COLORS, usingSampleData, type SchoolStatus } from "@/lib/admin-data";
 import { NewSchoolForm } from "@/components/admin/NewSchoolForm";
 import { SchoolTable } from "../page";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
 
 export const metadata = { title: "Schools — JOC Console" };
 
@@ -63,7 +62,7 @@ async function Inner(searchParams: Search) {
           style={{
             flex: "1 1 220px", maxWidth: "320px", fontFamily: "var(--font-outfit)", fontSize: "14px",
             padding: "10px 14px", borderRadius: "10px", border: "1px solid rgba(16,35,63,.15)",
-            backgroundColor: "#fff", color: INK, outline: "none", minHeight: "40px",
+            backgroundColor: "#fff", color: C.ink, outline: "none", minHeight: "40px",
           }}
         />
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>

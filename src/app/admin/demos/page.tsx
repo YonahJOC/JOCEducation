@@ -1,11 +1,10 @@
 import { DemosGuard } from "@/components/admin/Guard";
+import { C } from "@/lib/joc-tokens";
 import { DemoTable, type DemoRowT } from "@/components/admin/DemoTable";
 import { MessagesPanel, type MessageRow } from "@/components/admin/MessagesPanel";
 import { getDemoRequests, usingSampleData } from "@/lib/admin-data";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
 
 export const metadata = { title: "Demo requests — JOC Console" };
 
@@ -75,7 +74,7 @@ async function Inner() {
         <DemoTable demos={demos} disabled={usingSampleData} />
       </div>
 
-      <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+      <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
         Contact form
       </h2>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 14px" }}>

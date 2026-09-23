@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const RULE = "rgba(16,35,63,.14)";
+import { C } from "@/lib/joc-tokens";
 
 export type DemoDay = { key: string; weekday: string; day: string; month: string };
 
@@ -29,9 +25,9 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   fontFamily: "var(--font-outfit)",
   fontSize: "15px",
-  color: INK,
+  color: C.ink,
   backgroundColor: "#F8FAFE",
-  border: `1px solid ${RULE}`,
+  border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "13px 14px",
   outline: "none",
@@ -87,7 +83,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
       <div
         style={{
           backgroundColor: "#fff",
-          border: `1.5px solid ${GREEN}`,
+          border: `1.5px solid ${C.greenText}`,
           borderRadius: "24px",
           padding: "34px 28px",
           textAlign: "center",
@@ -96,7 +92,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         <div
           style={{
             width: "46px", height: "46px", borderRadius: "50%",
-            backgroundColor: "rgba(27,127,75,.12)", color: GREEN,
+            backgroundColor: "rgba(27,127,75,.12)", color: C.greenText,
             display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 16px", fontSize: "22px", fontWeight: 700,
           }}
@@ -104,18 +100,18 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         >
           ✓
         </div>
-        <p style={{ fontWeight: 700, fontSize: "19px", color: INK, marginBottom: "8px", letterSpacing: "-0.02em" }}>
+        <p style={{ fontWeight: 700, fontSize: "19px", color: C.ink, marginBottom: "8px", letterSpacing: "-0.02em" }}>
           Request sent
         </p>
         <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px" }}>
-          You asked for <strong style={{ color: INK }}>{day.weekday} {day.month} {day.day} at {slot}</strong>.
+          You asked for <strong style={{ color: C.ink }}>{day.weekday} {day.month} {day.day} at {slot}</strong>.
           Someone from the JOC Education team will confirm by email.
         </p>
         <button
           onClick={() => { setDone(false); setSlot(null); }}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13.5px",
-            color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "44px",
+            color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "44px",
           }}
         >
           Pick a different time
@@ -153,9 +149,9 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
                 flex: "1 1 60px", minWidth: "58px", minHeight: "60px",
                 display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px",
                 borderRadius: "14px", cursor: "pointer",
-                border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
-                backgroundColor: on ? BLUE : "#fff",
-                color: on ? "#fff" : INK,
+                border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
+                backgroundColor: on ? C.blue : "#fff",
+                color: on ? "#fff" : C.ink,
                 fontFamily: "var(--font-outfit)",
                 transition: "background .15s",
               }}
@@ -182,9 +178,9 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
               style={{
                 fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
                 padding: "12px 8px", minHeight: "44px", borderRadius: "11px", cursor: "pointer",
-                border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
+                border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                 backgroundColor: on ? "rgba(45,70,175,.08)" : "#fff",
-                color: on ? BLUE : INK,
+                color: on ? C.blue : C.ink,
               }}
             >
               {s}
@@ -218,7 +214,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         disabled={sending}
         style={{
           width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-          color: "#fff", backgroundColor: INK, border: "none", borderRadius: "9999px",
+          color: "#fff", backgroundColor: C.ink, border: "none", borderRadius: "9999px",
           padding: "15px 20px", minHeight: "44px", cursor: sending ? "default" : "pointer", opacity: sending ? 0.7 : 1,
         }}
       >

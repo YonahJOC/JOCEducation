@@ -1,15 +1,10 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { LessonsGuard } from "@/components/admin/Guard";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const RULE = "rgba(16,35,63,.12)";
 
 export const metadata = { title: "Cycle coverage — JOC Console" };
 
@@ -99,7 +94,7 @@ async function Inner() {
                 return (
                   <tr key={c.slug}>
                     <td style={{ ...td, borderLeft: `3px solid ${c.color}` }}>
-                      <span style={{ fontWeight: 600, color: INK }}>
+                      <span style={{ fontWeight: 600, color: C.ink }}>
                         {c.num}. {c.theme}
                       </span>
                       {state === "current" && (
@@ -120,7 +115,7 @@ async function Inner() {
                             <span style={{
                               display: "inline-flex", alignItems: "center", justifyContent: "center",
                               minWidth: "34px", height: "30px", borderRadius: "9px",
-                              backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "13.5px",
+                              backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "13.5px",
                             }}>
                               {n}
                             </span>
@@ -131,7 +126,7 @@ async function Inner() {
                               style={{
                                 display: "inline-flex", alignItems: "center", justifyContent: "center",
                                 minWidth: "34px", height: "30px", borderRadius: "9px",
-                                border: `1px dashed ${ORANGE}`, color: ORANGE_TEXT,
+                                border: `1px dashed ${C.orange}`, color: C.orangeText,
                                 fontSize: "16px", lineHeight: 1, textDecoration: "none",
                               }}
                             >
@@ -142,7 +137,7 @@ async function Inner() {
                       );
                     })}
 
-                    <td style={{ ...td, textAlign: "center", color: res > 0 ? "#4A5A74" : ORANGE_TEXT }}>
+                    <td style={{ ...td, textAlign: "center", color: res > 0 ? "#4A5A74" : C.orangeText }}>
                       {res > 0 ? res : "Nothing yet"}
                     </td>
                   </tr>
@@ -163,7 +158,7 @@ async function Inner() {
 
 const th: React.CSSProperties = {
   padding: "11px 16px", fontSize: "10.5px", letterSpacing: "0.16em", textTransform: "uppercase",
-  fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${RULE}`,
+  fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`,
   backgroundColor: "#FAFBFD", whiteSpace: "nowrap",
 };
 

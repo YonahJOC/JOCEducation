@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { useRouter } from "next/navigation";
 import { createSchool } from "@/app/actions/admin";
 
@@ -14,14 +15,10 @@ import { createSchool } from "@/app/actions/admin";
  * school's own page, which is where it belongs.
  */
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
@@ -70,7 +67,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
         disabled={disabled}
         style={{
           fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-          backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+          backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
           minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
         }}
       >
@@ -87,7 +84,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
         borderRadius: "16px", padding: "20px", maxWidth: "460px",
       }}
     >
-      <p style={{ fontSize: "15px", fontWeight: 700, color: INK, margin: "0 0 4px" }}>Add a school</p>
+      <p style={{ fontSize: "15px", fontWeight: 700, color: C.ink, margin: "0 0 4px" }}>Add a school</p>
       <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 16px" }}>
         The name and where it is. Everything else — the city, the size, who runs chesed there — is
         on the school&rsquo;s own page once it exists.
@@ -131,7 +128,7 @@ export function NewSchoolForm({ disabled }: { disabled?: boolean }) {
           disabled={pending || !name.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 22px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: name.trim() ? 1 : 0.5,
           }}
         >

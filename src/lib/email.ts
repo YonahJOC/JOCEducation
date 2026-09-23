@@ -13,6 +13,8 @@
  * your inbox" when nothing was sent leaves a locked-out teacher waiting.
  */
 
+import { C } from "@/lib/joc-tokens";
+
 export const isEmailConfigured = Boolean(
   process.env.RESEND_API_KEY && process.env.EMAIL_FROM
 );
@@ -126,9 +128,6 @@ export async function sendEmail(input: {
   }
 }
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-
 /**
  * One plain layout for every message JOC sends. Table-based and inline-styled
  * because that is what mail clients render reliably.
@@ -142,12 +141,12 @@ export function emailShell(opts: {
   const paras = opts.body
     .map(
       (p) =>
-        `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${INK};">${escapeHtml(p)}</p>`
+        `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${C.ink};">${escapeHtml(p)}</p>`
     )
     .join("");
 
   const button = opts.action
-    ? `<p style="margin:24px 0;"><a href="${escapeAttr(opts.action.href)}" style="display:inline-block;background:${BLUE};color:#ffffff;font-weight:700;font-size:15px;text-decoration:none;border-radius:9999px;padding:13px 26px;">${escapeHtml(opts.action.label)}</a></p>
+    ? `<p style="margin:24px 0;"><a href="${escapeAttr(opts.action.href)}" style="display:inline-block;background:${C.blue};color:#ffffff;font-weight:700;font-size:15px;text-decoration:none;border-radius:9999px;padding:13px 26px;">${escapeHtml(opts.action.label)}</a></p>
        <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#4A5A74;">If the button does not work, copy this address into your browser:<br>${escapeHtml(opts.action.href)}</p>`
     : "";
 
@@ -162,7 +161,7 @@ export function emailShell(opts: {
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid rgba(16,35,63,.1);border-radius:20px;">
         <tr><td style="padding:32px;">
           <p style="margin:0 0 6px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#C96C00;">JOC EDUCATION</p>
-          <h1 style="margin:0 0 20px;font-size:23px;line-height:1.2;letter-spacing:-.02em;color:${INK};">${escapeHtml(opts.heading)}</h1>
+          <h1 style="margin:0 0 20px;font-size:23px;line-height:1.2;letter-spacing:-.02em;color:${C.ink};">${escapeHtml(opts.heading)}</h1>
           ${paras}
           ${button}
           ${foot}

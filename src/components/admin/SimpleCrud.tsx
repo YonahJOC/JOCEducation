@@ -1,15 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { PageIntro } from "@/components/admin/PageIntro";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RULE = "rgba(16,35,63,.15)";
-
 export const crudField: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 export const crudLabel: React.CSSProperties = {
@@ -72,7 +69,7 @@ export function CrudShell<T extends { id: string | number }>({
             disabled={disabled}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+              backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
               minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
               whiteSpace: "nowrap",
             }}
@@ -83,7 +80,7 @@ export function CrudShell<T extends { id: string | number }>({
       </PageIntro>
 
       {draft && (
-        <div style={{ backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
+        <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
           {renderForm(draft, set)}
           <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", marginTop: "16px" }}>
             <button
@@ -91,7 +88,7 @@ export function CrudShell<T extends { id: string | number }>({
               disabled={pending}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 22px",
+                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 22px",
                 minHeight: "44px", cursor: "pointer", opacity: pending ? 0.6 : 1,
               }}
             >
@@ -129,7 +126,7 @@ export function CrudShell<T extends { id: string | number }>({
                   <button
                     onClick={() => setDraft({ ...item })}
                     disabled={disabled}
-                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "38px" }}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "38px" }}
                   >
                     Edit
                   </button>

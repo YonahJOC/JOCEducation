@@ -1,5 +1,5 @@
 import { SchoolsGuard } from "@/components/admin/Guard";
-import { label } from "@/lib/joc-tokens";
+import { C, label  } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -11,7 +11,6 @@ import {
   STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, type SchoolRow,
 } from "@/lib/admin-data";
 
-const INK = "#10233F";
 const CARD: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px",
 };
@@ -66,7 +65,7 @@ async function Inner() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
         Overview
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 24px" }}>
@@ -101,14 +100,14 @@ async function Inner() {
                   <span style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                     <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: issue.severity, flexShrink: 0 }} />
                     <span style={{ minWidth: 0 }}>
-                      <span style={{ fontSize: "14.5px", fontWeight: 600, color: INK, display: "block" }}>{s.name}</span>
+                      <span style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, display: "block" }}>{s.name}</span>
                       <span style={{ fontSize: "12.5px", color: issue.severity }}>{issue.why}</span>
                     </span>
                   </span>
                   <Link
                     href={`/admin/schools/${s.id}`}
                     style={{
-                      fontSize: "12.5px", fontWeight: 700, color: "#fff", backgroundColor: INK,
+                      fontSize: "12.5px", fontWeight: 700, color: "#fff", backgroundColor: C.ink,
                       borderRadius: "9999px", padding: "8px 16px", textDecoration: "none",
                       minHeight: "38px", display: "inline-flex", alignItems: "center", flexShrink: 0,
                     }}
@@ -123,7 +122,7 @@ async function Inner() {
                 <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#FA912D", flexShrink: 0 }} />
                   <span>
-                    <span style={{ fontSize: "14.5px", fontWeight: 600, color: INK, display: "block" }}>
+                    <span style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, display: "block" }}>
                       {newDemos.length} demo request{newDemos.length === 1 ? "" : "s"}
                     </span>
                     <span style={{ fontSize: "12.5px", color: "#C96C00" }}>Waiting for a reply</span>
@@ -132,7 +131,7 @@ async function Inner() {
                 <Link
                   href="/admin/demos"
                   style={{
-                    fontSize: "12.5px", fontWeight: 700, color: "#fff", backgroundColor: INK,
+                    fontSize: "12.5px", fontWeight: 700, color: "#fff", backgroundColor: C.ink,
                     borderRadius: "9999px", padding: "8px 16px", textDecoration: "none",
                     minHeight: "38px", display: "inline-flex", alignItems: "center", flexShrink: 0,
                   }}
@@ -157,7 +156,7 @@ async function Inner() {
               return (
                 <div key={p.status}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-                    <span style={{ fontSize: "13.5px", color: INK, fontWeight: 500 }}>{STATUS_LABELS[p.status]}</span>
+                    <span style={{ fontSize: "13.5px", color: C.ink, fontWeight: 500 }}>{STATUS_LABELS[p.status]}</span>
                     <span style={{ fontSize: "13px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
                       {p.count}{p.students > 0 ? ` · ${p.students.toLocaleString()} students` : ""}
                     </span>
@@ -192,7 +191,7 @@ async function Inner() {
                     {ACTIVITY_ICON[a.type] ?? "OTHER"}
                   </span>
                   <div style={{ minWidth: 0, flex: 1 }}>
-                    <p style={{ fontSize: "14px", color: INK, margin: 0, lineHeight: 1.4 }}>{a.summary}</p>
+                    <p style={{ fontSize: "14px", color: C.ink, margin: 0, lineHeight: 1.4 }}>{a.summary}</p>
                     <p style={{ fontSize: "12px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {a.schoolName ? `${a.schoolName} · ` : ""}{ago(a.occurredAt)}{a.author ? ` · ${a.author}` : ""}
                     </p>
@@ -226,7 +225,7 @@ function Metric({ label, value, sub, accent }: { label: string; value: string; s
       <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
         {label}
       </p>
-      <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: accent ? "#C96C00" : INK, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+      <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: accent ? "#C96C00" : C.ink, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </p>
       <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
@@ -254,7 +253,7 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
           {schools.map((s) => (
             <tr key={s.id}>
               <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                <Link href={`/admin/schools/${s.id}`} style={{ color: INK, fontWeight: 600, textDecoration: "none" }}>
+                <Link href={`/admin/schools/${s.id}`} style={{ color: C.ink, fontWeight: 600, textDecoration: "none" }}>
                   {s.name}
                 </Link>
                 <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "2px" }}>

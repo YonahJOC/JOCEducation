@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
+import { C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { PasswordForm } from "./PasswordForm";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE_TEXT = "#C96C00";
-const RULE = "rgba(16,35,63,.12)";
 
 export const metadata: Metadata = {
   title: "Change your password",
@@ -39,12 +35,12 @@ export default async function ChangePasswordPage({
 
   return (
     <div style={{ backgroundColor: "#FBF9F4", minHeight: "100vh" }}>
-      <header style={{ borderBottom: `1px solid ${RULE}` }}>
+      <header style={{ borderBottom: `1px solid ${C.hairline}` }}>
         <div style={{ maxWidth: "620px", margin: "0 auto", padding: "16px 26px" }}>
           <Link href="/home" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={150} height={18} priority style={{ height: "18px", width: "auto" }} />
-            <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: RULE }} />
-            <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
+            <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: C.hairline }} />
+            <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -61,7 +57,7 @@ export default async function ChangePasswordPage({
           </div>
         )}
 
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.6vw, 34px)", lineHeight: 1.08, letterSpacing: "-0.035em", color: INK, margin: "0 0 8px" }}>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.6vw, 34px)", lineHeight: 1.08, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 8px" }}>
           {hasPassword ? "Change your password" : "Set a password"}
         </h1>
         <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 24px" }}>
@@ -74,7 +70,7 @@ export default async function ChangePasswordPage({
 
         {!isForced && (
           <p style={{ marginTop: "22px", fontSize: "14px" }}>
-            <Link href="/home" style={{ color: BLUE, textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/home" style={{ color: C.blue, textDecoration: "none", fontWeight: 600 }}>
               ← Back to the site
             </Link>
           </p>

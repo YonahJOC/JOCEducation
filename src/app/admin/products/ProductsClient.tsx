@@ -1,10 +1,9 @@
 "use client";
 
 import { CrudShell, crudField, crudLabel } from "@/components/admin/SimpleCrud";
+import { C } from "@/lib/joc-tokens";
 import { saveProduct, deleteProduct } from "@/app/actions/content";
 import { FilePicker } from "@/components/admin/FilePicker";
-
-const INK = "#10233F";
 
 const CATEGORIES = ["Classroom", "Events", "Programs", "Books"];
 
@@ -122,11 +121,11 @@ export function ProductsClient({ products, disabled }: { products: ProductRow[];
           </div>
 
           <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
-            <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+            <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
               <input type="checkbox" checked={d.published} onChange={(e) => set({ published: e.target.checked })} style={{ width: "16px", height: "16px" }} />
               Published — visible in the shop
             </label>
-            <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+            <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
               <input type="checkbox" checked={d.inStock} onChange={(e) => set({ inStock: e.target.checked })} style={{ width: "16px", height: "16px" }} />
               In stock
             </label>
@@ -135,7 +134,7 @@ export function ProductsClient({ products, disabled }: { products: ProductRow[];
       )}
       renderRow={(p) => (
         <>
-          <p style={{ fontWeight: 600, color: INK, margin: 0, fontSize: "14.5px" }}>{p.name}</p>
+          <p style={{ fontWeight: 600, color: C.ink, margin: 0, fontSize: "14.5px" }}>{p.name}</p>
           <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
             {p.priceDollars > 0 ? `$${p.priceDollars.toFixed(2)} ${p.unit}` : "no price set"}
             {` · ${p.category}`}

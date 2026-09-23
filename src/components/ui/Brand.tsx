@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * The JOC lockup: the wordmark file, then "Education".
@@ -12,9 +13,6 @@ import Image from "next/image";
  * It is one component now. A logo rebuilt on seven pages drifts on seven
  * pages, and this is the thing a school sees before it sees anything else.
  */
-
-const ORANGE_TEXT = "#C96C00";
-const ORANGE = "#FA912D";
 
 /** The wordmark on its own. Nothing beside it — the O is the mark. */
 export function Wordmark({
@@ -65,7 +63,7 @@ export function BrandLockup({
           fontSize: `${Math.max(9, Math.round(height * 0.53))}px`,
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: white ? ORANGE : ORANGE_TEXT,
+          color: white ? C.orange : C.orangeText,
           marginTop: `${Math.round(height * 0.3)}px`,
         }}
       >

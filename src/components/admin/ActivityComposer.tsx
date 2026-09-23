@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { addSchoolNote } from "@/app/actions/admin";
-
-const INK = "#10233F";
-const RULE = "rgba(16,35,63,.15)";
 
 /** Kind, label, and a prompt that suits that kind of interaction. */
 const TYPES = [
@@ -16,8 +14,8 @@ const TYPES = [
 ] as const;
 
 const field: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none",
 };
 
@@ -61,7 +59,7 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
               padding: "7px 13px", borderRadius: "9999px", cursor: "pointer", minHeight: "38px",
-              border: type === v ? "1.5px solid #2D46AF" : `1px solid ${RULE}`,
+              border: type === v ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`,
               backgroundColor: type === v ? "#F4F7FD" : "#fff",
               color: type === v ? "#2D46AF" : "#4A5A74",
             }}

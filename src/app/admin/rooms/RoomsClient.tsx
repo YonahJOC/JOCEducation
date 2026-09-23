@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { CrudShell, crudField, crudLabel } from "@/components/admin/SimpleCrud";
 import { saveRoom, deleteRoom } from "@/app/actions/rooms";
-
-const INK = "#10233F";
 
 export type RoomRow = {
   id: string;
@@ -124,7 +123,7 @@ export function RoomsClient({
             </div>
           </div>
 
-          <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+          <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
             <input
               type="checkbox"
               checked={d.archived}
@@ -137,7 +136,7 @@ export function RoomsClient({
       )}
       renderRow={(r) => (
         <>
-          <p style={{ fontWeight: 600, color: INK, margin: 0, fontSize: "14.5px" }}>
+          <p style={{ fontWeight: 600, color: C.ink, margin: 0, fontSize: "14.5px" }}>
             <span style={{ marginRight: "7px" }} aria-hidden="true">{r.icon}</span>
             {r.name}
           </p>

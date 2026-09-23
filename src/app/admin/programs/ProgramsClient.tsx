@@ -1,15 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveProgram, deleteProgram, seedProgramsFromStatic } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
 
 export type ProgramRow = {
   id: number;
@@ -50,8 +45,8 @@ const BLANK: ProgramRow = {
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px", padding: "10px 12px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px",
   outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
@@ -116,7 +111,7 @@ export function ProgramsClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -146,7 +141,7 @@ export function ProgramsClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: msg === "Imported." ? GREEN : RED, marginBottom: "14px" }}>{msg}</p>
+        <p style={{ fontSize: "13.5px", color: msg === "Imported." ? C.greenText : C.redText, marginBottom: "14px" }}>{msg}</p>
       )}
 
       {programs.length === 0 ? (
@@ -170,7 +165,7 @@ export function ProgramsClient({
                     the coordinators was behind a word that named neither. */}
                 <Link
                   href={`/admin/programs/${p.slug}`}
-                  style={{ fontSize: "14.5px", fontWeight: 600, color: INK, textDecoration: "none", display: "inline-block", minHeight: "26px" }}
+                  style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, textDecoration: "none", display: "inline-block", minHeight: "26px" }}
                 >
                   {p.name}
                 </Link>
@@ -190,14 +185,14 @@ export function ProgramsClient({
               </div>
               <Link
                 href={`/admin/programs/${p.slug}`}
-                style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center", whiteSpace: "nowrap" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: C.blue, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center", whiteSpace: "nowrap" }}
               >
                 Form &amp; coordinators →
               </Link>
               <button
                 onClick={() => setEditing(p)}
                 disabled={disabled}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
                 Edit page
               </button>
@@ -265,11 +260,11 @@ function ProgramForm({
       <button
         type="button"
         onClick={onDone}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
       >
         ← All programs
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
         {d.id ? `Edit ${initial.name}` : "New program"}
       </h1>
 
@@ -343,7 +338,7 @@ function ProgramForm({
         <p style={{ ...label, marginBottom: "10px" }}>Included with these plans</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {PLANS.map((plan) => (
-            <label key={plan} style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK, minHeight: "36px" }}>
+            <label key={plan} style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink, minHeight: "36px" }}>
               <input
                 type="checkbox"
                 checked={d.available.includes(plan)}
@@ -370,7 +365,7 @@ function ProgramForm({
         <p style={{ ...label, marginBottom: "10px" }}>How it works</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {d.howItWorks.map((s, i) => (
-            <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "12px" }}>
+            <div key={i} style={{ border: `1px solid ${C.hairline}`, borderRadius: "12px", padding: "12px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
                 <input
                   value={s.step}
@@ -389,7 +384,7 @@ function ProgramForm({
                   type="button"
                   onClick={() => set("howItWorks", d.howItWorks.filter((_, n) => n !== i))}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
                 >
                   Remove
                 </button>
@@ -432,7 +427,7 @@ function ProgramForm({
             type="button"
             onClick={() => set("howItWorks", [...d.howItWorks, { step: String(d.howItWorks.length + 1).padStart(2, "0"), title: "", description: "", linkLabel: "", linkUrl: "" }])}
             disabled={disabled}
-            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
           >
             + Add a step
           </button>
@@ -480,7 +475,7 @@ function ProgramForm({
       </div>
 
       <div style={{ ...card, display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>
-        <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+        <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
           <input type="checkbox" checked={d.published} onChange={(e) => set("published", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
           Published — visible on the site
         </label>
@@ -488,7 +483,7 @@ function ProgramForm({
             and wears a "Coming soon" badge instead of a Register button —
             inviting a school to sign up for something that does not run yet
             is how you lose them. */}
-        <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+        <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
           <input type="checkbox" checked={d.comingSoon} onChange={(e) => set("comingSoon", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
           Coming soon — no Register button yet
         </label>
@@ -497,7 +492,7 @@ function ProgramForm({
           disabled={disabled || pending || !d.name.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer",
             opacity: disabled || pending || !d.name.trim() ? 0.5 : 1,
           }}
@@ -509,14 +504,14 @@ function ProgramForm({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "44px", marginLeft: "auto" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "44px", marginLeft: "auto" }}
           >
             Delete
           </button>
         )}
       </div>
 
-      {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0 }}>{msg}</p>}
+      {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{msg}</p>}
     </form>
   );
 }
@@ -556,7 +551,7 @@ function Lines({
         type="button"
         onClick={() => onChange([...items, ""])}
         disabled={disabled}
-        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
       >
         + Add
       </button>

@@ -1,13 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { saveEvent, deleteEvent, cancelEvent } from "@/app/actions/events";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
 
 export type EventRow = {
   id: number;
@@ -52,8 +48,8 @@ const BLANK: EventRow = {
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const label: React.CSSProperties = {
@@ -119,7 +115,7 @@ export function ProgrammingClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -166,7 +162,7 @@ function Group({
       </p>
       {events.length === 0 ? (
         empty ? (
-          <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "16px", padding: "32px 22px", textAlign: "center" }}>
+          <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "32px 22px", textAlign: "center" }}>
             <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: 0 }}>{empty}</p>
           </div>
         ) : null
@@ -180,11 +176,11 @@ function Group({
                 padding: "14px 18px", borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)",
               }}
             >
-              <span style={{ flex: "0 0 92px", fontSize: "13px", fontWeight: 700, color: INK }}>
+              <span style={{ flex: "0 0 92px", fontSize: "13px", fontWeight: 700, color: C.ink }}>
                 {e.startsAt}
               </span>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>
+                <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {e.title}
                   {!e.published && (
                     <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
@@ -208,7 +204,7 @@ function Group({
               </span>
               <button
                 onClick={() => onEdit(e)}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
                 Edit
               </button>
@@ -282,11 +278,11 @@ function EventForm({
       <button
         type="button"
         onClick={onDone}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
       >
         ← All programming
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
         {d.id ? d.title || "Edit event" : "New event"}
       </h1>
 
@@ -307,9 +303,9 @@ function EventForm({
                   fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
                   padding: "10px 16px", borderRadius: "10px", minHeight: "44px",
                   cursor: disabled ? "not-allowed" : "pointer", textAlign: "left",
-                  border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
+                  border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                   backgroundColor: on ? "rgba(45,70,175,.07)" : "#fff",
-                  color: on ? BLUE : "#4A5A74",
+                  color: on ? C.blue : "#4A5A74",
                 }}
               >
                 {KIND_LABELS[k]}
@@ -432,7 +428,7 @@ function EventForm({
           </div>
         </div>
 
-        <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK, marginTop: "14px" }}>
+        <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink, marginTop: "14px" }}>
           <input
             type="checkbox"
             checked={d.published}
@@ -450,7 +446,7 @@ function EventForm({
           disabled={disabled || pending}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -478,7 +474,7 @@ function EventForm({
             onClick={remove}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: RED,
+              fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: C.redText,
               background: "none", border: "none", cursor: "pointer", minHeight: "42px",
             }}
           >
@@ -486,7 +482,7 @@ function EventForm({
           </button>
         )}
 
-        {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0 }}>{msg}</p>}
+        {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{msg}</p>}
       </div>
     </form>
   );

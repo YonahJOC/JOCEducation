@@ -1,16 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { updateSchoolDetails } from "@/app/actions/admin";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
@@ -75,7 +71,7 @@ export function SchoolDetailsPanel({
           <button
             onClick={() => setEditing(true)}
             disabled={disabled}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? "rgba(16,35,63,.3)" : BLUE, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? "rgba(16,35,63,.3)" : C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
           >
             Edit
           </button>
@@ -100,7 +96,7 @@ export function SchoolDetailsPanel({
             ) : (
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                 {emailDomains.map((d) => (
-                  <span key={d} style={{ fontSize: "12.5px", fontWeight: 600, color: GREEN, backgroundColor: "rgba(27,127,75,.1)", borderRadius: "9999px", padding: "4px 11px" }}>
+                  <span key={d} style={{ fontSize: "12.5px", fontWeight: 600, color: C.greenText, backgroundColor: "rgba(27,127,75,.1)", borderRadius: "9999px", padding: "4px 11px" }}>
                     @{d}
                   </span>
                 ))}
@@ -188,7 +184,7 @@ export function SchoolDetailsPanel({
               disabled={pending || !f.name.trim()}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
                 minHeight: "44px", cursor: "pointer", opacity: pending || !f.name.trim() ? 0.5 : 1,
               }}
             >
@@ -205,7 +201,7 @@ export function SchoolDetailsPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? GREEN : "#A3261A" }}>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? C.greenText : "#A3261A" }}>
           {msg}
         </p>
       )}
@@ -217,7 +213,7 @@ function Row({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px" }}>
       <span style={{ color: "#4A5A74" }}>{k}</span>
-      <span style={{ color: INK, fontWeight: 500, textAlign: "right", textTransform: k === "Type" ? "capitalize" : "none" }}>{v}</span>
+      <span style={{ color: C.ink, fontWeight: 500, textAlign: "right", textTransform: k === "Type" ? "capitalize" : "none" }}>{v}</span>
     </div>
   );
 }

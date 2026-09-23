@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { setBoardPostApproved, deleteBoardPost } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
 
 export type BoardRow = {
   id: string;
@@ -117,7 +116,7 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "6px" }}>
-        <p style={{ fontWeight: 700, fontSize: "15px", color: INK, margin: 0 }}>{post.title}</p>
+        <p style={{ fontWeight: 700, fontSize: "15px", color: C.ink, margin: 0 }}>{post.title}</p>
         <span style={{ fontSize: "12px", color: "#4A5A74", whiteSpace: "nowrap" }}>{ago(post.createdAt)}</span>
       </div>
       <p style={{ fontSize: "13px", color: "#4A5A74", margin: "0 0 9px" }}>

@@ -1,20 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect, useActionState } from "react";
+import { C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RULE = "rgba(16,35,63,.14)";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
   fontFamily: "var(--font-outfit)",
   fontSize: "15px",
-  color: INK,
+  color: C.ink,
   backgroundColor: "#F8FAFE",
-  border: `1px solid ${RULE}`,
+  border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "13px 14px",
   outline: "none",
@@ -105,7 +102,7 @@ export function AuthCard({
               cursor: "pointer",
               minHeight: "44px",
               backgroundColor: tab === t ? "#fff" : "transparent",
-              color: tab === t ? INK : "#4A5A74",
+              color: tab === t ? C.ink : "#4A5A74",
               boxShadow: tab === t ? "0 1px 3px rgba(16,35,63,.12)" : "none",
               transition: "background .15s, color .15s",
             }}
@@ -134,9 +131,9 @@ export function AuthCard({
           fontFamily: "var(--font-outfit)",
           fontWeight: 600,
           fontSize: "14.5px",
-          color: INK,
+          color: C.ink,
           backgroundColor: "#fff",
-          border: `1.5px solid ${RULE}`,
+          border: `1.5px solid ${C.hairline}`,
           borderRadius: "9999px",
           padding: "13px 18px",
           minHeight: "44px",
@@ -155,9 +152,9 @@ export function AuthCard({
 
       {/* Divider */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "18px 0" }}>
-        <span style={{ flex: 1, height: "1px", backgroundColor: RULE }} />
+        <span style={{ flex: 1, height: "1px", backgroundColor: C.hairline }} />
         <span style={{ fontSize: "12px", color: "#4A5A74" }}>or</span>
-        <span style={{ flex: 1, height: "1px", backgroundColor: RULE }} />
+        <span style={{ flex: 1, height: "1px", backgroundColor: C.hairline }} />
       </div>
 
       {/* Creating an account is its own page, with the questions a new
@@ -175,7 +172,7 @@ export function AuthCard({
             style={{
               display: "flex", alignItems: "center", justifyContent: "center",
               width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-              color: "#fff", backgroundColor: BLUE, borderRadius: "9999px",
+              color: "#fff", backgroundColor: C.blue, borderRadius: "9999px",
               padding: "14px 20px", minHeight: "44px", textDecoration: "none",
             }}
           >
@@ -207,7 +204,7 @@ export function AuthCard({
             <label htmlFor="password" style={labelStyle}>Password</label>
             <Link
               href="/forgot-password"
-              style={{ fontSize: "12.5px", color: BLUE, textDecoration: "none", fontWeight: 500 }}
+              style={{ fontSize: "12.5px", color: C.blue, textDecoration: "none", fontWeight: 500 }}
             >
               Forgot?
             </Link>
@@ -230,7 +227,7 @@ export function AuthCard({
             fontWeight: 700,
             fontSize: "15px",
             color: "#fff",
-            backgroundColor: BLUE,
+            backgroundColor: C.blue,
             border: "none",
             borderRadius: "9999px",
             padding: "14px 20px",
@@ -290,12 +287,12 @@ export function AuthCard({
           color: "#4A5A74",
           marginTop: "18px",
           paddingTop: "16px",
-          borderTop: `1px solid ${RULE}`,
+          borderTop: `1px solid ${C.hairline}`,
         }}
       >
         Sign in with your <strong>school email address</strong> to be matched to your school. Not a partner
         yet?{" "}
-        <a href="#demo" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+        <a href="#demo" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
           Book a walkthrough
         </a>
         .

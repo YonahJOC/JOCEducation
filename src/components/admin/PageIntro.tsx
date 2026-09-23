@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * The header every console page wears: what this page is, and — folded away
@@ -62,7 +60,7 @@ export function PageIntro({
   return (
     <div style={{ marginBottom: "22px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
-        <Heading style={{ fontWeight: 800, fontSize: Heading === "h1" ? "26px" : "19px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+        <Heading style={{ fontWeight: 800, fontSize: Heading === "h1" ? "26px" : "19px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
           {title}
         </Heading>
         {children}
@@ -79,7 +77,7 @@ export function PageIntro({
             aria-expanded={open}
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
-              color: BLUE, background: "none", border: "none", padding: "6px 0",
+              color: C.blue, background: "none", border: "none", padding: "6px 0",
               cursor: "pointer", minHeight: "38px",
             }}
           >
@@ -95,7 +93,7 @@ export function PageIntro({
             >
               <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "9px" }}>
                 {steps.map((s, i) => (
-                  <li key={i} style={{ fontSize: "14.5px", color: INK, lineHeight: 1.6 }}>{s}</li>
+                  <li key={i} style={{ fontSize: "14.5px", color: C.ink, lineHeight: 1.6 }}>{s}</li>
                 ))}
               </ol>
               {note && (

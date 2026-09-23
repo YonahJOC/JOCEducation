@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { toggleRoomMembership } from "@/app/actions/rooms";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
 
 export type RoomCard = {
   id: string;
@@ -83,7 +81,7 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                   <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", marginBottom: "4px" }}>
                     <Link
                       href={`/rooms/${r.slug}`}
-                      style={{ fontWeight: 700, fontSize: "18px", letterSpacing: "-0.02em", color: INK, textDecoration: "none" }}
+                      style={{ fontWeight: 700, fontSize: "18px", letterSpacing: "-0.02em", color: C.ink, textDecoration: "none" }}
                     >
                       {r.name}
                     </Link>
@@ -124,9 +122,9 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                     style={{
                       fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                       padding: "9px 16px", minHeight: "42px", borderRadius: "9999px",
-                      border: joined[r.id] ? "1px solid rgba(16,35,63,.2)" : `1.5px solid ${BLUE}`,
+                      border: joined[r.id] ? "1px solid rgba(16,35,63,.2)" : `1.5px solid ${C.blue}`,
                       backgroundColor: joined[r.id] ? "#F4F7FD" : "#fff",
-                      color: joined[r.id] ? "#4A5A74" : BLUE,
+                      color: joined[r.id] ? "#4A5A74" : C.blue,
                       cursor: "pointer", whiteSpace: "nowrap",
                     }}
                   >

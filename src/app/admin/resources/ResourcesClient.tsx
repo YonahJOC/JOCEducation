@@ -1,10 +1,9 @@
 "use client";
 
 import { CrudShell, crudField, crudLabel } from "@/components/admin/SimpleCrud";
+import { C } from "@/lib/joc-tokens";
 import { saveResource, deleteResource } from "@/app/actions/content";
 import { FilePicker } from "@/components/admin/FilePicker";
-
-const INK = "#10233F";
 
 export type ResourceRow = {
   id: number;
@@ -90,7 +89,7 @@ export function ResourcesClient({
               disabled={disabled}
             />
           </div>
-          <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+          <label style={{ display: "flex", gap: "8px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
             <input type="checkbox" checked={d.published} onChange={(e) => set({ published: e.target.checked })} style={{ width: "16px", height: "16px" }} />
             Published
           </label>
@@ -100,7 +99,7 @@ export function ResourcesClient({
         const cycle = cycles.find((c) => c.slug === r.cycleSlug);
         return (
           <>
-            <p style={{ fontWeight: 600, color: INK, margin: 0, fontSize: "14.5px" }}>{r.title}</p>
+            <p style={{ fontWeight: 600, color: C.ink, margin: 0, fontSize: "14.5px" }}>{r.title}</p>
             <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
               {r.tag}
               {cycle ? ` · Cycle ${cycle.num}` : ""}

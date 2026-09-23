@@ -1,12 +1,11 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { notFound, redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { markRoomRead } from "@/app/actions/rooms";
 import { Conversation, type Msg } from "./Conversation";
-
-const INK = "#10233F";
 
 function when(d: Date) {
   const mins = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
@@ -93,7 +92,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
       <div style={{ display: "flex", gap: "16px", alignItems: "flex-start", margin: "16px 0 10px" }}>
         <span style={{ fontSize: "34px", lineHeight: 1, flexShrink: 0 }} aria-hidden="true">{room.icon}</span>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 36px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
+          <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 36px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: C.ink, margin: 0 }}>
             {room.name}
           </h1>
           <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 0" }}>

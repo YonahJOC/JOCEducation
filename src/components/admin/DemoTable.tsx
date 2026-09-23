@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { setDemoStatus, convertDemoToSchool } from "@/app/actions/admin";
-
-const INK = "#10233F";
-const RULE = "rgba(16,35,63,.15)";
 
 const STATUS_COLOR: Record<string, string> = {
   NEW: "#FA912D", CONTACTED: "#2C7AC9", SCHEDULED: "#2D46AF",
@@ -107,7 +105,7 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
   return (
     <tr>
       <td style={td}>
-        <span style={{ fontWeight: 600, color: INK, display: "block" }}>{demo.name}</span>
+        <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{demo.name}</span>
         <a href={`mailto:${demo.email}`} style={{ fontSize: "12.5px", color: "#2D46AF", textDecoration: "none", wordBreak: "break-all" }}>
           {demo.email}
         </a>
@@ -131,8 +129,8 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
             disabled={disabled || pending}
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-              color: STATUS_COLOR[status] ?? INK, backgroundColor: "#fff",
-              border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
+              color: STATUS_COLOR[status] ?? C.ink, backgroundColor: "#fff",
+              border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
               minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
             }}
           >

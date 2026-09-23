@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { setSchoolPlan, setSchoolStatus, revokeSchoolAccess } from "@/app/actions/admin";
-
-const INK = "#10233F";
-const RULE = "rgba(16,35,63,.15)";
 
 const PLANS = [
   ["SINGLE_TEACHER", "Single Teacher"],
@@ -30,8 +28,8 @@ const STATUSES = [
 ] as const;
 
 const field: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 
@@ -159,7 +157,7 @@ export function PlanPanel({
                   style={{
                     fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600,
                     padding: "6px 11px", borderRadius: "9999px", minHeight: "36px",
-                    border: status === v ? "1.5px solid #2D46AF" : `1px solid ${RULE}`,
+                    border: status === v ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`,
                     backgroundColor: status === v ? "#F4F7FD" : "#fff",
                     color: status === v ? "#2D46AF" : "#4A5A74",
                     cursor: disabled || status === v ? "default" : "pointer",
@@ -208,7 +206,7 @@ export function PlanPanel({
             <input type="date" value={fEnd} onChange={(e) => setFEnd(e.target.value)} style={field} />
           </div>
           {/* Granting free access — three distinct kinds, each with a reason */}
-          <div style={{ border: `1.5px solid ${fGranted ? "#1D6B37" : RULE}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
+          <div style={{ border: `1.5px solid ${fGranted ? "#1D6B37" : C.hairline}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
             <label style={{ display: "flex", gap: "9px", alignItems: "flex-start", cursor: "pointer" }}>
               <input
                 type="checkbox"
@@ -216,7 +214,7 @@ export function PlanPanel({
                 onChange={(e) => { setFGranted(e.target.checked); if (!e.target.checked) setFKind(""); }}
                 style={{ marginTop: "3px", width: "16px", height: "16px" }}
               />
-              <span style={{ fontSize: "13.5px", color: INK, lineHeight: 1.5, fontWeight: 600 }}>
+              <span style={{ fontSize: "13.5px", color: C.ink, lineHeight: 1.5, fontWeight: 600 }}>
                 Give this school free access
                 <small style={{ display: "block", color: "#4A5A74", fontSize: "12.5px", fontWeight: 400 }}>
                   No payment. Recorded on the school&rsquo;s history with who approved it.
@@ -238,7 +236,7 @@ export function PlanPanel({
                         style={{
                           fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
                           padding: "8px 13px", borderRadius: "9999px", minHeight: "40px", cursor: "pointer",
-                          border: fKind === v ? "1.5px solid #1D6B37" : `1px solid ${RULE}`,
+                          border: fKind === v ? "1.5px solid #1D6B37" : `1px solid ${C.hairline}`,
                           backgroundColor: fKind === v ? "rgba(27,127,75,.1)" : "#fff",
                           color: fKind === v ? "#1D6B37" : "#4A5A74",
                         }}
@@ -306,7 +304,7 @@ function Row({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px" }}>
       <span style={{ color: "#4A5A74" }}>{k}</span>
-      <span style={{ color: INK, fontWeight: 500, textAlign: "right" }}>{v}</span>
+      <span style={{ color: C.ink, fontWeight: 500, textAlign: "right" }}>{v}</span>
     </div>
   );
 }

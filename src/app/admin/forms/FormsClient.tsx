@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useState } from "react";
 import { saveForm, deleteForm } from "@/app/actions/forms";
@@ -9,15 +10,10 @@ import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuil
 import { PageIntro } from "@/components/admin/PageIntro";
 import type { AdminFormRow, ResponseRow } from "@/lib/forms";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const label: React.CSSProperties = {
@@ -98,7 +94,7 @@ export function FormsClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -107,7 +103,7 @@ export function FormsClient({
       </PageIntro>
 
       {forms.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>No forms yet.</p>
         </div>
       ) : (
@@ -121,7 +117,7 @@ export function FormsClient({
               }}
             >
               <div style={{ minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: "15px", fontWeight: 600, color: INK, margin: 0 }}>
+                <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {f.title}
                   {!f.published && <Pill color="#C96C00">draft</Pill>}
                   {f.closed && <Pill color="#A3261A">closed</Pill>}
@@ -135,7 +131,7 @@ export function FormsClient({
               {f.responseCount > 0 && (
                 <Link
                   href={`/admin/forms?responses=${f.id}`}
-                  style={{ fontSize: "13px", fontWeight: 600, color: INK, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+                  style={{ fontSize: "13px", fontWeight: 600, color: C.ink, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
                 >
                   Answers
                 </Link>
@@ -152,7 +148,7 @@ export function FormsClient({
               <button
                 onClick={() => setEditing(toDraft(f))}
                 disabled={disabled}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
                 Edit
               </button>
@@ -182,10 +178,10 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
 
   return (
     <div>
-      <Link href="/admin/forms" style={{ fontSize: "13px", color: BLUE, textDecoration: "none", fontWeight: 600 }}>
+      <Link href="/admin/forms" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
         ← All forms
       </Link>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "12px 0 4px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "12px 0 4px" }}>
         {form.title}
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
@@ -210,7 +206,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
             {rows.map((r) => (
               <tr key={r.id}>
                 <td style={cell}>{r.createdAt.toLocaleDateString("en-US", { day: "numeric", month: "short" })}</td>
-                <td style={{ ...cell, fontWeight: 600, color: INK }}>{r.name ?? <Absent>No name given</Absent>}</td>
+                <td style={{ ...cell, fontWeight: 600, color: C.ink }}>{r.name ?? <Absent>No name given</Absent>}</td>
                 <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                 {form.feeCents ? (
                   <td style={cell}>

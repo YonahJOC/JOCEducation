@@ -1,10 +1,6 @@
 import { requireSchoolPanel } from "../account-only";
+import { C } from "@/lib/joc-tokens";
 import { mySchool, myCycleProgress } from "@/lib/school-data";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE_TEXT = "#C96C00";
-const RULE = "rgba(16,35,63,.14)";
 
 export const metadata = { title: "Cycle progress" };
 
@@ -21,7 +17,7 @@ export default async function SchoolCyclesPage() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
         Cycle progress
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
@@ -34,13 +30,13 @@ export default async function SchoolCyclesPage() {
           borderRadius: "14px", padding: "13px 16px", marginBottom: "20px",
         }}
       >
-        <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: INK, margin: 0 }}>
+        <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.ink, margin: 0 }}>
           The grey bar is the median across all JOC schools. Individual schools are never named or
           identified — only the spread.
         </p>
       </div>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           {cycles.map((c) => {
             const ours = Math.round(c.ourShare * 100);
@@ -49,7 +45,7 @@ export default async function SchoolCyclesPage() {
             return (
               <div key={c.slug} style={{ opacity: c.state === "upcoming" ? 0.55 : 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "14px", color: INK, fontWeight: isCurrent ? 700 : 500 }}>
+                  <span style={{ fontSize: "14px", color: C.ink, fontWeight: isCurrent ? 700 : 500 }}>
                     <span style={{ color: c.color, fontWeight: 700 }}>{c.num}.</span> {c.theme}
                     {isCurrent && (
                       <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: "9999px", padding: "2px 8px", marginLeft: "9px" }}>
@@ -74,7 +70,7 @@ export default async function SchoolCyclesPage() {
       </div>
 
       {/* What would move this */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "22px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           What would move this
         </p>
@@ -117,7 +113,7 @@ export default async function SchoolCyclesPage() {
 function Nudge({ children }: { children: React.ReactNode }) {
   return (
     <li style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-      <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE_TEXT, flexShrink: 0, marginTop: "7px" }} />
+      <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orangeText, flexShrink: 0, marginTop: "7px" }} />
       <span style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74" }}>{children}</span>
     </li>
   );

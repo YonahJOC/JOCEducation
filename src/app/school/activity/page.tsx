@@ -1,10 +1,7 @@
 import { requireSchoolPanel } from "../account-only";
+import { C } from "@/lib/joc-tokens";
 import { mySchool, myActivity } from "@/lib/school-data";
 import { getCycles } from "@/lib/cycle-data";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RULE = "rgba(16,35,63,.14)";
 
 export const metadata = { title: "Chesed activity" };
 
@@ -36,7 +33,7 @@ export default async function SchoolActivityPage() {
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
         Chesed activity
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
@@ -50,7 +47,7 @@ export default async function SchoolActivityPage() {
       </div>
 
       {/* Grades */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           By grade band
         </p>
@@ -67,11 +64,11 @@ export default async function SchoolActivityPage() {
                 return (
                   <div key={g.grade}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13.5px", marginBottom: "5px" }}>
-                      <span style={{ color: INK }}>{g.label}</span>
+                      <span style={{ color: C.ink }}>{g.label}</span>
                       <span style={{ color: "#4A5A74" }}>{g.count}</span>
                     </div>
                     <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.07)", overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: `${(g.count / max) * 100}%`, backgroundColor: g.count ? BLUE : "transparent", borderRadius: "9999px" }} />
+                      <div style={{ height: "100%", width: `${(g.count / max) * 100}%`, backgroundColor: g.count ? C.blue : "transparent", borderRadius: "9999px" }} />
                     </div>
                   </div>
                 );
@@ -88,7 +85,7 @@ export default async function SchoolActivityPage() {
       </div>
 
       {/* Feed */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
           Recently
         </p>
@@ -102,7 +99,7 @@ export default async function SchoolActivityPage() {
                 <div key={i} style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
                   <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: cycle?.color ?? "rgba(16,35,63,.3)", flexShrink: 0, marginTop: "7px" }} />
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: "14px", color: INK, margin: 0, lineHeight: 1.45 }}>
+                    <p style={{ fontSize: "14px", color: C.ink, margin: 0, lineHeight: 1.45 }}>
                       <strong style={{ fontWeight: 600 }}>{r.who}</strong> saved {r.lesson}
                     </p>
                     <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
@@ -122,11 +119,11 @@ export default async function SchoolActivityPage() {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "16px 18px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "16px 18px" }}>
       <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
         {label}
       </p>
-      <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: INK, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+      <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: C.ink, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </p>
       <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>

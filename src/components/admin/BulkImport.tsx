@@ -1,15 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { saveLesson } from "@/app/actions/content";
 import type { CycleRef } from "@/components/admin/LessonEditor";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1D6B37";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
 
 /**
  * Paste a block from the content workbook, map the columns, and approve every
@@ -154,7 +148,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
         onClick={() => setOpen(true)}
         disabled={disabled}
         style={{
-          fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE,
+          fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue,
           background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer",
           padding: "6px 0", minHeight: "40px", opacity: disabled ? 0.5 : 1,
         }}
@@ -165,7 +159,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
         <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
           Import from the workbook
@@ -192,7 +186,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
             placeholder={"Title\tTheme\tGrade\tMinutes\tCycle\nSeeing the Person…\tBein Adam LaChaveiro\tES\t20\tCheshbon Hanefesh"}
             style={{
               width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "12.5px",
-              color: INK, backgroundColor: "#FAFBFD", border: `1px solid ${RULE}`, borderRadius: "10px",
+              color: C.ink, backgroundColor: "#FAFBFD", border: `1px solid ${C.hairline}`, borderRadius: "10px",
               padding: "12px", outline: "none", resize: "vertical", marginBottom: "14px",
             }}
           />
@@ -213,8 +207,8 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                       value={mapping[i] ?? "skip"}
                       onChange={(e) => setMapping((m) => { const n = [...m]; n[i] = e.target.value; return n; })}
                       style={{
-                        fontFamily: "var(--font-outfit)", fontSize: "13px", color: INK,
-                        backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "9px",
+                        fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.ink,
+                        backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "9px",
                         padding: "8px 10px", minHeight: "40px", outline: "none",
                       }}
                     >
@@ -229,7 +223,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                 disabled={!mapping.includes("title")}
                 style={{
                   fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                  backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 22px",
+                  backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
                   minHeight: "44px", cursor: mapping.includes("title") ? "pointer" : "not-allowed",
                   opacity: mapping.includes("title") ? 1 : 0.5,
                 }}
@@ -237,7 +231,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                 Preview {table.length} row{table.length === 1 ? "" : "s"}
               </button>
               {!mapping.includes("title") && (
-                <p style={{ fontSize: "12.5px", color: ORANGE_TEXT, margin: "9px 0 0" }}>
+                <p style={{ fontSize: "12.5px", color: C.orangeText, margin: "9px 0 0" }}>
                   One column has to be the title.
                 </p>
               )}
@@ -273,8 +267,8 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                     style={{ width: "16px", height: "16px", marginTop: "2px" }}
                   />
                   <span style={{ minWidth: 0 }}>
-                    <span style={{ fontSize: "14px", fontWeight: 600, color: INK, display: "block" }}>
-                      {r.title || <em style={{ color: RED, fontWeight: 400 }}>No title</em>}
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: C.ink, display: "block" }}>
+                      {r.title || <em style={{ color: C.redText, fontWeight: 400 }}>No title</em>}
                     </span>
                     <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>
                       {[r.theme, r.grade.toUpperCase(), `${r.minutes} min`, cycle ? cycle.theme : null]
@@ -282,7 +276,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                         .join(" · ")}
                     </span>
                     {r.problem && (
-                      <span style={{ display: "block", fontSize: "12px", color: ORANGE_TEXT, marginTop: "2px" }}>
+                      <span style={{ display: "block", fontSize: "12px", color: C.orangeText, marginTop: "2px" }}>
                         {r.problem}
                       </span>
                     )}
@@ -298,7 +292,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
               disabled={pending || rows.filter((r) => r.include).length === 0}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-                backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 22px",
+                backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
                 minHeight: "44px", cursor: "pointer", opacity: pending ? 0.6 : 1,
               }}
             >
@@ -311,7 +305,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
               Back
             </button>
             {result && (
-              <span style={{ fontSize: "13px", color: result.includes("failed") ? RED : GREEN }}>{result}</span>
+              <span style={{ fontSize: "13px", color: result.includes("failed") ? C.redText : C.greenText }}>{result}</span>
             )}
           </div>
         </>

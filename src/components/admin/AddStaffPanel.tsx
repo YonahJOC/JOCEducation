@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { useRouter } from "next/navigation";
 import { addSchoolStaff } from "@/app/actions/admin";
 
@@ -13,15 +14,10 @@ import { addSchoolStaff } from "@/app/actions/admin";
  * So the account is simply written, and nothing leaves the building.
  */
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
@@ -58,7 +54,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
         Add a member of staff
       </p>
       <p style={{ fontSize: "13.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
-        Their name and email makes them an account at this school. <strong style={{ color: INK }}>No
+        Their name and email makes them an account at this school. <strong style={{ color: C.ink }}>No
         message is sent to them</strong> — nothing goes out to a school until JOC launches. Tell
         them yourself, whenever you are ready.
       </p>
@@ -110,7 +106,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
             disabled={disabled || pending || !name.trim() || !email.trim()}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 22px",
+              backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
               minHeight: "44px", cursor: pending ? "wait" : "pointer",
               opacity: name.trim() && email.trim() && !disabled ? 1 : 0.5,
             }}
@@ -118,7 +114,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
             {pending ? "Adding…" : "Add them"}
           </button>
           {msg && (
-            <span style={{ fontSize: "13px", color: msg.good ? "#1D6B37" : RED, lineHeight: 1.45, maxWidth: "42ch" }}>
+            <span style={{ fontSize: "13px", color: msg.good ? "#1D6B37" : C.redText, lineHeight: 1.45, maxWidth: "42ch" }}>
               {msg.text}
             </span>
           )}

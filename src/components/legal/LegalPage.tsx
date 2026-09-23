@@ -1,10 +1,6 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import Image from "next/image";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE_TEXT = "#C96C00";
-const RULE = "rgba(16,35,63,.12)";
 
 /** Shared shell for the privacy and terms pages, which sit outside the login gate. */
 export function LegalPage({
@@ -16,12 +12,12 @@ export function LegalPage({
 }) {
   return (
     <div style={{ backgroundColor: "#FBF9F4", minHeight: "100vh" }}>
-      <header style={{ borderBottom: `1px solid ${RULE}` }}>
+      <header style={{ borderBottom: `1px solid ${C.hairline}` }}>
         <div style={{ maxWidth: "780px", margin: "0 auto", padding: "16px 26px" }}>
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={150} height={18} priority style={{ height: "18px", width: "auto" }} />
-            <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: RULE }} />
-            <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
+            <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: C.hairline }} />
+            <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -29,16 +25,16 @@ export function LegalPage({
       </header>
 
       <main style={{ maxWidth: "780px", margin: "0 auto", padding: "48px 26px 80px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 42px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: INK, margin: "0 0 10px" }}>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 42px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 10px" }}>
           {title}
         </h1>
-        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 34px", paddingBottom: "22px", borderBottom: `1px solid ${RULE}` }}>
+        <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 34px", paddingBottom: "22px", borderBottom: `1px solid ${C.hairline}` }}>
           Last updated {updated}
         </p>
         <div style={{ fontSize: "16px", lineHeight: 1.7, color: "rgba(16,35,63,.82)" }}>{children}</div>
 
-        <p style={{ marginTop: "44px", paddingTop: "22px", borderTop: `1px solid ${RULE}`, fontSize: "14px" }}>
-          <Link href="/" style={{ color: BLUE, textDecoration: "none", fontWeight: 600 }}>
+        <p style={{ marginTop: "44px", paddingTop: "22px", borderTop: `1px solid ${C.hairline}`, fontSize: "14px" }}>
+          <Link href="/" style={{ color: C.blue, textDecoration: "none", fontWeight: 600 }}>
             ← Back to JOC Education
           </Link>
         </p>
@@ -49,7 +45,7 @@ export function LegalPage({
 
 export function H2({ children }: { children: React.ReactNode }) {
   return (
-    <h2 style={{ fontWeight: 700, fontSize: "19px", letterSpacing: "-0.02em", color: INK, margin: "34px 0 10px" }}>
+    <h2 style={{ fontWeight: 700, fontSize: "19px", letterSpacing: "-0.02em", color: C.ink, margin: "34px 0 10px" }}>
       {children}
     </h2>
   );

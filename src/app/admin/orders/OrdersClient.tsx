@@ -1,12 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { updateOrder } from "@/app/actions/orders";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
 
 const STATUSES = ["NEW", "QUOTED", "INVOICED", "FULFILLED", "CANCELLED"] as const;
 const STATUS_LABEL: Record<string, string> = {
@@ -100,7 +97,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           {STATUS_LABEL[status]}
         </span>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <p style={{ fontSize: "15px", fontWeight: 700, color: INK, margin: 0 }}>
+          <p style={{ fontSize: "15px", fontWeight: 700, color: C.ink, margin: 0 }}>
             {order.schoolName} — {order.subtotal}
           </p>
           <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
@@ -111,7 +108,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
         </div>
         <button
           onClick={() => setOpen(!open)}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
         >
           {open ? "Hide" : "Open"}
         </button>
@@ -121,12 +118,12 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
         <div style={{ marginTop: "14px", borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "14px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "14px" }}>
             {order.items.map((it, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px", color: INK }}>
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px", color: C.ink }}>
                 <span>{it.quantity} × {it.name}</span>
                 <span style={{ color: "#4A5A74", whiteSpace: "nowrap" }}>{it.unitPrice} {it.unit}</span>
               </div>
             ))}
-            <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "6px", fontSize: "14px", fontWeight: 700, color: INK }}>
+            <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(16,35,63,.08)", paddingTop: "6px", fontSize: "14px", fontWeight: 700, color: C.ink }}>
               <span>Subtotal</span>
               <span>{order.subtotal}</span>
             </div>
@@ -146,7 +143,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
               onChange={(e) => setResponse(e.target.value)}
               rows={2}
               disabled={disabled}
-              style={{ width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK, backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.15)", borderRadius: "10px", padding: "10px 12px", resize: "vertical", outline: "none" }}
+              style={{ width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.15)", borderRadius: "10px", padding: "10px 12px", resize: "vertical", outline: "none" }}
             />
           </div>
 
@@ -170,14 +167,14 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
             ))}
             <a
               href={`mailto:${order.contactEmail}?subject=${encodeURIComponent(`Your JOC order — ${order.schoolName}`)}`}
-              style={{ marginLeft: "auto", fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+              style={{ marginLeft: "auto", fontSize: "13px", fontWeight: 600, color: C.blue, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
             >
               Reply by email
             </a>
           </div>
 
           {msg && (
-            <p style={{ fontSize: "12.5px", color: msg === "Saved." ? "#1D6B37" : RED, margin: "10px 0 0" }}>{msg}</p>
+            <p style={{ fontSize: "12.5px", color: msg === "Saved." ? "#1D6B37" : C.redText, margin: "10px 0 0" }}>{msg}</p>
           )}
         </div>
       )}
@@ -189,7 +186,7 @@ function Block({ label, text }: { label: string; text: string }) {
   return (
     <div style={{ marginBottom: "12px" }}>
       <p style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", margin: "0 0 4px" }}>{label}</p>
-      <p style={{ fontSize: "14px", color: INK, lineHeight: 1.55, margin: 0, whiteSpace: "pre-wrap", backgroundColor: "#FBF9F4", borderRadius: "10px", padding: "10px 12px" }}>
+      <p style={{ fontSize: "14px", color: C.ink, lineHeight: 1.55, margin: 0, whiteSpace: "pre-wrap", backgroundColor: "#FBF9F4", borderRadius: "10px", padding: "10px 12px" }}>
         {text}
       </p>
     </div>

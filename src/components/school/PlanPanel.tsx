@@ -1,14 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { requestPlanChange } from "@/app/actions/school";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1D6B37";
-const RULE = "rgba(16,35,63,.14)";
 
 const PLAN_LABELS: Record<string, string> = {
   SINGLE_TEACHER: "Single Teacher Use",
@@ -64,7 +58,7 @@ export function SchoolPlanPanel({
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
         Plan &amp; seats
       </h1>
       <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
@@ -72,7 +66,7 @@ export function SchoolPlanPanel({
       </p>
 
       {/* Current plan */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
         {plan ? (
           <>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "18px", marginBottom: "18px" }}>
@@ -84,17 +78,17 @@ export function SchoolPlanPanel({
 
             {seats !== null && (
               <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(16,35,63,.08)", overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${Math.min(100, (seatsUsed / seats) * 100)}%`, backgroundColor: BLUE, borderRadius: "9999px" }} />
+                <div style={{ height: "100%", width: `${Math.min(100, (seatsUsed / seats) * 100)}%`, backgroundColor: C.blue, borderRadius: "9999px" }} />
               </div>
             )}
 
             {grantedManually && (
-              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: GREEN, backgroundColor: "rgba(27,127,75,.08)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
+              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.greenText, backgroundColor: "rgba(27,127,75,.08)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
                 Just One Chesed has granted this access. There is nothing to pay.
               </p>
             )}
             {planStatus === "PAST_DUE" && (
-              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: ORANGE_TEXT, backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
+              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.orangeText, backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "10px 13px", margin: "16px 0 0" }}>
                 There is an outstanding payment. {contact} will be in touch.
               </p>
             )}
@@ -109,13 +103,13 @@ export function SchoolPlanPanel({
       {/* Request a change — explicitly a request */}
       <form
         onSubmit={submit}
-        style={{ backgroundColor: "#FFFBF3", border: `1px solid ${ORANGE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}
+        style={{ backgroundColor: "#FFFBF3", border: `1px solid ${C.orange}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}
       >
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE_TEXT, margin: "0 0 12px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 12px" }}>
           Ask for a change
         </p>
         <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
-          This goes to <strong style={{ color: INK }}>{contact}</strong>. Nothing changes and nothing is
+          This goes to <strong style={{ color: C.ink }}>{contact}</strong>. Nothing changes and nothing is
           charged until you have spoken to them.
         </p>
 
@@ -125,8 +119,8 @@ export function SchoolPlanPanel({
           rows={3}
           placeholder="More seats for next term, moving up a plan, a question about cost…"
           style={{
-            width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-            backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+            width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+            backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
             padding: "11px 13px", outline: "none", resize: "vertical", marginBottom: "10px",
           }}
         />
@@ -139,8 +133,8 @@ export function SchoolPlanPanel({
               onChange={(e) => setWantsSeats(e.target.value.replace(/\D/g, ""))}
               inputMode="numeric"
               style={{
-                width: "72px", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "8px",
+                width: "72px", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "8px",
                 padding: "8px 10px", outline: "none", marginLeft: "6px",
               }}
             />
@@ -150,7 +144,7 @@ export function SchoolPlanPanel({
             disabled={pending || !message.trim()}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 22px",
+              backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 22px",
               minHeight: "44px", cursor: !message.trim() ? "not-allowed" : "pointer",
               opacity: pending || !message.trim() ? 0.5 : 1,
             }}
@@ -158,14 +152,14 @@ export function SchoolPlanPanel({
             {pending ? "Sending…" : "Send request"}
           </button>
           {msg && (
-            <span style={{ fontSize: "13px", color: msg.kind === "ok" ? GREEN : "#B91C1C" }}>{msg.text}</span>
+            <span style={{ fontSize: "13px", color: msg.kind === "ok" ? C.greenText : "#B91C1C" }}>{msg.text}</span>
           )}
         </div>
       </form>
 
       {/* Past requests */}
       {requests.length > 0 && (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px", padding: "20px" }}>
+        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
             Requests you have sent
           </p>
@@ -176,14 +170,14 @@ export function SchoolPlanPanel({
                   <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{fmt(r.createdAt)}</span>
                   <span style={{
                     fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
-                    color: r.status === "OPEN" ? ORANGE_TEXT : GREEN,
+                    color: r.status === "OPEN" ? C.orangeText : C.greenText,
                   }}>
                     {r.status === "OPEN" ? "Waiting for JOC" : r.status.toLowerCase()}
                   </span>
                 </div>
-                <p style={{ fontSize: "14px", lineHeight: 1.6, color: INK, margin: 0 }}>{r.message}</p>
+                <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.ink, margin: 0 }}>{r.message}</p>
                 {r.response && (
-                  <div style={{ marginTop: "10px", paddingLeft: "13px", borderLeft: `3px solid ${BLUE}` }}>
+                  <div style={{ marginTop: "10px", paddingLeft: "13px", borderLeft: `3px solid ${C.blue}` }}>
                     <p style={{ fontSize: "12px", color: "#4A5A74", margin: "0 0 3px" }}>
                       Just One Chesed replied {fmt(r.respondedAt)}
                     </p>
@@ -205,7 +199,7 @@ function Stat({ label, value }: { label: string; value: string }) {
       <p style={{ fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
         {label}
       </p>
-      <p style={{ fontSize: "16px", fontWeight: 600, color: INK, margin: 0, letterSpacing: "-0.02em" }}>{value}</p>
+      <p style={{ fontSize: "16px", fontWeight: 600, color: C.ink, margin: 0, letterSpacing: "-0.02em" }}>{value}</p>
     </div>
   );
 }

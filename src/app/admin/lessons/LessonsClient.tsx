@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { LessonEditor, EMPTY_LESSON, type LessonDraft, type CycleRef } from "@/components/admin/LessonEditor";
 import { BulkImport } from "@/components/admin/BulkImport";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
 
 const GRADE_LABELS: Record<string, string> = { es: "Elementary", ms: "Middle", hs: "High school" };
 
@@ -27,11 +25,11 @@ export function LessonsClient({
       <div>
         <button
           onClick={() => setEditing(null)}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
         >
           ← All lessons
         </button>
-        <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+        <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
           {editing.id ? "Edit lesson" : "New lesson"}
         </h1>
         <LessonEditor
@@ -63,7 +61,7 @@ export function LessonsClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "42px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -98,7 +96,7 @@ export function LessonsClient({
                   return (
                     <tr key={l.id}>
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                        <span style={{ fontWeight: 600, color: INK, display: "block" }}>{l.title}</span>
+                        <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{l.title}</span>
                         <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{l.theme}</span>
                       </td>
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", color: "#4A5A74", whiteSpace: "nowrap" }}>
@@ -133,7 +131,7 @@ export function LessonsClient({
                       <td style={{ padding: "12px 20px", borderBottom: "1px solid rgba(16,35,63,.05)", whiteSpace: "nowrap" }}>
                         <button
                           onClick={() => setEditing(l)}
-                          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, marginRight: "12px" }}
+                          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, marginRight: "12px" }}
                         >
                           Edit
                         </button>

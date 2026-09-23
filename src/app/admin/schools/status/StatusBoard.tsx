@@ -1,18 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { setSchoolMark, setUnapprovedHours, logSchoolTouch, type Mark } from "@/app/actions/school-status";
 import type { SchoolStatusRow } from "@/lib/school-status";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const ORANGE_TEXT = "#C96C00";
-const RED = "#A3261A";
-const MUTED = "#4A5A74";
-const HAIRLINE = "rgba(16,35,63,.09)";
-const PANEL = "#F4F7FD";
 
 function ago(d: Date | string | null): string {
   if (!d) return "Not yet";
@@ -25,16 +17,16 @@ function ago(d: Date | string | null): string {
 }
 
 const PAID_COLOR: Record<string, string> = {
-  paid: GREEN, granted: BLUE, trial: ORANGE_TEXT, overdue: RED, none: "#4A5A74",
+  paid: C.greenText, granted: C.blue, trial: C.orangeText, overdue: C.redText, none: "#4A5A74",
 };
 
 export function StatusBoard({ schools, canEdit }: { schools: SchoolStatusRow[]; canEdit: boolean }) {
   if (schools.length === 0) {
     return (
       <div style={{ backgroundColor: "#fff", border: `1px dashed rgba(16,35,63,.2)`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
-        <p style={{ fontSize: "15px", color: MUTED, margin: "0 0 6px" }}>No schools yet.</p>
-        <p style={{ fontSize: "13.5px", color: MUTED, margin: 0 }}>
-          <Link href="/admin/schools" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px" }}>No schools yet.</p>
+        <p style={{ fontSize: "13.5px", color: C.muted, margin: 0 }}>
+          <Link href="/admin/schools" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
             Add the first one →
           </Link>
         </p>
@@ -68,11 +60,11 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
   };
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: "16px", overflow: "hidden" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
       {/* Who, and whether they have paid — the two things that decide
           whether anything else on the row matters. */}
-      <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", padding: "15px 18px", borderBottom: `1px solid ${HAIRLINE}` }}>
-        <Link href={`/admin/schools/${s.id}`} style={{ fontSize: "16px", fontWeight: 600, color: INK, textDecoration: "none", minWidth: 0, flex: 1 }}>
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", padding: "15px 18px", borderBottom: `1px solid ${C.hairline}` }}>
+        <Link href={`/admin/schools/${s.id}`} style={{ fontSize: "16px", fontWeight: 600, color: C.ink, textDecoration: "none", minWidth: 0, flex: 1 }}>
           {s.name}
         </Link>
         <span style={{
@@ -83,7 +75,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
           {s.paid.label}
         </span>
         {s.paid.until && (
-          <span style={{ fontSize: "12.5px", color: MUTED, whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: "12.5px", color: C.muted, whiteSpace: "nowrap" }}>
             to {new Date(s.paid.until).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
           </span>
         )}
@@ -94,15 +86,15 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
         <Cell label="Coordinator">
           {s.coordinator ? (
             <>
-              <span style={{ fontWeight: 600, color: INK, display: "block" }}>{s.coordinator.name}</span>
-              {s.coordinator.title && <span style={{ color: MUTED, display: "block", fontSize: "12.5px" }}>{s.coordinator.title}</span>}
+              <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{s.coordinator.name}</span>
+              {s.coordinator.title && <span style={{ color: C.muted, display: "block", fontSize: "12.5px" }}>{s.coordinator.title}</span>}
               {s.coordinator.email && (
                 <span style={{ display: "block", fontSize: "12.5px", marginTop: "3px", wordBreak: "break-all" }}>
                   {s.coordinator.email}
                 </span>
               )}
               {s.coordinator.phone && (
-                <span style={{ display: "block", fontSize: "12.5px", color: MUTED }}>{s.coordinator.phone}</span>
+                <span style={{ display: "block", fontSize: "12.5px", color: C.muted }}>{s.coordinator.phone}</span>
               )}
             </>
           ) : (
@@ -128,12 +120,12 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
             onChange={(v) => mark("store", v, setStore, store)}
             yes="Open" no="Not open" />
           {s.store.redeemedThisMonth != null && (
-            <span style={{ display: "block", fontSize: "12.5px", color: MUTED, marginTop: "4px" }}>
+            <span style={{ display: "block", fontSize: "12.5px", color: C.muted, marginTop: "4px" }}>
               {s.store.redeemedThisMonth} redeemed this month · from the JOC App
             </span>
           )}
           {s.store.orders > 0 && (
-            <span style={{ display: "block", fontSize: "12.5px", color: MUTED, marginTop: "4px" }}>
+            <span style={{ display: "block", fontSize: "12.5px", color: C.muted, marginTop: "4px" }}>
               {s.store.orders} order{s.store.orders === 1 ? "" : "s"} · last {ago(s.store.lastOrderAt)}
             </span>
           )}
@@ -148,8 +140,8 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
         <Cell label="Last conversation">
           {s.lastConversation ? (
             <>
-              <span style={{ fontWeight: 600, color: INK, display: "block" }}>{ago(s.lastConversation.at)}</span>
-              <span style={{ display: "block", fontSize: "12.5px", color: MUTED, lineHeight: 1.45 }}>
+              <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{ago(s.lastConversation.at)}</span>
+              <span style={{ display: "block", fontSize: "12.5px", color: C.muted, lineHeight: 1.45 }}>
                 {s.lastConversation.kind.toLowerCase()} · {s.lastConversation.summary}
               </span>
             </>
@@ -161,8 +153,8 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
         <Cell label="Last visit">
           {s.lastVisit ? (
             <>
-              <span style={{ fontWeight: 600, color: INK, display: "block" }}>{ago(s.lastVisit.at)}</span>
-              <span style={{ display: "block", fontSize: "12.5px", color: MUTED, lineHeight: 1.45 }}>{s.lastVisit.summary}</span>
+              <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{ago(s.lastVisit.at)}</span>
+              <span style={{ display: "block", fontSize: "12.5px", color: C.muted, lineHeight: 1.45 }}>{s.lastVisit.summary}</span>
             </>
           ) : (
             <Missing>Never</Missing>
@@ -172,7 +164,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
       </div>
 
       {err && (
-        <p style={{ fontSize: "13px", color: RED, margin: 0, padding: "0 18px 14px" }}>{err}</p>
+        <p style={{ fontSize: "13px", color: C.redText, margin: 0, padding: "0 18px 14px" }}>{err}</p>
       )}
     </div>
   );
@@ -184,14 +176,14 @@ function Cell({ label, children }: { label: string; children: React.ReactNode })
       <p style={{ fontSize: "10.5px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
         {label}
       </p>
-      <div style={{ fontSize: "13.5px", color: INK, lineHeight: 1.5 }}>{children}</div>
+      <div style={{ fontSize: "13.5px", color: C.ink, lineHeight: 1.5 }}>{children}</div>
     </div>
   );
 }
 
 /** Absence said out loud — a blank cell reads as "not loaded yet". */
 function Missing({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: ORANGE_TEXT, fontWeight: 600 }}>{children}</span>;
+  return <span style={{ color: C.orangeText, fontWeight: 600 }}>{children}</span>;
 }
 
 function Tick({
@@ -202,7 +194,7 @@ function Tick({
 }) {
   if (!canEdit) {
     return on
-      ? <span style={{ color: GREEN, fontWeight: 600 }}>{yes} · {ago(at)}</span>
+      ? <span style={{ color: C.greenText, fontWeight: 600 }}>{yes} · {ago(at)}</span>
       : <Missing>{no}</Missing>;
   }
   return (
@@ -216,11 +208,11 @@ function Tick({
       />
       <span style={{ minWidth: 0 }}>
         {on ? (
-          <span style={{ color: GREEN, fontWeight: 600 }}>{yes}</span>
+          <span style={{ color: C.greenText, fontWeight: 600 }}>{yes}</span>
         ) : (
           <Missing>{no}</Missing>
         )}
-        {on && at && <span style={{ color: MUTED, display: "block", fontSize: "12.5px" }}>{ago(at)}</span>}
+        {on && at && <span style={{ color: C.muted, display: "block", fontSize: "12.5px" }}>{ago(at)}</span>}
       </span>
     </label>
   );
@@ -260,10 +252,10 @@ function Hours({
   if (initial.synced) {
     return (
       <>
-        <span style={{ fontWeight: 600, color: (initial.hours ?? 0) > 0 ? ORANGE_TEXT : INK }}>
+        <span style={{ fontWeight: 600, color: (initial.hours ?? 0) > 0 ? C.orangeText : C.ink }}>
           {initial.hours} hours
         </span>
-        <span style={{ display: "block", fontSize: "12.5px", color: MUTED }}>
+        <span style={{ display: "block", fontSize: "12.5px", color: C.muted }}>
           from the JOC App · {age.text.replace("checked ", "")}
         </span>
       </>
@@ -275,8 +267,8 @@ function Hours({
       ? <Missing>Not checked</Missing>
       : (
         <>
-          <span style={{ fontWeight: 600, color: initial.hours > 0 ? ORANGE_TEXT : INK }}>{initial.hours} hours</span>
-          <span style={{ display: "block", fontSize: "12.5px", color: age.stale ? ORANGE_TEXT : MUTED }}>{age.text}</span>
+          <span style={{ fontWeight: 600, color: initial.hours > 0 ? C.orangeText : C.ink }}>{initial.hours} hours</span>
+          <span style={{ display: "block", fontSize: "12.5px", color: age.stale ? C.orangeText : C.muted }}>{age.text}</span>
         </>
       );
   }
@@ -294,16 +286,16 @@ function Hours({
           aria-label="Hours waiting for approval"
           style={{
             width: "62px", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
-            color: INK, backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.15)`,
+            color: C.ink, backgroundColor: "#fff", border: `1px solid rgba(16,35,63,.15)`,
             borderRadius: "8px", padding: "6px 8px", minHeight: "34px", outline: "none",
           }}
         />
-        <span style={{ fontSize: "12.5px", color: MUTED }}>hours</span>
+        <span style={{ fontSize: "12.5px", color: C.muted }}>hours</span>
       </span>
-      <span style={{ display: "block", fontSize: "12px", color: age.stale ? ORANGE_TEXT : MUTED, marginTop: "4px" }}>
+      <span style={{ display: "block", fontSize: "12px", color: age.stale ? C.orangeText : C.muted, marginTop: "4px" }}>
         {age.text}
       </span>
-      {err && <span style={{ display: "block", fontSize: "12px", color: RED, marginTop: "3px" }}>{err}</span>}
+      {err && <span style={{ display: "block", fontSize: "12px", color: C.redText, marginTop: "3px" }}>{err}</span>}
     </>
   );
 }
@@ -332,7 +324,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
         type="button"
         onClick={() => setOpen(true)}
         style={{
-          fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: BLUE,
+          fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.blue,
           background: "none", border: "none", padding: "6px 0 0", cursor: "pointer", minHeight: "34px",
         }}
       >
@@ -346,7 +338,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
       <select
         value={kind}
         onChange={(e) => setKind(e.target.value as typeof kind)}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid rgba(16,35,63,.15)`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: "#fff", color: INK }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid rgba(16,35,63,.15)`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: "#fff", color: C.ink }}
       >
         <option value="VISIT">Visit</option>
         <option value="CALL">Call</option>
@@ -358,7 +350,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="What happened, in a line"
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid rgba(16,35,63,.15)`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: "#fff", color: INK }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid rgba(16,35,63,.15)`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: "#fff", color: C.ink }}
       />
       <span style={{ display: "flex", gap: "8px" }}>
         <button
@@ -374,7 +366,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
           }}
           style={{
             fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 700, color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "8px", padding: "7px 14px",
+            backgroundColor: C.blue, border: "none", borderRadius: "8px", padding: "7px 14px",
             minHeight: "34px", cursor: pending ? "wait" : "pointer", opacity: text.trim() ? 1 : 0.5,
           }}
         >
@@ -383,12 +375,12 @@ function LogTouch({ schoolId }: { schoolId: string }) {
         <button
           type="button"
           onClick={() => { setOpen(false); setErr(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: MUTED, background: "none", border: "none", cursor: "pointer", minHeight: "34px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "34px" }}
         >
           Cancel
         </button>
       </span>
-      {err && <span style={{ fontSize: "12px", color: RED }}>{err}</span>}
+      {err && <span style={{ fontSize: "12px", color: C.redText }}>{err}</span>}
     </div>
   );
 }

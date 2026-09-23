@@ -1,18 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { submitForm } from "@/app/actions/forms";
 import type { PublicForm } from "@/lib/forms";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.16)";
-
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "15px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "11px",
+  fontSize: "15px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "11px",
   padding: "12px 14px", minHeight: "46px", outline: "none",
 };
 
@@ -40,9 +36,9 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
 
   if (done) {
     return (
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "18px", padding: "34px 28px", maxWidth: "58ch" }}>
+      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "34px 28px", maxWidth: "58ch" }}>
         <p style={{ fontSize: "28px", margin: "0 0 10px" }}>✓</p>
-        <h2 style={{ fontWeight: 800, fontSize: "21px", letterSpacing: "-0.03em", color: INK, margin: "0 0 8px" }}>
+        <h2 style={{ fontWeight: 800, fontSize: "21px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 8px" }}>
           {paid ? "Paid, and received" : "Sent"}
         </h2>
         <p style={{ fontSize: "15.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>{done}</p>
@@ -75,7 +71,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
             ) : f.type === "CHOICE" ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {f.options.map((o) => (
-                  <label key={o} style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "15px", color: INK, cursor: "pointer" }}>
+                  <label key={o} style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "15px", color: C.ink, cursor: "pointer" }}>
                     <input
                       type="radio"
                       name={f.id}
@@ -93,7 +89,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
                 {f.options.map((o) => {
                   const picked = (values[f.id] as string[]) ?? [];
                   return (
-                    <label key={o} style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "15px", color: INK, cursor: "pointer" }}>
+                    <label key={o} style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "15px", color: C.ink, cursor: "pointer" }}>
                       <input
                         type="checkbox"
                         checked={picked.includes(o)}
@@ -119,9 +115,9 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
                     style={{
                       fontFamily: "var(--font-outfit)", fontSize: "14.5px", fontWeight: 600,
                       padding: "11px 24px", borderRadius: "9999px", minHeight: "46px", cursor: "pointer",
-                      border: values[f.id] === o ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
+                      border: values[f.id] === o ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                       backgroundColor: values[f.id] === o ? "rgba(45,70,175,.07)" : "#fff",
-                      color: values[f.id] === o ? BLUE : "#4A5A74",
+                      color: values[f.id] === o ? C.blue : "#4A5A74",
                     }}
                   >
                     {o}
@@ -147,14 +143,14 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
           disabled={pending}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px",
             padding: "14px 28px", minHeight: "48px", cursor: pending ? "wait" : "pointer",
           }}
         >
           {pending ? "Sending…" : form.feeCents ? "Continue to payment" : "Send"}
         </button>
         {error && (
-          <p style={{ fontSize: "14px", color: RED, margin: 0, lineHeight: 1.5, maxWidth: "40ch" }}>{error}</p>
+          <p style={{ fontSize: "14px", color: C.redText, margin: 0, lineHeight: 1.5, maxWidth: "40ch" }}>{error}</p>
         )}
       </div>
     </form>
@@ -171,7 +167,7 @@ function Labelled({
 }) {
   return (
     <div>
-      <label style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: INK, marginBottom: "6px" }}>
+      <label style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: C.ink, marginBottom: "6px" }}>
         {label}
         {required && <span style={{ color: "#C96C00", marginLeft: "5px" }} aria-label="required">*</span>}
       </label>

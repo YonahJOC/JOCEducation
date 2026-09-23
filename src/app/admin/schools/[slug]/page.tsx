@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { label } from "@/lib/joc-tokens";
+import { C, label  } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import {
   getSchool, STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, ENROLLMENT_LABELS, usingSampleData,
@@ -16,7 +16,6 @@ import { SchoolsGuard } from "@/components/admin/Guard";
 import { safeAuth, openForReview } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
-const INK = "#10233F";
 const CARD: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px",
 };
@@ -70,7 +69,7 @@ async function Inner({ slug }: { slug: string }) {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", margin: "12px 0 22px" }}>
         <div>
-          <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: INK, margin: "0 0 6px" }}>
+          <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: C.ink, margin: "0 0 6px" }}>
             {s.name}
           </h1>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", fontSize: "13.5px", color: "#4A5A74" }}>
@@ -133,7 +132,7 @@ async function Inner({ slug }: { slug: string }) {
                 {members.map((m) => (
                   <div key={m.id} style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: "14px", fontWeight: 600, color: INK, margin: 0 }}>{m.name ?? m.email}</p>
+                      <p style={{ fontSize: "14px", fontWeight: 600, color: C.ink, margin: 0 }}>{m.name ?? m.email}</p>
                       <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "1px 0 0", wordBreak: "break-all" }}>{m.email}</p>
                     </div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
@@ -208,7 +207,7 @@ async function Inner({ slug }: { slug: string }) {
                         {ACTIVITY_ICON[a.type] ?? "OTHER"}
                     </span>
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <p style={{ fontSize: "14.5px", color: INK, margin: 0, fontWeight: 500, lineHeight: 1.4 }}>{a.summary}</p>
+                      <p style={{ fontSize: "14.5px", color: C.ink, margin: 0, fontWeight: 500, lineHeight: 1.4 }}>{a.summary}</p>
                       {a.detail && (
                         <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
                       )}

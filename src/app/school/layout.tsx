@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import Image from "next/image";
 import { safeAuth, openForReview } from "@/auth";
 import { canRunOwnSchool, canRunSchoolApp } from "@/lib/access";
@@ -6,12 +7,6 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
 
 export const metadata = { title: "Your school", robots: { index: false, follow: false } };
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE_TEXT = "#C96C00";
-const PAPER = "#FBF9F4";
-const RULE = "rgba(16,35,63,.12)";
 
 /**
  * Two audiences in here. A school admin runs the account — the plan, the
@@ -43,7 +38,7 @@ export default async function SchoolLayout({ children }: { children: React.React
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "430px", textAlign: "center" }}>
-          <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, marginBottom: "10px" }}>
+          <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, marginBottom: "10px" }}>
             For school administrators
           </h1>
           <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", marginBottom: "22px" }}>
@@ -52,7 +47,7 @@ export default async function SchoolLayout({ children }: { children: React.React
           </p>
           <Link
             href="/home"
-            style={{ display: "inline-block", backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none" }}
+            style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "13px 24px", textDecoration: "none" }}
           >
             Back to the site
           </Link>
@@ -83,16 +78,16 @@ export default async function SchoolLayout({ children }: { children: React.React
       <aside
         className="joc-school-sidebar"
         style={{
-          width: "252px", flexShrink: 0, backgroundColor: PAPER,
-          borderRight: `1px solid ${RULE}`, padding: "22px 0",
+          width: "252px", flexShrink: 0, backgroundColor: C.paper,
+          borderRight: `1px solid ${C.hairline}`, padding: "22px 0",
           display: "flex", flexDirection: "column",
         }}
       >
         <div className="joc-school-brand" style={{ padding: "0 20px 18px" }}>
           <Link href="/home" style={{ display: "inline-flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={130} height={16} priority style={{ height: "16px", width: "auto" }} />
-            <span aria-hidden="true" style={{ width: "1px", height: "16px", backgroundColor: RULE }} />
-            <span style={{ fontWeight: 700, fontSize: "9.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT }}>
+            <span aria-hidden="true" style={{ width: "1px", height: "16px", backgroundColor: C.hairline }} />
+            <span style={{ fontWeight: 700, fontSize: "9.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -103,13 +98,13 @@ export default async function SchoolLayout({ children }: { children: React.React
           className="joc-school-card"
           style={{
             margin: "0 14px 16px", padding: "14px", backgroundColor: "#fff",
-            border: `1px solid ${RULE}`, borderRadius: "14px",
+            border: `1px solid ${C.hairline}`, borderRadius: "14px",
           }}
         >
           <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
             You administer
           </p>
-          <p style={{ fontWeight: 700, fontSize: "15px", color: INK, margin: 0, lineHeight: 1.3, letterSpacing: "-0.02em" }}>
+          <p style={{ fontWeight: 700, fontSize: "15px", color: C.ink, margin: 0, lineHeight: 1.3, letterSpacing: "-0.02em" }}>
             {schoolName}
           </p>
           {planLabel && (
@@ -124,20 +119,20 @@ export default async function SchoolLayout({ children }: { children: React.React
             <Link
               key={i.href}
               href={i.href}
-              style={{ padding: "10px 20px", fontSize: "14px", color: INK, textDecoration: "none", minHeight: "44px", display: "flex", alignItems: "center" }}
+              style={{ padding: "10px 20px", fontSize: "14px", color: C.ink, textDecoration: "none", minHeight: "44px", display: "flex", alignItems: "center" }}
             >
               {i.label}
             </Link>
           ))}
         </nav>
 
-        <div style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: `1px solid ${RULE}` }}>
+        <div style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: `1px solid ${C.hairline}` }}>
           {session?.user?.email && (
             <p style={{ fontSize: "12px", color: "#4A5A74", margin: "0 0 10px", wordBreak: "break-all" }}>
               {session.user.email}
             </p>
           )}
-          <Link href="/home" style={{ fontSize: "12.5px", color: BLUE, textDecoration: "none", fontWeight: 600, display: "block", marginBottom: "8px" }}>
+          <Link href="/home" style={{ fontSize: "12.5px", color: C.blue, textDecoration: "none", fontWeight: 600, display: "block", marginBottom: "8px" }}>
             ← Back to the site
           </Link>
           {session?.user?.email && (

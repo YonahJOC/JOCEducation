@@ -1,4 +1,5 @@
 import { UsersGuard } from "@/components/admin/Guard";
+import { C } from "@/lib/joc-tokens";
 import { PeopleTable, type PersonRow, type SchoolRef, type ProgramRef } from "@/components/admin/PeopleTable";
 import { CreateUserForm } from "@/components/admin/CreateUserForm";
 import { usingSampleData } from "@/lib/admin-data";
@@ -8,7 +9,6 @@ import { canManageRoles, can, JOC_STAFF_DOMAIN, ROLE_LABELS, ROLE_DESCRIPTIONS, 
 import { PageIntro } from "@/components/admin/PageIntro";
 import { ensureAdminRoles, listAdminRoles } from "@/lib/admin-roles";
 
-const INK = "#10233F";
 const INTERNAL_ROLES = ["STAFF", "PROGRAM_STAFF", "ADMIN", "SUPER_ADMIN"];
 
 export const metadata = { title: "People — JOC Console" };
@@ -96,7 +96,7 @@ async function Inner() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px 20px" }}>
           {(["STAFF", "PROGRAM_STAFF", "ADMIN", "SUPER_ADMIN", "SCHOOL_ADMIN"] as Role[]).map((r) => (
             <div key={r}>
-              <p style={{ fontSize: "13.5px", fontWeight: 700, color: INK, margin: "0 0 2px" }}>{ROLE_LABELS[r]}</p>
+              <p style={{ fontSize: "13.5px", fontWeight: 700, color: C.ink, margin: "0 0 2px" }}>{ROLE_LABELS[r]}</p>
               <p style={{ fontSize: "12.5px", lineHeight: 1.5, color: "#4A5A74", margin: 0 }}>
                 {ROLE_DESCRIPTIONS[r]}
               </p>
@@ -104,7 +104,7 @@ async function Inner() {
           ))}
         </div>
         <p style={{ fontSize: "12.5px", lineHeight: 1.55, color: "#4A5A74", margin: "12px 0 0", paddingTop: "10px", borderTop: "1px solid rgba(16,35,63,.08)" }}>
-          A <strong style={{ color: INK }}>@{JOC_STAFF_DOMAIN}</strong> address becomes JOC staff
+          A <strong style={{ color: C.ink }}>@{JOC_STAFF_DOMAIN}</strong> address becomes JOC staff
           automatically. Everything above staff is granted here, by hand.
         </p>
       </div>

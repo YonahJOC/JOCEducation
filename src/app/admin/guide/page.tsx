@@ -1,11 +1,9 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { safeAuth } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
 export const metadata = { title: "Start here — JOC Console" };
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
 
 type Section = {
   href: string;
@@ -189,7 +187,7 @@ export default async function GuidePage() {
 
   return (
     <div style={{ maxWidth: "860px" }}>
-      <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: INK, margin: "0 0 8px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "28px", letterSpacing: "-0.035em", color: C.ink, margin: "0 0 8px" }}>
         {firstName ? `Start here, ${firstName}.` : "Start here."}
       </h1>
       <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.65, margin: "0 0 12px", maxWidth: "68ch" }}>
@@ -198,7 +196,7 @@ export default async function GuidePage() {
         published can be changed back.
       </p>
       <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 30px", maxWidth: "68ch" }}>
-        Every page has a <strong style={{ color: INK }}>“How do I change this?”</strong> link under
+        Every page has a <strong style={{ color: C.ink }}>“How do I change this?”</strong> link under
         its title with the steps for that page. Below is the whole console, section by section.
       </p>
 
@@ -236,9 +234,9 @@ function Group({ title, sections }: { title: string; sections: Section[] }) {
           <div key={s.href} style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "22px" }}>
             <Link
               href={s.href}
-              style={{ fontWeight: 700, fontSize: "17.5px", letterSpacing: "-0.02em", color: INK, textDecoration: "none" }}
+              style={{ fontWeight: 700, fontSize: "17.5px", letterSpacing: "-0.02em", color: C.ink, textDecoration: "none" }}
             >
-              {s.title} <span style={{ color: BLUE, fontSize: "15px" }}>→</span>
+              {s.title} <span style={{ color: C.blue, fontSize: "15px" }}>→</span>
             </Link>
             <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 12px" }}>
               {s.what}

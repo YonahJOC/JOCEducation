@@ -1,12 +1,8 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { uploadFile } from "@/app/actions/files";
-
-const BLUE = "#2D46AF";
-const INK = "#10233F";
-const GREEN = "#1D6B37";
-const RED = "#A3261A";
 
 /**
  * Attach a file to whatever is being edited.
@@ -66,7 +62,7 @@ export function FilePicker({
           disabled={disabled || pending}
           style={{
             fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600,
-            color: disabled ? "rgba(16,35,63,.35)" : BLUE, backgroundColor: "#F4F7FD",
+            color: disabled ? "rgba(16,35,63,.35)" : C.blue, backgroundColor: "#F4F7FD",
             border: "none", borderRadius: "9999px", padding: "10px 18px", minHeight: "42px",
             cursor: disabled || pending ? "not-allowed" : "pointer",
           }}
@@ -80,7 +76,7 @@ export function FilePicker({
               href={value}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none" }}
+              style={{ fontSize: "13px", fontWeight: 600, color: C.blue, textDecoration: "none" }}
             >
               {name ?? (isUpload ? "View attached file" : "Open link")}
             </a>
@@ -88,7 +84,7 @@ export function FilePicker({
               type="button"
               onClick={() => { onChange(null); setName(null); }}
               disabled={disabled}
-              style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "36px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "36px" }}
             >
               Remove
             </button>
@@ -103,18 +99,18 @@ export function FilePicker({
         disabled={disabled || isUpload}
         style={{
           width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-          fontSize: "13.5px", color: INK, backgroundColor: isUpload ? "#FBF9F4" : "#fff",
+          fontSize: "13.5px", color: C.ink, backgroundColor: isUpload ? "#FBF9F4" : "#fff",
           border: "1px solid rgba(16,35,63,.15)", borderRadius: "10px",
           padding: "10px 12px", minHeight: "42px", outline: "none",
         }}
       />
 
       {isUpload && (
-        <p style={{ fontSize: "12px", color: GREEN, margin: "6px 0 0" }}>
+        <p style={{ fontSize: "12px", color: C.greenText, margin: "6px 0 0" }}>
           Uploaded to JOC. Only signed-in accounts with access can open it.
         </p>
       )}
-      {error && <p style={{ fontSize: "12.5px", color: RED, margin: "6px 0 0" }}>{error}</p>}
+      {error && <p style={{ fontSize: "12.5px", color: C.redText, margin: "6px 0 0" }}>{error}</p>}
     </div>
   );
 }

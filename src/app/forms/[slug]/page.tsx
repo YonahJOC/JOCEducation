@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
+import { C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedForm } from "@/lib/forms";
 import { money } from "@/lib/payments";
 import { safeAuth } from "@/auth";
 import { FormFill } from "./FormFill";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const PAPER = "#FBF9F4";
-const RULE = "rgba(16,35,63,.12)";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ paid?: string }> };
 
@@ -31,9 +27,9 @@ export default async function FormPage({ params, searchParams }: Props) {
   const needsSignIn = form.requiresSignIn && !session?.user?.id;
 
   return (
-    <div style={{ backgroundColor: PAPER, minHeight: "70vh" }}>
+    <div style={{ backgroundColor: C.paper, minHeight: "70vh" }}>
       <section style={{ maxWidth: "820px", margin: "0 auto", padding: "56px 26px 70px" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.08, letterSpacing: "-0.035em", color: INK, margin: "0 0 14px" }}>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.08, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 14px" }}>
           {form.title}
         </h1>
 
@@ -52,25 +48,25 @@ export default async function FormPage({ params, searchParams }: Props) {
         {/* A closed form says so. Somebody was sent this link last week and
             needs to be told it has shut, not shown a page that is not found. */}
         {form.closed ? (
-          <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
-            <h2 style={{ fontWeight: 800, fontSize: "19px", color: INK, margin: "0 0 8px" }}>This has closed</h2>
+          <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
+            <h2 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>This has closed</h2>
             <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
               It is no longer taking answers. If you think it should be open, email{" "}
-              <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+              <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
                 education@justonechesed.org
               </a>
               .
             </p>
           </div>
         ) : needsSignIn ? (
-          <div style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
-            <h2 style={{ fontWeight: 800, fontSize: "19px", color: INK, margin: "0 0 8px" }}>Please sign in first</h2>
+          <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
+            <h2 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>Please sign in first</h2>
             <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
               This one is for people with a JOC Education account.
             </p>
             <Link
               href={`/?next=${encodeURIComponent(`/forms/${form.slug}`)}`}
-              style={{ display: "inline-block", backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "12px 24px", textDecoration: "none" }}
+              style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: "9999px", padding: "12px 24px", textDecoration: "none" }}
             >
               Sign in
             </Link>

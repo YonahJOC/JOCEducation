@@ -1,11 +1,9 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { BrandLockup } from "@/components/ui/Brand";
 import { verifyEmail } from "@/app/actions/signup";
 
 export const metadata = { title: "Confirm your email", robots: { index: false, follow: false } };
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
 
 type Search = Promise<{ token?: string; email?: string }>;
 
@@ -27,7 +25,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
         <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: "1px solid rgba(16,35,63,.1)", padding: "36px", textAlign: "center" }}>
           {!result ? (
             <>
-              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
+              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
                 That link is incomplete
               </h1>
               <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
@@ -37,7 +35,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
           ) : result.ok ? (
             <>
               <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "24px" }}>✓</div>
-              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
+              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
                 Email confirmed
               </h1>
               <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 24px" }}>
@@ -49,14 +47,14 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
               </p>
               <Link
                 href="/login"
-                style={{ display: "block", textAlign: "center", backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+                style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
               >
                 Sign in
               </Link>
             </>
           ) : (
             <>
-              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
+              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
                 That link did not work
               </h1>
               <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 22px" }}>
@@ -64,7 +62,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
               </p>
               <a
                 href="mailto:education@justonechesed.org"
-                style={{ display: "block", textAlign: "center", backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+                style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
               >
                 Write to JOC
               </a>
@@ -72,7 +70,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
           )}
 
           <p style={{ marginTop: "24px", fontSize: "14px", color: "#4A5A74" }}>
-            <Link href="/login" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
+            <Link href="/login" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
           </p>
         </div>
       </div>

@@ -1,15 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { placeOrder } from "@/app/actions/orders";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14.5px", color: INK, backgroundColor: "#fff",
+  fontSize: "14.5px", color: C.ink, backgroundColor: "#fff",
   border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px",
   padding: "11px 13px", minHeight: "44px", outline: "none",
 };
@@ -63,7 +60,7 @@ export function OrderForm({
     return (
       <div style={{ textAlign: "center", padding: "12px 0" }}>
         <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: "22px" }}>✓</div>
-        <h3 style={{ fontWeight: 800, fontSize: "19px", color: INK, margin: "0 0 8px" }}>Order received</h3>
+        <h3 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>Order received</h3>
         <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
           Nothing has been charged. JOC will confirm the total{needsAddress ? ", including shipping," : ""}{" "}
           and arrange the invoice.
@@ -117,14 +114,14 @@ export function OrderForm({
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} style={{ ...field, resize: "vertical" }} />
       </div>
 
-      {error && <p style={{ fontSize: "13.5px", color: RED, margin: 0 }}>{error}</p>}
+      {error && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{error}</p>}
 
       <button
         type="submit"
         disabled={pending}
         style={{
           width: "100%", fontFamily: "var(--font-outfit)", backgroundColor: "#FA912D",
-          color: INK, fontWeight: 700, fontSize: "15px", borderRadius: "12px",
+          color: C.ink, fontWeight: 700, fontSize: "15px", borderRadius: "12px",
           padding: "15px", minHeight: "50px", border: "none",
           cursor: pending ? "wait" : "pointer", opacity: pending ? 0.7 : 1,
         }}

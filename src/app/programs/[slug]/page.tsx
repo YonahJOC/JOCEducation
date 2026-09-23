@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
 import { heroFg, deepFrom } from "@/lib/hero-color";
@@ -9,13 +10,7 @@ import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const PAPER = "#FBF9F4";
-const PANEL = "#F4F7FD";
-const MUTED = "#4A5A74";
 const BODY2 = "#34445E";
-const HAIRLINE = "rgba(16,35,63,.1)";
 
 // Programs are editable in the console, so the set of addresses is not known
 // at build time.
@@ -84,7 +79,7 @@ export default async function ProgramDetailPage({ params }: Props) {
             </span>
             {comingSoon && (
               <span style={{
-                backgroundColor: PAPER, color: INK, borderRadius: "9999px", padding: "5px 14px",
+                backgroundColor: C.paper, color: C.ink, borderRadius: "9999px", padding: "5px 14px",
                 fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
               }}>
                 Coming soon
@@ -133,27 +128,27 @@ export default async function ProgramDetailPage({ params }: Props) {
           {/* Sidebar */}
           <aside className="joc-program-side" style={{ gridArea: "side", minWidth: 0 }}>
             <div style={{
-              backgroundColor: "#fff", border: `1px solid ${HAIRLINE}`, borderTop: `6px solid ${deep}`,
+              backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderTop: `6px solid ${deep}`,
               borderRadius: "14px", padding: "22px", marginBottom: "14px",
             }}>
               <div style={{ display: "flex", gap: "10px", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px", flexWrap: "wrap" }}>
-                <p style={{ fontSize: "16px", fontWeight: 600, color: INK, margin: 0, letterSpacing: "-0.015em" }}>
+                <p style={{ fontSize: "16px", fontWeight: 600, color: C.ink, margin: 0, letterSpacing: "-0.015em" }}>
                   At a glance
                 </p>
                 <span style={{
-                  border: `1.5px solid ${HAIRLINE}`, color: MUTED, borderRadius: "9999px", padding: "3px 10px",
+                  border: `1.5px solid ${C.hairline}`, color: C.muted, borderRadius: "9999px", padding: "3px 10px",
                   fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
                 }}>
                   {program.tag}
                 </span>
               </div>
 
-              <p style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, margin: "0 0 10px" }}>
+              <p style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, margin: "0 0 10px" }}>
                 {comingSoon ? "Will be included in" : "Included in"}
               </p>
               <ul style={{ listStyle: "none", padding: 0, margin: "0 0 18px", display: "grid", gap: "9px" }}>
                 {program.available.map((a) => (
-                  <li key={a} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "14px", color: INK, lineHeight: 1.45, minWidth: 0 }}>
+                  <li key={a} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "14px", color: C.ink, lineHeight: 1.45, minWidth: 0 }}>
                     {/* A ringed tick, so inclusion is not carried by colour alone. */}
                     <span aria-hidden="true" style={{
                       width: "22px", height: "22px", borderRadius: "50%", flexShrink: 0,
@@ -168,23 +163,23 @@ export default async function ProgramDetailPage({ params }: Props) {
                 ))}
               </ul>
 
-              <div style={{ borderTop: `1px solid ${HAIRLINE}`, paddingTop: "14px" }}>
-                <p style={{ fontSize: "13px", color: MUTED, margin: "0 0 10px", lineHeight: 1.5 }}>{program.meta}</p>
-                <Link href="/pricing" style={{ fontSize: "14px", fontWeight: 600, color: BLUE, textDecoration: "none", minHeight: "44px", display: "inline-flex", alignItems: "center" }}>
+              <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "14px" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "0 0 10px", lineHeight: 1.5 }}>{program.meta}</p>
+                <Link href="/pricing" style={{ fontSize: "14px", fontWeight: 600, color: C.blue, textDecoration: "none", minHeight: "44px", display: "inline-flex", alignItems: "center" }}>
                   See all plans →
                 </Link>
               </div>
             </div>
 
             {program.whatsIncluded.length > 0 && (
-              <div style={{ backgroundColor: PANEL, borderRadius: "14px", padding: "22px" }}>
-                <p style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, margin: "0 0 12px" }}>
+              <div style={{ backgroundColor: C.panel, borderRadius: "14px", padding: "22px" }}>
+                <p style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, margin: "0 0 12px" }}>
                   What&rsquo;s included
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "10px" }}>
                   {program.whatsIncluded.map((item, i) => (
                     <li key={i} style={{ display: "flex", gap: "11px", alignItems: "flex-start", fontSize: "14px", color: BODY2, lineHeight: 1.5, minWidth: 0 }}>
-                      <span aria-hidden="true" style={{ width: "8px", height: "2px", backgroundColor: INK, flexShrink: 0, marginTop: "10px", opacity: 0.55 }} />
+                      <span aria-hidden="true" style={{ width: "8px", height: "2px", backgroundColor: C.ink, flexShrink: 0, marginTop: "10px", opacity: 0.55 }} />
                       <span style={{ minWidth: 0 }}>{item}</span>
                     </li>
                   ))}
@@ -197,7 +192,7 @@ export default async function ProgramDetailPage({ params }: Props) {
           <div style={{ gridArea: "rest", minWidth: 0 }}>
             <section id="how" style={{ scrollMarginTop: "20px", paddingTop: "34px" }}>
               <SectionLabel deep={deep}>How it works</SectionLabel>
-              <p style={{ fontSize: "15.5px", color: MUTED, lineHeight: 1.6, margin: "0 0 24px", maxWidth: "58ch" }}>
+              <p style={{ fontSize: "15.5px", color: C.muted, lineHeight: 1.6, margin: "0 0 24px", maxWidth: "58ch" }}>
                 The same four stages on every JOC program, so a school that has run one already
                 knows how the next one goes.
               </p>
@@ -211,7 +206,7 @@ export default async function ProgramDetailPage({ params }: Props) {
             </section>
 
             {program.testimonial && (
-              <figure style={{ backgroundColor: INK, borderRadius: "18px", padding: "clamp(26px, 4vw, 38px)", margin: "42px 0 0" }}>
+              <figure style={{ backgroundColor: C.ink, borderRadius: "18px", padding: "clamp(26px, 4vw, 38px)", margin: "42px 0 0" }}>
                 <span aria-hidden="true" style={{ display: "block", fontFamily: "var(--font-newsreader)", fontSize: "54px", lineHeight: 0.6, color: "#FA912D" }}>
                   &ldquo;
                 </span>
@@ -235,12 +230,12 @@ export default async function ProgramDetailPage({ params }: Props) {
 
       {/* ── Other programs ───────────────────────────────────────────── */}
       {others.length > 0 && (
-        <div style={{ backgroundColor: PANEL, marginTop: "56px", padding: "48px 26px 56px" }}>
+        <div style={{ backgroundColor: C.panel, marginTop: "56px", padding: "48px 26px 56px" }}>
           <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-            <h2 style={{ fontSize: "clamp(22px, 2.6vw, 27px)", fontWeight: 600, letterSpacing: "-0.03em", color: INK, margin: "0 0 5px" }}>
+            <h2 style={{ fontSize: "clamp(22px, 2.6vw, 27px)", fontWeight: 600, letterSpacing: "-0.03em", color: C.ink, margin: "0 0 5px" }}>
               Other JOC programs
             </h2>
-            <p style={{ fontSize: "15px", color: MUTED, margin: "0 0 24px" }}>
+            <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 24px" }}>
               Most schools run three or four a year.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: "12px" }}>
@@ -250,20 +245,20 @@ export default async function ProgramDetailPage({ params }: Props) {
                   href={`/programs/${p.slug}`}
                   style={{
                     display: "flex", alignItems: "center", gap: "14px", minHeight: "72px",
-                    backgroundColor: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: "12px",
+                    backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "12px",
                     padding: "12px 16px 12px 12px", textDecoration: "none", minWidth: 0,
                   }}
                 >
                   <span aria-hidden="true" style={{ width: "14px", height: "40px", borderRadius: "4px", backgroundColor: p.heroColor, flexShrink: 0 }} />
                   <span style={{ minWidth: 0, flex: 1 }}>
-                    <span style={{ display: "block", fontSize: "15px", fontWeight: 600, color: INK, letterSpacing: "-0.01em" }}>
+                    <span style={{ display: "block", fontSize: "15px", fontWeight: 600, color: C.ink, letterSpacing: "-0.01em" }}>
                       {p.name}
                     </span>
-                    <span style={{ display: "block", fontSize: "12.5px", color: MUTED, marginTop: "2px" }}>
+                    <span style={{ display: "block", fontSize: "12.5px", color: C.muted, marginTop: "2px" }}>
                       {p.tag}{p.comingSoon ? " · Coming soon" : ""}
                     </span>
                   </span>
-                  <span aria-hidden="true" style={{ color: BLUE, fontWeight: 600, flexShrink: 0 }}>→</span>
+                  <span aria-hidden="true" style={{ color: C.blue, fontWeight: 600, flexShrink: 0 }}>→</span>
                 </Link>
               ))}
             </div>
@@ -279,7 +274,7 @@ function SectionLabel({ children, deep }: { children: React.ReactNode; deep: str
   return (
     <p style={{ display: "flex", alignItems: "center", gap: "12px", margin: "0 0 14px" }}>
       <span aria-hidden="true" style={{ width: "24px", height: "3px", backgroundColor: deep, flexShrink: 0, borderRadius: "2px" }} />
-      <span style={{ fontSize: "13px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED }}>
+      <span style={{ fontSize: "13px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.muted }}>
         {children}
       </span>
     </p>

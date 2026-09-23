@@ -1,17 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { saveLesson } from "@/app/actions/content";
 import { FilePicker } from "@/components/admin/FilePicker";
 import { RICH_TEXT_HINT } from "@/components/ui/RichText";
 
-const INK = "#10233F";
 const DEEP = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1D6B37";
-const RULE = "rgba(16,35,63,.15)";
 
 export type LessonDraft = {
   id?: number;
@@ -47,8 +42,8 @@ export type CycleRef = {
 };
 
 const field: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const legend: React.CSSProperties = {
@@ -123,7 +118,7 @@ export function LessonEditor({
             style={{
               width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 800,
               fontSize: "clamp(24px, 3vw, 34px)", letterSpacing: "-0.035em", lineHeight: 1.15,
-              color: INK, background: "transparent", border: "none", borderBottom: "2px solid transparent",
+              color: C.ink, background: "transparent", border: "none", borderBottom: "2px solid transparent",
               outline: "none", padding: "4px 0", marginBottom: "18px",
             }}
           />
@@ -198,7 +193,7 @@ export function LessonEditor({
               <span
                 style={{
                   fontSize: "12.5px", fontWeight: 700, padding: "5px 12px", borderRadius: "9999px",
-                  color: drift === 0 ? GREEN : ORANGE_TEXT,
+                  color: drift === 0 ? C.greenText : C.orangeText,
                   backgroundColor: drift === 0 ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
                 }}
               >
@@ -229,8 +224,8 @@ export function LessonEditor({
                       disabled={disabled}
                       style={{
                         width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 800,
-                        fontSize: "22px", letterSpacing: "-0.03em", textAlign: "center", color: BLUE,
-                        backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+                        fontSize: "22px", letterSpacing: "-0.03em", textAlign: "center", color: C.blue,
+                        backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
                         padding: "8px 4px", outline: "none",
                       }}
                     />
@@ -275,7 +270,7 @@ export function LessonEditor({
               type="button"
               onClick={() => set("steps", [...d.steps, { duration: "5", title: "", description: "" }])}
               disabled={disabled}
-              style={{ marginTop: "12px", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: "6px 0", minHeight: "40px" }}
+              style={{ marginTop: "12px", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: "6px 0", minHeight: "40px" }}
             >
               + Add a step
             </button>
@@ -315,14 +310,14 @@ export function LessonEditor({
           <div style={{ backgroundColor: DEEP, borderRadius: "16px", padding: "20px", color: "#fff" }}>
             {cycle ? (
               <>
-                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE, margin: "0 0 10px" }}>
+                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.orange, margin: "0 0 10px" }}>
                   Cycle {cycle.num} · {cycle.theme}
                 </p>
                 <p
                   style={{
                     fontFamily: "var(--font-newsreader)", fontStyle: "italic",
                     fontSize: "17px", lineHeight: 1.5, color: "rgba(255,255,255,.95)",
-                    borderLeft: `3px solid ${ORANGE}`, paddingLeft: "14px", margin: 0,
+                    borderLeft: `3px solid ${C.orange}`, paddingLeft: "14px", margin: 0,
                   }}
                 >
                   {cycle.question}
@@ -333,7 +328,7 @@ export function LessonEditor({
               </>
             ) : (
               <>
-                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE, margin: "0 0 10px" }}>
+                <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.orange, margin: "0 0 10px" }}>
                   No Cycle chosen
                 </p>
                 <p style={{ fontSize: "13.5px", lineHeight: 1.6, color: "rgba(255,255,255,.72)", margin: 0 }}>
@@ -347,14 +342,14 @@ export function LessonEditor({
           <div style={{ backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.09)", borderRadius: "16px", padding: "20px" }}>
             <p style={{ ...legend, marginBottom: "12px" }}>Before publishing</p>
             {missing.length === 0 ? (
-              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: GREEN, margin: 0 }}>
+              <p style={{ fontSize: "13.5px", lineHeight: 1.55, color: C.greenText, margin: 0 }}>
                 Everything is here. Ready to publish.
               </p>
             ) : (
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
                 {missing.map((m) => (
                   <li key={m} style={{ display: "flex", gap: "9px", alignItems: "flex-start" }}>
-                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "7px" }} />
+                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: C.orange, flexShrink: 0, marginTop: "7px" }} />
                     <span style={{ fontSize: "13.5px", lineHeight: 1.5, color: "#4A5A74" }}>Needs {m}</span>
                   </li>
                 ))}
@@ -362,11 +357,11 @@ export function LessonEditor({
             )}
 
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "16px", paddingTop: "16px", borderTop: "1px solid rgba(16,35,63,.08)" }}>
-              <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+              <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
                 <input type="checkbox" checked={d.published} onChange={(e) => set("published", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
                 Published
               </label>
-              <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: INK }}>
+              <label style={{ display: "flex", gap: "9px", alignItems: "center", cursor: "pointer", fontSize: "14px", color: C.ink }}>
                 <input type="checkbox" checked={d.featured} onChange={(e) => set("featured", e.target.checked)} disabled={disabled} style={{ width: "16px", height: "16px" }} />
                 Featured
               </label>
@@ -377,7 +372,7 @@ export function LessonEditor({
               disabled={disabled || pending || !d.title.trim()}
               style={{
                 width: "100%", marginTop: "16px", fontFamily: "var(--font-outfit)",
-                fontWeight: 700, fontSize: "14.5px", color: "#fff", backgroundColor: BLUE,
+                fontWeight: 700, fontSize: "14.5px", color: "#fff", backgroundColor: C.blue,
                 border: "none", borderRadius: "9999px", padding: "13px 20px", minHeight: "44px",
                 cursor: disabled || !d.title.trim() ? "not-allowed" : "pointer",
                 opacity: disabled || pending || !d.title.trim() ? 0.5 : 1,
@@ -386,7 +381,7 @@ export function LessonEditor({
               {pending ? "Saving…" : d.id ? "Save changes" : "Create lesson"}
             </button>
             {msg && (
-              <p style={{ fontSize: "13px", margin: "10px 0 0", color: msg === "Saved." ? GREEN : "#A3261A" }}>{msg}</p>
+              <p style={{ fontSize: "13px", margin: "10px 0 0", color: msg === "Saved." ? C.greenText : "#A3261A" }}>{msg}</p>
             )}
           </div>
         </aside>
@@ -434,9 +429,9 @@ function Segmented({
                 fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600,
                 padding: "7px 13px", borderRadius: "9999px", minHeight: "38px",
                 cursor: disabled ? "default" : "pointer",
-                border: on ? `1.5px solid ${BLUE}` : `1px solid ${RULE}`,
+                border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                 backgroundColor: on ? "#F4F7FD" : "#fff",
-                color: on ? BLUE : "#4A5A74",
+                color: on ? C.blue : "#4A5A74",
                 whiteSpace: "nowrap",
               }}
             >
@@ -479,7 +474,7 @@ function ListField({
         type="button"
         onClick={() => onChange([...items, ""])}
         disabled={disabled}
-        style={{ marginTop: "9px", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: "6px 0", minHeight: "38px" }}
+        style={{ marginTop: "9px", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: "6px 0", minHeight: "38px" }}
       >
         + Add
       </button>
@@ -525,7 +520,7 @@ function LessonFiles({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
       {files.map((f, i) => (
-        <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "14px" }}>
+        <div key={i} style={{ border: `1px solid ${C.hairline}`, borderRadius: "12px", padding: "14px" }}>
           <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", marginBottom: "12px" }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px" }}>
@@ -563,7 +558,7 @@ function LessonFiles({
         disabled={disabled}
         style={{
           alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px",
-          fontWeight: 600, color: disabled ? "rgba(16,35,63,.35)" : BLUE, background: "none",
+          fontWeight: 600, color: disabled ? "rgba(16,35,63,.35)" : C.blue, background: "none",
           border: "none", padding: 0, minHeight: "42px", cursor: disabled ? "not-allowed" : "pointer",
         }}
       >

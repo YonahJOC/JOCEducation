@@ -1,12 +1,8 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { getCurrentWeek, getCycleState, type Cycle } from "@/lib/cycles";
 import { getCycles, getRunningCycle } from "@/lib/cycle-data";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const RULE = "rgba(16,35,63,.12)";
 const WIDTH = "1180px";
 
 export type HomeData = {
@@ -35,7 +31,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
 
   return (
     <div style={{ maxWidth: WIDTH, margin: "0 auto", padding: "34px 26px 60px" }}>
-      <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.4vw, 36px)", letterSpacing: "-0.035em", color: INK, margin: "0 0 6px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.4vw, 36px)", letterSpacing: "-0.035em", color: C.ink, margin: "0 0 6px" }}>
         {greeting}
       </h1>
       <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 26px" }}>
@@ -49,13 +45,13 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       {/* The running Cycle */}
       <section
         style={{
-          backgroundColor: INK, borderRadius: "24px", padding: "30px",
+          backgroundColor: C.ink, borderRadius: "24px", padding: "30px",
           color: "#fff", marginBottom: "16px",
         }}
       >
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "28px", alignItems: "start" }}>
           <div>
-            <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE, margin: "0 0 12px" }}>
+            <p style={{ fontWeight: 700, fontSize: "10.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orange, margin: "0 0 12px" }}>
               Running now · {cycle.hebrew}
             </p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.4vw, 36px)", lineHeight: 1.06, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
@@ -66,7 +62,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
               style={{
                 fontFamily: "var(--font-newsreader)", fontStyle: "italic",
                 fontSize: "clamp(17px, 2vw, 21px)", lineHeight: 1.5,
-                color: "rgba(255,255,255,.94)", borderLeft: `3px solid ${ORANGE}`,
+                color: "rgba(255,255,255,.94)", borderLeft: `3px solid ${C.orange}`,
                 paddingLeft: "18px", margin: 0, maxWidth: "34ch",
               }}
             >
@@ -80,7 +76,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
               <span>{cycle.range}</span>
             </div>
             <div style={{ height: "6px", borderRadius: "9999px", backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden", marginBottom: "20px" }}>
-              <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: ORANGE }} />
+              <div style={{ height: "100%", width: `${pct}%`, borderRadius: "9999px", backgroundColor: C.orange }} />
             </div>
             <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "rgba(255,255,255,.72)", margin: "0 0 18px" }}>
               Everything published for these weeks points at this one middah.
@@ -88,7 +84,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
             <Link
               href={`/cycles/${cycle.slug}`}
               style={{
-                display: "inline-block", backgroundColor: ORANGE, color: INK, fontWeight: 700,
+                display: "inline-block", backgroundColor: C.orange, color: C.ink, fontWeight: 700,
                 fontSize: "14.5px", borderRadius: "9999px", padding: "12px 22px", textDecoration: "none",
               }}
             >
@@ -100,7 +96,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px" }}>
         {/* New since last visit */}
-        <section style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "20px", padding: "22px" }}>
+        <section style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "20px", padding: "22px" }}>
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
             New since you were last here
           </p>
@@ -112,9 +108,9 @@ export async function PersonalHome({ data }: { data: HomeData }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {data.newSinceLastVisit.map((n, i) => (
                 <div key={i} style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
-                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: ORANGE, flexShrink: 0, marginTop: "7px" }} />
+                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orange, flexShrink: 0, marginTop: "7px" }} />
                   <div>
-                    <p style={{ fontSize: "14.5px", color: INK, margin: 0, lineHeight: 1.45 }}>{n.title}</p>
+                    <p style={{ fontSize: "14.5px", color: C.ink, margin: 0, lineHeight: 1.45 }}>{n.title}</p>
                     <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>{n.kind}</p>
                   </div>
                 </div>
@@ -124,12 +120,12 @@ export async function PersonalHome({ data }: { data: HomeData }) {
         </section>
 
         {/* Saved lessons */}
-        <section style={{ backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "20px", padding: "22px" }}>
+        <section style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "20px", padding: "22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
             <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
               Your saved lessons
             </p>
-            <Link href="/lesson-plans" style={{ fontSize: "13px", color: BLUE, textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/lesson-plans" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
               Browse all →
             </Link>
           </div>
@@ -143,7 +139,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
                 const c = allCycles.find((x) => x.slug === l.cycleSlug);
                 return (
                   <Link key={l.id} href={`/lesson-plans/${l.id}`} style={{ textDecoration: "none" }}>
-                    <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>{l.title}</p>
+                    <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>{l.title}</p>
                     <p style={{ fontSize: "12.5px", color: "#4A5A74", margin: "2px 0 0" }}>
                       {GRADE_LABEL[l.grade] ?? l.grade}{c ? ` · ${c.theme}` : ""}
                     </p>
@@ -161,7 +157,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
           <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
             Your school
           </p>
-          <p style={{ fontWeight: 700, fontSize: "19px", color: INK, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
+          <p style={{ fontWeight: 700, fontSize: "19px", color: C.ink, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
             {data.schoolName}
           </p>
           <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
@@ -169,7 +165,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
               <>
                 For anything to do with your school&rsquo;s account — adding a colleague, seats, or your
                 plan — speak to{" "}
-                <strong style={{ color: INK }}>
+                <strong style={{ color: C.ink }}>
                   {data.schoolAdmins.map((a) => a.name ?? a.email).join(" or ")}
                 </strong>
                 .
@@ -177,7 +173,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
             ) : (
               <>
                 Nobody at your school administers the JOC account yet. Email{" "}
-                <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600 }}>
+                <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600 }}>
                   education@justonechesed.org
                 </a>{" "}
                 and Just One Chesed will set that up.
@@ -189,7 +185,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
 
       {/* Where to go */}
       <section style={{ marginTop: "26px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: ORANGE_TEXT, margin: "0 0 14px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 14px" }}>
           Where to go
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px" }}>
@@ -203,11 +199,11 @@ export async function PersonalHome({ data }: { data: HomeData }) {
               key={l.href}
               href={l.href}
               style={{
-                backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "16px",
+                backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px",
                 padding: "18px", textDecoration: "none", display: "block",
               }}
             >
-              <p style={{ fontWeight: 700, fontSize: "15px", color: INK, margin: "0 0 4px", letterSpacing: "-0.02em" }}>
+              <p style={{ fontWeight: 700, fontSize: "15px", color: C.ink, margin: "0 0 4px", letterSpacing: "-0.02em" }}>
                 {l.title}
               </p>
               <p style={{ fontSize: "13px", color: "#4A5A74", margin: 0 }}>{l.body}</p>

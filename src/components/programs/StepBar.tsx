@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { stageShort, stageLink, isRegisterStage } from "@/components/programs/Stages";
 import type { Stage } from "@/lib/stages";
 
@@ -12,12 +13,6 @@ import type { Stage } from "@/lib/stages";
  *
  * It is the same four destinations as the stages below, not a second set.
  */
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const PAPER = "#FBF9F4";
-const MUTED = "#4A5A74";
-const HAIRLINE = "rgba(16,35,63,.1)";
 
 export function StepBar({
   stages, formSlug, comingSoon = false, externalHref,
@@ -34,10 +29,10 @@ export function StepBar({
     <div className="joc-stepbar">
       {comingSoon ? (
         <div>
-          <p style={{ fontSize: "17px", fontWeight: 600, color: INK, margin: "0 0 6px", letterSpacing: "-0.015em" }}>
+          <p style={{ fontSize: "17px", fontWeight: 600, color: C.ink, margin: "0 0 6px", letterSpacing: "-0.015em" }}>
             Registration isn&rsquo;t open yet.
           </p>
-          <p style={{ fontSize: "15px", color: MUTED, margin: "0 0 18px", lineHeight: 1.55, maxWidth: "60ch" }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 18px", lineHeight: 1.55, maxWidth: "60ch" }}>
             This program is being built. Book a meeting now and we will come to you first when
             dates open.
           </p>
@@ -48,13 +43,13 @@ export function StepBar({
       ) : (
         <>
           <div className="joc-stepbar-head">
-            <p style={{ fontSize: "16.5px", fontWeight: 600, color: INK, margin: 0, letterSpacing: "-0.015em" }}>
+            <p style={{ fontSize: "16.5px", fontWeight: 600, color: C.ink, margin: 0, letterSpacing: "-0.015em" }}>
               Already started? Go straight to your step.
             </p>
             <a
               href="#how"
               style={{
-                fontSize: "14px", fontWeight: 600, color: BLUE, textDecoration: "none",
+                fontSize: "14px", fontWeight: 600, color: C.blue, textDecoration: "none",
                 minHeight: "44px", display: "inline-flex", alignItems: "center", whiteSpace: "normal",
               }}
             >
@@ -81,9 +76,9 @@ export function StepBar({
                 display: "flex", flexDirection: "column", justifyContent: "center", gap: "4px",
                 minHeight: "68px", padding: "12px 14px", borderRadius: "11px",
                 textDecoration: "none", boxSizing: "border-box", minWidth: 0,
-                backgroundColor: filled ? BLUE : PAPER,
-                color: filled ? "#fff" : INK,
-                border: filled ? `1px solid ${BLUE}` : `1px solid ${HAIRLINE}`,
+                backgroundColor: filled ? C.blue : C.paper,
+                color: filled ? "#fff" : C.ink,
+                border: filled ? `1px solid ${C.blue}` : `1px solid ${C.hairline}`,
               };
 
               // Nothing is open before launch, so the tile states that rather
@@ -131,7 +126,7 @@ function FirstStepButton({
   const style: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px",
     minHeight: "48px", padding: "12px 24px", borderRadius: "10px",
-    backgroundColor: BLUE, color: "#fff", border: `1.5px solid ${BLUE}`,
+    backgroundColor: C.blue, color: "#fff", border: `1.5px solid ${C.blue}`,
     fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", textDecoration: "none",
   };
   const body = (

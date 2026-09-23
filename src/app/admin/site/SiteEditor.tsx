@@ -1,16 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { saveDraft, discardDraft, publishDrafts, setPreview } from "@/app/actions/site";
 import { PageIntro } from "@/components/admin/PageIntro";
 
-const INK = "#10233F";
 const DEEP = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE = "#FA912D";
-const ORANGE_TEXT = "#C96C00";
-const GREEN = "#1D6B37";
-const RULE = "rgba(16,35,63,.15)";
 const DRAFT_BG = "#FFFBF3";
 
 export type EditorField = {
@@ -43,8 +38,8 @@ function parseList(v: string | null): Repeat[] {
 }
 
 const input: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 
@@ -128,7 +123,7 @@ export function SiteEditor({
                     display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px",
                     width: "100%", textAlign: "left", fontFamily: "var(--font-outfit)",
                     fontSize: "13.5px", fontWeight: on ? 700 : 500,
-                    color: on ? BLUE : "#4A5A74",
+                    color: on ? C.blue : "#4A5A74",
                     backgroundColor: on ? "#F4F7FD" : "transparent",
                     border: "none", borderRadius: "10px", padding: "10px 10px",
                     minHeight: "44px", cursor: "pointer",
@@ -136,7 +131,7 @@ export function SiteEditor({
                 >
                   <span>{p.label}</span>
                   {p.drafts > 0 && (
-                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: ORANGE, borderRadius: "9999px", padding: "2px 7px", flexShrink: 0 }}>
+                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", backgroundColor: C.orange, borderRadius: "9999px", padding: "2px 7px", flexShrink: 0 }}>
                       {p.drafts}
                     </span>
                   )}
@@ -175,7 +170,7 @@ export function SiteEditor({
               <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.5)", margin: "0 0 12px" }}>
                 Unpublished
               </p>
-              <p style={{ fontWeight: 800, fontSize: "34px", lineHeight: 1, color: allDirty.length ? ORANGE : "#fff", margin: "0 0 4px", fontVariantNumeric: "tabular-nums" }}>
+              <p style={{ fontWeight: 800, fontSize: "34px", lineHeight: 1, color: allDirty.length ? C.orange : "#fff", margin: "0 0 4px", fontVariantNumeric: "tabular-nums" }}>
                 {allDirty.length}
               </p>
               <p style={{ fontSize: "13px", margin: "0 0 16px", color: "rgba(255,255,255,.6)" }}>
@@ -198,8 +193,8 @@ export function SiteEditor({
                 disabled={disabled || pending || allDirty.length === 0}
                 style={{
                   width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-                  color: allDirty.length ? INK : "rgba(255,255,255,.4)",
-                  backgroundColor: allDirty.length ? ORANGE : "rgba(255,255,255,.08)",
+                  color: allDirty.length ? C.ink : "rgba(255,255,255,.4)",
+                  backgroundColor: allDirty.length ? C.orange : "rgba(255,255,255,.08)",
                   border: "none", borderRadius: "9999px", padding: "13px 18px", minHeight: "44px",
                   cursor: allDirty.length && !disabled ? "pointer" : "default",
                   marginBottom: "8px",
@@ -224,14 +219,14 @@ export function SiteEditor({
               </form>
 
               {previewing && (
-                <p style={{ fontSize: "12px", color: ORANGE, margin: "10px 0 0", lineHeight: 1.5 }}>
+                <p style={{ fontSize: "12px", color: C.orange, margin: "10px 0 0", lineHeight: 1.5 }}>
                   You are seeing drafts on the public site. Visitors are not.
                 </p>
               )}
             </div>
 
             {msg && (
-              <p style={{ fontSize: "13px", color: msg.startsWith("Published") ? GREEN : "#A3261A", margin: 0 }}>
+              <p style={{ fontSize: "13px", color: msg.startsWith("Published") ? C.greenText : "#A3261A", margin: 0 }}>
                 {msg}
               </p>
             )}
@@ -263,14 +258,14 @@ function FieldRow({
     <div
       style={{
         backgroundColor: dirty ? DRAFT_BG : "transparent",
-        border: dirty ? `1px solid ${ORANGE}` : "1px solid transparent",
+        border: dirty ? `1px solid ${C.orange}` : "1px solid transparent",
         borderRadius: "12px",
         padding: dirty ? "14px" : "0",
         transition: "background .15s",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
-        <label style={{ fontSize: "13px", fontWeight: 600, color: INK }}>
+        <label style={{ fontSize: "13px", fontWeight: 600, color: C.ink }}>
           {field.label}
           <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#4A5A74", marginLeft: "9px" }}>
             {TYPE_LABEL[field.type] ?? field.type}
@@ -278,13 +273,13 @@ function FieldRow({
         </label>
         {dirty && (
           <span style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: ORANGE, borderRadius: "9999px", padding: "2px 8px" }}>
+            <span style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: C.orange, borderRadius: "9999px", padding: "2px 8px" }}>
               Draft
             </span>
             <button
               onClick={onRevert}
               disabled={disabled}
-              style={{ fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600, color: ORANGE_TEXT, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              style={{ fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600, color: C.orangeText, background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
               Discard
             </button>
@@ -353,7 +348,7 @@ function RepeatEditor({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       {items.map((it, i) => (
-        <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "8px", alignItems: "start", backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px", padding: "10px" }}>
+        <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "8px", alignItems: "start", backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px", minWidth: 0 }}>
             {"value" in it && (
               <input
@@ -390,7 +385,7 @@ function RepeatEditor({
       <button
         onClick={() => onChange([...items, { title: "", body: "" }])}
         disabled={disabled}
-        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: "6px 0", minHeight: "38px" }}
+        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: "6px 0", minHeight: "38px" }}
       >
         + Add item
       </button>

@@ -7,8 +7,8 @@
  * program is going to run a contrast check. So the page works it out.
  */
 
-const INK = "#10233F";
-const WHITE = "#FFFFFF";
+import { C } from "@/lib/joc-tokens";
+
 
 /** #abc and #aabbcc, the two forms anybody actually types. */
 function parseHex(hex: string): [number, number, number] | null {
@@ -54,9 +54,9 @@ export function contrast(a: string, b: string): number {
  * the paper ground — where ink is the readable choice and white is invisible.
  */
 export function heroFg(heroColor: string | null | undefined): string {
-  if (!heroColor) return INK;
-  if (!parseHex(heroColor)) return INK;
-  return contrast(WHITE, heroColor) >= 4.5 ? WHITE : INK;
+  if (!heroColor) return C.ink;
+  if (!parseHex(heroColor)) return C.ink;
+  return contrast(C.white, heroColor) >= 4.5 ? C.white : C.ink;
 }
 
 /**
@@ -65,6 +65,6 @@ export function heroFg(heroColor: string | null | undefined): string {
  * reads as a line on paper when the hero itself is pale.
  */
 export function deepFrom(heroColor: string | null | undefined): string {
-  if (!heroColor || !parseHex(heroColor)) return INK;
-  return `color-mix(in oklch, ${heroColor} 62%, ${INK})`;
+  if (!heroColor || !parseHex(heroColor)) return C.ink;
+  return `color-mix(in oklch, ${heroColor} 62%, ${C.ink})`;
 }

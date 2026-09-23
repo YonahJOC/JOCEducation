@@ -1,18 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { savePlanPrices, saveProgramPrices, importCurrentPricing } from "@/app/actions/pricing";
 import {
   ENROLLMENT_LABELS, PRICE_TIER_LABELS, ANNUAL_DISCOUNT,
   type PlanPricing, type ProgramPricing, type PriceTier, type TierPrice,
 } from "@/lib/pricing";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
 
 const TIERS: PriceTier[] = ["none", "teacher", "staff", "app", "full"];
 
@@ -22,8 +17,8 @@ const card: React.CSSProperties = {
 };
 const num: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "9px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "9px",
   padding: "9px 10px", minHeight: "42px", outline: "none",
 };
 
@@ -114,7 +109,7 @@ export function PricingClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: msg.includes("saved") || msg.includes("Imported") ? GREEN : RED, marginBottom: "14px" }}>
+        <p style={{ fontSize: "13.5px", color: msg.includes("saved") || msg.includes("Imported") ? C.greenText : C.redText, marginBottom: "14px" }}>
           {msg}
         </p>
       )}
@@ -181,8 +176,8 @@ export function PricingClient({
           Programs — what each one costs
         </p>
         <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 16px" }}>
-          A number for a price, <strong style={{ color: INK }}>inc</strong> if that plan includes it,{" "}
-          <strong style={{ color: INK }}>na</strong> if it is not offered at that level.
+          A number for a price, <strong style={{ color: C.ink }}>inc</strong> if that plan includes it,{" "}
+          <strong style={{ color: C.ink }}>na</strong> if it is not offered at that level.
         </p>
 
         <div style={{ overflowX: "auto" }}>
@@ -224,7 +219,7 @@ export function PricingClient({
                     <button
                       onClick={() => setPrograms(programs.filter((_, n) => n !== i))}
                       disabled={disabled}
-                      style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+                      style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
                     >
                       Remove
                     </button>
@@ -238,7 +233,7 @@ export function PricingClient({
         <button
           onClick={() => setPrograms([...programs, { label: "", tiers: Object.fromEntries(TIERS.map((t) => [t, { na: true }])) }])}
           disabled={disabled}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", padding: "12px 0 0", minHeight: "42px", cursor: "pointer", display: "block" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: "12px 0 0", minHeight: "42px", cursor: "pointer", display: "block" }}
         >
           + Add a program
         </button>
@@ -264,7 +259,7 @@ const td: React.CSSProperties = { padding: "4px 6px", verticalAlign: "middle" };
 function saveButton(off: boolean): React.CSSProperties {
   return {
     marginTop: "16px", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-    color: "#fff", backgroundColor: BLUE, border: "none", borderRadius: "9999px",
+    color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: "9999px",
     padding: "11px 22px", minHeight: "44px", cursor: off ? "not-allowed" : "pointer",
     opacity: off ? 0.5 : 1,
   };

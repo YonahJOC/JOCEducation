@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import {
   getUpcomingEvents, getPastEvents, formatEventDate, type PublicEvent,
@@ -7,11 +8,6 @@ import { getRunningCycle } from "@/lib/cycle-data";
 import { safeAuth } from "@/auth";
 import { isInternal } from "@/lib/access";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const ORANGE_TEXT = "#C96C00";
-const PAPER = "#FBF9F4";
-const RULE = "rgba(16,35,63,.12)";
 const WIDTH = "1180px";
 
 export const metadata: Metadata = {
@@ -42,12 +38,12 @@ function EventRow({ e }: { e: PublicEvent }) {
     <div
       style={{
         display: "flex", gap: "18px", alignItems: "flex-start", flexWrap: "wrap",
-        padding: "18px 0", borderTop: `1px solid ${RULE}`,
+        padding: "18px 0", borderTop: `1px solid ${C.hairline}`,
         opacity: cancelled ? 0.6 : 1,
       }}
     >
       <div style={{ flex: "0 0 108px", minWidth: "108px" }}>
-        <p style={{ fontSize: "15px", fontWeight: 700, color: e.programColor ?? BLUE, margin: 0, letterSpacing: "-0.01em" }}>
+        <p style={{ fontSize: "15px", fontWeight: 700, color: e.programColor ?? C.blue, margin: 0, letterSpacing: "-0.01em" }}>
           {formatEventDate(e.startsAt, e.endsAt)}
         </p>
         {cancelled && (
@@ -58,7 +54,7 @@ function EventRow({ e }: { e: PublicEvent }) {
       </div>
 
       <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-        <p style={{ fontSize: "17px", fontWeight: 700, color: INK, margin: "0 0 4px", letterSpacing: "-0.02em", textDecoration: cancelled ? "line-through" : "none" }}>
+        <p style={{ fontSize: "17px", fontWeight: 700, color: C.ink, margin: "0 0 4px", letterSpacing: "-0.02em", textDecoration: cancelled ? "line-through" : "none" }}>
           {e.title}
         </p>
         <p style={{ fontSize: "13.5px", color: "#4A5A74", margin: "0 0 8px" }}>
@@ -74,7 +70,7 @@ function EventRow({ e }: { e: PublicEvent }) {
         {e.programSlug && (
           <Link
             href={`/programs/${e.programSlug}`}
-            style={{ display: "inline-block", fontSize: "13.5px", fontWeight: 600, color: BLUE, textDecoration: "none", marginTop: "8px" }}
+            style={{ display: "inline-block", fontSize: "13.5px", fontWeight: 600, color: C.blue, textDecoration: "none", marginTop: "8px" }}
           >
             About {e.programName} →
           </Link>
@@ -103,7 +99,7 @@ function Months({ months }: { months: { label: string; events: PublicEvent[] }[]
 
 function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px dashed ${RULE}`, borderRadius: "18px", padding: "32px 26px" }}>
+    <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "18px", padding: "32px 26px" }}>
       <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0, maxWidth: "52ch" }}>
         {children}
       </p>
@@ -132,12 +128,12 @@ export default async function ProgrammingPage() {
   const schoolMonths = byMonth(schoolPrograms);
 
   return (
-    <div style={{ backgroundColor: PAPER, minHeight: "70vh" }}>
+    <div style={{ backgroundColor: C.paper, minHeight: "70vh" }}>
       <section style={{ maxWidth: WIDTH, margin: "0 auto", padding: "52px 26px 20px" }}>
-        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: ORANGE_TEXT, margin: "0 0 12px" }}>
+        <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
           Calendar
         </p>
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4.6vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: INK, margin: "0 0 16px", maxWidth: "18ch" }}>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4.6vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: C.ink, margin: "0 0 16px", maxWidth: "18ch" }}>
           What we are running, and when.
         </h1>
         <p style={{ fontSize: "17px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 10px", maxWidth: "58ch" }}>
@@ -147,7 +143,7 @@ export default async function ProgrammingPage() {
         </p>
         {cycle && (
           <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: 0 }}>
-            Running now: <strong style={{ color: INK }}>{cycle.theme}</strong> · {cycle.range}
+            Running now: <strong style={{ color: C.ink }}>{cycle.theme}</strong> · {cycle.range}
           </p>
         )}
       </section>
@@ -158,7 +154,7 @@ export default async function ProgrammingPage() {
             there will be far more of those. Mixed together, the second drowns
             the first. */}
         <div style={{ marginBottom: "48px" }}>
-          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
             JOC programs
           </h2>
           <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: "0 0 14px" }}>
@@ -167,7 +163,7 @@ export default async function ProgrammingPage() {
           {jocMonths.length === 0 ? (
             <Empty>
               Nothing on the network calendar yet. In the meantime,{" "}
-              <Link href="/programs" style={{ color: BLUE, fontWeight: 600, textDecoration: "none" }}>
+              <Link href="/programs" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
                 see what JOC runs for schools
               </Link>
               .
@@ -177,8 +173,8 @@ export default async function ProgrammingPage() {
           )}
         </div>
 
-        <div style={{ paddingTop: "34px", borderTop: `2px solid ${RULE}` }}>
-          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+        <div style={{ paddingTop: "34px", borderTop: `2px solid ${C.hairline}` }}>
+          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
             {seesEverySchool ? "Programs at schools" : "Running at your school"}
           </h2>
           <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: "0 0 14px" }}>
@@ -198,8 +194,8 @@ export default async function ProgrammingPage() {
         </div>
 
         {past.length > 0 && (
-          <div style={{ marginTop: "46px", paddingTop: "30px", borderTop: `2px solid ${RULE}` }}>
-            <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: INK, margin: "0 0 4px" }}>
+          <div style={{ marginTop: "46px", paddingTop: "30px", borderTop: `2px solid ${C.hairline}` }}>
+            <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
               Already run
             </h2>
             <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: "0 0 10px" }}>

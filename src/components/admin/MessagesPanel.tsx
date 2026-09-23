@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { setMessageHandled } from "@/app/actions/admin";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
 
 export type MessageRow = {
   id: string;
@@ -39,7 +36,7 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
         <div key={m.id} style={{ borderTop: i === 0 ? "none" : "1px solid rgba(16,35,63,.07)", padding: "16px 18px" }}>
           <div style={{ display: "flex", gap: "12px", alignItems: "flex-start", flexWrap: "wrap" }}>
             <div style={{ minWidth: 0, flex: 1 }}>
-              <p style={{ fontSize: "14.5px", fontWeight: 600, color: INK, margin: 0 }}>
+              <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
                 {m.subject || "No subject"}
                 {!m.handled && (
                   <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.15)", padding: "2px 8px", borderRadius: "9999px", marginLeft: "8px", letterSpacing: "0.06em" }}>
@@ -57,20 +54,20 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
             <div style={{ display: "flex", gap: "12px", flexShrink: 0 }}>
               <button
                 onClick={() => setOpen(open === m.id ? null : m.id)}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
                 {open === m.id ? "Hide" : "Read"}
               </button>
               <a
                 href={`mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.subject || "Your message to JOC Education"}`)}`}
-                style={{ fontSize: "13px", fontWeight: 600, color: BLUE, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: C.blue, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
               >
                 Reply
               </a>
               <button
                 onClick={() => start(async () => { await setMessageHandled(m.id, !m.handled); })}
                 disabled={disabled || pending}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: m.handled ? "#4A5A74" : GREEN, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: m.handled ? "#4A5A74" : C.greenText, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "40px" }}
               >
                 {m.handled ? "Reopen" : "Done"}
               </button>

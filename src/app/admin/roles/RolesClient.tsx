@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { saveAdminRole, deleteAdminRole } from "@/app/actions/admin-roles";
 import { PageIntro } from "@/components/admin/PageIntro";
 import {
@@ -9,15 +10,10 @@ import {
 } from "@/lib/access";
 import type { AdminRoleRow } from "@/lib/admin-roles";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const label: React.CSSProperties = {
@@ -59,7 +55,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -92,7 +88,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
             {roles.map((r) => (
               <tr key={r.id}>
                 <td style={{ padding: "13px 20px", borderBottom: "1px solid rgba(16,35,63,.05)" }}>
-                  <span style={{ fontWeight: 600, color: INK, display: "block" }}>
+                  <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>
                     {r.name}
                     {r.builtIn && (
                       <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#4A5A74", backgroundColor: "rgba(16,35,63,.07)", borderRadius: "9999px", padding: "2px 8px", marginLeft: "8px" }}>
@@ -142,7 +138,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
                   <button
                     onClick={() => setEditing(r)}
                     disabled={disabled}
-                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
                   >
                     Edit
                   </button>
@@ -165,7 +161,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
               </p>
               {g.capabilities.map((c) => (
                 <div key={c} style={{ marginBottom: "6px" }}>
-                  <p style={{ fontSize: "13px", fontWeight: 600, color: INK, margin: 0 }}>{CAPABILITY_LABELS[c]}</p>
+                  <p style={{ fontSize: "13px", fontWeight: 600, color: C.ink, margin: 0 }}>{CAPABILITY_LABELS[c]}</p>
                   <p style={{ fontSize: "12.5px", lineHeight: 1.45, color: "#4A5A74", margin: 0 }}>
                     {CAPABILITY_DESCRIPTIONS[c]}
                   </p>
@@ -231,11 +227,11 @@ function RoleForm({
       <button
         type="button"
         onClick={onDone}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
       >
         ← All admin types
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
         {d.id ? d.name : "New admin type"}
       </h1>
 
@@ -299,7 +295,7 @@ function RoleForm({
                       }))
                     }
                     disabled={disabled}
-                    style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0 }}
                   >
                     {allOn ? "Clear all" : "Tick all"}
                   </button>
@@ -313,7 +309,7 @@ function RoleForm({
                 key={c}
                 style={{
                   display: "flex", gap: "12px", alignItems: "flex-start",
-                  border: `1px solid ${on ? "rgba(45,70,175,.3)" : RULE}`,
+                  border: `1px solid ${on ? "rgba(45,70,175,.3)" : C.hairline}`,
                   backgroundColor: on ? "rgba(45,70,175,.04)" : "#fff",
                   borderRadius: "12px", padding: "13px 15px",
                   cursor: locked || disabled ? "default" : "pointer",
@@ -328,7 +324,7 @@ function RoleForm({
                   style={{ width: "17px", height: "17px", marginTop: "2px", flexShrink: 0 }}
                 />
                 <span>
-                  <span style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: INK }}>
+                  <span style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: C.ink }}>
                     {CAPABILITY_LABELS[c]}
                   </span>
                   <span style={{ display: "block", fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, marginTop: "2px" }}>
@@ -350,7 +346,7 @@ function RoleForm({
           disabled={disabled || pending || !d.name.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -362,13 +358,13 @@ function RoleForm({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13.5px", color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
           >
             Delete
           </button>
         )}
 
-        {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0, lineHeight: 1.5 }}>{msg}</p>}
+        {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0, lineHeight: 1.5 }}>{msg}</p>}
       </div>
     </form>
   );

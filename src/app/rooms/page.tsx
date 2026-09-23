@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
@@ -9,8 +10,6 @@ export const metadata = {
   title: "Staff room",
   robots: { index: false, follow: false },
 };
-
-const INK = "#10233F";
 
 /**
  * Topic rooms. The Teachers' Board is where a school writes up something it
@@ -86,7 +85,7 @@ export default async function RoomsPage() {
       <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
         STAFF ROOM
       </p>
-      <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: INK, marginBottom: "12px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: C.ink, marginBottom: "12px" }}>
         Rooms for the things worth talking through.
       </h1>
       <p style={{ fontSize: "16.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "60ch", marginBottom: "34px" }}>
@@ -97,7 +96,7 @@ export default async function RoomsPage() {
 
       {rooms.length === 0 ? (
         <div style={{ backgroundColor: "#fff", border: "1px dashed rgba(16,35,63,.2)", borderRadius: "22px", padding: "48px 30px", textAlign: "center" }}>
-          <h2 style={{ fontWeight: 700, fontSize: "20px", color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ fontWeight: 700, fontSize: "20px", color: C.ink, margin: "0 0 10px" }}>
             No rooms yet.
           </h2>
           <p style={{ fontSize: "15.5px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "50ch", margin: "0 auto 20px" }}>

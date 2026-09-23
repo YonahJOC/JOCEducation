@@ -1,4 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { C } from "@/lib/joc-tokens";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { AdminMeetingClient, type MeetingView } from "./AdminMeetingClient";
@@ -16,14 +17,12 @@ import { AdminMeetingClient, type MeetingView } from "./AdminMeetingClient";
 export const metadata = { title: "Admin meeting — JOC Console" };
 export const dynamic = "force-dynamic";
 
-const INK = "#10233F";
-
 export default async function MeetingsPage() {
   const session = await safeAuth();
   if (!openForReview && !can(session?.user, "run_admin_agenda")) {
     return (
       <div style={{ maxWidth: "460px", padding: "40px 0" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: INK, margin: "0 0 10px" }}>
+        <h1 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
           Not one of yours
         </h1>
         <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>

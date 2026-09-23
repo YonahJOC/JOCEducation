@@ -1,15 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { useActionState } from "react";
 import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
-  fontSize: "15px", color: INK, backgroundColor: "#F8FAFE",
+  fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE",
   border: "1px solid rgba(16,35,63,.18)", borderRadius: "10px",
   outline: "none", fontFamily: "var(--font-outfit)",
 };
@@ -39,7 +37,7 @@ export function LoginForm({
             {next && <input type="hidden" name="next" value={next} />}
             <button
               type="submit"
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.18)", backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "14.5px", color: INK, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: "1px solid rgba(16,35,63,.18)", backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "14.5px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
             >
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
                 <path d="M17.64 9.2a10.34 10.34 0 0 0-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z" fill="#4285F4" />
@@ -63,7 +61,7 @@ export function LoginForm({
         <form action={action} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {next && <input type="hidden" name="next" value={next} />}
           <div>
-            <label htmlFor="email" style={{ display: "block", fontWeight: 600, fontSize: "13.5px", color: INK, marginBottom: "6px" }}>
+            <label htmlFor="email" style={{ display: "block", fontWeight: 600, fontSize: "13.5px", color: C.ink, marginBottom: "6px" }}>
               Email
             </label>
             <input id="email" name="email" type="email" placeholder="you@school.edu" autoComplete="email" required style={inputStyle} />
@@ -71,8 +69,8 @@ export function LoginForm({
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <label htmlFor="password" style={{ fontWeight: 600, fontSize: "13.5px", color: INK }}>Password</label>
-              <Link href="/forgot-password" style={{ fontSize: "13px", color: BLUE, textDecoration: "none" }}>
+              <label htmlFor="password" style={{ fontWeight: 600, fontSize: "13.5px", color: C.ink }}>Password</label>
+              <Link href="/forgot-password" style={{ fontSize: "13px", color: C.blue, textDecoration: "none" }}>
                 Forgot password?
               </Link>
             </div>
@@ -90,7 +88,7 @@ export function LoginForm({
             disabled={pending}
             style={{
               marginTop: "4px", width: "100%", fontFamily: "var(--font-outfit)",
-              backgroundColor: pending ? "rgba(45,70,175,.6)" : BLUE, color: "#fff",
+              backgroundColor: pending ? "rgba(45,70,175,.6)" : C.blue, color: "#fff",
               fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px",
               minHeight: "48px", border: "none", cursor: pending ? "default" : "pointer",
             }}
@@ -101,7 +99,7 @@ export function LoginForm({
       ) : (
         <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
           Sign-in is not switched on yet. Write to{" "}
-          <a href="mailto:education@justonechesed.org" style={{ color: BLUE, fontWeight: 600 }}>
+          <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600 }}>
             education@justonechesed.org
           </a>{" "}
           and the JOC team will set your school up.

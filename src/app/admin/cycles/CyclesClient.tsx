@@ -1,16 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveCycle, deleteCycle, importStaticCycles } from "@/app/actions/cycles";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
 import { PageIntro } from "@/components/admin/PageIntro";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const RED = "#A3261A";
-const RULE = "rgba(16,35,63,.15)";
 
 export type CycleRow = {
   id: number;
@@ -42,8 +37,8 @@ const BLANK: CycleRow = {
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: INK, backgroundColor: "#fff",
-  border: `1px solid ${RULE}`, borderRadius: "10px",
+  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const label: React.CSSProperties = {
@@ -97,7 +92,7 @@ export function CyclesClient({
           disabled={disabled}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
         >
@@ -129,7 +124,7 @@ export function CyclesClient({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13.5px", color: msg === "Imported." ? GREEN : RED, marginBottom: "14px" }}>{msg}</p>
+        <p style={{ fontSize: "13.5px", color: msg === "Imported." ? C.greenText : C.redText, marginBottom: "14px" }}>{msg}</p>
       )}
 
       {cycles.length === 0 ? (
@@ -156,7 +151,7 @@ export function CyclesClient({
                   {c.num}
                 </span>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <p style={{ fontSize: "15.5px", fontWeight: 700, color: INK, margin: 0 }}>
+                  <p style={{ fontSize: "15.5px", fontWeight: 700, color: C.ink, margin: 0 }}>
                     {c.theme}
                     {running && (
                       <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#fff", backgroundColor: c.color, borderRadius: "9999px", padding: "2px 9px", marginLeft: "9px", letterSpacing: "0.06em" }}>
@@ -192,7 +187,7 @@ export function CyclesClient({
                 <button
                   onClick={() => setEditing(c)}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
                 >
                   Edit
                 </button>
@@ -287,11 +282,11 @@ function CycleForm({
       <button
         type="button"
         onClick={onDone}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: BLUE, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.blue, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600, marginBottom: "12px" }}
       >
         ← All cycles
       </button>
-      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: INK, margin: "0 0 20px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
         {d.id ? `Cycle ${initial.num} — ${initial.theme}` : "New cycle"}
       </h1>
 
@@ -339,7 +334,7 @@ function CycleForm({
             {isFirst ? (
               <input type="date" value={d.startDate} onChange={(e) => set("startDate", e.target.value)} disabled={disabled} style={field} />
             ) : (
-              <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: INK, margin: 0 }}>
+              <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: C.ink, margin: 0 }}>
                 {d.startDate ? formatCycleRange(d.startDate, d.startDate).split(" – ")[0] : "No date yet"}
               </p>
             )}
@@ -358,7 +353,7 @@ function CycleForm({
           </div>
           <div>
             <label style={label}>Length</label>
-            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: derivedWeeks ? INK : "#4A5A74", margin: 0 }}>
+            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: derivedWeeks ? C.ink : "#4A5A74", margin: 0 }}>
               {derivedWeeks ? `${derivedWeeks} weeks` : "set both dates"}
             </p>
           </div>
@@ -378,7 +373,7 @@ function CycleForm({
             {/* This is the line every public page shows. It used to be typed
                 here by hand, which meant you could change the two dates above
                 and the whole site would carry on showing the old ones. */}
-            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: derivedRange ? INK : "#4A5A74", margin: 0 }}>
+            <p style={{ ...field, display: "flex", alignItems: "center", backgroundColor: "#FBF9F4", color: derivedRange ? C.ink : "#4A5A74", margin: 0 }}>
               {derivedRange || "set both dates"}
             </p>
           </div>
@@ -389,13 +384,13 @@ function CycleForm({
             afterwards. */}
         {knockOn.length > 0 && (
           <div style={{ backgroundColor: "#F4F7FD", borderRadius: "12px", padding: "14px 16px", marginTop: "14px" }}>
-            <p style={{ fontSize: "13px", fontWeight: 700, color: INK, margin: "0 0 8px" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, color: C.ink, margin: "0 0 8px" }}>
               Saving this also moves {knockOn.length} later cycle{knockOn.length === 1 ? "" : "s"}:
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
               {knockOn.map((k) => (
                 <p key={k.num} style={{ fontSize: "13px", color: "#4A5A74", margin: 0, lineHeight: 1.5 }}>
-                  <strong style={{ color: INK, fontWeight: 600 }}>Cycle {k.num} — {k.theme}</strong>{" "}
+                  <strong style={{ color: C.ink, fontWeight: 600 }}>Cycle {k.num} — {k.theme}</strong>{" "}
                   <span style={{ color: "#4A5A74", textDecoration: "line-through" }}>{k.from}</span>{" "}
                   → {k.to}
                 </p>
@@ -453,7 +448,7 @@ function CycleForm({
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {d.weekPlan.map((w, i) => (
-            <div key={i} style={{ border: `1px solid ${RULE}`, borderRadius: "12px", padding: "12px" }}>
+            <div key={i} style={{ border: `1px solid ${C.hairline}`, borderRadius: "12px", padding: "12px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "#4A5A74", flexShrink: 0, minWidth: "54px" }}>
                   STEP {i + 1}
@@ -469,7 +464,7 @@ function CycleForm({
                   type="button"
                   onClick={() => set("weekPlan", d.weekPlan.filter((_, n) => n !== i))}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "12.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "42px", flexShrink: 0 }}
                 >
                   Remove
                 </button>
@@ -488,7 +483,7 @@ function CycleForm({
             type="button"
             onClick={() => set("weekPlan", [...d.weekPlan, { title: "", body: "" }])}
             disabled={disabled}
-            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+            style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
           >
             + Add a week
           </button>
@@ -501,7 +496,7 @@ function CycleForm({
           disabled={disabled || pending || !d.theme.trim()}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "12px 24px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "12px 24px",
             minHeight: "46px", cursor: pending ? "wait" : "pointer",
             opacity: disabled || pending || !d.theme.trim() ? 0.5 : 1,
           }}
@@ -516,14 +511,14 @@ function CycleForm({
             type="button"
             onClick={remove}
             disabled={disabled || pending}
-            style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: RED, background: "none", border: "none", cursor: "pointer", minHeight: "46px" }}
+            style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: "pointer", minHeight: "46px" }}
           >
             Delete
           </button>
         )}
       </div>
 
-      {msg && <p style={{ fontSize: "13.5px", color: RED, margin: 0 }}>{msg}</p>}
+      {msg && <p style={{ fontSize: "13.5px", color: C.redText, margin: 0 }}>{msg}</p>}
     </form>
   );
 }
@@ -562,7 +557,7 @@ function Lines({
         type="button"
         onClick={() => onChange([...items, ""])}
         disabled={disabled}
-        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: BLUE, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
+        style={{ alignSelf: "flex-start", fontFamily: "var(--font-outfit)", fontSize: "13.5px", fontWeight: 600, color: C.blue, background: "none", border: "none", padding: 0, minHeight: "42px", cursor: "pointer" }}
       >
         + Add
       </button>
@@ -606,7 +601,7 @@ function TagPicker({
               key={t}
               style={{
                 display: "inline-flex", alignItems: "center", gap: "7px",
-                fontSize: "13px", fontWeight: 600, color: BLUE,
+                fontSize: "13px", fontWeight: 600, color: C.blue,
                 backgroundColor: "rgba(45,70,175,.08)", border: `1px solid rgba(45,70,175,.25)`,
                 borderRadius: "9999px", padding: "6px 8px 6px 13px",
               }}
@@ -619,7 +614,7 @@ function TagPicker({
                 aria-label={`Remove ${t}`}
                 style={{
                   fontFamily: "var(--font-outfit)", fontSize: "15px", lineHeight: 1,
-                  color: BLUE, background: "none", border: "none", cursor: "pointer",
+                  color: C.blue, background: "none", border: "none", cursor: "pointer",
                   padding: "0 4px", opacity: 0.7,
                 }}
               >
@@ -640,7 +635,7 @@ function TagPicker({
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 500,
               color: "#4A5A74", backgroundColor: "#fff",
-              border: `1px dashed ${RULE}`, borderRadius: "9999px",
+              border: `1px dashed ${C.hairline}`, borderRadius: "9999px",
               padding: "6px 13px", minHeight: "36px",
               cursor: disabled ? "not-allowed" : "pointer",
             }}

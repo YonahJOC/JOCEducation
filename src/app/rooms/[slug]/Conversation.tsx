@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useTransition, useRef } from "react";
+import { C } from "@/lib/joc-tokens";
 import { postMessage, removeMessage } from "@/app/actions/rooms";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RED = "#A3261A";
 
 export type Msg = {
   id: string;
@@ -22,7 +19,7 @@ export type Msg = {
 
 const box: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "15px", lineHeight: 1.55, color: INK, backgroundColor: "#fff",
+  fontSize: "15px", lineHeight: 1.55, color: C.ink, backgroundColor: "#fff",
   border: "1px solid rgba(16,35,63,.18)", borderRadius: "14px",
   padding: "13px 15px", outline: "none", resize: "vertical",
 };
@@ -72,7 +69,7 @@ export function Conversation({
               disabled={pending || !body.trim()}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14.5px",
-                color: "#fff", backgroundColor: BLUE, border: "none",
+                color: "#fff", backgroundColor: C.blue, border: "none",
                 borderRadius: "9999px", padding: "12px 24px", minHeight: "46px",
                 cursor: pending || !body.trim() ? "default" : "pointer",
                 opacity: pending || !body.trim() ? 0.5 : 1,
@@ -84,7 +81,7 @@ export function Conversation({
               Enter posts · Shift + Enter for a new line
             </span>
           </div>
-          {error && <p style={{ fontSize: "13.5px", color: RED, margin: "8px 0 0" }}>{error}</p>}
+          {error && <p style={{ fontSize: "13.5px", color: C.redText, margin: "8px 0 0" }}>{error}</p>}
         </div>
       )}
 
@@ -160,7 +157,7 @@ function Message({ message: m, roomId, canPost }: { message: Msg; roomId: string
                 <button
                   onClick={sendReply}
                   disabled={pending || !reply.trim()}
-                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff", backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "10px 20px", minHeight: "42px", cursor: "pointer", opacity: pending || !reply.trim() ? 0.5 : 1 }}
+                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13.5px", color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "10px 20px", minHeight: "42px", cursor: "pointer", opacity: pending || !reply.trim() ? 0.5 : 1 }}
                 >
                   {pending ? "Posting…" : "Reply"}
                 </button>
@@ -179,13 +176,13 @@ function Message({ message: m, roomId, canPost }: { message: Msg; roomId: string
       {canPost && !replying && !gone && (
         <button
           onClick={() => setReplying(true)}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: BLUE, background: "none", border: "none", cursor: "pointer", padding: "8px 0 0", marginLeft: m.replies.length > 0 ? "40px" : "52px", minHeight: "40px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.blue, background: "none", border: "none", cursor: "pointer", padding: "8px 0 0", marginLeft: m.replies.length > 0 ? "40px" : "52px", minHeight: "40px" }}
         >
           Reply
         </button>
       )}
 
-      {error && <p style={{ fontSize: "12.5px", color: RED, margin: "6px 0 0", marginLeft: "52px" }}>{error}</p>}
+      {error && <p style={{ fontSize: "12.5px", color: C.redText, margin: "6px 0 0", marginLeft: "52px" }}>{error}</p>}
     </div>
   );
 }
@@ -203,7 +200,7 @@ function Bubble({
       <Avatar initial={m.initial} />
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", gap: "10px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "3px" }}>
-          <span style={{ fontWeight: 700, fontSize: "14.5px", color: INK }}>{m.author}</span>
+          <span style={{ fontWeight: 700, fontSize: "14.5px", color: C.ink }}>{m.author}</span>
           {m.authorSchool && (
             <span style={{ fontSize: "12.5px", color: "#4A5A74" }}>{m.authorSchool}</span>
           )}
@@ -237,7 +234,7 @@ function ReplyBubble({ message: m }: { message: Msg }) {
       <Avatar initial={m.initial} small />
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", gap: "9px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "2px" }}>
-          <span style={{ fontWeight: 700, fontSize: "13.5px", color: INK }}>{m.author}</span>
+          <span style={{ fontWeight: 700, fontSize: "13.5px", color: C.ink }}>{m.author}</span>
           <span style={{ fontSize: "12px", color: "#4A5A74" }}>{m.when}</span>
         </div>
         {m.removed ? (
@@ -259,7 +256,7 @@ function Avatar({ initial, small }: { initial: string; small?: boolean }) {
       aria-hidden="true"
       style={{
         width: `${size}px`, height: `${size}px`, borderRadius: "9999px",
-        backgroundColor: "#F4F7FD", color: BLUE, display: "flex",
+        backgroundColor: "#F4F7FD", color: C.blue, display: "flex",
         alignItems: "center", justifyContent: "center", flexShrink: 0,
         fontWeight: 700, fontSize: small ? "13px" : "15px",
       }}

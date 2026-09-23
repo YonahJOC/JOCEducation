@@ -1,17 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { createUserAccount } from "@/app/actions/admin";
 import { ASSIGNABLE_ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const GREEN = "#1D6B37";
-const RULE = "rgba(16,35,63,.15)";
-
 const field: React.CSSProperties = {
-  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: INK,
-  backgroundColor: "#fff", border: `1px solid ${RULE}`, borderRadius: "10px",
+  width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
+  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "44px",
 };
 const label: React.CSSProperties = {
@@ -63,20 +59,20 @@ export function CreateUserForm({
   // The one moment the password is visible.
   if (created) {
     return (
-      <div style={{ backgroundColor: "#fff", border: `1.5px solid ${GREEN}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: GREEN, margin: "0 0 12px" }}>
+      <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.greenText}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+        <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: C.greenText, margin: "0 0 12px" }}>
           Account created
         </p>
         <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
-          Give these to <strong style={{ color: INK }}>{created.email}</strong>. The password is not stored
+          Give these to <strong style={{ color: C.ink }}>{created.email}</strong>. The password is not stored
           in readable form, so this is the only time it can be shown — they will be asked to change it when
           they first sign in.
         </p>
         <div style={{ backgroundColor: "#F4F7FD", borderRadius: "12px", padding: "14px 16px", marginBottom: "16px" }}>
-          <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "13.5px", color: INK, margin: "0 0 5px", wordBreak: "break-all" }}>
+          <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "13.5px", color: C.ink, margin: "0 0 5px", wordBreak: "break-all" }}>
             {created.email}
           </p>
-          <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "17px", fontWeight: 700, color: BLUE, margin: 0, letterSpacing: "0.01em" }}>
+          <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "17px", fontWeight: 700, color: C.blue, margin: 0, letterSpacing: "0.01em" }}>
             {created.password}
           </p>
         </div>
@@ -85,7 +81,7 @@ export function CreateUserForm({
             onClick={() => navigator.clipboard?.writeText(`${created.email}\n${created.password}`)}
             style={{
               fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-              backgroundColor: INK, border: "none", borderRadius: "9999px", padding: "11px 20px",
+              backgroundColor: C.ink, border: "none", borderRadius: "9999px", padding: "11px 20px",
               minHeight: "44px", cursor: "pointer",
             }}
           >
@@ -93,7 +89,7 @@ export function CreateUserForm({
           </button>
           <button
             onClick={() => setCreated(null)}
-            style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: BLUE, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.blue, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
           >
             Create another
           </button>
@@ -115,7 +111,7 @@ export function CreateUserForm({
         disabled={disabled}
         style={{
           fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-          backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 20px",
+          backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 20px",
           minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           whiteSpace: "nowrap",
         }}
@@ -128,7 +124,7 @@ export function CreateUserForm({
   return (
     <form
       onSubmit={submit}
-      style={{ backgroundColor: "#fff", border: `1.5px solid ${BLUE}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
+      style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
     >
       <p style={{ fontSize: "10.5px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
         Create an account
@@ -185,7 +181,7 @@ export function CreateUserForm({
           disabled={pending || !email.includes("@")}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: BLUE, border: "none", borderRadius: "9999px", padding: "11px 22px",
+            backgroundColor: C.blue, border: "none", borderRadius: "9999px", padding: "11px 22px",
             minHeight: "44px", cursor: email.includes("@") ? "pointer" : "not-allowed",
             opacity: pending || !email.includes("@") ? 0.5 : 1,
           }}

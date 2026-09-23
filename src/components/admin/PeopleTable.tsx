@@ -1,14 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { C } from "@/lib/joc-tokens";
 import { setUserAdminRole } from "@/app/actions/admin-roles";
 import { setUserRole, setUserActive, assignUserToSchool, resetUserPassword } from "@/app/actions/admin";
 import { setProgramLead } from "@/app/actions/forms";
 import { ROLE_LABELS, ROLE_DESCRIPTIONS, ASSIGNABLE_ROLES, type Role } from "@/lib/access";
-
-const INK = "#10233F";
-const BLUE = "#2D46AF";
-const RULE = "rgba(16,35,63,.15)";
 
 export const ROLE_COLOR: Record<string, string> = {
   SUPER_ADMIN: "#A3261A", ADMIN: "#2D46AF", STAFF: "#1D6B37",
@@ -167,7 +164,7 @@ function Row({
   return (
     <tr style={{ opacity: active ? 1 : 0.55 }}>
       <td style={td}>
-        <span style={{ fontWeight: 600, color: INK, display: "block" }}>{person.name ?? "No name on the account"}</span>
+        <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{person.name ?? "No name on the account"}</span>
         <span style={{ fontSize: "12.5px", color: "#4A5A74", wordBreak: "break-all" }}>{person.email}</span>
       {/* Which programs they run. Not an admin type and not a role — a
           coordinator holds no permission at all; being named here is the
@@ -188,7 +185,7 @@ function Row({
                 key={pid}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "2px",
-                  fontSize: "12px", fontWeight: 600, color: BLUE,
+                  fontSize: "12px", fontWeight: 600, color: C.blue,
                   backgroundColor: "rgba(45,70,175,.09)", borderRadius: "9999px",
                   padding: canSetCoordinators ? "3px 3px 3px 10px" : "3px 10px",
                   lineHeight: 1.5, maxWidth: "100%",
@@ -214,7 +211,7 @@ function Row({
                     disabled={disabled || pending}
                     style={{
                       width: "18px", height: "18px", flexShrink: 0, borderRadius: "50%",
-                      border: "none", background: "rgba(45,70,175,.12)", color: BLUE,
+                      border: "none", background: "rgba(45,70,175,.12)", color: C.blue,
                       fontSize: "13px", lineHeight: 1, cursor: disabled ? "not-allowed" : "pointer",
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
                       padding: 0,
@@ -277,7 +274,7 @@ function Row({
             <span style={{ display: "block", fontSize: "11px", color: "#4A5A74" }}>
               New password — shown once
             </span>
-            <span style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "14px", fontWeight: 700, color: BLUE }}>
+            <span style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "14px", fontWeight: 700, color: C.blue }}>
               {newPassword}
             </span>
           </span>
@@ -293,8 +290,8 @@ function Row({
               disabled={disabled || pending}
               style={{
                 fontFamily: "var(--font-outfit)", fontSize: "13px",
-                color: schoolId ? INK : "#C96C00", backgroundColor: "#fff",
-                border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
+                color: schoolId ? C.ink : "#C96C00", backgroundColor: "#fff",
+                border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
                 minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
                 maxWidth: "180px",
               }}
@@ -319,8 +316,8 @@ function Row({
             title={ROLE_DESCRIPTIONS[role as Role]}
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-              color: ROLE_COLOR[role] ?? INK, backgroundColor: "#fff",
-              border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
+              color: ROLE_COLOR[role] ?? C.ink, backgroundColor: "#fff",
+              border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
               minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
             }}
           >
@@ -363,8 +360,8 @@ function Row({
                 disabled={disabled || pending}
                 style={{
                   fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-                  color: adminType ? INK : "#4A5A74", backgroundColor: "#fff",
-                  border: `1px solid ${RULE}`, borderRadius: "9px", padding: "7px 9px",
+                  color: adminType ? C.ink : "#4A5A74", backgroundColor: "#fff",
+                  border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
                   minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
                 }}
               >

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { C } from "@/lib/joc-tokens";
 import { redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { ROLE_LABELS, ROLE_DESCRIPTIONS, canRunOwnSchool, type Role } from "@/lib/access";
@@ -8,8 +9,6 @@ import { signOutAction } from "@/app/actions/auth";
 
 export const metadata = { title: "Your account", robots: { index: false, follow: false } };
 
-const INK = "#10233F";
-const BLUE = "#2D46AF";
 const CARD: React.CSSProperties = {
   backgroundColor: "#fff", border: "1px solid rgba(16,35,63,.1)",
   borderRadius: "20px", padding: "24px", marginBottom: "16px",
@@ -49,7 +48,7 @@ export default async function AccountPage() {
       <p style={{ fontWeight: 700, fontSize: "11.5px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
         YOUR ACCOUNT
       </p>
-      <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: INK, marginBottom: "28px" }}>
+      <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, marginBottom: "28px" }}>
         {u.name ?? u.email}
       </h1>
 
@@ -82,7 +81,7 @@ export default async function AccountPage() {
         </p>
         <Link
           href="/account/password"
-          style={{ display: "inline-block", backgroundColor: BLUE, color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", textDecoration: "none" }}
+          style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: "9999px", padding: "12px 22px", textDecoration: "none" }}
         >
           Change password
         </Link>
@@ -93,12 +92,12 @@ export default async function AccountPage() {
           <p style={LABEL}>Where you can go</p>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             {openConsole && (
-              <Link href="/admin" style={{ fontSize: "14px", fontWeight: 600, color: BLUE, textDecoration: "none" }}>
+              <Link href="/admin" style={{ fontSize: "14px", fontWeight: 600, color: C.blue, textDecoration: "none" }}>
                 JOC Console →
               </Link>
             )}
             {canRunOwnSchool(u) && (
-              <Link href="/school" style={{ fontSize: "14px", fontWeight: 600, color: BLUE, textDecoration: "none" }}>
+              <Link href="/school" style={{ fontSize: "14px", fontWeight: 600, color: C.blue, textDecoration: "none" }}>
                 My school →
               </Link>
             )}
@@ -122,7 +121,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", padding: "7px 0", fontSize: "14.5px" }}>
       <span style={{ color: "#4A5A74", minWidth: "110px" }}>{label}</span>
-      <span style={{ color: INK, fontWeight: 500, wordBreak: "break-word" }}>{value}</span>
+      <span style={{ color: C.ink, fontWeight: 500, wordBreak: "break-word" }}>{value}</span>
     </div>
   );
 }
