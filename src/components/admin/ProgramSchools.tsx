@@ -7,7 +7,11 @@ import {
   STAGES, STAGE_LABEL, STAGE_MEANING, STAGE_TONE, countsAsIn,
   type Stage, type EnrolledRow,
 } from "@/lib/program-enrollment";
-import { C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import {
+  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
+  rowCard, rowInner, rowBody, rowAction, rowDetail, rowTitle, sectionHeading,
+  sectionIntro, field, fieldLabel, quietButton, plainChip, note,
+} from "@/lib/joc-tokens";
 
 /**
  * "Schools in <Program>" — who runs it, and how far along each one is.
@@ -54,10 +58,10 @@ export function ProgramSchools({
 
   return (
     <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto 16px" }} id="schools-in">
-      <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "24px 0 2px" }}>
+      <h2 style={sectionHeading}>
         Schools in {programName}
       </h2>
-      <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 14px", maxWidth: "64ch" }}>
+      <p style={sectionIntro}>
         Every school this program has reached, and how far along each one is. A school here is not on
         the &ldquo;not in {programName} yet&rdquo; list below, and counts as busy on every other
         program&rsquo;s traffic light.
@@ -106,8 +110,8 @@ function Row({
   const stuck = countsAsIn(row.stage) && STAGE_TONE[row.stage] === "setup" && daysSince(row.stageSince) > STUCK_DAYS;
 
   return (
-    <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch" }}>
+    <div style={rowCard}>
+      <div style={rowInner}>
         <div style={{
           flex: "1 1 170px", minWidth: 0, padding: "14px 18px", backgroundColor: tone.bg,
           display: "flex", flexDirection: "column", justifyContent: "center", gap: "3px",
@@ -118,8 +122,8 @@ function Row({
           </span>
         </div>
 
-        <div style={{ flex: "100 1 280px", minWidth: 0, padding: "16px 18px" }}>
-          <p style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 4px" }}>
+        <div style={rowBody}>
+          <p style={rowTitle}>
             <Link href={`/admin/schools/${row.schoolId}`} style={{ color: C.ink, textDecoration: "none" }}>
               {row.schoolName}
             </Link>
@@ -142,14 +146,14 @@ function Row({
                 : `${row.runs} on the calendar${row.nextRun ? ` · next ${day(row.nextRun)}` : ""}`}
             </span>
             {row.startedAt && (
-              <span style={{ ...chip, backgroundColor: C.panel, color: C.ink }}>
+              <span style={plainChip}>
                 First ran {day(row.startedAt)}
               </span>
             )}
           </div>
         </div>
 
-        <div style={{ flex: "1 1 200px", minWidth: 0, padding: "16px 18px", display: "flex", flexDirection: "column", gap: "8px", justifyContent: "center" }}>
+        <div style={rowAction}>
           {canEdit ? (
             <button type="button" onClick={() => setOpen(!open)} style={open ? secondaryButton : primaryButton}>
               {open ? "Close" : "Move it on"}
@@ -171,7 +175,7 @@ function Row({
       </div>
 
       {open && canEdit && (
-        <div style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px" }}>
+        <div style={rowDetail}>
           <MoveOn row={row} programId={programId} slug={slug} onDone={() => setOpen(false)} />
         </div>
       )}
@@ -201,7 +205,7 @@ function MoveOn({
     border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "11px 13px",
     minHeight: "44px", width: "100%", boxSizing: "border-box",
   };
-  const label: React.CSSProperties = { ...bandLabel, fontSize: "11px", color: C.muted, display: "block", marginBottom: "5px" };
+  const label: React.CSSProperties = fieldLabel;
 
   return (
     <div style={{ display: "grid", gap: "12px", maxWidth: "58ch" }}>
@@ -285,7 +289,7 @@ function MoveOn({
         <button
           type="button"
           onClick={onDone}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={quietButton}
         >
           Cancel
         </button>

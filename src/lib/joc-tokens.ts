@@ -75,3 +75,141 @@ export const bandLabel: React.CSSProperties = {
 export const bandFigure: React.CSSProperties = {
   fontFamily: font, fontSize: "30px", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.1,
 };
+
+// ─── The shapes the console is made of ───────────────────────────────────────
+//
+// Every one of these was copied into five or six components, which is how a
+// panel ends up two pixels off every other panel and nobody can say why. They
+// live here so a redesign is one file rather than a search.
+//
+// These are the *decisions*, not the structure. A component still decides what
+// goes in a row; this decides what a row looks like.
+
+/**
+ * A card or a list row. White, on the paper, carrying the shadow.
+ *
+ * Named rowCard rather than row because every component that draws one also
+ * has a variable called row holding the data for it.
+ */
+export const rowCard: React.CSSProperties = {
+  backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden",
+};
+
+/** The three parts of a row, which wrap on their own content at narrow widths. */
+export const rowInner: React.CSSProperties = {
+  display: "flex", flexWrap: "wrap", alignItems: "stretch",
+};
+
+/** The coloured left-hand block: a label and one big figure. */
+export const rowBand: React.CSSProperties = {
+  flex: "1 1 170px", minWidth: 0, padding: "14px 18px",
+  display: "flex", flexDirection: "column", justifyContent: "center", gap: "3px",
+};
+
+/** The name, the sentence, the chips. Grows far faster than the other two. */
+export const rowBody: React.CSSProperties = {
+  flex: "100 1 280px", minWidth: 0, padding: "16px 18px",
+};
+
+/** The button and whatever sits under it. */
+export const rowAction: React.CSSProperties = {
+  flex: "1 1 200px", minWidth: 0, padding: "16px 18px",
+  display: "flex", flexDirection: "column", gap: "8px", justifyContent: "center",
+};
+
+/** What opens underneath a row. */
+export const rowDetail: React.CSSProperties = {
+  borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px",
+};
+
+/** The name at the top of a row. */
+export const rowTitle: React.CSSProperties = {
+  fontFamily: font, fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em",
+  color: C.ink, margin: "0 0 4px",
+};
+
+/** A section's heading, and the paragraph under it that says what it is for. */
+export const sectionHeading: React.CSSProperties = {
+  fontFamily: font, fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em",
+  color: C.ink, margin: "24px 0 2px",
+};
+
+export const sectionIntro: React.CSSProperties = {
+  fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 14px", maxWidth: "64ch",
+};
+
+/** A page's own title. */
+export const pageTitle: React.CSSProperties = {
+  fontFamily: font, fontSize: "30px", fontWeight: 600, letterSpacing: "-0.03em",
+  color: C.ink, margin: "0 0 6px",
+};
+
+/** A text input, a select, a textarea. */
+export const field: React.CSSProperties = {
+  fontFamily: font, fontSize: "15px", color: C.ink, backgroundColor: C.white,
+  border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "11px 13px",
+  minHeight: "44px", width: "100%", boxSizing: "border-box",
+};
+
+/** The small uppercase label above one. */
+export const fieldLabel: React.CSSProperties = {
+  ...bandLabel, fontSize: "11px", color: C.muted, display: "block", marginBottom: "5px",
+};
+
+/** Under a field: what it is for, or what happens if you leave it. */
+export const fieldHint: React.CSSProperties = {
+  display: "block", fontSize: "13px", color: C.muted, marginTop: "5px", lineHeight: 1.5,
+};
+
+/**
+ * A blue underlined link that is really a button.
+ *
+ * The secondary action everywhere. It is a link rather than a second button
+ * because two buttons of equal weight beside each other is two decisions, and
+ * there is only ever one.
+ */
+export const textButton: React.CSSProperties = {
+  fontFamily: font, fontSize: "14px", fontWeight: 700, color: C.blue,
+  background: "none", border: "none", textDecoration: "underline",
+  cursor: "pointer", minHeight: "44px", padding: 0,
+};
+
+/** Cancel, dismiss, never mind. Quieter than textButton, and not blue. */
+export const quietButton: React.CSSProperties = {
+  fontFamily: font, fontSize: "15px", color: C.muted,
+  background: "none", border: "none", cursor: "pointer", minHeight: "44px",
+};
+
+/** A filter chip. Ink-filled when it is the one selected. */
+export function filterChip(on: boolean, tint?: { bg: string; fg: string }): React.CSSProperties {
+  return {
+    ...chip,
+    fontSize: "14px", padding: "10px 15px", minHeight: "44px", cursor: "pointer", border: "none",
+    backgroundColor: on ? C.ink : tint ? tint.bg : C.panel,
+    color: on ? C.white : tint ? tint.fg : C.ink,
+  };
+}
+
+/** The ordinary chip: a fact about a row, on the panel fill. */
+export const plainChip: React.CSSProperties = { ...chip, backgroundColor: C.panel, color: C.ink };
+
+/**
+ * Something the reader needs to know before they act.
+ *
+ * Orange is "this is not right yet"; panel is "here is how this works". There
+ * is no red one, because nothing on these screens is an error the reader
+ * caused.
+ */
+export function note(tone: "warn" | "info"): React.CSSProperties {
+  return {
+    backgroundColor: tone === "warn" ? C.orangeTint : C.panel,
+    borderRadius: R.form, padding: "13px 16px", margin: "0 0 14px",
+  };
+}
+
+export function noteText(tone: "warn" | "info"): React.CSSProperties {
+  return {
+    fontSize: "15px", color: tone === "warn" ? C.orangeText : C.muted,
+    margin: 0, lineHeight: 1.55, maxWidth: "70ch",
+  };
+}

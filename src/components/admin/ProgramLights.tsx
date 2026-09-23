@@ -6,7 +6,11 @@ import {
   type Channel, type AgendaKind,
 } from "@/app/actions/program-lights";
 import { LIGHT_LABEL, LIGHT_MEANING, LIGHT_COLOR, type Light } from "@/lib/program-lights";
-import { C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import {
+  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
+  rowCard, rowInner, rowBody, rowDetail, rowTitle, sectionHeading, sectionIntro,
+  field, fieldLabel, quietButton, note,
+} from "@/lib/joc-tokens";
 import type { ProgramTraffic, TrafficRow } from "@/lib/program-traffic";
 
 /**
@@ -42,10 +46,10 @@ export function ProgramLights({
 
   return (
     <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto 16px" }} id="not-in-yet">
-      <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "24px 0 2px" }}>
+      <h2 style={sectionHeading}>
         Not in {programName} yet
       </h2>
-      <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 14px", maxWidth: "64ch" }}>
+      <p style={sectionIntro}>
         Every school this program has not reached. The light says whether to approach them — it is
         worked out overnight from what the rest of JOC is already doing with that school.
       </p>
@@ -121,8 +125,8 @@ function LightRow({
       : null;
 
   return (
-    <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch" }}>
+    <div style={rowCard}>
+      <div style={rowInner}>
         <div style={{
           flex: "1 1 200px", minWidth: 0, padding: "14px 18px", backgroundColor: c.tint,
           display: "flex", gap: "12px", alignItems: "center",
@@ -133,8 +137,8 @@ function LightRow({
           </span>
         </div>
 
-        <div style={{ flex: "100 1 280px", minWidth: 0, padding: "16px 18px" }}>
-          <p style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 4px" }}>
+        <div style={rowBody}>
+          <p style={rowTitle}>
             {row.name}
             {row.place && (
               <span style={{ fontSize: "15px", fontWeight: 400, color: C.muted }}> · {row.place}</span>
@@ -200,7 +204,7 @@ function LightRow({
       </div>
 
       {open === "act" && !done && !already && (
-        <div style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px" }}>
+        <div style={rowDetail}>
           {row.light === "GREEN" ? (
             <ReachOutForm
               programId={programId}
@@ -222,7 +226,7 @@ function LightRow({
       )}
 
       {open === "light" && (
-        <div style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px" }}>
+        <div style={rowDetail}>
           <ChangeLightForm
             programId={programId}
             slug={slug}
@@ -261,13 +265,8 @@ function Housing({ light }: { light: Light }) {
 
 // ─── The three forms ─────────────────────────────────────────────────────────
 
-const field: React.CSSProperties = {
-  fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink, backgroundColor: C.white,
-  border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "11px 13px",
-  minHeight: "44px", width: "100%", boxSizing: "border-box",
-};
 
-const label: React.CSSProperties = { ...bandLabel, fontSize: "11px", color: C.muted, display: "block", marginBottom: "5px" };
+const label: React.CSSProperties = fieldLabel;
 
 function ReachOutForm({
   programId, slug, schoolId, onDone,
@@ -474,7 +473,7 @@ function ChangeLightForm({
         <button
           type="button"
           onClick={onDone}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={quietButton}
         >
           Cancel
         </button>

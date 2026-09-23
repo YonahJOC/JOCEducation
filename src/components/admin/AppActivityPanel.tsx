@@ -6,7 +6,9 @@ import { logSchoolTouch } from "@/app/actions/school-status";
 import { syncAppNow } from "@/app/actions/app-sync";
 import { hours, schoolYear, compareRows } from "@/lib/app-flags";
 import {
-  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, bandFigure,
+  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
+  bandFigure, rowCard, rowInner, rowBody, rowAction, rowDetail, rowTitle, field,
+  note,
 } from "@/lib/joc-tokens";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
@@ -133,8 +135,8 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
     : { bg: C.orange, fg: C.ink };
 
   return (
-    <div data-school={row.schoolId} style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch" }}>
+    <div data-school={row.schoolId} style={rowCard}>
+      <div style={rowInner}>
         <div style={{
           flex: "1 1 170px", minWidth: 0, padding: "14px 18px",
           backgroundColor: band.bg, color: band.fg,
@@ -148,8 +150,8 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
           </span>
         </div>
 
-        <div style={{ flex: "100 1 280px", minWidth: 0, padding: "16px 18px" }}>
-          <p style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 4px" }}>
+        <div style={rowBody}>
+          <p style={rowTitle}>
             {row.name}
           </p>
           {f ? (
@@ -172,7 +174,7 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
           <Badges row={row} />
         </div>
 
-        <div style={{ flex: "1 1 200px", minWidth: 0, padding: "16px 18px", display: "flex", flexDirection: "column", gap: "8px", justifyContent: "center" }}>
+        <div style={rowAction}>
           <button type="button" onClick={onToggle} style={f ? primaryButton : secondaryButton}>
             {open ? "Close" : f ? f.action.label : "Open school"}
           </button>
@@ -234,7 +236,7 @@ function Detail({ row }: { row: AppRow }) {
   const st = row.stats;
 
   return (
-    <div style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px" }}>
+    <div style={rowDetail}>
       {row.message && (
         <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "16px 18px", marginBottom: "14px" }}>
           <p style={{ ...bandLabel, color: C.blue, margin: "0 0 6px" }}>Waiting on us</p>

@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { scheduleMeeting, decideItem, closeMeeting, type Outcome } from "@/app/actions/program-lights";
 import { LIGHT_LABEL, LIGHT_COLOR, type Light } from "@/lib/program-lights";
-import { C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import {
+  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
+  pageTitle, field, fieldLabel, quietButton, plainChip, note,
+} from "@/lib/joc-tokens";
 
 /**
  * The admin meeting, as a page to work through rather than minutes to write.
@@ -66,7 +69,7 @@ export function AdminMeetingClient({ meetings }: { meetings: MeetingView[] }) {
 
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
-      <h1 style={{ fontFamily: "var(--font-outfit)", fontSize: "30px", fontWeight: 600, letterSpacing: "-0.03em", color: C.ink, margin: "0 0 6px" }}>
+      <h1 style={pageTitle}>
         Admin meeting
       </h1>
       <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 22px", maxWidth: "66ch" }}>
@@ -195,7 +198,7 @@ function Item({ item, closed }: { item: MeetingView["items"][number]; closed: bo
             <span style={{ ...chip, backgroundColor: c.tint, color: c.text }}>
               {LIGHT_LABEL[item.light as Light] ?? item.light}
             </span>
-            <span style={{ ...chip, backgroundColor: C.panel, color: C.ink }}>
+            <span style={plainChip}>
               {KIND_LABEL[item.kind] ?? item.kind}
             </span>
           </span>
@@ -246,7 +249,7 @@ function Decide({ itemId, current, onDone }: { itemId: string; current: Light; o
     border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "11px 13px",
     minHeight: "44px", width: "100%", boxSizing: "border-box",
   };
-  const label: React.CSSProperties = { ...bandLabel, fontSize: "11px", color: C.muted, display: "block", marginBottom: "5px" };
+  const label: React.CSSProperties = fieldLabel;
 
   return (
     <div style={{ display: "grid", gap: "11px", marginTop: "12px", maxWidth: "52ch" }}>
@@ -310,7 +313,7 @@ function Decide({ itemId, current, onDone }: { itemId: string; current: Light; o
         >
           {pending ? "Saving…" : "Record it"}
         </button>
-        <button type="button" onClick={onDone} style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}>
+        <button type="button" onClick={onDone} style={quietButton}>
           Cancel
         </button>
       </div>

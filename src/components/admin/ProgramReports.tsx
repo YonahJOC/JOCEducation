@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { ProgramReporting } from "@/lib/ambassadors";
-import { C, R, ROW_SHADOW, CONTENT_MAX, chip, bandLabel } from "@/lib/joc-tokens";
+import {
+  C, R, ROW_SHADOW, CONTENT_MAX, chip, bandLabel, sectionHeading, sectionIntro,
+  plainChip,
+} from "@/lib/joc-tokens";
 
 /**
  * What the ambassadors are reporting, for JOC.
@@ -28,7 +31,7 @@ export function ProgramReports({
   if (data.totals.ambassadors === 0) {
     return (
       <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto 16px" }} id="reports">
-        <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "24px 0 2px" }}>
+        <h2 style={sectionHeading}>
           What the ambassadors report
         </h2>
         <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "24px", marginTop: "12px" }}>
@@ -45,10 +48,10 @@ export function ProgramReports({
 
   return (
     <div style={{ maxWidth: CONTENT_MAX, margin: "0 auto 16px" }} id="reports">
-      <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "24px 0 2px" }}>
+      <h2 style={sectionHeading}>
         What the ambassadors report
       </h2>
-      <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 14px", maxWidth: "64ch" }}>
+      <p style={sectionIntro}>
         Written by the students who run it, counted here. No student is named — that stays with their
         own teacher. Participation figures are the students&rsquo; own estimates.
       </p>
@@ -74,7 +77,7 @@ export function ProgramReports({
                 </Link>
               </span>
               <span style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "6px" }}>
-                <span style={{ ...chip, backgroundColor: C.panel, color: C.ink }}>
+                <span style={plainChip}>
                   {s.ambassadors} ambassador{s.ambassadors === 1 ? "" : "s"}
                 </span>
                 <span style={{ ...chip, backgroundColor: C.panel, color: s.reportsThisMonth === 0 ? C.orangeText : C.ink }}>
