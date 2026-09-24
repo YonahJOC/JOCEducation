@@ -9,7 +9,16 @@ import { label as uiLabel, ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 const PREP_LABELS: Record<string, string> = { all: "Any prep", Minimal: "Minimal", Moderate: "Moderate", Substantial: "Substantial" };
 
 /** Search and filtering over whatever lessons the server handed us. */
-export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
+export function LessonsBrowser({
+  lessons, savedIds = [], startSaved = false,
+}: {
+  lessons: PublicLesson[];
+  /** The signed-in person's starred lessons. Empty when nobody is. */
+  savedIds?: number[];
+  /** Opened from the teacher's home, which links straight to them. */
+  startSaved?: boolean;
+}) {
+  const [onlySaved, setOnlySaved] = useState(startSaved && savedIds.length > 0);
   const [grade, setGrade] = useState("all");
   const [time, setTime] = useState("all");
   const [prep, setPrep] = useState("all");
@@ -17,6 +26,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
 
   const filtered = useMemo(() => {
     return lessons.filter((l) => {
+      if (onlySaved && !savedIds.includes(l.id)) return false;
       if (grade !== "all" && l.grade !== grade) return false;
       if (time !== "all") {
         if (time === "90" && Number(l.time) < 90) return false;
@@ -29,7 +39,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
       }
       return true;
     });
-  }, [lessons, grade, time, prep, query]);
+  }, [lessons, onlySaved, savedIds, grade, time, prep, query]);
 
   return (
     <>
@@ -46,6 +56,18 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "center" }}>
+          {/* Only where there is something to show: a filter that always
+              comes back empty is worse than no filter. */}
+          {savedIds.length > 0 && (
+            <FilterGroup label="Yours">
+              <Chip
+                label={`Saved · ${savedIds.length}`}
+                active={onlySaved}
+                onClick={() => setOnlySaved(!onlySaved)}
+              />
+            </FilterGroup>
+          )}
+
           <FilterGroup label="Grade">
             {Object.entries(GRADE_LABELS).map(([k, v]) => (
               <Chip key={k} label={v} active={grade === k} onClick={() => setGrade(k)} />

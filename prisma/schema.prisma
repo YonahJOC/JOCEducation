@@ -39,6 +39,12 @@ model School {
 
   status SchoolStatus @default(PROSPECT)
 
+  /// The day the full education site was opened to this school. Null for
+  /// every school today: they are on their programs and nothing else, which
+  /// is what the rollout is. Everything else about access is derived, so
+  /// this is the only switch anybody has to remember.
+  fullSiteLaunchedAt DateTime?
+
   // ── Where they are up to ───────────────────────────────────────────────
   // Each of these is a date rather than a tick, so the board can say how long
   // something has been true. A tick only ever says "yes", and the useful
@@ -86,6 +92,8 @@ model School {
   appMessages   AppSchoolMessage[]
 
   programLights SchoolProgramLight[]
+  inquiries     Inquiry[]
+  payments      Payment[]
   agendaItems   AdminMeetingItem[]
   enrollments   ProgramEnrollment[]
   ambassadors   ProgramAmbassador[]
@@ -206,6 +214,132 @@ enum PlanRequestStatus {
 
 /// Demo requests from the educator landing page scheduler — the top of the
 /// sales pipeline, before a School record exists.
+/**
+ * A school asking for something it does not have yet.
+ *
+ * The only thing that travels from a school to JOC. It is filed against the
+ * school and read on a console; nothing is sent to the school in return, and
+ * the answer happens outside the portal.
+ *
+ * One open inquiry per school per thing, so asking twice does not file twice.
+ */
+model Inquiry {
+  id       String @id @default(cuid())
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  /// What they asked about: "lessons", "resources", "cycles", "board",
+  /// "rooms", or a program slug.
+  kind String
+
+  /// Set when the ask was about a program we run.
+  programId Int?
+  program   ProgramPage? @relation(fields: [programId], references: [id], onDelete: SetNull)
+
+  /// Who pressed it.
+  askedById String?
+  askedBy   User?   @relation("InquiryAsker", fields: [askedById], references: [id], onDelete: SetNull)
+
+  status      InquiryStatus @default(OPEN)
+  /// What JOC did about it, in the words they chose to share.
+  response    String?       @db.Text
+  answeredById String?
+  answeredBy   User?        @relation("InquiryAnswerer", fields: [answeredById], references: [id], onDelete: SetNull)
+  answeredAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([schoolId, kind, status])
+  @@index([schoolId])
+  @@index([status])
+}
+
+enum InquiryStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
+
+/**
+ * One movement of money.
+ *
+ * Every figure on every money screen is a query over this table. Nothing
+ * before it could answer "what did the Kindness Booth bring in" — a
+ * subscription is per school with no program, an order is shop products, and
+ * a program fee was a boolean with no amount and no date.
+ *
+ * A refund is a new row pointing at what it refunds, never an edit to the
+ * original. A grant is a row of zero with a reason and a name against it,
+ * which is not the same thing as nothing.
+ */
+model Payment {
+  id String @id @default(cuid())
+
+  /// Required. Money that cannot be attributed to a school is shown to
+  /// nobody, so it is not recorded here.
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  /// Set ONLY for money that was for one program. A plan covers several and
+  /// is never split across them.
+  programId Int?
+  program   ProgramPage? @relation(fields: [programId], references: [id], onDelete: SetNull)
+
+  subscriptionId String?
+
+  kind PaymentKind
+
+  /// Refunds are negative. Grants are zero.
+  amountCents Int
+  currency    String @default("usd")
+
+  paidAt DateTime
+
+  /// "2026-27". Stored rather than worked out from paidAt, because a school
+  /// year does not start in January and a payment can land either side of it.
+  schoolYear String
+
+  /// A refund points at what it refunds.
+  refundOfId String?
+
+  grantKind GrantKind?
+  /// Required when this is a grant or a refund.
+  reason    String?    @db.Text
+
+  /// Who agreed the grant or the refund.
+  decidedById String?
+  decidedBy   User?   @relation("PaymentDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+
+  stripePaymentIntentId String? @unique
+  stripeInvoiceId       String? @unique
+  stripeChargeId        String? @unique
+
+  /// Links a program fee to the sign-up it paid for.
+  formResponseId String?
+  /// Links a shop payment to its order.
+  orderId        String?
+
+  /// Null when the Stripe webhook wrote it; a name when somebody did.
+  recordedById String?
+  recordedBy   User?   @relation("PaymentRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([schoolId])
+  @@index([programId])
+  @@index([schoolYear])
+  @@index([kind])
+}
+
+enum PaymentKind {
+  PROGRAM_FEE
+  PLAN
+  SHOP
+  REFUND
+  GRANT
+}
+
 model DemoRequest {
   id           String            @id @default(cuid())
   name         String
@@ -287,6 +421,10 @@ model User {
   ambassadorships  ProgramAmbassador[]  @relation("AmbassadorUser")
   supervising      ProgramAmbassador[]  @relation("AmbassadorSupervisor")
   ambassadorInvites AmbassadorInvite[]  @relation("AmbassadorInviter")
+  inquiriesAsked    Inquiry[]  @relation("InquiryAsker")
+  inquiriesAnswered Inquiry[]  @relation("InquiryAnswerer")
+  paymentsDecided   Payment[]  @relation("PaymentDecider")
+  paymentsRecorded  Payment[]  @relation("PaymentRecorder")
   agendaRaised     AdminMeetingItem[]   @relation("AgendaRaisedBy")
   agendaDecided    AdminMeetingItem[]   @relation("AgendaDecidedBy")
 
@@ -818,6 +956,12 @@ model ProgramPage {
 
   /// Set for a program that lives on another JOC site, e.g. Chesed Match.
   externalHref String?
+
+  /// The standalone portal a school runs this program in day to day — the
+  /// JOC App, the Kindness Booth's own materials. Not externalHref, which is
+  /// a public page hosted elsewhere. Null means nobody has set it yet, and
+  /// the school is told that in words rather than shown a dead button.
+  portalHref String?
   cta          String  @default("Register your school")
 
   published Boolean @default(false)
@@ -850,6 +994,8 @@ model ProgramPage {
   videoUrl String?
   steps ProgramStep[]
   activities ProgramActivity[]
+  inquiries Inquiry[]
+  payments  Payment[]
   events ProgramEvent[]
 
   createdAt DateTime @default(now())

@@ -1,6 +1,8 @@
 import { getPublishedLessons } from "@/lib/content";
 import { LessonsBrowser } from "./LessonsBrowser";
 import { C, label } from "@/lib/joc-tokens";
+import { safeAuth } from "@/auth";
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 
 export const metadata = { title: "Lesson Plans" };
 
@@ -8,8 +10,30 @@ export const metadata = { title: "Lesson Plans" };
  * Reads whatever the Education Team has published. Filtering happens in the
  * browser component; the list itself comes from the database.
  */
-export default async function LessonPlansPage() {
-  const lessons = await getPublishedLessons();
+export default async function LessonPlansPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ saved?: string }>;
+}) {
+  const [lessons, { saved }, session] = await Promise.all([
+    getPublishedLessons(),
+    searchParams,
+    safeAuth(),
+  ]);
+
+  // What this person has starred. The teacher's home links here with ?saved=1,
+  // and until now that filter did not exist — the chip counted lessons and
+  // then opened the whole library.
+  const me = session?.user?.id;
+  const savedIds =
+    me && isDatabaseConfigured()
+      ? (
+          await prisma.savedLesson.findMany({
+            where: { userId: me },
+            select: { lessonId: true },
+          })
+        ).map((s) => s.lessonId)
+      : [];
 
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 26px 64px" }}>
@@ -21,7 +45,7 @@ export default async function LessonPlansPage() {
         Ready-to-use chesed lesson plans for elementary, middle, and high school. Download the full plan and all printables in one click.
       </p>
 
-      <LessonsBrowser lessons={lessons} />
+      <LessonsBrowser lessons={lessons} savedIds={savedIds} startSaved={saved === "1"} />
     </div>
   );
 }

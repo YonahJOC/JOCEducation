@@ -295,10 +295,14 @@ body {
 /* Program console cards, and the Today tab's two columns. */
 /* Three across, as in 2a. auto-fit at 260px gave four narrow columns on a
    1280 screen, and every card's status line wrapped to two lines of mono. */
+/* 2a is three across at 329px, and the card needs about that: below it the
+   program's name and the mono status line both wrap, and a grid of cards
+   whose every line breaks in a different place is what "ugly" looks like. */
 .joc-program-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 14px;
+  align-items: stretch;
 }
 
 @media (max-width: 680px) {

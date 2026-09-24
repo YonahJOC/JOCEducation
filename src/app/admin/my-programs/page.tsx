@@ -80,6 +80,9 @@ export default async function MyProgramsPage() {
   // where somebody with twenty minutes should find it.
   cards.sort((a, b) => b.need - a.need || a.name.localeCompare(b.name));
 
+  const needing = cards.filter((c) => c.need > 0).length;
+  const unled = cards.filter((c) => !c.lead).length;
+
   return (
     <div>
       <p style={{ ...label, color: C.muted, margin: "0 0 6px" }}>
@@ -90,9 +93,11 @@ export default async function MyProgramsPage() {
       <SectionLinks section="programs" />
 
       <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 18px", maxWidth: "62ch" }}>
-        {all
-          ? "Every program's own console — the same page its coordinator opens. Sorted by what needs somebody today."
-          : "The programs you run. Sorted by what needs you today."}
+        {all ? "Every program's own console — the same page its coordinator opens. " : "The programs you run. "}
+        {needing === 0
+          ? "Nothing needs anybody today."
+          : `${needing} need${needing === 1 ? "s" : ""} somebody today, and ${needing === 1 ? "it is" : "they are"} first.`}
+        {unled > 0 && ` ${unled} ${unled === 1 ? "has" : "have"} nobody down as running ${unled === 1 ? "it" : "them"}.`}
       </p>
 
       {cards.length === 0 ? (
@@ -123,25 +128,29 @@ export default async function MyProgramsPage() {
                   </span>
                 </div>
 
-                <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.45, color: p.lead ? C.muted : C.orangeText, margin: 0 }}>
-                  {p.lead ? `Run by ${p.lead}` : "Nobody is down as running it"}
+                {/* What differs between these eight, so it is what the eye
+                    lands on. 2a puts the figure here instead, but 2a has a
+                    four, a two, a three and a one — ours are eight noughts,
+                    and a nought printed at thirty pixels in eight places is
+                    the loudest thing on the page saying the least. */}
+                <p style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 500, lineHeight: 1.4, color: p.lead ? C.muted : C.orangeText, margin: 0 }}>
+                  {p.lead ? `Run by ${p.lead}` : "Nobody down as running it"}
                 </p>
 
-                {/* The figure is the card, and a nought is a figure. It was
-                    dropped to the size of its own line when it was zero,
-                    which left seven of eight cards with no anchor at all. */}
-                <p style={{ display: "flex", alignItems: "baseline", gap: "8px", margin: 0, flexWrap: "wrap" }}>
-                  <span style={{ ...bandFigure, color: p.need > 0 ? C.orangeText : C.greenText }}>
-                    {p.need}
-                  </span>
-                  <span style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.ink }}>
-                    {p.need === 1 ? "needs you today" : "need you today"}
-                  </span>
-                </p>
+                {/* The figure only where there is one. The line above the grid
+                    carries the nought, once. */}
+                {p.need > 0 && (
+                  <p style={{ display: "flex", alignItems: "baseline", gap: "8px", margin: 0, flexWrap: "wrap" }}>
+                    <span style={{ ...bandFigure, color: C.orangeText }}>{p.need}</span>
+                    <span style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.ink }}>
+                      {p.need === 1 ? "needs you today" : "need you today"}
+                    </span>
+                  </p>
+                )}
 
                 {/* Each kind of program is asked the question that is about
                     it, so no two of these lines are the same. */}
-                <p style={{ ...datum, color: p.status.warn ? C.orangeText : C.muted, margin: 0 }}>
+                <p style={{ ...datum, fontSize: "12px", color: p.status.warn ? C.orangeText : C.ink, margin: "auto 0 0", paddingTop: "2px" }}>
                   {p.status.text}
                 </p>
               </div>

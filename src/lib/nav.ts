@@ -118,6 +118,10 @@ export function schoolNav(user: Parameters<typeof canRunOwnSchool>[0]): NavItem[
   if (canRunSchoolApp(user) || canRunOwnSchool(user)) {
     items.push({ label: "Our programs", href: "/school/programs" });
     items.push({ label: "Chesed activity", href: "/school/activity" });
+    // How the school is doing on each Cycle against the rest. It has been
+    // built and reachable by typing the address only — nothing has ever
+    // linked to it.
+    items.push({ label: "Cycle progress", href: "/school/cycles" });
     items.push({ label: "Ambassadors", href: "/school/ambassadors" });
   }
 
