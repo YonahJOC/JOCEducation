@@ -78,8 +78,12 @@ export function jocNav(
   if (can(user, "programming")) items.push({ label: "Calendar", href: "/admin/programming", hint: "What is running, and where" });
   if (can(user, "run_admin_agenda")) items.push({ label: "Admin meeting", href: "/admin/meetings", hint: "Schools sent for a decision" });
   if (can(user, "lessons")) items.push({ label: "Teaching material", href: "/admin/lessons", hint: "Lessons, resources and cycles" });
-  if (can(user, "cycles") && !can(user, "lessons")) {
-    items.push({ label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes and their dates" });
+  // The Cycles are their own job, not a corner of the teaching material.
+  // Folding them under it cost the person who actually keeps them — the
+  // dates, the themes, the guiding questions — her one-click way in, and
+  // she is in there more often than anyone is in the lesson library.
+  if (can(user, "cycles")) {
+    items.push({ label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes, their dates and their weeks" });
   }
   if (can(user, "orders") || can(user, "pricing")) items.push({ label: "Money", href: "/admin/orders", hint: "Orders and pricing" });
   if (can(user, "users")) items.push({ label: "People & access", href: "/admin/users", hint: "Accounts, roles and passwords" });
@@ -94,11 +98,14 @@ export function jocNav(
   //
   // Anything dropped here is listed on its section's hub, so it stays
   // reachable. See SectionLinks.
+  // In the order they go, not in the order they were pushed. Somebody who
+  // holds every capability builds nine; the two that come out are the two
+  // that are also listed on a hub, and People & access is on neither list.
   const DROPPABLE = ["Calendar", "Chesed Cycles"];
-  while (items.length > 7) {
-    const i = items.findIndex((x) => DROPPABLE.includes(x.label));
-    if (i < 0) break;
-    items.splice(i, 1);
+  for (const label of DROPPABLE) {
+    if (items.length <= 7) break;
+    const i = items.findIndex((x) => x.label === label);
+    if (i >= 0) items.splice(i, 1);
   }
 
   return items.slice(0, 7);

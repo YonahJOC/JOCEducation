@@ -301,6 +301,10 @@ body {
   gap: 14px;
 }
 
+@media (max-width: 680px) {
+  .joc-program-cards { grid-template-columns: minmax(0, 1fr); }
+}
+
 .joc-today {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
