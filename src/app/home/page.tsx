@@ -5,6 +5,8 @@ import { hasSiteAccess } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { PersonalHome, cyclesStartedSince, type HomeData } from "@/components/sections/PersonalHome";
 import { myAmbassadorship } from "@/lib/ambassadors";
+import { schoolAccess } from "@/lib/school-access";
+import { ProgramsHome } from "@/components/sections/ProgramsHome";
 
 export const metadata: Metadata = {
   title: "JOC Education",
@@ -30,6 +32,28 @@ export default async function HomePage() {
     // theirs, so the access check below would send every one of them to
     // /no-access — the platform, unreachable, for the people it is for.
     if (!hasSiteAccess(session.user) && (await myAmbassadorship())) redirect("/ambassador");
+
+    // A school on its programs gets its programs. The Cycle, the lessons and
+    // the saved plans are not theirs yet, and showing them greyed out would
+    // be a locked door where there should be a conversation.
+    const access = await schoolAccess(session.user.schoolId);
+    if (access.state === "PROGRAMS") {
+      const schoolName = session.user.schoolId && isDatabaseConfigured()
+        ? (await prisma.school.findUnique({
+            where: { id: session.user.schoolId },
+            select: { name: true },
+          }))?.name ?? null
+        : null;
+
+      return (
+        <ProgramsHome
+          access={access}
+          schoolId={session.user.schoolId}
+          schoolName={schoolName}
+          firstName={session.user.name?.trim().split(/s+/)[0] ?? null}
+        />
+      );
+    }
 
     if (!hasSiteAccess(session.user)) redirect("/no-access");
     return <PersonalHome data={await loadHome(session.user)} />;

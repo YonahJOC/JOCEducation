@@ -36,12 +36,34 @@ export type HeaderAccount = {
   console: boolean;
   /** Runs a school and can open their own school panel. */
   school: boolean;
+  /**
+   * The programs this school runs, when the full site is not theirs yet.
+   *
+   * Null means the whole site — a subscriber, or JOC's own staff. An array
+   * means those programs and "What else JOC does", and nothing else: a header
+   * that offers a lesson library which will not open is a header that lies.
+   */
+  programs?: { slug: string; name: string; heroColor: string }[] | null;
 } | null;
 
 export function Header({ account = null }: { account?: HeaderAccount }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const nav = account ? [...NAV, HOME_ITEM] : NAV;
+  // A school on its programs is offered its programs. Everything else on
+  // the site is a page it cannot open, and the way to ask for those is one
+  // item rather than nine dead ends.
+  const nav = account?.programs
+    ? [
+        HOME_ITEM,
+        ...account.programs.map((p) => ({
+          label: p.name,
+          href: `/school/programs/${p.slug}`,
+        })),
+        { label: "What else JOC does", href: "/not-yet/programs" },
+      ]
+    : account
+    ? [...NAV, HOME_ITEM]
+    : NAV;
 
   useEffect(() => {
     setOpen(false);

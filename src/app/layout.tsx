@@ -7,6 +7,7 @@ import { ChromeGate } from "@/components/layout/ChromeGate";
 import { safeAuth } from "@/auth";
 import { canRunOwnSchool, ROLE_LABELS, type Role } from "@/lib/access";
 import { canOpenConsole } from "@/lib/program-admin";
+import { schoolAccess } from "@/lib/school-access";
 // Refuses to serve a production build that cannot authenticate anybody.
 import "@/lib/boot";
 
@@ -86,6 +87,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // door without lighting the way to it is the same as leaving it shut —
   // which is exactly what happened.
   const consoleAccess = await canOpenConsole(u);
+
+  // A school that runs programs and has not been given the site gets a header
+  // of its programs. JOC's own people, and schools on the full site, keep the
+  // whole thing.
+  const access = consoleAccess ? null : await schoolAccess(u?.schoolId ?? null);
   const account: HeaderAccount = u?.email
     ? {
         email: u.email,
@@ -93,6 +99,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         roleLabel: ROLE_LABELS[(u.role ?? "TEACHER") as Role] ?? "Member",
         console: consoleAccess,
         school: canRunOwnSchool(u),
+        programs: access?.state === "PROGRAMS" ? access.programs : null,
       }
     : null;
 

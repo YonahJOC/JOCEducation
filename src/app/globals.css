@@ -479,3 +479,21 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .joc-card:hover { transform: none; }
 }
+
+/* The four steps of a program, across on a desktop and down on a phone. */
+.joc-path {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* The rest of what JOC does. Three quiet panels, never a price. */
+.joc-also {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 560px) {
+  .joc-path { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+}
