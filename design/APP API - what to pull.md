@@ -19,77 +19,70 @@ on.
 
 ---
 
+## What the console is for
+
+**Triage, not detail.** The console answers one question about each school —
+does this need somebody today — and then hands over. A school's own figures,
+its students, its opportunities and its store belong in the App's admin panel,
+which the school opens itself.
+
+So the rule for everything below: if a number changes what JOC does next, pull
+it. If it is something a school would look up about itself, link to the App
+instead of copying it here. Copying it means two places to keep right, and the
+App is the one that is actually right.
+
+---
+
 ## Pull these
 
-### 1. The headline figures — one call
+### 1. The headline figures — one call per school
 
-`GET /organisations/{id}/dashboard` returns, in one response, most of what the
-console shows today:
+`GET /organisations/{id}/dashboard`, which carries nearly everything the
+console draws:
 
 | Field | Feeds |
 |---|---|
+| `claimsCount` | **hours waiting on a teacher** — the console's loudest flag |
 | `hoursInSchoolYear` | hours this year |
-| `totalSpendTime` | hours all time |
-| `claimsCount` | **hours waiting on a teacher** — the console's headline flag |
 | `volunteersTotal` | students on the app |
-| `volunteersGroups` | how many classes |
-| `opportunitiesUpcoming` | opportunities open |
+| `opportunitiesUpcoming` | is anything coming up |
 | `opportunitiesPendingVolunteers` | places nobody has taken |
-| `opportunitiesVacancies` | spare places on what is booked |
-| `opportunitiesPast` / `opportunitiesTotal` | what has run |
-| `countOpportunitiesInSchoolYear` | this year's activity |
 
-It takes an `x-time-zone-offset` header, which matters — a day boundary
-decides whether an hour counts as "this week".
+It takes an `x-time-zone-offset` header, which decides whether an hour counts
+as "this week".
 
-### 2. What is waiting on a teacher
+### 2. The oldest thing waiting
 
-`POST /claims/searchClaims` with `isAccepted` set to the pending status.
+`POST /claims/searchClaims` filtered to pending — for **the count and the
+oldest date only**. That is what makes a row say "oldest since 8 Sep" and what
+fills the three ageing buckets. See the warning below about what else that
+response carries.
 
-**Pull the count and the oldest date. Do not pull the records.** See the
-warning below.
+### 3. Whether a school is going quiet
 
-That gives `unapprovedEntries`, `unapprovedStudents` (distinct `userId`) and
-`unapprovedOldestAt`, and the three ageing buckets the console already draws.
+`GET /statistics/organisation-statistics-general?fromDate&toDate` over two
+windows gives the movement behind "STUDENTS DROPPING 62 → 27", and
+`organisation-statistics-users-logins` answers "nothing logged since 2 Sep".
+Both are triage: they are the reason somebody picks up the phone.
 
-### 3. Movement over time
+### 4. The school's own year
 
-`GET /statistics/organisation-statistics-general?fromDate&toDate` returns
-`volunteers`, `opportunities` and `chesedHours` as comparable items, which is
-exactly what the "STUDENTS DROPPING 62 → 27" row needs — two windows, not one
-number.
+`GET /schools/{id}` gives `startYearDate` and `endYearDate`. Worth pulling
+because we are about to store `Payment.schoolYear` and compute "this year"
+from a guess about September, when the App knows each school's real year.
 
-`GET /statistics/organisation-statistics-users-logins` over a window answers
-"has this school gone quiet", which is the `GONE QUIET` flag.
+### Not for the console
 
-### 4. The prize store
+These are real and useful, and they belong in the App's admin panel rather
+than here: store items and coupons, challenge detail, per-grade breakdowns,
+opportunity lists, volunteer records, group membership. Every one of them is
+something a school looks up about itself.
 
-`POST /store-items/searchByAdmin` and `POST /store-items/{id}/searchStoreCoupons`
-give what has been redeemed and what is on offer, for the store chips. A
-school with no published store items is "Prize store not open" rather than
-zero.
-
-### 5. Challenges
-
-`POST /challenges/searchByAdmin` and `GET /challenges/getOpenChallenge` fill
-`AppChallengeStat` — title, joined, finished, running.
-
-### 6. Two things we do not hold yet, and should
-
-**Yearly goals, per grade.** `GET /schools/{id}/getYearlyGoals` returns
-`{ gradeId, hourYearlyGoal, actYearlyGoal }`. The portal has no concept of a
-target, so every figure it shows is a bare number with nothing to measure
-against. "28.5 h waiting" means one thing for a school aiming at 200 hours and
-another for one aiming at 2,000. This is the single most valuable thing in the
-API that we are not using.
-
-**The school year.** `GET /schools/{id}` gives `startYearDate` and
-`endYearDate`. We are about to store `Payment.schoolYear` as a string and
-derive "this year" figures — both should come from the school's own year, not
-from a guess about September.
-
-Also there: `grades`, which would let the console and the school's own page
-break figures down by grade rather than showing one school-wide total.
+**Per-grade yearly goals** (`/schools/{id}/getYearlyGoals`) sit on the line. A
+target is what makes a figure mean anything — 28.5 hours waiting reads
+differently at a school aiming for 200 than at one aiming for 2,000 — but the
+per-grade breakdown is detail. If it is wanted, it should be one number per
+school on the console and the breakdown left in the App.
 
 ---
 
@@ -140,6 +133,8 @@ from "reported nothing" — that distinction has to survive.
    should be a service account for the portal, not a person's login.
 2. **Whether `appSchoolId` holds the organisation id** for the schools already
    matched. Three schools are matched today and I have not seen a real id.
-3. **Confirmation on the goals.** Pulling per-grade targets means adding them
-   to our schema and showing progress against them — a real addition to the
-   console rather than a swap of one number for another.
+3. **The link out.** Every row should end at the school's own page in the App's
+   admin panel, which is where the detail lives. I need the URL pattern — is
+   it `app.justonechesed.org/organisation/{id}`, or something else?
+4. **Whether you want the yearly goal** as a single school-wide figure on the
+   console, or not at all.
