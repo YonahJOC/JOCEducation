@@ -13,13 +13,14 @@ import { C, R, CONTENT_MAX, label, datum, F } from "@/lib/joc-tokens";
  * column, where it read as a floating rectangle.
  */
 
-export type TabKey = "today" | "schools" | "calendar" | "sign-ups" | "setup";
+export type TabKey = "today" | "schools" | "calendar" | "sign-ups" | "money" | "setup";
 
 export const TAB_LABEL: Record<TabKey, string> = {
   today: "Today",
   schools: "Schools",
   calendar: "Calendar",
   "sign-ups": "Sign-ups",
+  money: "Money",
   setup: "Setup",
 };
 

@@ -43,7 +43,7 @@ const body: React.CSSProperties = {
 
 export function ProgramAdminClient({
   view, forms, team, feeLabel, paymentsOn, traffic = null,
-  enrolled = [], tab = "today", today = null,
+  enrolled = [], tab = "today", today = null, money = null,
 }: {
   view: ProgramAdminView;
   forms: { id: string; title: string; responseCount: number }[];
@@ -58,6 +58,8 @@ export function ProgramAdminClient({
   tab?: TabKey;
   /** The Today tab, rendered by the page because it reads the database. */
   today?: React.ReactNode;
+  /** The Money tab, likewise, and only for somebody who may see it. */
+  money?: React.ReactNode;
 }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -99,6 +101,8 @@ export function ProgramAdminClient({
       {/* The band and the tabs are rendered by the page, above this. */}
 
       {tab === "today" && today}
+
+      {tab === "money" && money}
 
       {/* One list of every school: the ones in this program, then the ones
           that are not, each category opened or shut on its own. */}

@@ -16,6 +16,8 @@ import { AppActivityPanel } from "@/components/admin/AppActivityPanel";
 import { ProgramReports } from "@/components/admin/ProgramReports";
 import { ProgramTodayPanel, EmptySlot } from "@/components/admin/ProgramTodayPanel";
 import { ProgramConsoleHeader, type TabKey } from "@/components/admin/ProgramConsoleHeader";
+import { ProgramMoney } from "@/components/admin/ProgramMoney";
+import { programMoney } from "@/lib/money";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 
@@ -31,7 +33,7 @@ import { can } from "@/lib/access";
 export const metadata = { title: "Program — JOC Console" };
 export const dynamic = "force-dynamic";
 
-const TABS: TabKey[] = ["today", "schools", "calendar", "sign-ups", "setup"];
+const TABS: TabKey[] = ["today", "schools", "calendar", "sign-ups", "money", "setup"];
 
 /** Schools in the program and schools not in it used to be two tabs. */
 const MOVED: Record<string, TabKey> = { "not-in-yet": "schools" };
@@ -70,7 +72,10 @@ export default async function ProgramAdminPage({
   // Setup is the one tab that is not for everybody: it edits the questions a
   // school is asked, and says who runs the program.
   const canSetup = view.canEditForm || view.canSetCoordinators;
-  const tabs = TABS.filter((t) => t !== "setup" || canSetup);
+  // Money is its own permission: seeing what a school paid is not the same
+  // job as running the program they paid for.
+  const canMoney = openForReview || can(session?.user, "money_view");
+  const tabs = TABS.filter((t) => (t !== "setup" || canSetup) && (t !== "money" || canMoney));
   const asked = (wanted ? MOVED[wanted] : undefined) ?? (wanted as TabKey | undefined);
   const tab: TabKey = asked && tabs.includes(asked) ? asked : "today";
 
@@ -81,13 +86,14 @@ export default async function ProgramAdminPage({
       ? await getAppActivity()
       : null;
 
-  const [traffic, enrolled, reporting, today] = await Promise.all([
+  const [traffic, enrolled, reporting, today, moneyData] = await Promise.all([
     getProgramTraffic(view.id, {
       canSetLight: openForReview || can(session?.user, "set_program_light"),
     }),
     enrolledSchools(view.id),
     programReporting(view.id),
     getProgramToday(view.id, slug),
+    canMoney ? programMoney(view.id) : Promise.resolve(null),
   ]);
 
   // Only offered to somebody who may actually rewire the program.
@@ -160,6 +166,11 @@ export default async function ProgramAdminPage({
         traffic={traffic}
         enrolled={enrolled}
         tab={tab}
+        money={
+          tab === "money" && moneyData ? (
+            <ProgramMoney data={moneyData} programName={view.name} />
+          ) : null
+        }
         today={
           tab === "today" ? (
             <ProgramTodayPanel

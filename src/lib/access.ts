@@ -202,7 +202,7 @@ export const CAPABILITIES = [
   // The calendar
   "programming", "cycles", "coordinators",
   // School accounts
-  "schools", "demos", "orders", "pricing",
+  "schools", "demos", "orders", "pricing", "money_view", "money_record",
   // Access
   "users", "run_admin_agenda",
 ] as const;
@@ -223,7 +223,7 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
     ],
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
-  { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing"] },
+  { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing", "money_view", "money_record"] },
   { label: "Access", capabilities: ["users", "run_admin_agenda"] },
 ];
 
@@ -246,10 +246,14 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   demos: "Demo requests",
   orders: "Orders",
   pricing: "Pricing",
+  money_view: "See the money",
+  money_record: "Record a payment",
   users: "People and access",
 };
 
 export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
+  money_view: "See what each school has paid for a program, what was granted and what was refunded.",
+  money_record: "Write down a payment that happened outside the system — a cheque, a bank transfer.",
   lessons: "Write, edit and publish lesson plans, and see which cycles have material.",
   resources: "Worksheets, videos and source sheets, and everything uploaded.",
   programs: "What JOC runs for schools — the catalogue a school reads before booking.",
