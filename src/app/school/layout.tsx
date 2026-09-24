@@ -5,6 +5,8 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
 import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { schoolNav } from "@/lib/nav";
+import { viewingAs, currentSchoolId } from "@/lib/school-scope";
+import { stopViewingAsSchool } from "@/app/actions/view-as-school";
 import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Your school", robots: { index: false, follow: false } };
@@ -22,7 +24,11 @@ export const metadata = { title: "Your school", robots: { index: false, follow: 
 export default async function SchoolLayout({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
 
-  if (!openForReview && !canRunSchoolApp(session?.user)) {
+  // Somebody looking in on a school gets through the door their own
+  // capability opens, not the one a school administrator uses.
+  const looking = await viewingAs();
+
+  if (!openForReview && !looking && !canRunSchoolApp(session?.user)) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "440px", textAlign: "center" }}>
@@ -51,10 +57,11 @@ export default async function SchoolLayout({ children }: { children: React.React
 
   let schoolName = "Your school";
   let planLabel: string | null = null;
-  if (isDatabaseConfigured() && session?.user?.schoolId) {
+  const schoolId = await currentSchoolId();
+  if (isDatabaseConfigured() && schoolId) {
     try {
       const s = await prisma.school.findUnique({
-        where: { id: session.user.schoolId },
+        where: { id: schoolId },
         select: { name: true, subscription: { select: { plan: true } } },
       });
       if (s) {
@@ -71,7 +78,7 @@ export default async function SchoolLayout({ children }: { children: React.React
       side="school"
       who={session?.user?.email ?? "Nobody signed in"}
       role={schoolName}
-      items={schoolNav(session?.user)}
+      items={schoolNav(session?.user, { asSchoolAdmin: Boolean(looking) || openForReview })}
       action={
         <div style={{ display: "grid", gap: "8px" }}>
           {planLabel && (
@@ -96,6 +103,30 @@ export default async function SchoolLayout({ children }: { children: React.React
         </div>
       }
     >
+      {looking && (
+        <div style={{
+          display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap",
+          backgroundColor: C.ink, borderRadius: R.form, padding: "12px 16px", marginBottom: "16px",
+        }}>
+          <span style={{ ...label, color: C.onDarkLabel }}>Looking in</span>
+          <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.white, flex: 1, minWidth: 0 }}>
+            This is {looking.name}&rsquo;s own panel, as they see it.
+          </span>
+          <form action={stopViewingAsSchool}>
+            <button
+              type="submit"
+              style={{
+                fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.ink,
+                backgroundColor: C.white, border: "none", borderRadius: R.button,
+                padding: "0 16px", minHeight: "44px", cursor: "pointer",
+              }}
+            >
+              Back to the console
+            </button>
+          </form>
+        </div>
+      )}
+
       {children}
     </PortalShell>
   );

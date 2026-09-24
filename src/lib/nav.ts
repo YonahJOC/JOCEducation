@@ -112,10 +112,18 @@ export function jocNav(
 }
 
 /** The school side. Two audiences, and the money is only one of them. */
-export function schoolNav(user: Parameters<typeof canRunOwnSchool>[0]): NavItem[] {
+export function schoolNav(
+  user: Parameters<typeof canRunOwnSchool>[0],
+  opts: { asSchoolAdmin?: boolean } = {},
+): NavItem[] {
   const items: NavItem[] = [{ label: "Today", href: "/school", hint: "Where each program is up to" }];
 
-  if (canRunSchoolApp(user) || canRunOwnSchool(user)) {
+  // Somebody looking in on a school, or reviewing with no auth configured,
+  // sees the rail that school sees. A rail with one item on it is not what
+  // they came to look at.
+  const full = opts.asSchoolAdmin === true;
+
+  if (full || canRunSchoolApp(user) || canRunOwnSchool(user)) {
     items.push({ label: "Our programs", href: "/school/programs" });
     items.push({ label: "Chesed activity", href: "/school/activity" });
     // How the school is doing on each Cycle against the rest. It has been
@@ -127,7 +135,7 @@ export function schoolNav(user: Parameters<typeof canRunOwnSchool>[0]): NavItem[
 
   // An app admin is a teacher looking after what students are doing. What the
   // school pays is none of their business.
-  if (canRunOwnSchool(user)) {
+  if (full || canRunOwnSchool(user)) {
     items.push({ label: "Teachers", href: "/school/teachers" });
     items.push({ label: "Plan & seats", href: "/school/plan" });
   }

@@ -311,7 +311,7 @@ body {
    whose every line breaks in a different place is what "ugly" looks like. */
 .joc-program-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 14px;
   align-items: stretch;
 }
@@ -449,4 +449,33 @@ body {
    to push its whole row thirty pixels right of the others. */
 @media (max-width: 560px) {
   .joc-band { flex: 0 0 100% !important; }
+}
+
+/* The page title with the rest of its section beside it, wrapping under the
+   title on a narrow screen. The links used to sit below as a row of tinted
+   pills, which read as filters rather than as the plain links they are. */
+.joc-page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 560px) {
+  .joc-page-head { flex-direction: column; gap: 10px; }
+}
+
+/* A program card is one link. The lift says so without a border or an
+   outline, and it holds still for anybody who has asked it to. */
+.joc-card { transition: transform .12s ease, box-shadow .12s ease; }
+
+.joc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 0 #E3E6EF, 0 10px 26px rgba(16, 35, 63, .10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .joc-card:hover { transform: none; }
 }

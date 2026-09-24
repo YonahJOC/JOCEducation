@@ -58,7 +58,7 @@ export async function SectionLinks({ section }: { section: SectionKey }) {
   return (
     <nav
       aria-label="Also in this section"
-      style={{ display: "flex", gap: "8px", flexWrap: "wrap", margin: "0 0 20px" }}
+      style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}
     >
       {items.map((i) => (
         <Link
@@ -66,10 +66,8 @@ export async function SectionLinks({ section }: { section: SectionKey }) {
           href={i.href}
           style={{
             display: "inline-flex", alignItems: "center",
-            fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
-            color: C.blue, backgroundColor: C.blueTint,
-            borderRadius: R.chip, padding: "10px 15px", minHeight: "44px",
-            textDecoration: "none",
+            fontFamily: F.ui, fontSize: "15px", fontWeight: 600,
+            color: C.blue, textDecoration: "underline", minHeight: "44px",
           }}
         >
           {i.label}

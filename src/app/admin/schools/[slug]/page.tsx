@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { R, C, label, pageTitle } from "@/lib/joc-tokens";
+import { secondaryButton, R, C, label, pageTitle } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import {
   getSchool, STATUS_LABELS, STATUS_COLORS, PLAN_LABELS, ENROLLMENT_LABELS, usingSampleData,
@@ -11,6 +11,7 @@ import { AppAdminToggle } from "@/components/admin/AppAdminToggle";
 import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 import { PageIntro } from "@/components/admin/PageIntro";
+import { viewAsSchool } from "@/app/actions/view-as-school";
 import { ContactsPanel, type ContactRow } from "@/components/admin/ContactsPanel";
 import { SchoolsGuard } from "@/components/admin/Guard";
 import { safeAuth, openForReview } from "@/auth";
@@ -47,6 +48,7 @@ export default async function SchoolDetail({ params }: { params: Promise<{ slug:
 
 async function Inner({ slug }: { slug: string }) {
   const data = await getSchool(slug);
+  const lookIn = viewAsSchool.bind(null, slug);
   if (!data) notFound();
 
   const { school: s, members, contacts, activities, invitations } = data;
@@ -83,6 +85,14 @@ async function Inner({ slug }: { slug: string }) {
           </div>
         </div>
       </div>
+
+      {/* The only way to answer "what does this look like for them". It reads
+          their panel; it changes nothing and tells them nothing. */}
+      <form action={lookIn} style={{ margin: "0 0 18px" }}>
+        <button type="submit" style={{ ...secondaryButton, cursor: "pointer" }}>
+          See their school panel
+        </button>
+      </form>
 
       <PageIntro
         as="h2"
