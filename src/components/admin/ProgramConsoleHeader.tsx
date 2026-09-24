@@ -2,7 +2,7 @@ import Link from "next/link";
 import { C, R, CONTENT_MAX, label, datum, F } from "@/lib/joc-tokens";
 
 /**
- * The band at the top of every program console, and its tabs.
+ * The band at the top of a console, and its tabs.
  *
  * One page for all eight programs. The band wears the program's own colour, so
  * a coordinator who runs two of them knows which console they are on before
@@ -11,6 +11,11 @@ import { C, R, CONTENT_MAX, label, datum, F } from "@/lib/joc-tokens";
  *
  * It runs the full width of the main area rather than sitting inside the 1080
  * column, where it read as a floating rectangle.
+ *
+ * `ConsoleHeader` is the same band for a console that is not one of the eight
+ * — the Chesed Cycles, which every school is on and which no ProgramPage row
+ * describes. Splitting it was cheaper than giving the Cycles a fake program
+ * record so it could borrow this.
  */
 
 export type TabKey = "today" | "schools" | "calendar" | "sign-ups" | "money" | "setup";
@@ -40,6 +45,37 @@ export function ProgramConsoleHeader({
   /** Shown after a tab's name, where there is something to count. */
   tabCounts?: Partial<Record<TabKey, number>>;
 }) {
+  return (
+    <ConsoleHeader
+      eyebrow={`Program console · ${tag} · ${lead ? `Run by ${lead}` : "Nobody is down as running it"}`}
+      name={name}
+      counts={counts}
+      heroColor={heroColor}
+      fg={fg}
+      basePath={`/admin/programs/${slug}`}
+      tabs={tabs.map((t) => ({ key: t, label: TAB_LABEL[t], count: tabCounts?.[t] }))}
+      active={active}
+    />
+  );
+}
+
+export type ConsoleTab = { key: string; label: string; count?: number };
+
+export function ConsoleHeader({
+  eyebrow, name, counts, heroColor, fg, basePath, tabs, active,
+}: {
+  /** The mono line above the name. */
+  eyebrow: string;
+  name: string;
+  /** The line under the name: "8 in · 23 not yet · next Sun 27 Sep". */
+  counts: string;
+  heroColor: string;
+  fg: string;
+  /** Where a tab link points, before "?tab=". */
+  basePath: string;
+  tabs: ConsoleTab[];
+  active: string;
+}) {
   // A light hero needs ink for its eyebrow; a dark one takes the warm tint 2b
   // uses, which is the same orange the rest of the site flags things in.
   const dark = fg !== C.ink;
@@ -57,7 +93,7 @@ export function ProgramConsoleHeader({
 
       <div style={{ position: "relative", maxWidth: CONTENT_MAX, margin: "0 auto", padding: "28px 40px 0" }}>
         <p style={{ ...label, color: dark ? C.onDarkLabel : C.orangeText, margin: "0 0 10px" }}>
-          Program console · {tag} · {lead ? `Run by ${lead}` : "Nobody is down as running it"}
+          {eyebrow}
         </p>
 
         <h1 style={{
@@ -72,12 +108,12 @@ export function ProgramConsoleHeader({
         {/* Tabs are addresses, not state, so a link opens the right one. */}
         <nav aria-label="Console sections" style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginTop: "20px" }}>
           {tabs.map((t) => {
-            const on = t === active;
-            const n = tabCounts?.[t];
+            const on = t.key === active;
+            const n = t.count;
             return (
               <Link
-                key={t}
-                href={`/admin/programs/${slug}?tab=${t}`}
+                key={t.key}
+                href={`${basePath}?tab=${t.key}`}
                 style={{
                   display: "flex", alignItems: "center", whiteSpace: "nowrap",
                   fontFamily: F.ui, fontSize: "14px", fontWeight: on ? 700 : 600,
@@ -88,7 +124,7 @@ export function ProgramConsoleHeader({
                   textDecoration: "none",
                 }}
               >
-                {TAB_LABEL[t]}
+                {t.label}
                 {n != null && n > 0 && ` · ${n}`}
               </Link>
             );
