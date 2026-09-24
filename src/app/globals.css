@@ -367,15 +367,6 @@ body {
   .joc-shell-body > * { margin-top: 18px; }
 }
 
-/* A category you can open or shut. The default triangle is the one thing on
-   the page nobody can style, so it goes and the summary says "Show 36" or
-   "Hide" instead — which also says how many are in there before you open it. */
-.joc-group > summary { list-style: none; cursor: pointer; }
-.joc-group > summary::-webkit-details-marker { display: none; }
-.joc-group > summary:focus-visible { outline: 3px solid #2D46AF; outline-offset: -3px; }
-.joc-group > summary .joc-group-open { display: none; }
-.joc-group[open] > summary .joc-group-open { display: inline; }
-.joc-group[open] > summary .joc-group-shut { display: none; }
 
 /* Page instructions open over the page, not inside it. The dialog itself is
    only the box: the panel inside carries the paper, the radius and the
@@ -432,4 +423,11 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 12px;
+}
+
+/* A band is one width on every row, so every title starts at the same place.
+   A long label wraps inside it rather than widening it — "Discuss first" used
+   to push its whole row thirty pixels right of the others. */
+@media (max-width: 560px) {
+  .joc-band { flex: 0 0 100% !important; }
 }

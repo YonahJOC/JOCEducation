@@ -8,8 +8,8 @@ import { setProgramForm, setProgramLead, saveProgramForm, addProgramCoordinator 
 import { Download } from "@/components/admin/Download";
 import { FormBuilder, BLANK_FORM, type Draft } from "@/components/admin/FormBuilder";
 import { FIELD_TYPE_LABELS } from "@/lib/forms";
-import { ProgramLights } from "@/components/admin/ProgramLights";
-import { ProgramSchools } from "@/components/admin/ProgramSchools";
+import { ProgramLights, RunRules } from "@/components/admin/ProgramLights";
+import { ProgramSchools, Reconcile } from "@/components/admin/ProgramSchools";
 import type { TabKey } from "@/components/admin/ProgramConsoleHeader";
 import {
   C, R, F, rowCard, sectionHeading, sectionIntro, label, chip,
@@ -114,6 +114,12 @@ export function ProgramAdminClient({
           {traffic && (
             <ProgramLights programId={view.id} slug={view.slug} programName={view.name} data={traffic} />
           )}
+
+          {/* The two jobs that are about the lists rather than about a school. */}
+          <p style={{ display: "flex", gap: "18px", alignItems: "center", flexWrap: "wrap", margin: "22px 0 0" }}>
+            {traffic?.canSetLight && <RunRules slug={view.slug} />}
+            <Reconcile slug={view.slug} />
+          </p>
         </>
       )}
 

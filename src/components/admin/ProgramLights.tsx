@@ -3,14 +3,18 @@
 import { useState, useTransition } from "react";
 import {
   reachOut, sendToMeeting, setLight, refreshLights, dismissExpiry, type Channel, type AgendaKind, } from "@/app/actions/program-lights";
-import { LIGHT_LABEL, LIGHT_WORD, LIGHT_MEANING, LIGHT_COLOR, type Light } from "@/lib/program-lights";
+import { LIGHT_LABEL, LIGHT_WORD, LIGHT_MEANING, LIGHT_COLOR, LIGHT_ORDER, type Light } from "@/lib/program-lights";
 import {
-  C, R, F, primaryButton, secondaryButton, chip, textButton, rowCard, rowDetail, field, fieldLabel, quietButton, note, label, bandFigure, type Tone } from "@/lib/joc-tokens";
+  C, R, F, primaryButton, secondaryButton, chip, textButton, rowDetail, field, fieldLabel, quietButton, note, label, datum, bandFigure, sectionHeading, type Tone } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
-import { RowGroup } from "@/components/ui/RowGroup";
+import { FilterChips } from "@/components/ui/FilterChips";
+import { useSearchParams } from "next/navigation";
 
 /** A light is one of the site's tones; it has been since the tones existed. */
 const TONE_OF: Record<Light, Tone> = { GREEN: "good", AMBER: "warn", RED: "system" };
+
+/** Beyond this the list stops being something you read and starts being a wall. */
+const SHOWN = 12;
 import type { ProgramTraffic, TrafficRow } from "@/lib/program-traffic";
 
 /**
@@ -39,76 +43,83 @@ export function ProgramLights({
   programName: string;
   data: ProgramTraffic;
 }) {
-  const rowsFor = (light: Light) =>
-    data.rows
-      .filter((r) => r.light === light)
-      .map((r) => (
-        <LightRow
-          key={r.schoolId}
-          row={r}
-          programId={programId}
-          slug={slug}
-          canSetLight={data.canSetLight}
-          meetingBooked={Boolean(data.meeting)}
-        />
-      ));
+  const [all, setAll] = useState(false);
+  const raw = useSearchParams().get("light");
+  const picked = (raw ? raw.toUpperCase() : null) as Light | null;
 
-  const LINE: Record<Light, string> = {
-    GREEN: "Not in it yet, and fine to introduce the program.",
-    AMBER: "Not in it yet. Talk it through with the admin meeting before contacting them.",
-    RED: "Not in it yet, and not to be pitched this program now.",
-  };
+  // Green, then orange, then red, then by name: the order a coordinator
+  // works down when they have twenty minutes and a phone.
+  const shown = data.rows
+    .filter((r) => !picked || r.light === picked)
+    .sort((x, y) => LIGHT_ORDER[x.light] - LIGHT_ORDER[y.light] || x.name.localeCompare(y.name));
 
-  const NONE: Record<Light, string> = {
-    GREEN: "No school is clear to approach.",
-    AMBER: "No school is waiting on a decision.",
-    RED: "No school is being held off.",
-  };
+  const visible = all ? shown : shown.slice(0, SHOWN);
+  const waiting = data.counts.AMBER + data.counts.RED;
 
   return (
     <div style={{ marginBottom: "16px" }} id="not-in-yet">
+      <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>
+        Not in {programName} yet <span style={{ ...datum, fontSize: "15px" }}>{data.counts.all}</span>
+      </h2>
+
       <Expiries expired={data.expired} slug={slug} />
 
       {!data.everComputed && (
         <Note tone="warn">
           The lights have not been worked out yet. Until somebody runs them, treat every school not
           in this program as a discuss-first.
-          {data.canSetLight && " Run them now with the button below."}
+          {data.canSetLight && " Run them now with the link below."}
         </Note>
       )}
 
-      {data.counts.all === 0 ? (
-        <div style={{ ...rowCard, padding: "24px", marginBottom: "10px" }}>
-          <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "62ch" }}>
-            Every school on the system is already in {programName}.
-          </p>
-        </div>
-      ) : (
-        (["GREEN", "AMBER", "RED"] as const).map((l) => (
-          <RowGroup
-            key={l}
-            tone={TONE_OF[l]}
-            title={LIGHT_LABEL[l]}
-            count={data.counts[l]}
-            line={data.counts[l] === 0 ? NONE[l] : LINE[l]}
-          >
-            {rowsFor(l)}
-          </RowGroup>
-        ))
-      )}
+      <FilterChips
+        param="light"
+        total={data.counts.all}
+        options={(["GREEN", "AMBER", "RED"] as const).map((l) => ({
+          key: l.toLowerCase(),
+          label: LIGHT_LABEL[l],
+          count: data.counts[l],
+          dot: LIGHT_COLOR[l].dot,
+        }))}
+      />
 
-      {data.canSetLight && (
-        <p style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", margin: "4px 0 0" }}>
-          <RunRules slug={slug} />
+      {shown.length === 0 ? (
+        <p style={{ fontFamily: F.read, fontSize: "16px", color: C.muted, lineHeight: 1.5, margin: "12px 0 0" }}>
+          {data.counts.all === 0
+            ? `Every school on the system is already in ${programName}.`
+            : `No school is on ${LIGHT_LABEL[picked ?? "GREEN"].toLowerCase()}.`}
         </p>
+      ) : (
+        <>
+          <div style={{ display: "grid", gap: "10px" }}>
+            {visible.map((r) => (
+              <LightRow
+                key={r.schoolId}
+                row={r}
+                programId={programId}
+                slug={slug}
+                canSetLight={data.canSetLight}
+                meetingBooked={Boolean(data.meeting)}
+              />
+            ))}
+          </div>
+
+          {!all && shown.length > SHOWN && (
+            <p style={{ margin: "12px 0 0" }}>
+              <button type="button" onClick={() => setAll(true)} style={textButton}>
+                Show all {shown.length}
+              </button>
+            </p>
+          )}
+        </>
       )}
 
-      <NextMeeting data={data} programName={programName} />
+      {/* The meeting, and only when it is about this program. */}
+      <NextMeeting data={data} programName={programName} waiting={waiting} />
+
     </div>
   );
 }
-
-// ─── One school ──────────────────────────────────────────────────────────────
 
 function LightRow({
   row, programId, slug, canSetLight, meetingBooked,
@@ -467,8 +478,19 @@ function ChangeLightForm({
 
 // ─── The rest of the section ─────────────────────────────────────────────────
 
-function NextMeeting({ data, programName }: { data: ProgramTraffic; programName: string }) {
+function NextMeeting({
+  data, programName, waiting,
+}: {
+  data: ProgramTraffic;
+  programName: string;
+  /** Schools on orange or red — the only ones a meeting is for. */
+  waiting: number;
+}) {
+  // A dark card announcing a meeting with nothing on it from this program is
+  // furniture, and so is telling a coordinator no meeting is booked when they
+  // have nobody to send to one.
   if (!data.meeting) {
+    if (waiting === 0) return null;
     return (
       <Note tone="warn">
         No admin meeting is booked. Until one is, an orange or a red school has nowhere to go — put a
@@ -476,6 +498,8 @@ function NextMeeting({ data, programName }: { data: ProgramTraffic; programName:
       </Note>
     );
   }
+
+  if (data.meeting.items.length === 0 && waiting === 0) return null;
 
   const m = data.meeting;
   return (
@@ -541,7 +565,7 @@ function Expiries({ expired, slug }: { expired: ProgramTraffic["expired"]; slug:
   );
 }
 
-function RunRules({ slug }: { slug: string }) {
+export function RunRules({ slug }: { slug: string }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
 

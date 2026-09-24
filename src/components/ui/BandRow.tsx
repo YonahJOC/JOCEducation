@@ -61,7 +61,7 @@ export function BandRow({
   return (
     <div style={rowCard}>
       <div style={rowInner}>
-        <div style={{
+        <div className="joc-band" style={{
           ...rowBand, backgroundColor: t.bg, color: t.fg,
           ...(bandLead ? { flexDirection: "row", alignItems: "center", gap: "12px" } : null),
         }}>

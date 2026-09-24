@@ -7,10 +7,11 @@ import {
   STAGES, STAGE_LABEL, STAGE_MEANING, STAGE_TONE, countsAsIn, type Stage, type EnrolledRow, } from "@/lib/program-enrollment";
 import { STUCK_DAYS } from "@/lib/program-today";
 import {
-  C, F, rowDetail, primaryButton, secondaryButton, chip, sectionHeading, sectionIntro, field, fieldLabel, quietButton, plainChip, textButton, type Tone } from "@/lib/joc-tokens";
+  C, F, datum, rowDetail, primaryButton, secondaryButton, chip, sectionHeading, field, fieldLabel, quietButton, plainChip, textButton, type Tone } from "@/lib/joc-tokens";
 import { TONE } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
-import { RowGroup } from "@/components/ui/RowGroup";
+import { FilterChips } from "@/components/ui/FilterChips";
+import { useSearchParams } from "next/navigation";
 
 /**
  * "Schools in <Program>" — who runs it, and how far along each one is.
@@ -37,6 +38,11 @@ const TONE_OF: Record<"going" | "setup" | "stopped", Tone> = {
 // Sitting at one stage this long is the thing a coordinator should notice.
 // Defined with the Today tab, which counts the same rows this list shows.
 
+/** How far along, for sorting: furthest first. */
+const STEP: Record<"going" | "setup" | "stopped", number> = { going: 2, setup: 1, stopped: 0 };
+
+const SHOWN = 12;
+
 export function ProgramSchools({
   programId, slug, programName, rows, canEdit,
 }: {
@@ -46,72 +52,67 @@ export function ProgramSchools({
   rows: EnrolledRow[];
   canEdit: boolean;
 }) {
-  // Three categories, each with its own count, each opened or shut on its
-  // own. It was one list behind four filter chips, so picking a category hid
-  // every other school — and the schools not in the program at all were on a
-  // different tab, which is a coordinator's whole list split in two.
-  const group = (t: "going" | "setup" | "stopped") => rows.filter((r) => STAGE_TONE[r.stage] === t);
-  const going = group("going");
-  const setup = group("setup");
-  const stopped = group("stopped");
+  const [all, setAll] = useState(false);
+  const picked = useSearchParams().get("in");
 
-  const rowsFor = (list: EnrolledRow[]) =>
-    list.map((r) => <Row key={r.id} row={r} programId={programId} slug={slug} canEdit={canEdit} />);
+  const counts = {
+    going: rows.filter((r) => STAGE_TONE[r.stage] === "going").length,
+    setup: rows.filter((r) => STAGE_TONE[r.stage] === "setup").length,
+    stopped: rows.filter((r) => STAGE_TONE[r.stage] === "stopped").length,
+  };
+
+  // Furthest along first, then whoever has been stuck longest — the two
+  // things a coordinator is deciding between when they open this.
+  const shown = rows
+    .filter((r) => !picked || STAGE_TONE[r.stage] === picked)
+    .sort(
+      (x, y) =>
+        STEP[STAGE_TONE[y.stage]] - STEP[STAGE_TONE[x.stage]] ||
+        daysSince(y.stageSince) - daysSince(x.stageSince) ||
+        x.schoolName.localeCompare(y.schoolName),
+    );
+
+  const visible = all ? shown : shown.slice(0, SHOWN);
 
   return (
-    <div style={{ marginBottom: "16px" }} id="schools-in">
-      <h2 style={{ ...sectionHeading, margin: "0 0 4px" }}>Schools</h2>
-      <p style={sectionIntro}>
-        Every school on the system, whether or not it is in {programName} yet. Open a category to
-        see who is in it.
-      </p>
+    <div style={{ marginBottom: "26px" }} id="schools-in">
+      <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>
+        Schools in {programName} <span style={{ ...datum, fontSize: "15px" }}>{rows.length}</span>
+      </h2>
 
-      {canEdit && (
-        <p style={{ margin: "0 0 14px" }}>
-          <Reconcile slug={slug} />
+      <FilterChips
+        param="in"
+        total={rows.length}
+        options={[
+          { key: "going", label: "Running", count: counts.going },
+          { key: "setup", label: "Being set up", count: counts.setup },
+          { key: "stopped", label: "Stopped", count: counts.stopped },
+        ]}
+      />
+
+      {shown.length === 0 ? (
+        <p style={{ fontFamily: F.read, fontSize: "16px", color: C.muted, lineHeight: 1.5, margin: "12px 0 0" }}>
+          {rows.length === 0
+            ? `No school is in ${programName} yet.`
+            : "No school is at that stage."}
         </p>
+      ) : (
+        <>
+          <div style={{ display: "grid", gap: "10px" }}>
+            {visible.map((r) => (
+              <Row key={r.id} row={r} programId={programId} slug={slug} canEdit={canEdit} />
+            ))}
+          </div>
+
+          {!all && shown.length > SHOWN && (
+            <p style={{ margin: "12px 0 0" }}>
+              <button type="button" onClick={() => setAll(true)} style={textButton}>
+                Show all {shown.length}
+              </button>
+            </p>
+          )}
+        </>
       )}
-
-      <RowGroup
-        tone="good"
-        title="Running"
-        count={going.length}
-        open
-        line={
-          going.length === 0
-            ? `No school is running ${programName} yet.`
-            : `In ${programName} and running it.`
-        }
-      >
-        {rowsFor(going)}
-      </RowGroup>
-
-      <RowGroup
-        tone="info"
-        title="Being set up"
-        count={setup.length}
-        open
-        line={
-          setup.length === 0
-            ? "Nobody is part-way through signing up."
-            : "Introduced, registered or booked — not running yet."
-        }
-      >
-        {rowsFor(setup)}
-      </RowGroup>
-
-      <RowGroup
-        tone="quiet"
-        title="Stopped"
-        count={stopped.length}
-        line={
-          stopped.length === 0
-            ? "No school has stopped."
-            : `Was in ${programName} and is not any more.`
-        }
-      >
-        {rowsFor(stopped)}
-      </RowGroup>
     </div>
   );
 }
@@ -298,7 +299,7 @@ function MoveOn({
   );
 }
 
-function Reconcile({ slug }: { slug: string }) {
+export function Reconcile({ slug }: { slug: string }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
 

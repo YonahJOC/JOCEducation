@@ -177,7 +177,7 @@ export const rowInner: React.CSSProperties = {
 
 /** The coloured left-hand block: a label and one big figure. */
 export const rowBand: React.CSSProperties = {
-  flex: "1 1 140px", minWidth: 0, padding: "14px 18px",
+  flex: "0 0 188px", boxSizing: "border-box", minWidth: 0, padding: "14px 18px",
   display: "flex", flexDirection: "column", justifyContent: "center", gap: "2px",
 };
 
