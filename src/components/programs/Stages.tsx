@@ -189,7 +189,7 @@ function StageButton({ link, label, primary }: { link: StageLink; label: string;
   }
 
   const style: React.CSSProperties = primary
-    ? { ...base, backgroundColor: C.blue, color: "#fff", border: `1.5px solid ${C.blue}` }
+    ? { ...base, backgroundColor: C.blue, color: C.white, border: `1.5px solid ${C.blue}` }
     : { ...base, backgroundColor: "transparent", color: C.ink, border: `1.5px solid ${C.ink}` };
 
   const body = (

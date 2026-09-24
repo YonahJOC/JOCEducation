@@ -29,7 +29,7 @@ const STATUSES = [
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 
@@ -98,16 +98,16 @@ export function PlanPanel({
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: C.muted, margin: 0 }}>
           Plan &amp; access
         </p>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
             disabled={disabled}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? C.muted : "#2D46AF", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: disabled ? C.muted : C.blue, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer" }}
           >
             {plan ? "Change" : "Grant access"}
           </button>
@@ -124,13 +124,13 @@ export function PlanPanel({
               <Row k="Renews" v={renewsOn ? new Date(renewsOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : "No renewal date"} />
               {grantedManually && (
                 <div style={{ backgroundColor: "rgba(27,127,75,.07)", border: "1px solid rgba(27,127,75,.25)", padding: "11px 13px", borderRadius: "10px", marginTop: "6px" }}>
-                  <p style={{ ...label, color: "#1D6B37", margin: "0 0 5px" }}>
+                  <p style={{ ...label, color: C.greenText, margin: "0 0 5px" }}>
                     {(grantKind ?? "granted").toLowerCase()} · free access
                   </p>
                   {grantNote && (
-                    <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: "0 0 4px" }}>{grantNote}</p>
+                    <p style={{ fontSize: "13px", lineHeight: 1.5, color: C.muted, margin: "0 0 4px" }}>{grantNote}</p>
                   )}
-                  <p style={{ fontSize: "12px", color: "#4A5A74", margin: 0 }}>
+                  <p style={{ fontSize: "12px", color: C.muted, margin: 0 }}>
                     {grantedBy ? `Approved by ${grantedBy}` : "Approver not recorded"}
                     {grantReviewOn ? ` · review ${new Date(grantReviewOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}` : ""}
                   </p>
@@ -138,7 +138,7 @@ export function PlanPanel({
               )}
             </div>
           ) : (
-            <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 16px", lineHeight: 1.55 }}>
+            <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 16px", lineHeight: 1.55 }}>
               No plan yet. This school has no access to gated content.
             </p>
           )}
@@ -155,8 +155,8 @@ export function PlanPanel({
                     fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600,
                     padding: "6px 11px", borderRadius: R.chip, minHeight: "36px",
                     border: status === v ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`,
-                    backgroundColor: status === v ? "#F4F7FD" : "#fff",
-                    color: status === v ? "#2D46AF" : "#4A5A74",
+                    backgroundColor: status === v ? C.panel : C.white,
+                    color: status === v ? C.blue : C.muted,
                     cursor: disabled || status === v ? "default" : "pointer",
                     opacity: disabled ? 0.5 : 1,
                   }}
@@ -171,7 +171,7 @@ export function PlanPanel({
             <button
               onClick={revoke}
               disabled={disabled || pending}
-              style={{ marginTop: "14px", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0 }}
+              style={{ marginTop: "14px", fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0 }}
             >
               Revoke access
             </button>
@@ -203,7 +203,7 @@ export function PlanPanel({
             <input type="date" value={fEnd} onChange={(e) => setFEnd(e.target.value)} style={field} />
           </div>
           {/* Granting free access — three distinct kinds, each with a reason */}
-          <div style={{ border: `1.5px solid ${fGranted ? "#1D6B37" : C.hairline}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
+          <div style={{ border: `1.5px solid ${fGranted ? C.greenText : C.hairline}`, borderRadius: "12px", padding: "14px", backgroundColor: fGranted ? "rgba(27,127,75,.04)" : "transparent" }}>
             <label style={{ display: "flex", gap: "9px", alignItems: "flex-start", cursor: "pointer" }}>
               <input
                 type="checkbox"
@@ -213,7 +213,7 @@ export function PlanPanel({
               />
               <span style={{ fontSize: "15px", color: C.ink, lineHeight: 1.5, fontWeight: 600 }}>
                 Give this school free access
-                <small style={{ display: "block", color: "#4A5A74", fontSize: "13px", fontWeight: 400 }}>
+                <small style={{ display: "block", color: C.muted, fontSize: "13px", fontWeight: 400 }}>
                   No payment. Recorded on the school&rsquo;s history with who approved it.
                 </small>
               </span>
@@ -234,8 +234,8 @@ export function PlanPanel({
                           fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                           padding: "8px 13px", borderRadius: R.chip, minHeight: "40px", cursor: "pointer",
                           border: fKind === v ? "1.5px solid #1D6B37" : `1px solid ${C.hairline}`,
-                          backgroundColor: fKind === v ? "rgba(27,127,75,.1)" : "#fff",
-                          color: fKind === v ? "#1D6B37" : "#4A5A74",
+                          backgroundColor: fKind === v ? "rgba(27,127,75,.1)" : C.white,
+                          color: fKind === v ? C.greenText : C.muted,
                         }}
                       >
                         {l}
@@ -243,7 +243,7 @@ export function PlanPanel({
                     ))}
                   </div>
                   {fKind && (
-                    <p style={{ fontSize: "13px", color: "#4A5A74", margin: "7px 0 0" }}>
+                    <p style={{ fontSize: "13px", color: C.muted, margin: "7px 0 0" }}>
                       {GRANT_KINDS.find(([v]) => v === fKind)?.[2]}
                     </p>
                   )}
@@ -263,7 +263,7 @@ export function PlanPanel({
                 <div>
                   <label style={label}>Review on</label>
                   <input type="date" value={fReview} onChange={(e) => setFReview(e.target.value)} style={field} />
-                  <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
+                  <p style={{ fontSize: "12px", color: C.muted, margin: "5px 0 0" }}>
                     JOC reviews grants each Elul.
                   </p>
                 </div>
@@ -274,13 +274,13 @@ export function PlanPanel({
             <button
               onClick={save}
               disabled={pending}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff", backgroundColor: "#2D46AF", border: "none", borderRadius: R.chip, padding: "11px 20px", minHeight: "42px", cursor: "pointer", opacity: pending ? 0.7 : 1 }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white, backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px", minHeight: "42px", cursor: "pointer", opacity: pending ? 0.7 : 1 }}
             >
               {pending ? "Saving…" : "Save"}
             </button>
             <button
               onClick={() => { setEditing(false); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
             >
               Cancel
             </button>
@@ -289,7 +289,7 @@ export function PlanPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." || msg.includes("updated") || msg.includes("revoked") ? "#1D6B37" : "#A3261A" }}>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." || msg.includes("updated") || msg.includes("revoked") ? C.greenText : C.redText }}>
           {msg}
         </p>
       )}
@@ -300,7 +300,7 @@ export function PlanPanel({
 function Row({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px" }}>
-      <span style={{ color: "#4A5A74" }}>{k}</span>
+      <span style={{ color: C.muted }}>{k}</span>
       <span style={{ color: C.ink, fontWeight: 500, textAlign: "right" }}>{v}</span>
     </div>
   );

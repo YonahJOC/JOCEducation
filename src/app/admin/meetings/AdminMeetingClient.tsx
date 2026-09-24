@@ -4,10 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { scheduleMeeting, decideItem, closeMeeting, type Outcome } from "@/app/actions/program-lights";
 import { LIGHT_LABEL, LIGHT_COLOR, type Light } from "@/lib/program-lights";
-import {
-  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
-  pageTitle, field, fieldLabel, quietButton, plainChip, note,
-} from "@/lib/joc-tokens";
+import { sectionHeading, C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, pageTitle, field, fieldLabel, quietButton, plainChip, note } from "@/lib/joc-tokens";
 
 /**
  * The admin meeting, as a page to work through rather than minutes to write.
@@ -96,7 +93,7 @@ export function AdminMeetingClient({ meetings }: { meetings: MeetingView[] }) {
 
       {rest.length > 0 && (
         <>
-          <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "26px 0 10px" }}>
+          <h2 style={{ ...sectionHeading, color: C.ink, margin: "26px 0 10px" }}>
             Earlier meetings
           </h2>
           <div style={{ display: "grid", gap: "10px" }}>
@@ -124,13 +121,13 @@ function Meeting({ m, openByDefault = false }: { m: MeetingView; openByDefault?:
     <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden", marginBottom: "14px" }}>
       <div style={{ backgroundColor: C.ink, padding: "18px 22px", display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
         <span style={{ flex: 1, minWidth: "min(100%, 260px)" }}>
-          <span style={{ ...bandLabel, color: "#FFD8AE", display: "block", marginBottom: "3px" }}>
+          <span style={{ ...bandLabel, color: C.onDarkLabel, display: "block", marginBottom: "3px" }}>
             {m.closedAt ? "Closed" : m.isOverdue ? "Overdue" : m.isNext ? "Next meeting" : "Booked"}
           </span>
           <span style={{ fontFamily: "var(--font-outfit)", fontSize: "22px", fontWeight: 800, letterSpacing: "-0.02em", color: C.white, display: "block" }}>
             {day(m.meetsAt)}
           </span>
-          <span style={{ fontSize: "14px", color: "#C6CFF0", display: "block", marginTop: "3px" }}>
+          <span style={{ fontSize: "14px", color: C.onDarkBody, display: "block", marginTop: "3px" }}>
             {m.items.length === 0
               ? "Nothing on it yet"
               : `${m.items.length} school${m.items.length === 1 ? "" : "s"} · ${decided} decided`}

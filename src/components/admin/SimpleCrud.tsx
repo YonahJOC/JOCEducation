@@ -6,11 +6,11 @@ import { PageIntro } from "@/components/admin/PageIntro";
 
 export const crudField: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 export const crudLabel: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
+  display: "block", fontSize: "12px", fontWeight: 600, color: C.muted, marginBottom: "5px",
 };
 
 /**
@@ -68,7 +68,7 @@ export function CrudShell<T extends { id: string | number }>({
             onClick={() => setDraft({ ...blank })}
             disabled={disabled}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
               backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
               minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
               whiteSpace: "nowrap",
@@ -80,14 +80,14 @@ export function CrudShell<T extends { id: string | number }>({
       </PageIntro>
 
       {draft && (
-        <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
+        <div style={{ backgroundColor: C.white, border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
           {renderForm(draft, set)}
           <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", marginTop: "16px" }}>
             <button
               onClick={save}
               disabled={pending}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
                 backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 22px",
                 minHeight: "44px", cursor: "pointer", opacity: pending ? 0.6 : 1,
               }}
@@ -96,7 +96,7 @@ export function CrudShell<T extends { id: string | number }>({
             </button>
             <button
               onClick={() => { setDraft(null); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
             >
               Cancel
             </button>
@@ -105,12 +105,12 @@ export function CrudShell<T extends { id: string | number }>({
       )}
 
       {msg && (
-        <p style={{ fontSize: "15px", marginBottom: "12px", color: msg === "Saved." ? "#1D6B37" : "#A3261A" }}>{msg}</p>
+        <p style={{ fontSize: "15px", marginBottom: "12px", color: msg === "Saved." ? C.greenText : C.redText }}>{msg}</p>
       )}
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         {items.length === 0 ? (
-          <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
+          <p style={{ padding: "24px 20px", fontSize: "14px", color: C.muted, margin: 0 }}>Nothing here yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column" }}>
             {items.map((item) => (
@@ -133,7 +133,7 @@ export function CrudShell<T extends { id: string | number }>({
                   <button
                     onClick={() => remove(item)}
                     disabled={disabled}
-                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "38px" }}
+                    style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "38px" }}
                   >
                     Delete
                   </button>

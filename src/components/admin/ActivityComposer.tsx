@@ -15,7 +15,7 @@ const TYPES = [
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none",
 };
 
@@ -44,9 +44,9 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
   return (
     <form
       onSubmit={submit}
-      style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}
+      style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}
     >
-      <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: C.muted, margin: "0 0 14px" }}>
         Log an interaction
       </p>
 
@@ -60,8 +60,8 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
               padding: "7px 13px", borderRadius: R.chip, cursor: "pointer", minHeight: "38px",
               border: type === v ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`,
-              backgroundColor: type === v ? "#F4F7FD" : "#fff",
-              color: type === v ? "#2D46AF" : "#4A5A74",
+              backgroundColor: type === v ? C.panel : C.white,
+              color: type === v ? C.blue : C.muted,
             }}
           >
             {l}
@@ -94,8 +94,8 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
           type="submit"
           disabled={disabled || pending || !summary.trim()}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
-            backgroundColor: "#10233F", border: "none", borderRadius: R.chip,
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
+            backgroundColor: C.ink, border: "none", borderRadius: R.chip,
             padding: "11px 20px", minHeight: "42px",
             cursor: disabled || !summary.trim() ? "not-allowed" : "pointer",
             opacity: disabled || pending || !summary.trim() ? 0.5 : 1,
@@ -104,7 +104,7 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
           {pending ? "Saving…" : "Log it"}
         </button>
         {msg && (
-          <span style={{ fontSize: "13px", color: msg === "Logged." ? "#1D6B37" : "#A3261A" }}>{msg}</span>
+          <span style={{ fontSize: "13px", color: msg === "Logged." ? C.greenText : C.redText }}>{msg}</span>
         )}
       </div>
     </form>

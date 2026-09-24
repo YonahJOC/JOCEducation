@@ -7,6 +7,7 @@ import { isLessonSaved } from "@/app/actions/saved";
 import { getCycles } from "@/lib/cycle-data";
 import { siteContent } from "@/lib/site-content";
 import { LessonDetail } from "./LessonDetail";
+import { C } from "@/lib/joc-tokens";
 
 type Search = Promise<{ preview?: string }>;
 
@@ -37,8 +38,8 @@ export default async function LessonDetailPage({
   if (!lesson) {
     return (
       <div style={{ maxWidth: "720px", margin: "80px auto", padding: "0 26px", textAlign: "center" }}>
-        <h1 style={{ fontWeight: 800, fontSize: "36px", color: "#10233F", marginBottom: "12px" }}>Lesson not found</h1>
-        <Link href="/lesson-plans" style={{ color: "#2D46AF", fontWeight: 600, fontSize: "16px" }}>← Back to lesson plans</Link>
+        <h1 style={{ fontWeight: 800, fontSize: "36px", color: C.ink, marginBottom: "12px" }}>Lesson not found</h1>
+        <Link href="/lesson-plans" style={{ color: C.blue, fontWeight: 600, fontSize: "16px" }}>← Back to lesson plans</Link>
       </div>
     );
   }
@@ -71,11 +72,11 @@ export default async function LessonDetailPage({
   return (
     <>
       {isDraft && (
-        <div style={{ backgroundColor: "#FFF0E0", borderBottom: "1px solid rgba(154,84,5,.25)" }}>
-          <p style={{ maxWidth: "1280px", margin: "0 auto", padding: "11px 26px", fontSize: "15px", color: "#7C4A00", lineHeight: 1.5 }}>
+        <div style={{ backgroundColor: C.orangeTint, borderBottom: "1px solid rgba(154,84,5,.25)" }}>
+          <p style={{ maxWidth: "1280px", margin: "0 auto", padding: "11px 26px", fontSize: "15px", color: C.orangeText, lineHeight: 1.5 }}>
             <strong>Draft.</strong> This is how the lesson will look once published. No teacher can
             reach this page yet.{" "}
-            <Link href="/admin/lessons" style={{ color: "#7C4A00", fontWeight: 700 }}>
+            <Link href="/admin/lessons" style={{ color: C.orangeText, fontWeight: 700 }}>
               Back to the console
             </Link>
           </p>

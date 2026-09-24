@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { sectionHeading, pageTitle, C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { completePasswordReset } from "@/app/actions/reset";
 
 const input: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
-  fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE",
+  fontSize: "15px", color: C.ink, backgroundColor: C.panel,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   outline: "none", fontFamily: "var(--font-outfit)",
 };
@@ -34,13 +34,13 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
     return (
       <div style={{ textAlign: "center" }}>
         <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "24px" }}>✓</div>
-        <h2 style={{ fontWeight: 800, fontSize: "22px", color: C.ink, marginBottom: "10px" }}>Password changed</h2>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "24px" }}>
+        <h2 style={{ ...sectionHeading, color: C.ink, marginBottom: "10px" }}>Password changed</h2>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, marginBottom: "24px" }}>
           You can sign in with your new password now.
         </p>
         <Link
           href="/login"
-          style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+          style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
         >
           Sign in
         </Link>
@@ -50,10 +50,10 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
 
   return (
     <>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, marginBottom: "8px" }}>
+      <h1 style={{ ...pageTitle, color: C.ink, marginBottom: "8px" }}>
         Choose a new password
       </h1>
-      <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px", lineHeight: 1.55 }}>
+      <p style={{ fontSize: "15px", color: C.muted, marginBottom: "28px", lineHeight: 1.55 }}>
         For <strong style={{ color: C.ink }}>{email}</strong>. At least 10 characters.
       </p>
 
@@ -91,7 +91,7 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
           style={{
             width: "100%", fontFamily: "var(--font-outfit)",
             backgroundColor: !pending && password && again ? C.blue : "rgba(45,70,175,.4)",
-            color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px",
+            color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: "12px",
             padding: "14px", minHeight: "48px", border: "none",
             cursor: !pending && password && again ? "pointer" : "default",
           }}

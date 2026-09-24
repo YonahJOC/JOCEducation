@@ -38,23 +38,23 @@ const PLANS = [
 
 const BLANK: ProgramRow = {
   id: 0, slug: "", name: "", tag: "Ongoing", tagline: "", description: "",
-  heroColor: "#2D46AF", meta: "", available: [], whatsIncluded: [""],
+  heroColor: C.blue, meta: "", available: [], whatsIncluded: [""],
   howItWorks: [{ step: "01", title: "", description: "", linkLabel: "", linkUrl: "" }],
   externalHref: null, videoUrl: null, leadCount: 0, responseCount: 0, cta: "Register your school", published: false, comingSoon: false, sort: 0,
 };
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px",
   outline: "none", minHeight: "42px",
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
+  color: C.muted, marginBottom: "5px",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -110,7 +110,7 @@ export function ProgramsClient({
           onClick={() => setEditing({ ...BLANK, sort: programs.length })}
           disabled={disabled}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -120,8 +120,8 @@ export function ProgramsClient({
       </PageIntro>
 
       {usingStatic && (
-        <div style={{ backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
-          <p style={{ fontSize: "14px", color: "#7C4A00", margin: "0 0 10px", lineHeight: 1.55 }}>
+        <div style={{ backgroundColor: C.orangeTint, border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
+          <p style={{ fontSize: "14px", color: C.orangeText, margin: "0 0 10px", lineHeight: 1.55 }}>
             The site is still showing the six programs written into the code. Import them here
             first, then edit them and add the rest — otherwise publishing one new program would
             hide the other six.
@@ -130,8 +130,8 @@ export function ProgramsClient({
             onClick={importStatic}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
-              backgroundColor: "#C96C00", border: "none", borderRadius: R.chip,
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: C.white,
+              backgroundColor: C.orangeText, border: "none", borderRadius: R.chip,
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -145,11 +145,11 @@ export function ProgramsClient({
       )}
 
       {programs.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>Nothing here yet.</p>
+        <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>Nothing here yet.</p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
           {programs.map((p, i) => (
             <div
               key={p.id}
@@ -169,11 +169,11 @@ export function ProgramsClient({
                 >
                   {p.name}
                 </Link>
-                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0" }}>
                   {p.tag} · /programs/{p.slug}
                   {p.published ? "" : " · draft"}{p.comingSoon ? " · coming soon" : ""}
                 </p>
-                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "3px 0 0" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "3px 0 0" }}>
                   {p.leadCount
                     ? `${p.leadCount} coordinator${p.leadCount === 1 ? "" : "s"}`
                     : "No coordinator yet"}
@@ -283,7 +283,7 @@ function ProgramForm({
               disabled={disabled}
               style={field}
             />
-            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "4px 0 0" }}>
+            <p style={{ fontSize: "12px", color: C.muted, margin: "4px 0 0" }}>
               /programs/{d.slug || slugify(d.name) || "…"}
             </p>
           </div>
@@ -418,7 +418,7 @@ function ProgramForm({
               </div>
             </div>
           ))}
-          <p style={{ fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, margin: "2px 0 0", maxWidth: "62ch" }}>
+          <p style={{ fontSize: "13px", color: C.muted, lineHeight: 1.5, margin: "2px 0 0", maxWidth: "62ch" }}>
             Write <strong>{"{form}"}</strong> as the address to mean this program&rsquo;s own sign-up
             form — then it keeps working if the form is renamed. A stage with no button text just
             shows its words.
@@ -436,7 +436,7 @@ function ProgramForm({
 
       <div style={card}>
         <label style={label}>Promo video</label>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
           Paste the link — whatever you have. The one in the browser bar, the Share button&rsquo;s
           short link, a Vimeo page. It plays at the top of the program page, above How it works.
           Leave it empty and nothing shows: no empty box.
@@ -452,7 +452,7 @@ function ProgramForm({
 
       <div style={card}>
         <label style={label}>Runs on another JOC site</label>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: "0 0 12px", maxWidth: "64ch" }}>
           For a program that does not sign up here — Chesed Match, for instance, which runs on
           chesedmatch.org. The orange button on the card and the page opens that address in a new
           tab instead of sending the school to pricing. Leave it empty for anything JOC runs on
@@ -468,7 +468,7 @@ function ProgramForm({
         {/* Both can be set, and the form wins. Saying so here is the whole
             point — otherwise the address sits in the box looking active
             while nobody can work out why nothing links to it. */}
-        <p style={{ fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, margin: "10px 0 0", maxWidth: "64ch" }}>
+        <p style={{ fontSize: "13px", color: C.muted, lineHeight: 1.5, margin: "10px 0 0", maxWidth: "64ch" }}>
           If this program also has a sign-up form, the form is what people are sent to and this
           address is ignored.
         </p>
@@ -491,7 +491,7 @@ function ProgramForm({
           type="submit"
           disabled={disabled || pending || !d.name.trim()}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer",
             opacity: disabled || pending || !d.name.trim() ? 0.5 : 1,
@@ -540,7 +540,7 @@ function Lines({
             type="button"
             onClick={() => onChange(items.filter((_, n) => n !== i))}
             disabled={disabled}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "16px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minWidth: "36px", minHeight: "42px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "16px", color: C.muted, background: "none", border: "none", cursor: "pointer", minWidth: "36px", minHeight: "42px" }}
             aria-label="Remove"
           >
             ×

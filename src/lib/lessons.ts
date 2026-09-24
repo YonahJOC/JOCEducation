@@ -1,3 +1,4 @@
+import { C } from "@/lib/joc-tokens";
 export type Lesson = {
   id: number;
   theme: string;
@@ -314,4 +315,4 @@ export const TIME_LABELS: Record<string, string> = {
   "90": "90 min+",
 };
 
-export const STRIPE_COLORS = ["#2D46AF", "#FA912D", "#2C7AC9", "#10233F"];
+export const STRIPE_COLORS = [C.blue, C.orange, "#2C7AC9", C.ink];

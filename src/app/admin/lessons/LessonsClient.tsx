@@ -60,7 +60,7 @@ export function LessonsClient({
           onClick={() => setEditing({ ...EMPTY_LESSON })}
           disabled={disabled}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "42px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -73,9 +73,9 @@ export function LessonsClient({
         <BulkImport cycles={cycles} disabled={disabled} />
       </div>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         {lessons.length === 0 ? (
-          <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
+          <p style={{ padding: "24px 20px", fontSize: "14px", color: C.muted, margin: 0 }}>
             No lessons yet.
           </p>
         ) : (
@@ -84,7 +84,7 @@ export function LessonsClient({
               <thead>
                 <tr>
                   {["Title", "Grade", "Time", "Cycle", "Status", ""].map((h, i) => (
-                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
+                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", ...label, color: C.muted, borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                       {h}
                     </th>
                   ))}
@@ -97,19 +97,19 @@ export function LessonsClient({
                     <tr key={l.id}>
                       <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}` }}>
                         <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{l.title}</span>
-                        <span style={{ fontSize: "13px", color: "#4A5A74" }}>{l.theme}</span>
+                        <span style={{ fontSize: "13px", color: C.muted }}>{l.theme}</span>
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, whiteSpace: "nowrap" }}>
                         {GRADE_LABELS[l.grade] ?? l.grade}
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, whiteSpace: "nowrap" }}>
                         {l.timeMinutes} min
                       </td>
-                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74" }}>
+                      <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted }}>
                         {cycle ? (
                           <>
                             {cycle.num}. {cycle.theme}
-                            <span style={{ display: "block", fontSize: "12px", color: "#4A5A74" }}>
+                            <span style={{ display: "block", fontSize: "12px", color: C.muted }}>
                               {l.cycleWeek
                                 ? `Week ${l.cycleWeek}${cycle.weeks[l.cycleWeek - 1] ? ` — ${cycle.weeks[l.cycleWeek - 1]}` : ""}`
                                 : "any week"}
@@ -122,7 +122,7 @@ export function LessonsClient({
                       <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}` }}>
                         <span style={{
                           display: "inline-block", fontSize: "12px", fontWeight: 700, padding: "3px 9px", borderRadius: R.chip,
-                          color: l.published ? "#1D6B37" : "#C96C00",
+                          color: l.published ? C.greenText : C.orangeText,
                           backgroundColor: l.published ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
                         }}>
                           {l.published ? "published" : "draft"}
@@ -140,7 +140,7 @@ export function LessonsClient({
                         <Link
                           href={l.published ? `/lesson-plans/${l.id}` : `/lesson-plans/${l.id}?preview=1`}
                           target="_blank"
-                          style={{ fontSize: "13px", color: "#4A5A74", textDecoration: "none" }}
+                          style={{ fontSize: "13px", color: C.muted, textDecoration: "none" }}
                         >
                           {l.published ? "View" : "Preview"}
                         </Link>

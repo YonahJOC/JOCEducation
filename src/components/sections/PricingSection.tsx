@@ -31,15 +31,15 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
 
   return (
     <section id="pricing" style={{ padding: "66px 26px 20px", maxWidth: "1280px", margin: "0 auto" }}>
-      <p style={{ ...label, color: "#C96C00", marginBottom: "12px" }}>06 — BRING JOC TO YOUR SCHOOL</p>
-      <h2 style={{ fontWeight: 800, fontSize: "clamp(29px, 3.5vw, 44px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "32px" }}>Membership & Pricing</h2>
+      <p style={{ ...label, color: C.orangeText, marginBottom: "12px" }}>06 — BRING JOC TO YOUR SCHOOL</p>
+      <h2 style={{ fontWeight: 800, fontSize: "clamp(29px, 3.5vw, 44px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, marginBottom: "32px" }}>Membership & Pricing</h2>
 
       {/* Controls */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center", marginBottom: "28px" }}>
         {/* Billing toggle */}
-        <div style={{ display: "inline-flex", backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "5px", gap: "2px" }}>
+        <div style={{ display: "inline-flex", backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "5px", gap: "2px" }}>
           {(["annual", "monthly"] as Billing[]).map((b) => (
-            <button key={b} onClick={() => setBilling(b)} style={{ fontWeight: 600, fontSize: "15px", padding: "8px 18px", borderRadius: R.chip, border: "none", cursor: "pointer", backgroundColor: billing === b ? "#10233F" : "transparent", color: billing === b ? "#fff" : "#10233F" }}>
+            <button key={b} onClick={() => setBilling(b)} style={{ fontWeight: 600, fontSize: "15px", padding: "8px 18px", borderRadius: R.chip, border: "none", cursor: "pointer", backgroundColor: billing === b ? C.ink : "transparent", color: billing === b ? C.white : C.ink }}>
               {b === "annual" ? "Annual · save 15%" : "Monthly"}
             </button>
           ))}
@@ -47,7 +47,7 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
         {/* Enrollment chips */}
         <div style={{ display: "flex", gap: "8px" }}>
           {(["s", "m", "l"] as Size[]).map((s) => (
-            <button key={s} onClick={() => setSizeKey(s)} style={{ fontWeight: 600, fontSize: "15px", padding: "10px 16px", borderRadius: R.chip, border: sizeKey === s ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: sizeKey === s ? "#10233F" : "#fff", color: sizeKey === s ? "#fff" : "#10233F", cursor: "pointer" }}>
+            <button key={s} onClick={() => setSizeKey(s)} style={{ fontWeight: 600, fontSize: "15px", padding: "10px 16px", borderRadius: R.chip, border: sizeKey === s ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: sizeKey === s ? C.ink : C.white, color: sizeKey === s ? C.white : C.ink, cursor: "pointer" }}>
               {ENROLLMENT_LABELS[s]}
             </button>
           ))}
@@ -62,18 +62,18 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
       </div>
 
       {/* Full Partnership band */}
-      <div style={{ backgroundColor: "#10233F", borderRadius: "26px", padding: "36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "32px", marginBottom: "24px", alignItems: "center" }}>
+      <div style={{ backgroundColor: C.ink, borderRadius: "26px", padding: "36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "32px", marginBottom: "24px", alignItems: "center" }}>
         <div>
-          <span style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", ...label, borderRadius: R.chip, padding: "5px 14px", marginBottom: "12px" }}>ANNUAL PARTNERSHIP</span>
-          <h3 style={{ fontWeight: 800, fontSize: "28px", color: "#fff", marginBottom: "4px" }}>Full JOC Partnership</h3>
+          <span style={{ display: "inline-block", backgroundColor: C.orange, color: C.ink, ...label, borderRadius: R.chip, padding: "5px 14px", marginBottom: "12px" }}>ANNUAL PARTNERSHIP</span>
+          <h3 style={{ fontWeight: 800, fontSize: "28px", color: C.white, marginBottom: "4px" }}>Full JOC Partnership</h3>
           <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "4px" }}>
-            <span style={{ fontWeight: 800, fontSize: "48px", letterSpacing: "-0.04em", color: "#fff" }}>$3,600</span>
+            <span style={{ fontWeight: 800, fontSize: "48px", letterSpacing: "-0.04em", color: C.white }}>$3,600</span>
             <span style={{ color: "rgba(255,255,255,.55)", fontSize: "15px" }}>/ year</span>
           </div>
           <p style={{ fontSize: "15px", color: "rgba(255,255,255,.55)", marginBottom: "20px" }}>Flat rate, any enrollment</p>
           <button
             onClick={() => setPlan(plan === "full" ? "" : "full")}
-            style={{ backgroundColor: plan === "full" ? "transparent" : "#FA912D", color: plan === "full" ? "#fff" : "#10233F", border: plan === "full" ? "2px solid rgba(255,255,255,.4)" : "none", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 26px", cursor: "pointer" }}
+            style={{ backgroundColor: plan === "full" ? "transparent" : C.orange, color: plan === "full" ? C.white : C.ink, border: plan === "full" ? "2px solid rgba(255,255,255,.4)" : "none", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 26px", cursor: "pointer" }}
           >
             {plan === "full" ? "Selected ✓" : "Choose this"}
           </button>
@@ -81,7 +81,7 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
           {["Everything in JOC App + JOC Education", "Kindness Booth included", "Just One Tutor peer placements", "Chesed Match student placements", "Bake for Chesed program", "Dedicated JOC school liaison"].map((f) => (
             <li key={f} style={{ display: "flex", gap: "10px", alignItems: "flex-start", fontSize: "15px", color: "rgba(255,255,255,.8)" }}>
-              <span style={{ color: "#FA912D", flexShrink: 0 }}>✓</span>
+              <span style={{ color: C.orange, flexShrink: 0 }}>✓</span>
               {f}
             </li>
           ))}
@@ -89,12 +89,12 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
       </div>
 
       {/* Per-program table */}
-      <div style={{ backgroundColor: "#fff", borderRadius: "26px", border: `1px solid ${C.hairline}`, padding: "32px", marginBottom: "16px" }}>
-        <h3 style={{ fontWeight: 700, fontSize: "19.5px", color: "#10233F", marginBottom: "16px" }}>Per-program pricing</h3>
+      <div style={{ backgroundColor: C.white, borderRadius: "26px", border: `1px solid ${C.hairline}`, padding: "32px", marginBottom: "16px" }}>
+        <h3 style={{ fontWeight: 700, fontSize: "19.5px", color: C.ink, marginBottom: "16px" }}>Per-program pricing</h3>
         {/* Tier toggle */}
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "24px" }}>
           {tiers.map((t) => (
-            <button key={t} onClick={() => setPriceTier(t)} style={{ fontWeight: 600, fontSize: "13px", padding: "9px 16px", borderRadius: R.chip, border: priceTier === t ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: priceTier === t ? "#10233F" : "#fff", color: priceTier === t ? "#fff" : "#10233F", cursor: "pointer" }}>
+            <button key={t} onClick={() => setPriceTier(t)} style={{ fontWeight: 600, fontSize: "13px", padding: "9px 16px", borderRadius: R.chip, border: priceTier === t ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: priceTier === t ? C.ink : C.white, color: priceTier === t ? C.white : C.ink, cursor: "pointer" }}>
               {PRICE_TIER_LABELS[t]}
             </button>
           ))}
@@ -104,9 +104,9 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={{ textAlign: "left", fontWeight: 600, fontSize: "13px", color: "#4A5A74", paddingBottom: "12px", borderBottom: `1px solid ${C.hairline}`, paddingRight: "24px" }}>Program</th>
-                <th style={{ textAlign: "right", fontWeight: 600, fontSize: "13px", color: "#4A5A74", paddingBottom: "12px", borderBottom: `1px solid ${C.hairline}`, minWidth: "140px" }}>No subscription</th>
-                <th style={{ textAlign: "right", fontWeight: 700, fontSize: "13px", color: "#10233F", paddingBottom: "12px", borderBottom: `1px solid ${C.hairline}`, minWidth: "160px" }}>{PRICE_TIER_LABELS[priceTier]}</th>
+                <th style={{ textAlign: "left", fontWeight: 600, fontSize: "13px", color: C.muted, paddingBottom: "12px", borderBottom: `1px solid ${C.hairline}`, paddingRight: "24px" }}>Program</th>
+                <th style={{ textAlign: "right", fontWeight: 600, fontSize: "13px", color: C.muted, paddingBottom: "12px", borderBottom: `1px solid ${C.hairline}`, minWidth: "140px" }}>No subscription</th>
+                <th style={{ textAlign: "right", fontWeight: 700, fontSize: "13px", color: C.ink, paddingBottom: "12px", borderBottom: `1px solid ${C.hairline}`, minWidth: "160px" }}>{PRICE_TIER_LABELS[priceTier]}</th>
               </tr>
             </thead>
             <tbody>
@@ -115,19 +115,19 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
                 const tierPrice = prog.prices[priceTier];
                 return (
                   <tr key={prog.label}>
-                    <td style={{ fontSize: "15px", color: "#10233F", padding: "14px 0", paddingRight: "24px", borderBottom: i < PROGRAMS.length - 1 ? `1px solid ${C.hairline}` : "none" }}>{prog.label}</td>
-                    <td style={{ textAlign: "right", fontSize: "15px", color: "#4A5A74", padding: "14px 0", borderBottom: i < PROGRAMS.length - 1 ? `1px solid ${C.hairline}` : "none" }}>
+                    <td style={{ fontSize: "15px", color: C.ink, padding: "14px 0", paddingRight: "24px", borderBottom: i < PROGRAMS.length - 1 ? `1px solid ${C.hairline}` : "none" }}>{prog.label}</td>
+                    <td style={{ textAlign: "right", fontSize: "15px", color: C.muted, padding: "14px 0", borderBottom: i < PROGRAMS.length - 1 ? `1px solid ${C.hairline}` : "none" }}>
                       {tierPrice.cents && tierPrice.cents < noSubPrice ? <span style={{ textDecoration: "line-through" }}>${noSubPrice / 100}</span> : `$${noSubPrice / 100}`}
                     </td>
                     <td style={{ textAlign: "right", padding: "14px 0", borderBottom: i < PROGRAMS.length - 1 ? `1px solid ${C.hairline}` : "none" }}>
                       {priceTier === "none" ? (
-                        <span style={{ fontSize: "15px", color: "#4A5A74" }}>—</span>
+                        <span style={{ fontSize: "15px", color: C.muted }}>—</span>
                       ) : tierPrice.na ? (
-                        <span style={{ fontSize: "15px", color: "#4A5A74" }}>Not available</span>
+                        <span style={{ fontSize: "15px", color: C.muted }}>Not available</span>
                       ) : tierPrice.included ? (
-                        <span style={{ fontSize: "15px", fontWeight: 600, color: "#1D6B37" }}>Included</span>
+                        <span style={{ fontSize: "15px", fontWeight: 600, color: C.greenText }}>Included</span>
                       ) : (
-                        <span style={{ fontSize: "15px", fontWeight: 600, color: "#2D46AF" }}>${(tierPrice.cents! / 100)}</span>
+                        <span style={{ fontSize: "15px", fontWeight: 600, color: C.blue }}>${(tierPrice.cents! / 100)}</span>
                       )}
                     </td>
                   </tr>
@@ -139,12 +139,12 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
       </div>
 
       {/* Scholarship panel */}
-      <div style={{ backgroundColor: "#F4F7FD", borderRadius: "18px", padding: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+      <div style={{ backgroundColor: C.panel, borderRadius: "18px", padding: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <p style={{ fontWeight: 700, fontSize: "16px", color: "#10233F", marginBottom: "6px" }}>Need financial assistance?</p>
-          <p style={{ fontSize: "15px", color: "#4A5A74", maxWidth: "52ch" }}>No school is turned away on cost. We offer full and partial scholarships to qualifying schools.</p>
+          <p style={{ fontWeight: 700, fontSize: "16px", color: C.ink, marginBottom: "6px" }}>Need financial assistance?</p>
+          <p style={{ fontSize: "15px", color: C.muted, maxWidth: "52ch" }}>No school is turned away on cost. We offer full and partial scholarships to qualifying schools.</p>
         </div>
-        <button style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 24px", border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>
+        <button style={{ backgroundColor: C.ink, color: C.white, fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 24px", border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>
           Apply for a scholarship
         </button>
       </div>
@@ -154,23 +154,23 @@ export function PricingSection({ plans, programs }: { plans: PlanPricing[]; prog
 
 function PlanCard({ title, subtitle, monthlyPrice, billing, highlight, badge, features, selected, onSelect }: { title: string; subtitle: string; monthlyPrice: number; billing: Billing; highlight: boolean; badge: string | null; features: string[]; selected: boolean; onSelect: () => void; }) {
   return (
-    <div style={{ backgroundColor: highlight ? "#2D46AF" : "#fff", borderRadius: "24px", border: highlight ? "none" : `1px solid ${C.hairline}`, padding: "26px", position: "relative", display: "flex", flexDirection: "column" }}>
-      {badge && <span style={{ position: "absolute", top: "20px", right: "20px", backgroundColor: "#FA912D", color: "#10233F", ...label, borderRadius: R.chip, padding: "4px 12px" }}>{badge}</span>}
-      <p style={{ ...label, color: highlight ? "#FFB55E" : "#C96C00", marginBottom: "6px" }}>{subtitle}</p>
-      <h3 style={{ fontWeight: 700, fontSize: "20px", color: highlight ? "#fff" : "#10233F", marginBottom: "16px" }}>{title}</h3>
+    <div style={{ backgroundColor: highlight ? C.blue : C.white, borderRadius: "24px", border: highlight ? "none" : `1px solid ${C.hairline}`, padding: "26px", position: "relative", display: "flex", flexDirection: "column" }}>
+      {badge && <span style={{ position: "absolute", top: "20px", right: "20px", backgroundColor: C.orange, color: C.ink, ...label, borderRadius: R.chip, padding: "4px 12px" }}>{badge}</span>}
+      <p style={{ ...label, color: highlight ? C.orange : C.orangeText, marginBottom: "6px" }}>{subtitle}</p>
+      <h3 style={{ fontWeight: 700, fontSize: "20px", color: highlight ? C.white : C.ink, marginBottom: "16px" }}>{title}</h3>
       <div style={{ marginBottom: "20px" }}>
-        <span style={{ fontWeight: 800, fontSize: "38px", letterSpacing: "-0.04em", color: highlight ? "#fff" : "#10233F" }}>${monthlyPrice}</span>
-        <span style={{ fontSize: "14px", color: highlight ? "rgba(255,255,255,.6)" : "#4A5A74" }}>/mo{billing === "annual" ? " billed annually" : ""}</span>
+        <span style={{ fontWeight: 800, fontSize: "38px", letterSpacing: "-0.04em", color: highlight ? C.white : C.ink }}>${monthlyPrice}</span>
+        <span style={{ fontSize: "14px", color: highlight ? "rgba(255,255,255,.6)" : C.muted }}>/mo{billing === "annual" ? " billed annually" : ""}</span>
       </div>
       <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
         {features.map((f) => (
-          <li key={f} style={{ display: "flex", gap: "8px", fontSize: "14px", color: highlight ? "rgba(255,255,255,.8)" : "#4A5A74" }}>
-            <span style={{ color: highlight ? "#FFB55E" : "#FA912D", flexShrink: 0 }}>✓</span>
+          <li key={f} style={{ display: "flex", gap: "8px", fontSize: "14px", color: highlight ? "rgba(255,255,255,.8)" : C.muted }}>
+            <span style={{ color: highlight ? C.orange : C.orange, flexShrink: 0 }}>✓</span>
             {f}
           </li>
         ))}
       </ul>
-      <button onClick={onSelect} style={{ fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px", border: highlight ? "none" : selected ? "2px solid #10233F" : "1.5px solid #F4F7FD", backgroundColor: highlight ? (selected ? "rgba(255,255,255,.2)" : "#FA912D") : selected ? "#10233F" : "#F4F7FD", color: highlight ? (selected ? "#fff" : "#10233F") : selected ? "#fff" : "#10233F", cursor: "pointer", width: "100%" }}>
+      <button onClick={onSelect} style={{ fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px", border: highlight ? "none" : selected ? "2px solid #10233F" : "1.5px solid #F4F7FD", backgroundColor: highlight ? (selected ? "rgba(255,255,255,.2)" : C.orange) : selected ? C.ink : C.panel, color: highlight ? (selected ? C.white : C.ink) : selected ? C.white : C.ink, cursor: "pointer", width: "100%" }}>
         {selected ? "Selected ✓" : "Choose this"}
       </button>
     </div>

@@ -12,12 +12,12 @@ import type { AdminFormRow, ResponseRow } from "@/lib/forms";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -89,7 +89,7 @@ export function FormsClient({
           onClick={() => setEditing({ ...BLANK_FORM })}
           disabled={disabled}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -99,11 +99,11 @@ export function FormsClient({
       </PageIntro>
 
       {forms.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>No forms yet.</p>
+        <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>No forms yet.</p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
           {forms.map((f, i) => (
             <div
               key={f.id}
@@ -119,7 +119,7 @@ export function FormsClient({
                   {f.closed && <Pill tone="bad">closed</Pill>}
                   {f.feeCents ? <Pill tone="good">${(f.feeCents / 100).toFixed(2)}</Pill> : null}
                 </p>
-                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "3px 0 0" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "3px 0 0" }}>
                   /forms/{f.slug} · {f.fields.length} question{f.fields.length === 1 ? "" : "s"} ·{" "}
                   {f.responseCount === 0 ? "no answers yet" : `${f.responseCount} answer${f.responseCount === 1 ? "" : "s"}`}
                 </p>
@@ -136,7 +136,7 @@ export function FormsClient({
                 <Link
                   href={`/forms/${f.slug}`}
                   target="_blank"
-                  style={{ fontSize: "13px", color: "#4A5A74", textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
+                  style={{ fontSize: "13px", color: C.muted, textDecoration: "none", minHeight: "40px", display: "flex", alignItems: "center" }}
                 >
                   View
                 </Link>
@@ -185,19 +185,19 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
       <h1 style={pageTitle}>
         {form.title}
       </h1>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 18px" }}>
         {rows.length} answer{rows.length === 1 ? "" : "s"}
         {form.feeCents ? ` · ${rows.filter((r) => r.paid).length} paid` : ""}
       </p>
 
       {rows.length > 0 && <Download formId={form.id} />}
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "auto" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "760px" }}>
           <thead>
             <tr>
               {["When", "Name", "Email", ...(form.feeCents ? ["Paid"] : []), ...columns].map((h) => (
-                <th key={h} style={{ textAlign: "left", padding: "11px 16px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
+                <th key={h} style={{ textAlign: "left", padding: "11px 16px", ...label, color: C.muted, borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                   {h}
                 </th>
               ))}
@@ -211,7 +211,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
                 <td style={{ ...cell, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                 {form.feeCents ? (
                   <td style={cell}>
-                    <span style={{ fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                    <span style={{ fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "2px 9px", color: r.paid ? C.greenText : C.orangeText, backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                       {r.paid ? "paid" : "unpaid"}
                     </span>
                   </td>
@@ -233,6 +233,6 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
 const cell: React.CSSProperties = {
   padding: "12px 16px",
   borderBottom: `1px solid ${C.hairline}`,
-  color: "#4A5A74",
+  color: C.muted,
   verticalAlign: "top",
 };

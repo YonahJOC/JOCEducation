@@ -34,14 +34,14 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
   return (
     <>
       {/* Search + filters */}
-      <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "20px 24px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ backgroundColor: C.white, borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "20px 24px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: "#4A5A74", pointerEvents: "none" }}>⌕</span>
+          <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: C.muted, pointerEvents: "none" }}>⌕</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by topic, theme, or keyword…"
-            style={{ width: "100%", boxSizing: "border-box", paddingLeft: "38px", paddingRight: "14px", paddingTop: "11px", paddingBottom: "11px", fontSize: "15px", color: "#10233F", backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)" }}
+            style={{ width: "100%", boxSizing: "border-box", paddingLeft: "38px", paddingRight: "14px", paddingTop: "11px", paddingBottom: "11px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)" }}
           />
         </div>
 
@@ -63,7 +63,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
               <Chip key={k} label={v} active={prep === k} onClick={() => setPrep(k)} />
             ))}
           </FilterGroup>
-          <span style={{ marginLeft: "auto", fontWeight: 600, fontSize: "15px", color: "#4A5A74", whiteSpace: "nowrap" }}>
+          <span style={{ marginLeft: "auto", fontWeight: 600, fontSize: "15px", color: C.muted, whiteSpace: "nowrap" }}>
             {filtered.length} {filtered.length === 1 ? "plan" : "plans"}
           </span>
         </div>
@@ -72,7 +72,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
       {/* Results */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: "center", padding: "72px 0" }}>
-          <p style={{ fontSize: "17px", color: "#4A5A74", marginBottom: "16px" }}>
+          <p style={{ fontSize: "17px", color: C.muted, marginBottom: "16px" }}>
             {lessons.length === 0
               ? "No lesson plans have been published yet."
               : "No lesson plans match those filters."}
@@ -80,7 +80,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
           {lessons.length > 0 && (
             <button
               onClick={() => { setGrade("all"); setTime("all"); setPrep("all"); setQuery(""); }}
-              style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: R.chip, padding: "11px 22px", border: "none", cursor: "pointer" }}
+              style={{ backgroundColor: C.panel, color: C.ink, fontWeight: 600, fontSize: "14px", borderRadius: R.chip, padding: "11px 22px", border: "none", cursor: "pointer" }}
             >
               Clear all filters
             </button>
@@ -110,7 +110,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
   return (
     <button
       onClick={onClick}
-      style={{ fontWeight: 600, fontSize: "15px", padding: "9px 16px", borderRadius: R.chip, border: active ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: active ? "#10233F" : "#fff", color: active ? "#fff" : "#10233F", cursor: "pointer", whiteSpace: "nowrap" }}
+      style={{ fontWeight: 600, fontSize: "15px", padding: "9px 16px", borderRadius: R.chip, border: active ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: active ? C.ink : C.white, color: active ? C.white : C.ink, cursor: "pointer", whiteSpace: "nowrap" }}
     >
       {label}
     </button>
@@ -121,18 +121,18 @@ const GRADE_LABELS_FULL: Record<string, string> = { es: "Elementary", ms: "Middl
 
 function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: number }) {
   const prepStyle = lesson.prep === "Minimal"
-    ? { bg: "#F4F7FD", text: "#12306F" }
+    ? { bg: C.panel, text: C.blue }
     : lesson.prep === "Moderate"
-    ? { bg: "#FFF0E0", text: "#C96C00" }
+    ? { bg: C.orangeTint, text: C.orangeText }
     : { bg: "#FEE2E2", text: "#991B1B" };
 
   return (
     <Link
       href={`/lesson-plans/${lesson.id}`}
-      style={{ display: "block", textDecoration: "none", backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, overflow: "hidden", transition: "border-color .15s, box-shadow .15s, transform .15s" }}
+      style={{ display: "block", textDecoration: "none", backgroundColor: C.white, borderRadius: "20px", border: `1px solid ${C.hairline}`, overflow: "hidden", transition: "border-color .15s, box-shadow .15s, transform .15s" }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLAnchorElement;
-        el.style.borderColor = "#2D46AF";
+        el.style.borderColor = C.blue;
         el.style.boxShadow = ROW_SHADOW;
         el.style.transform = "translateY(-2px)";
       }}
@@ -145,21 +145,21 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
     >
       <div style={{ height: "8px", backgroundColor: STRIPE_COLORS[colorIndex] }} />
       <div style={{ padding: "20px" }}>
-        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", ...uiLabel, borderRadius: R.chip, padding: "5px 12px", marginBottom: "10px" }}>
+        <span style={{ display: "inline-block", backgroundColor: C.panel, color: C.blue, ...uiLabel, borderRadius: R.chip, padding: "5px 12px", marginBottom: "10px" }}>
           {lesson.theme}
         </span>
-        <h2 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: "#10233F", marginBottom: "8px" }}>{lesson.title}</h2>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, marginBottom: "16px" }}>{lesson.description}</p>
+        <h2 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: C.ink, marginBottom: "8px" }}>{lesson.title}</h2>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, marginBottom: "16px" }}>{lesson.description}</p>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
-          <MetaChip label={GRADE_LABELS_FULL[lesson.grade]} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
-          <MetaChip label={`${lesson.time} min`} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
+          <MetaChip label={GRADE_LABELS_FULL[lesson.grade]} style={{ backgroundColor: C.panel, color: C.blue }} />
+          <MetaChip label={`${lesson.time} min`} style={{ backgroundColor: C.panel, color: C.blue }} />
           <MetaChip label={`${lesson.prep} prep`} style={{ backgroundColor: prepStyle.bg, color: prepStyle.text }} />
         </div>
         <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "13px", color: "#4A5A74" }}>
+          <span style={{ fontSize: "13px", color: C.muted }}>
             {lesson.files.length} file{lesson.files.length !== 1 ? "s" : ""} included
           </span>
-          <span style={{ fontWeight: 700, fontSize: "14px", color: "#2D46AF" }}>Open plan →</span>
+          <span style={{ fontWeight: 700, fontSize: "14px", color: C.blue }}>Open plan →</span>
         </div>
       </div>
     </Link>

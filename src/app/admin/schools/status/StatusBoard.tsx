@@ -17,13 +17,13 @@ function ago(d: Date | string | null): string {
 }
 
 const PAID_COLOR: Record<string, string> = {
-  paid: C.greenText, granted: C.blue, trial: C.orangeText, overdue: C.redText, none: "#4A5A74",
+  paid: C.greenText, granted: C.blue, trial: C.orangeText, overdue: C.redText, none: C.muted,
 };
 
 export function StatusBoard({ schools, canEdit }: { schools: SchoolStatusRow[]; canEdit: boolean }) {
   if (schools.length === 0) {
     return (
-      <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
+      <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
         <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px" }}>No schools yet.</p>
         <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>
           <Link href="/admin/schools" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
@@ -60,7 +60,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
   };
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
       {/* Who, and whether they have paid — the two things that decide
           whether anything else on the row matters. */}
       <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", padding: "15px 18px", borderBottom: `1px solid ${C.hairline}` }}>
@@ -173,7 +173,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ padding: "13px 18px", minWidth: 0 }}>
-      <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 6px" }}>
+      <p style={{ ...uiLabel, color: C.muted, margin: "0 0 6px" }}>
         {label}
       </p>
       <div style={{ fontSize: "15px", color: C.ink, lineHeight: 1.5 }}>{children}</div>
@@ -286,7 +286,7 @@ function Hours({
           aria-label="Hours waiting for approval"
           style={{
             width: "62px", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
-            color: C.ink, backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+            color: C.ink, backgroundColor: C.white, border: `1px solid ${C.hairline}`,
             borderRadius: "8px", padding: "6px 8px", minHeight: "34px", outline: "none",
           }}
         />
@@ -338,7 +338,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
       <select
         value={kind}
         onChange={(e) => setKind(e.target.value as typeof kind)}
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid ${C.hairline}`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: "#fff", color: C.ink }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid ${C.hairline}`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: C.white, color: C.ink }}
       >
         <option value="VISIT">Visit</option>
         <option value="CALL">Call</option>
@@ -350,7 +350,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="What happened, in a line"
-        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid ${C.hairline}`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: "#fff", color: C.ink }}
+        style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", border: `1px solid ${C.hairline}`, borderRadius: "8px", padding: "6px 8px", minHeight: "34px", backgroundColor: C.white, color: C.ink }}
       />
       <span style={{ display: "flex", gap: "8px" }}>
         <button
@@ -365,7 +365,7 @@ function LogTouch({ schoolId }: { schoolId: string }) {
             });
           }}
           style={{
-            fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 700, color: "#fff",
+            fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 700, color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: "8px", padding: "7px 14px",
             minHeight: "34px", cursor: pending ? "wait" : "pointer", opacity: text.trim() ? 1 : 0.5,
           }}

@@ -1,3 +1,4 @@
+import { C } from "@/lib/joc-tokens";
 export default function ProgramDetailLoading() {
   return (
     <div>
@@ -21,7 +22,7 @@ export default function ProgramDetailLoading() {
 
 function Skel({ style }: { style?: React.CSSProperties }) {
   return (
-    <div style={{ backgroundColor: "#F0EDE8", animation: "shimmer 1.6s ease-in-out infinite", ...style }}>
+    <div style={{ backgroundColor: C.hairline, animation: "shimmer 1.6s ease-in-out infinite", ...style }}>
       <style>{`@keyframes shimmer{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}`}</style>
     </div>
   );

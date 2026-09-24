@@ -8,7 +8,7 @@ export default async function SchoolCyclesPage() {
   await requireSchoolPanel();
   const [school, cycles] = await Promise.all([mySchool(), myCycleProgress()]);
   if (!school || !cycles) {
-    return <p style={{ fontSize: "15px", color: "#4A5A74" }}>Could not load your school.</p>;
+    return <p style={{ fontSize: "15px", color: C.muted }}>Could not load your school.</p>;
   }
 
   const current = cycles.find((c) => c.state === "current");
@@ -20,13 +20,13 @@ export default async function SchoolCyclesPage() {
       <h1 style={pageTitle}>
         Cycle progress
       </h1>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 18px" }}>
         How {school.name} is tracking through the year, against the network.
       </p>
 
       <div
         style={{
-          backgroundColor: "#F4F7FD", border: "1px solid rgba(45,70,175,.18)",
+          backgroundColor: C.panel, border: "1px solid rgba(45,70,175,.18)",
           borderRadius: "14px", padding: "13px 16px", marginBottom: "20px",
         }}
       >
@@ -36,7 +36,7 @@ export default async function SchoolCyclesPage() {
         </p>
       </div>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           {cycles.map((c) => {
             const ours = Math.round(c.ourShare * 100);
@@ -48,12 +48,12 @@ export default async function SchoolCyclesPage() {
                   <span style={{ fontSize: "14px", color: C.ink, fontWeight: isCurrent ? 700 : 500 }}>
                     <span style={{ color: c.color, fontWeight: 700 }}>{c.num}.</span> {c.theme}
                     {isCurrent && (
-                      <span style={{ ...label, color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "9px" }}>
+                      <span style={{ ...label, color: C.white, backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "9px" }}>
                         Now
                       </span>
                     )}
                   </span>
-                  <span style={{ fontSize: "13px", color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontSize: "13px", color: C.muted, fontVariantNumeric: "tabular-nums" }}>
                     {c.state === "upcoming" ? `${c.lessons} lessons ready` : `${ours}% of your teachers · network ${median}%`}
                   </span>
                 </div>
@@ -70,8 +70,8 @@ export default async function SchoolCyclesPage() {
       </div>
 
       {/* What would move this */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 14px" }}>
           What would move this
         </p>
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -114,7 +114,7 @@ function Nudge({ children }: { children: React.ReactNode }) {
   return (
     <li style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
       <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orangeText, flexShrink: 0, marginTop: "7px" }} />
-      <span style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74" }}>{children}</span>
+      <span style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted }}>{children}</span>
     </li>
   );
 }

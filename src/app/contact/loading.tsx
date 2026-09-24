@@ -1,4 +1,4 @@
-import { R } from "@/lib/joc-tokens";
+import { C, R } from "@/lib/joc-tokens";
 export default function ContactLoading() {
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "60px 26px 80px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "60px" }}>
@@ -30,7 +30,7 @@ export default function ContactLoading() {
 
 function Skel({ style }: { style?: React.CSSProperties }) {
   return (
-    <div style={{ backgroundColor: "#F0EDE8", animation: "shimmer 1.6s ease-in-out infinite", ...style }}>
+    <div style={{ backgroundColor: C.hairline, animation: "shimmer 1.6s ease-in-out infinite", ...style }}>
       <style>{`@keyframes shimmer{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}`}</style>
     </div>
   );

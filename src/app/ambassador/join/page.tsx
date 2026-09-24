@@ -31,7 +31,7 @@ export default async function JoinPage() {
           style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center",
             fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 700,
-            color: "#fff", backgroundColor: C.blue, borderRadius: R.button,
+            color: C.white, backgroundColor: C.blue, borderRadius: R.button,
             padding: "13px 22px", minHeight: "47px", textDecoration: "none",
           }}
         >

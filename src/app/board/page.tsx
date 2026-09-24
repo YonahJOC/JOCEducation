@@ -4,7 +4,7 @@ import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { BoardClient, type BoardIdea } from "./BoardClient";
 import { siteContent } from "@/lib/site-content";
-import { label, R } from "@/lib/joc-tokens";
+import { C, label, R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Teachers' Board" };
 
@@ -63,17 +63,17 @@ export default async function BoardPage() {
   if (ideas.length === 0 && !session?.user) {
     return (
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "72px 26px 96px", textAlign: "center" }}>
-        <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "14px" }}>
+        <p style={{ ...label, color: C.orangeText, marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: C.ink, marginBottom: "14px" }}>
           Nobody has posted yet.
         </h1>
-        <p style={{ fontSize: "16.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "26px" }}>
+        <p style={{ fontSize: "16.5px", color: C.muted, lineHeight: 1.6, marginBottom: "26px" }}>
           This is where teachers describe what they actually ran in their classrooms — what worked,
           what didn&rsquo;t, what surprised them. Be the first.
         </p>
         <Link
           href="/login"
-          style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
+          style={{ display: "inline-block", backgroundColor: C.orange, color: C.ink, fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
         >
           Sign in to share an idea
         </Link>

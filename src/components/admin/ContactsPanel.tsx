@@ -15,7 +15,7 @@ export type ContactRow = {
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 
@@ -65,9 +65,9 @@ export function ContactsPanel({
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: C.muted, margin: 0 }}>
           Contacts
         </p>
         {!draft && (
@@ -112,7 +112,7 @@ export function ContactsPanel({
               onClick={save}
               disabled={pending || !draft.name.trim()}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: C.white,
                 backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "10px 20px",
                 minHeight: "42px", cursor: "pointer", opacity: pending || !draft.name.trim() ? 0.5 : 1,
               }}
@@ -121,7 +121,7 @@ export function ContactsPanel({
             </button>
             <button
               onClick={() => { setDraft(null); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
             >
               Cancel
             </button>
@@ -130,7 +130,7 @@ export function ContactsPanel({
       )}
 
       {contacts.length === 0 && !draft ? (
-        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+        <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.muted, margin: 0 }}>
           Nobody recorded yet. Add whoever JOC actually speaks to at this school.
         </p>
       ) : (
@@ -146,7 +146,7 @@ export function ContactsPanel({
                     </span>
                   )}
                 </p>
-                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0", wordBreak: "break-word" }}>
                   {[c.title, c.email, c.phone].filter(Boolean).join(" · ") || "No details"}
                 </p>
               </div>
@@ -161,7 +161,7 @@ export function ContactsPanel({
                 <button
                   onClick={() => remove(c)}
                   disabled={disabled}
-                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: C.redText, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "36px" }}
                 >
                   Remove
                 </button>
@@ -172,7 +172,7 @@ export function ContactsPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? C.greenText : "#A3261A" }}>{msg}</p>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? C.greenText : C.redText }}>{msg}</p>
       )}
     </div>
   );

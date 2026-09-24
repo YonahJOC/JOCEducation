@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { label, C, pageTitle } from "@/lib/joc-tokens";
+import { sectionHeading, label, C, pageTitle } from "@/lib/joc-tokens";
 import { safeAuth } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
@@ -190,12 +190,12 @@ export default async function GuidePage() {
       <h1 style={pageTitle}>
         {firstName ? `Start here, ${firstName}.` : "Start here."}
       </h1>
-      <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.65, margin: "0 0 12px", maxWidth: "68ch" }}>
+      <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.65, margin: "0 0 12px", maxWidth: "68ch" }}>
         This is where everything on the site gets written and changed. Nothing here can break the
         site: anything you have not published is invisible to teachers, and anything you have
         published can be changed back.
       </p>
-      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 30px", maxWidth: "68ch" }}>
+      <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "0 0 30px", maxWidth: "68ch" }}>
         Every page has a <strong style={{ color: C.ink }}>“How do I change this?”</strong> link under
         its title with the steps for that page. Below is the whole console, section by section.
       </p>
@@ -203,18 +203,18 @@ export default async function GuidePage() {
       <Group title="Your work" sections={CONTENT} />
       {superAdmin && <Group title="Accounts and money" sections={ACCOUNTS} />}
 
-      <div style={{ backgroundColor: "#10233F", borderRadius: "18px", padding: "26px 28px", marginTop: "10px" }}>
-        <h2 style={{ fontWeight: 700, fontSize: "18px", color: "#fff", margin: "0 0 10px" }}>
+      <div style={{ backgroundColor: C.ink, borderRadius: "18px", padding: "26px 28px", marginTop: "10px" }}>
+        <h2 style={{ ...sectionHeading, color: C.white, margin: "0 0 10px" }}>
           Two things that are not working yet
         </h2>
         <ul style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
           <li style={{ fontSize: "15px", color: "rgba(255,255,255,.78)", lineHeight: 1.6 }}>
-            <strong style={{ color: "#fff" }}>Email.</strong> Invitations, password resets and order
+            <strong style={{ color: C.white }}>Email.</strong> Invitations, password resets and order
             confirmations are all written and waiting, but nothing is sent until JOC connects a mail
             service. Where that matters, the console tells you so rather than letting you assume.
           </li>
           <li style={{ fontSize: "15px", color: "rgba(255,255,255,.78)", lineHeight: 1.6 }}>
-            <strong style={{ color: "#fff" }}>Card payment.</strong> A school can order, and the order
+            <strong style={{ color: C.white }}>Card payment.</strong> A school can order, and the order
             reaches you — but it is invoiced by hand.
           </li>
         </ul>
@@ -226,19 +226,19 @@ export default async function GuidePage() {
 function Group({ title, sections }: { title: string; sections: Section[] }) {
   return (
     <div style={{ marginBottom: "36px" }}>
-      <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: C.muted, margin: "0 0 14px" }}>
         {title}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {sections.map((s) => (
-          <div key={s.href} style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
+          <div key={s.href} style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
             <Link
               href={s.href}
               style={{ fontWeight: 700, fontSize: "17.5px", letterSpacing: "-0.02em", color: C.ink, textDecoration: "none" }}
             >
               {s.title} <span style={{ color: C.blue, fontSize: "15px" }}>→</span>
             </Link>
-            <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 12px" }}>
+            <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "6px 0 12px" }}>
               {s.what}
             </p>
             <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "7px" }}>
@@ -247,7 +247,7 @@ function Group({ title, sections }: { title: string; sections: Section[] }) {
               ))}
             </ol>
             {s.note && (
-              <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
+              <p style={{ fontSize: "15px", color: C.orangeText, backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
                 {s.note}
               </p>
             )}

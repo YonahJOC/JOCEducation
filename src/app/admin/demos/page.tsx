@@ -1,5 +1,5 @@
 import { DemosGuard } from "@/components/admin/Guard";
-import { C } from "@/lib/joc-tokens";
+import { sectionHeading, C } from "@/lib/joc-tokens";
 import { DemoTable, type DemoRowT } from "@/components/admin/DemoTable";
 import { MessagesPanel, type MessageRow } from "@/components/admin/MessagesPanel";
 import { getDemoRequests, usingSampleData } from "@/lib/admin-data";
@@ -62,31 +62,31 @@ async function Inner() {
         ]}
         note="Nothing here is visible to the school. Statuses and notes are for the JOC team only."
       />
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 20px" }}>
         {waiting > 0 ? (
-          <strong style={{ color: "#C96C00" }}>{waiting} waiting for a reply.</strong>
+          <strong style={{ color: C.orangeText }}>{waiting} waiting for a reply.</strong>
         ) : (
           "Nothing waiting for a reply."
         )}
       </p>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", marginBottom: "28px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", marginBottom: "28px" }}>
         <DemoTable demos={demos} disabled={usingSampleData} />
       </div>
 
-      <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+      <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 4px" }}>
         Contact form
       </h2>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 14px" }}>
         {unread > 0 ? (
-          <strong style={{ color: "#C96C00" }}>{unread} unanswered.</strong>
+          <strong style={{ color: C.orangeText }}>{unread} unanswered.</strong>
         ) : (
           "Nothing unanswered."
         )}{" "}
         These used to be discarded on arrival — they are kept now whether or not mail is switched on.
       </p>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         <MessagesPanel messages={messages} disabled={usingSampleData} />
       </div>
     </div>

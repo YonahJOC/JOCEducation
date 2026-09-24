@@ -12,12 +12,12 @@ import {
 const TIERS: PriceTier[] = ["none", "teacher", "staff", "app", "full"];
 
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "16px",
 };
 const num: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "9px",
   padding: "9px 10px", minHeight: "42px", outline: "none",
 };
@@ -86,8 +86,8 @@ export function PricingClient({
       />
 
       {!isSet && (
-        <div style={{ backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
-          <p style={{ fontSize: "14px", color: "#7C4A00", margin: "0 0 10px", lineHeight: 1.55 }}>
+        <div style={{ backgroundColor: C.orangeTint, border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "16px 18px", marginBottom: "18px" }}>
+          <p style={{ fontSize: "14px", color: C.orangeText, margin: "0 0 10px", lineHeight: 1.55 }}>
             The pricing page is still showing figures written into the code. Nobody at JOC set them —
             they were placeholders. Bring them in here, then correct them.
           </p>
@@ -98,8 +98,8 @@ export function PricingClient({
             })}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
-              backgroundColor: "#C96C00", border: "none", borderRadius: R.chip,
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: C.white,
+              backgroundColor: C.orangeText, border: "none", borderRadius: R.chip,
               padding: "10px 18px", minHeight: "42px", cursor: pending ? "wait" : "pointer",
             }}
           >
@@ -116,10 +116,10 @@ export function PricingClient({
 
       {/* Plans */}
       <div style={card}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 4px" }}>
           Plans — price per month
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 16px" }}>
           In whole dollars. Annual billing shows {Math.round(ANNUAL_DISCOUNT * 100)}% less, worked out for you.
         </p>
 
@@ -172,10 +172,10 @@ export function PricingClient({
 
       {/* Programs */}
       <div style={card}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 4px" }}>
           Programs — what each one costs
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 16px" }}>
           A number for a price, <strong style={{ color: C.ink }}>inc</strong> if that plan includes it,{" "}
           <strong style={{ color: C.ink }}>na</strong> if it is not offered at that level.
         </p>
@@ -251,14 +251,14 @@ export function PricingClient({
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", ...label, color: "#4A5A74", padding: "0 6px 8px", whiteSpace: "nowrap",
+  textAlign: "left", ...label, color: C.muted, padding: "0 6px 8px", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = { padding: "4px 6px", verticalAlign: "middle" };
 
 function saveButton(off: boolean): React.CSSProperties {
   return {
     marginTop: "16px", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px",
-    color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: R.chip,
+    color: C.white, backgroundColor: C.blue, border: "none", borderRadius: R.chip,
     padding: "11px 22px", minHeight: "44px", cursor: off ? "not-allowed" : "pointer",
     opacity: off ? 0.5 : 1,
   };

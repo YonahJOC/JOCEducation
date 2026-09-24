@@ -24,7 +24,7 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
 
   if (messages.length === 0) {
     return (
-      <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0, padding: "22px" }}>
+      <p style={{ fontSize: "15px", color: C.muted, margin: 0, padding: "22px" }}>
         No messages through the contact form yet.
       </p>
     );
@@ -39,12 +39,12 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
               <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                 {m.subject || "No subject"}
                 {!m.handled && (
-                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.15)", padding: "2px 8px", borderRadius: R.chip, marginLeft: "8px", letterSpacing: "0.06em" }}>
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: C.orangeText, backgroundColor: "rgba(250,145,45,.15)", padding: "2px 8px", borderRadius: R.chip, marginLeft: "8px", letterSpacing: "0.06em" }}>
                     NEW
                   </span>
                 )}
               </p>
-              <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
+              <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0", wordBreak: "break-word" }}>
                 {m.name} · {m.email}
                 {m.schoolName ? ` · ${m.schoolName}` : ""}
                 {m.role ? ` · ${m.role}` : ""} · {m.when}
@@ -67,7 +67,7 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
               <button
                 onClick={() => start(async () => { await setMessageHandled(m.id, !m.handled); })}
                 disabled={disabled || pending}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: m.handled ? "#4A5A74" : C.greenText, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: m.handled ? C.muted : C.greenText, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", minHeight: "40px" }}
               >
                 {m.handled ? "Reopen" : "Done"}
               </button>
@@ -75,7 +75,7 @@ export function MessagesPanel({ messages, disabled }: { messages: MessageRow[]; 
           </div>
 
           {open === m.id && (
-            <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "12px 0 0", whiteSpace: "pre-wrap", backgroundColor: "#FBF9F4", borderRadius: "12px", padding: "14px 16px" }}>
+            <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "12px 0 0", whiteSpace: "pre-wrap", backgroundColor: C.paper, borderRadius: "12px", padding: "14px 16px" }}>
               {m.message}
             </p>
           )}

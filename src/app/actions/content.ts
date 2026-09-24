@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { safeAuth, openForReview } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can, CAPABILITY_LABELS, type Capability } from "@/lib/access";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * Content management for the JOC educational team (ADMIN and above).
@@ -329,7 +330,7 @@ export async function saveProgram(input: {
       tag: input.tag.trim() || "Ongoing",
       tagline: input.tagline.trim(),
       description: input.description.trim(),
-      heroColor: input.heroColor.trim() || "#2D46AF",
+      heroColor: input.heroColor.trim() || C.blue,
       meta: input.meta.trim(),
       available: input.available.map((a) => a.trim()).filter(Boolean),
       whatsIncluded: input.whatsIncluded.map((a) => a.trim()).filter(Boolean),

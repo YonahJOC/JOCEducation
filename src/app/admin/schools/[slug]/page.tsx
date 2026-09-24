@@ -17,7 +17,7 @@ import { safeAuth, openForReview } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
 const CARD: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px",
 };
 
 const ACTIVITY_ICON: Record<string, string> = {
@@ -62,7 +62,7 @@ async function Inner({ slug }: { slug: string }) {
 
   return (
     <div>
-      <Link href="/admin/schools" style={{ fontSize: "13px", color: "#2D46AF", textDecoration: "none", fontWeight: 600 }}>
+      <Link href="/admin/schools" style={{ fontSize: "13px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
         ← Schools
       </Link>
 
@@ -72,7 +72,7 @@ async function Inner({ slug }: { slug: string }) {
           <h1 style={pageTitle}>
             {s.name}
           </h1>
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", fontSize: "15px", color: "#4A5A74" }}>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", fontSize: "15px", color: C.muted }}>
             <span style={{ display: "inline-block", fontSize: "12px", fontWeight: 700, padding: "3px 10px", borderRadius: R.chip, color: STATUS_COLORS[s.status], backgroundColor: `${STATUS_COLORS[s.status]}1a` }}>
               {STATUS_LABELS[s.status]}
             </span>
@@ -119,12 +119,12 @@ async function Inner({ slug }: { slug: string }) {
           {/* People with logins */}
           <div style={CARD}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-              <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
+              <p style={{ ...label, color: C.muted, margin: 0 }}>
                 Logins ({members.length}{s.seats ? ` of ${s.seats} seats` : ""})
               </p>
             </div>
             {members.length === 0 ? (
-              <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 14px" }}>
+              <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 14px" }}>
                 Nobody at this school has signed in yet.
               </p>
             ) : (
@@ -133,14 +133,14 @@ async function Inner({ slug }: { slug: string }) {
                   <div key={m.id} style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                     <div style={{ minWidth: 0 }}>
                       <p style={{ fontSize: "14px", fontWeight: 600, color: C.ink, margin: 0 }}>{m.name ?? m.email}</p>
-                      <p style={{ fontSize: "13px", color: "#4A5A74", margin: "1px 0 0", wordBreak: "break-all" }}>{m.email}</p>
+                      <p style={{ fontSize: "13px", color: C.muted, margin: "1px 0 0", wordBreak: "break-all" }}>{m.email}</p>
                     </div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                       <span style={{ ...label, color: C.muted }}>
                         {String(m.role).replace("_", " ")}
                       </span>
                       {!m.active && (
-                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#A3261A", backgroundColor: "rgba(184,50,30,.1)", padding: "2px 8px", borderRadius: R.chip }}>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: C.redText, backgroundColor: "rgba(184,50,30,.1)", padding: "2px 8px", borderRadius: R.chip }}>
                           suspended
                         </span>
                       )}
@@ -188,11 +188,11 @@ async function Inner({ slug }: { slug: string }) {
           <ActivityComposer schoolId={s.id} disabled={usingSampleData} />
 
           <div style={CARD}>
-            <p style={{ ...label, color: "#4A5A74", margin: "0 0 16px" }}>
+            <p style={{ ...label, color: C.muted, margin: "0 0 16px" }}>
               History
             </p>
             {activities.length === 0 ? (
-              <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>
+              <p style={{ fontSize: "14px", color: C.muted, margin: 0 }}>
                 Nothing logged yet. Every call, email and plan change will appear here.
               </p>
             ) : (
@@ -201,7 +201,7 @@ async function Inner({ slug }: { slug: string }) {
                   <div key={a.id} style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <span style={{
                       ...label, flexShrink: 0, width: "84px", textAlign: "center",
-                      backgroundColor: "#F4F7FD", color: "#2D46AF",
+                      backgroundColor: C.panel, color: C.blue,
                       borderRadius: "6px", padding: "4px 6px", lineHeight: 1.5,
                     }}>
                         {ACTIVITY_ICON[a.type] ?? "OTHER"}
@@ -209,9 +209,9 @@ async function Inner({ slug }: { slug: string }) {
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <p style={{ fontSize: "15px", color: C.ink, margin: 0, fontWeight: 500, lineHeight: 1.4 }}>{a.summary}</p>
                       {a.detail && (
-                        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
+                        <p style={{ fontSize: "15px", color: C.muted, margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
                       )}
-                      <p style={{ fontSize: "12px", color: "#4A5A74", margin: "4px 0 0" }}>
+                      <p style={{ fontSize: "12px", color: C.muted, margin: "4px 0 0" }}>
                         {fmt(a.occurredAt)}{a.author ? ` · ${a.author}` : " · system"}
                       </p>
                     </div>

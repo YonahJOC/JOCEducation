@@ -1,5 +1,6 @@
 import { safeAuth, openForReview } from "@/auth";
 import { can, CAPABILITY_LABELS, type Capability } from "@/lib/access";
+import { C, pageTitle } from "@/lib/joc-tokens";
 
 /**
  * Every console page names the one permission it needs, and checks for itself.
@@ -22,11 +23,11 @@ export async function Guard({
   if (openForReview || can(session?.user, need)) return <>{children}</>;
   return (
     <div style={{ maxWidth: "460px", padding: "40px 0" }}>
-      <h1 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: "#10233F", margin: "0 0 10px" }}>
+      <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 10px" }}>
         Not part of your admin type
       </h1>
-      <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
-        This page needs <strong style={{ color: "#10233F" }}>{CAPABILITY_LABELS[need]}</strong>, which
+      <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0 }}>
+        This page needs <strong style={{ color: C.ink }}>{CAPABILITY_LABELS[need]}</strong>, which
         your admin type does not include. A super admin can change that under Admin types.
       </p>
     </div>

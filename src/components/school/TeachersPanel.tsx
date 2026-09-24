@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { label, R, C } from "@/lib/joc-tokens";
+import { pageTitle, label, R, C } from "@/lib/joc-tokens";
 import { addTeacher, cancelInvitation, removeTeacher, setTeacherRole } from "@/app/actions/school";
 
 type Member = {
@@ -11,7 +11,7 @@ type Member = {
 type Invite = { id: string; email: string; role: string; status: string; expiresAt: Date | string };
 
 const field: React.CSSProperties = {
-  fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px",
   outline: "none", minHeight: "44px",
 };
@@ -62,17 +62,17 @@ export function TeachersPanel({
 
   return (
     <div>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+      <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 4px" }}>
         Your teachers
       </h1>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 18px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 18px" }}>
         Everyone at {schoolName} with a JOC Education login.
       </p>
 
       {/* The scoping boundary, stated plainly. */}
       <div
         style={{
-          backgroundColor: "#F4F7FD", border: "1px solid rgba(45,70,175,.18)",
+          backgroundColor: C.panel, border: "1px solid rgba(45,70,175,.18)",
           borderRadius: "14px", padding: "13px 16px", marginBottom: "20px",
         }}
       >
@@ -83,15 +83,15 @@ export function TeachersPanel({
 
       {/* Seats */}
       {seats !== null && (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "18px 20px", marginBottom: "16px" }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "18px 20px", marginBottom: "16px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "15px", marginBottom: "8px" }}>
             <span style={{ color: C.ink, fontWeight: 600 }}>{seatsUsed} of {seats} seats used</span>
-            <span style={{ color: full ? "#C96C00" : "#4A5A74" }}>
+            <span style={{ color: full ? C.orangeText : C.muted }}>
               {full ? "All seats taken" : `${seats - seatsUsed} available`}
             </span>
           </div>
           <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: C.panel, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${Math.min(100, (seatsUsed / seats) * 100)}%`, backgroundColor: full ? "#FA912D" : C.blue, borderRadius: R.chip }} />
+            <div style={{ height: "100%", width: `${Math.min(100, (seatsUsed / seats) * 100)}%`, backgroundColor: full ? C.orange : C.blue, borderRadius: R.chip }} />
           </div>
         </div>
       )}
@@ -99,12 +99,12 @@ export function TeachersPanel({
       {/* Invite */}
       <form
         onSubmit={add}
-        style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}
+        style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}
       >
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 14px" }}>
           Add a teacher
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "-6px 0 14px", maxWidth: "56ch" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: "-6px 0 14px", maxWidth: "56ch" }}>
           Their name and email gives them a login here. <strong style={{ color: C.ink }}>No message
           is sent to them</strong> — tell them yourself, and they sign in with that address.
         </p>
@@ -127,7 +127,7 @@ export function TeachersPanel({
             type="submit"
             disabled={pending || full || !email.includes("@") || !name.trim()}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
               backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 22px",
               minHeight: "44px", cursor: full || !email.includes("@") ? "not-allowed" : "pointer",
               opacity: pending || full || !email.includes("@") ? 0.5 : 1,
@@ -137,7 +137,7 @@ export function TeachersPanel({
           </button>
         </div>
         {full && (
-          <p style={{ fontSize: "13px", color: "#C96C00", margin: "10px 0 0" }}>
+          <p style={{ fontSize: "13px", color: C.orangeText, margin: "10px 0 0" }}>
             Every seat is in use. Ask JOC for more on the Plan &amp; seats page.
           </p>
         )}
@@ -148,8 +148,8 @@ export function TeachersPanel({
 
       {/* Pending invitations */}
       {invitations.length > 0 && (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-          <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
+          <p style={{ ...label, color: C.muted, margin: "0 0 14px" }}>
             Invited, not yet joined
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -159,7 +159,7 @@ export function TeachersPanel({
                 <div key={i.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                   <div style={{ minWidth: 0 }}>
                     <span style={{ fontSize: "14px", color: C.ink, wordBreak: "break-all" }}>{i.email}</span>
-                    <span style={{ fontSize: "13px", color: expired ? "#C96C00" : "#4A5A74", marginLeft: "8px" }}>
+                    <span style={{ fontSize: "13px", color: expired ? C.orangeText : C.muted, marginLeft: "8px" }}>
                       {expired ? "expired" : "pending"}
                     </span>
                   </div>
@@ -172,12 +172,12 @@ export function TeachersPanel({
       )}
 
       {/* Team */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", marginBottom: "16px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", marginBottom: "16px" }}>
+        <p style={{ ...label, color: C.muted, margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
           On your team ({members.length})
         </p>
         {members.length === 0 ? (
-          <p style={{ padding: "20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
+          <p style={{ padding: "20px", fontSize: "14px", color: C.muted, margin: 0 }}>
             Nobody has joined yet. Invite your first teacher above.
           </p>
         ) : (
@@ -187,17 +187,17 @@ export function TeachersPanel({
                 <div style={{ minWidth: 0 }}>
                   <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                     {m.name ?? m.email}
-                    {m.id === meId && <span style={{ fontSize: "12px", color: "#4A5A74", fontWeight: 500 }}> · you</span>}
+                    {m.id === meId && <span style={{ fontSize: "12px", color: C.muted, fontWeight: 500 }}> · you</span>}
                   </p>
-                  <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-all" }}>
+                  <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0", wordBreak: "break-all" }}>
                     {m.email} · {ago(m.lastSeenAt)}
                   </p>
                 </div>
                 <div style={{ display: "flex", gap: "12px", alignItems: "center", flexShrink: 0 }}>
                   <span style={{
                     ...label,
-                    color: m.role === "SCHOOL_ADMIN" ? C.blue : "#4A5A74",
-                    backgroundColor: m.role === "SCHOOL_ADMIN" ? "#F4F7FD" : "transparent",
+                    color: m.role === "SCHOOL_ADMIN" ? C.blue : C.muted,
+                    backgroundColor: m.role === "SCHOOL_ADMIN" ? C.panel : "transparent",
                     padding: m.role === "SCHOOL_ADMIN" ? "3px 9px" : 0, borderRadius: R.chip,
                   }}>
                     {m.role === "SCHOOL_ADMIN" ? "Admin" : "Teacher"}
@@ -219,11 +219,11 @@ export function TeachersPanel({
       </div>
 
       {/* Who can administer */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>
           Who can administer this school
         </p>
-        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.muted, margin: "0 0 10px" }}>
           {admins.length === 1
             ? "You are the only administrator."
             : `${admins.length} people can manage this school's teachers and plan.`}{" "}
@@ -231,7 +231,7 @@ export function TeachersPanel({
         </p>
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           {admins.map((a) => (
-            <span key={a.id} style={{ fontSize: "13px", color: C.ink, backgroundColor: "#F4F7FD", borderRadius: R.chip, padding: "5px 12px" }}>
+            <span key={a.id} style={{ fontSize: "13px", color: C.ink, backgroundColor: C.panel, borderRadius: R.chip, padding: "5px 12px" }}>
               {a.name ?? a.email}
             </span>
           ))}

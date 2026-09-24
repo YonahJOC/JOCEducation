@@ -6,13 +6,13 @@ import type { PublicResource } from "@/lib/content";
 import { C, R } from "@/lib/joc-tokens";
 
 const TAG_COLORS: Record<string, string> = {
-  "Worksheet": "#2D46AF",
+  "Worksheet": C.blue,
   "Activity": "#2C7AC9",
-  "Design": "#FA912D",
-  "Video": "#10233F",
-  "Source sheet": "#1D6B37",
+  "Design": C.orange,
+  "Video": C.ink,
+  "Source sheet": C.greenText,
 };
-const FALLBACK_COLOR = "#2D46AF";
+const FALLBACK_COLOR = C.blue;
 
 /** Three letters for the coloured square, from whatever the category is called. */
 function abbrev(tag: string) {
@@ -57,31 +57,31 @@ export function ResourceLibrary({
   return (
     <>
       {/* Counts by category, from what is actually published */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", marginBottom: "28px", padding: "22px 28px", backgroundColor: "#fff", borderRadius: "18px", border: `1px solid ${C.hairline}` }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", marginBottom: "28px", padding: "22px 28px", backgroundColor: C.white, borderRadius: "18px", border: `1px solid ${C.hairline}` }}>
         {tags.map(([t, n]) => (
           <div key={t} style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <div style={{ width: "36px", height: "36px", borderRadius: "9px", backgroundColor: TAG_COLORS[t] ?? FALLBACK_COLOR, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <span style={{ color: "#fff", fontWeight: 700, fontSize: "10px", letterSpacing: "0.05em" }}>{abbrev(t)}</span>
+              <span style={{ color: C.white, fontWeight: 700, fontSize: "10px", letterSpacing: "0.05em" }}>{abbrev(t)}</span>
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: "15px", color: "#10233F" }}>{n}</div>
-              <div style={{ fontSize: "12px", color: "#4A5A74" }}>{t.toLowerCase()}{n === 1 ? "" : "s"}</div>
+              <div style={{ fontWeight: 700, fontSize: "15px", color: C.ink }}>{n}</div>
+              <div style={{ fontSize: "12px", color: C.muted }}>{t.toLowerCase()}{n === 1 ? "" : "s"}</div>
             </div>
           </div>
         ))}
-        <div style={{ marginLeft: "auto", fontWeight: 800, fontSize: "24px", letterSpacing: "-0.04em", color: "#10233F", alignSelf: "center" }}>
+        <div style={{ marginLeft: "auto", fontWeight: 800, fontSize: "24px", letterSpacing: "-0.04em", color: C.ink, alignSelf: "center" }}>
           {resources.length}
-          <span style={{ fontWeight: 500, fontSize: "14px", color: "#4A5A74", letterSpacing: 0 }}> total</span>
+          <span style={{ fontWeight: 500, fontSize: "14px", color: C.muted, letterSpacing: 0 }}> total</span>
         </div>
       </div>
 
       {/* Filters */}
-      <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "20px 24px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ backgroundColor: C.white, borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "20px 24px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search resources…"
-          style={{ width: "100%", boxSizing: "border-box", padding: "11px 14px", fontSize: "15px", color: "#10233F", backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)", minHeight: "44px" }}
+          style={{ width: "100%", boxSizing: "border-box", padding: "11px 14px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)", minHeight: "44px" }}
         />
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
           <Chip label="All" active={tag === "All"} onClick={() => setTag("All")} />
@@ -91,7 +91,7 @@ export function ResourceLibrary({
           <select
             value={cycle}
             onChange={(e) => setCycle(e.target.value)}
-            style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "15px", color: "#10233F", backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "9px 14px", minHeight: "44px", cursor: "pointer" }}
+            style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink, backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "9px 14px", minHeight: "44px", cursor: "pointer" }}
           >
             <option value="all">Every Chesed Cycle</option>
             {cycles.map((c) => (
@@ -103,7 +103,7 @@ export function ResourceLibrary({
 
       {/* Results */}
       {filtered.length === 0 ? (
-        <p style={{ fontSize: "16px", color: "#4A5A74", textAlign: "center", padding: "56px 0" }}>
+        <p style={{ fontSize: "16px", color: C.muted, textAlign: "center", padding: "56px 0" }}>
           Nothing matches those filters.
         </p>
       ) : (
@@ -112,29 +112,29 @@ export function ResourceLibrary({
             const color = TAG_COLORS[r.tag] ?? FALLBACK_COLOR;
             const cn = cycleName(r.cycleSlug);
             return (
-              <div key={r.id} style={{ backgroundColor: "#fff", borderRadius: "18px", border: `1px solid ${C.hairline}`, padding: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div key={r.id} style={{ backgroundColor: C.white, borderRadius: "18px", border: `1px solid ${C.hairline}`, padding: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
                 <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
                   <div style={{ width: "34px", height: "34px", borderRadius: "9px", backgroundColor: color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <span style={{ color: "#fff", fontWeight: 700, fontSize: "9.5px", letterSpacing: "0.05em" }}>{abbrev(r.tag)}</span>
+                    <span style={{ color: C.white, fontWeight: 700, fontSize: "9.5px", letterSpacing: "0.05em" }}>{abbrev(r.tag)}</span>
                   </div>
-                  <span style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74" }}>{r.tag}</span>
+                  <span style={{ fontSize: "12px", fontWeight: 600, color: C.muted }}>{r.tag}</span>
                 </div>
-                <h2 style={{ fontWeight: 700, fontSize: "17.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: "#10233F", margin: 0 }}>{r.title}</h2>
-                <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: 0, flex: 1 }}>{r.description}</p>
+                <h2 style={{ fontWeight: 700, fontSize: "17.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: C.ink, margin: 0 }}>{r.title}</h2>
+                <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: 0, flex: 1 }}>{r.description}</p>
                 {cn && (
-                  <span style={{ fontSize: "12px", fontWeight: 600, color: "#C96C00" }}>{cn}</span>
+                  <span style={{ fontSize: "12px", fontWeight: 600, color: C.orangeText }}>{cn}</span>
                 )}
                 <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "12px" }}>
                   {!canDownload ? (
-                    <Link href="/login" style={{ fontWeight: 700, fontSize: "14px", color: "#2D46AF", textDecoration: "none" }}>
+                    <Link href="/login" style={{ fontWeight: 700, fontSize: "14px", color: C.blue, textDecoration: "none" }}>
                       Sign in to download →
                     </Link>
                   ) : r.fileUrl ? (
-                    <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, fontSize: "14px", color: "#2D46AF", textDecoration: "none" }}>
+                    <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, fontSize: "14px", color: C.blue, textDecoration: "none" }}>
                       Download →
                     </a>
                   ) : (
-                    <span style={{ fontSize: "15px", color: "#4A5A74" }}>File coming soon</span>
+                    <span style={{ fontSize: "15px", color: C.muted }}>File coming soon</span>
                   )}
                 </div>
               </div>
@@ -150,7 +150,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
   return (
     <button
       onClick={onClick}
-      style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", padding: "9px 16px", minHeight: "44px", borderRadius: R.chip, border: active ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: active ? "#10233F" : "#fff", color: active ? "#fff" : "#10233F", cursor: "pointer", whiteSpace: "nowrap" }}
+      style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", padding: "9px 16px", minHeight: "44px", borderRadius: R.chip, border: active ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: active ? C.ink : C.white, color: active ? C.white : C.ink, cursor: "pointer", whiteSpace: "nowrap" }}
     >
       {label}
     </button>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { label, C } from "@/lib/joc-tokens";
+import { sectionHeading, label, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import {
   getUpcomingEvents, getPastEvents, formatEventDate, type PublicEvent,
@@ -57,13 +57,13 @@ function EventRow({ e }: { e: PublicEvent }) {
         <p style={{ fontSize: "17px", fontWeight: 700, color: C.ink, margin: "0 0 4px", letterSpacing: "-0.02em", textDecoration: cancelled ? "line-through" : "none" }}>
           {e.title}
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 8px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 8px" }}>
           {[e.schoolName ?? (e.kind === "JOC_EVENT" ? "Open to every school" : null), e.audience, e.location]
             .filter(Boolean)
             .join(" · ")}
         </p>
         {e.detail && (
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0, maxWidth: "62ch" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0, maxWidth: "62ch" }}>
             {e.detail}
           </p>
         )}
@@ -85,7 +85,7 @@ function Months({ months }: { months: { label: string; events: PublicEvent[] }[]
     <>
       {months.map((m) => (
         <div key={m.label} style={{ marginBottom: "34px" }}>
-          <h3 style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
+          <h3 style={{ ...label, color: C.muted, margin: "0 0 4px" }}>
             {m.label}
           </h3>
           {m.events.map((e) => (
@@ -99,8 +99,8 @@ function Months({ months }: { months: { label: string; events: PublicEvent[] }[]
 
 function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "18px", padding: "32px 26px" }}>
-      <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0, maxWidth: "52ch" }}>
+    <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "18px", padding: "32px 26px" }}>
+      <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0, maxWidth: "52ch" }}>
         {children}
       </p>
     </div>
@@ -136,13 +136,13 @@ export default async function ProgrammingPage() {
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4.6vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: C.ink, margin: "0 0 16px", maxWidth: "18ch" }}>
           What we are running, and when.
         </h1>
-        <p style={{ fontSize: "17px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 10px", maxWidth: "58ch" }}>
+        <p style={{ fontSize: "17px", lineHeight: 1.65, color: C.muted, margin: "0 0 10px", maxWidth: "58ch" }}>
           The Chesed Cycles say what every school is learning this month. This is what is actually
           happening — the booths, the bake sales, the trips and the collections, across the whole
           network.
         </p>
         {cycle && (
-          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>
             Running now: <strong style={{ color: C.ink }}>{cycle.theme}</strong> · {cycle.range}
           </p>
         )}
@@ -154,10 +154,10 @@ export default async function ProgrammingPage() {
             there will be far more of those. Mixed together, the second drowns
             the first. */}
         <div style={{ marginBottom: "48px" }}>
-          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+          <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 4px" }}>
             JOC programs
           </h2>
-          <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 14px" }}>
             Across the whole network — open to every school.
           </p>
           {jocMonths.length === 0 ? (
@@ -174,10 +174,10 @@ export default async function ProgrammingPage() {
         </div>
 
         <div style={{ paddingTop: "34px", borderTop: `2px solid ${C.hairline}` }}>
-          <h2 style={{ fontWeight: 800, fontSize: "22px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+          <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 4px" }}>
             {seesEverySchool ? "Programs at schools" : "Running at your school"}
           </h2>
-          <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 14px" }}>
             {seesEverySchool
               ? "Each program, at each school that is running it."
               : "What your school has on this year."}
@@ -195,10 +195,10 @@ export default async function ProgrammingPage() {
 
         {past.length > 0 && (
           <div style={{ marginTop: "46px", paddingTop: "30px", borderTop: `2px solid ${C.hairline}` }}>
-            <h2 style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+            <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 4px" }}>
               Already run
             </h2>
-            <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 10px" }}>
+            <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 10px" }}>
               What the network has done this year.
             </p>
             {past.map((e) => (

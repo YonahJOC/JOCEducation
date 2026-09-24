@@ -1,4 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * Reading the programming calendar.
@@ -179,8 +180,8 @@ export const EVENT_STATUS_LABELS: Record<string, string> = {
 };
 
 export const EVENT_STATUS_COLORS: Record<string, string> = {
-  PLANNED: "#C96C00",
-  CONFIRMED: "#1D6B37",
-  DONE: "#2D46AF",
-  CANCELLED: "#A3261A",
+  PLANNED: C.orangeText,
+  CONFIRMED: C.greenText,
+  DONE: C.blue,
+  CANCELLED: C.redText,
 };

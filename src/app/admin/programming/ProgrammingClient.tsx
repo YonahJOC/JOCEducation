@@ -32,7 +32,7 @@ const STATUS_LABELS: Record<string, string> = {
   PLANNED: "Planned", CONFIRMED: "Confirmed", DONE: "Done", CANCELLED: "Cancelled",
 };
 const STATUS_COLORS: Record<string, string> = {
-  PLANNED: "#C96C00", CONFIRMED: "#1D6B37", DONE: "#2D46AF", CANCELLED: "#A3261A",
+  PLANNED: C.orangeText, CONFIRMED: C.greenText, DONE: C.blue, CANCELLED: C.redText,
 };
 
 const KIND_LABELS: Record<string, string> = {
@@ -48,12 +48,12 @@ const BLANK: EventRow = {
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -110,7 +110,7 @@ export function ProgrammingClient({
           onClick={() => setEditing({ ...BLANK })}
           disabled={disabled}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -153,17 +153,17 @@ function Group({
 }) {
   return (
     <div>
-      <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
+      <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>
         {title}
       </p>
       {events.length === 0 ? (
         empty ? (
-          <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "32px 22px", textAlign: "center" }}>
-            <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>{empty}</p>
+          <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "32px 22px", textAlign: "center" }}>
+            <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>{empty}</p>
           </div>
         ) : null
       ) : (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", opacity: dim ? 0.75 : 1 }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", opacity: dim ? 0.75 : 1 }}>
           {events.map((e, i) => (
             <div
               key={e.id}
@@ -179,12 +179,12 @@ function Group({
                 <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {e.title}
                   {!e.published && (
-                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 700, color: C.orangeText, backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
                       draft
                     </span>
                   )}
                 </p>
-                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0" }}>
                   {[
                     e.schoolName ?? (e.kind === "JOC_EVENT" ? "Whole network" : "No school set"),
                     e.programName,
@@ -300,12 +300,12 @@ function EventForm({
                   padding: "10px 16px", borderRadius: "10px", minHeight: "44px",
                   cursor: disabled ? "not-allowed" : "pointer", textAlign: "left",
                   border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
-                  backgroundColor: on ? "rgba(45,70,175,.07)" : "#fff",
-                  color: on ? C.blue : "#4A5A74",
+                  backgroundColor: on ? "rgba(45,70,175,.07)" : C.white,
+                  color: on ? C.blue : C.muted,
                 }}
               >
                 {KIND_LABELS[k]}
-                <span style={{ display: "block", fontSize: "12px", fontWeight: 400, color: "#4A5A74", marginTop: "2px" }}>
+                <span style={{ display: "block", fontSize: "12px", fontWeight: 400, color: C.muted, marginTop: "2px" }}>
                   {k === "JOC_EVENT"
                     ? "The whole network, or anyone who wants to come"
                     : "One program, running at one school"}
@@ -335,7 +335,7 @@ function EventForm({
           <div>
             <label style={label}>Last day</label>
             <input type="date" value={d.endsAt} onChange={(e) => set("endsAt", e.target.value)} disabled={disabled} style={field} />
-            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: C.muted, margin: "5px 0 0" }}>
               Leave empty for a single day.
             </p>
           </div>
@@ -362,7 +362,7 @@ function EventForm({
               ))}
             </select>
             {schools.length === 0 && (
-              <p style={{ fontSize: "12px", color: "#C96C00", margin: "5px 0 0" }}>
+              <p style={{ fontSize: "12px", color: C.orangeText, margin: "5px 0 0" }}>
                 No schools on the system yet. Add one under Schools first.
               </p>
             )}
@@ -380,7 +380,7 @@ function EventForm({
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
-            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: C.muted, margin: "5px 0 0" }}>
               Links the event to that program&rsquo;s page.
             </p>
           </div>
@@ -441,7 +441,7 @@ function EventForm({
           type="submit"
           disabled={disabled || pending}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -455,7 +455,7 @@ function EventForm({
             onClick={callOff}
             disabled={disabled || pending}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: "#C96C00",
+              fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: C.orangeText,
               backgroundColor: "rgba(250,145,45,.14)", border: "none", borderRadius: R.chip,
               padding: "11px 18px", minHeight: "42px", cursor: "pointer",
             }}

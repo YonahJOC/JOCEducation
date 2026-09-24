@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { setSchoolAppAdmin } from "@/app/actions/admin";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * "Runs the app" on one person at a school.
@@ -25,7 +26,7 @@ export function AppAdminToggle({
     <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-end", gap: "2px" }}>
       <label
         title="Sees this school's own sign-ups and activity. Not the plan or the seats."
-        style={{ display: "inline-flex", gap: "6px", alignItems: "center", fontSize: "12px", fontWeight: 600, color: on ? "#2D46AF" : "#4A5A74", cursor: disabled || pending ? "default" : "pointer", whiteSpace: "nowrap" }}
+        style={{ display: "inline-flex", gap: "6px", alignItems: "center", fontSize: "12px", fontWeight: 600, color: on ? C.blue : C.muted, cursor: disabled || pending ? "default" : "pointer", whiteSpace: "nowrap" }}
       >
         <input
           type="checkbox"
@@ -45,7 +46,7 @@ export function AppAdminToggle({
         />
         Runs the app
       </label>
-      {err && <span style={{ fontSize: "12px", color: "#A3261A", maxWidth: "24ch", textAlign: "right", lineHeight: 1.35 }}>{err}</span>}
+      {err && <span style={{ fontSize: "12px", color: C.redText, maxWidth: "24ch", textAlign: "right", lineHeight: 1.35 }}>{err}</span>}
     </span>
   );
 }

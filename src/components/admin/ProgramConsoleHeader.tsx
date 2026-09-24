@@ -55,7 +55,7 @@ export function ProgramConsoleHeader({
       />
 
       <div style={{ position: "relative", maxWidth: CONTENT_MAX, margin: "0 auto", padding: "28px 40px 0" }}>
-        <p style={{ ...label, color: dark ? "#FFD8AE" : C.orangeText, margin: "0 0 10px" }}>
+        <p style={{ ...label, color: dark ? C.onDarkLabel : C.orangeText, margin: "0 0 10px" }}>
           Program console · {tag} · {lead ? `Run by ${lead}` : "Nobody is down as running it"}
         </p>
 

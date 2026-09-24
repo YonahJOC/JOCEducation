@@ -140,14 +140,14 @@ export function RoomsClient({
             <span style={{ marginRight: "7px" }} aria-hidden="true">{r.icon}</span>
             {r.name}
           </p>
-          <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
+          <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0" }}>
             {r.messageCount} message{r.messageCount === 1 ? "" : "s"} ·{" "}
             {r.memberCount} following
             {r.archived ? " · closed" : ""}
             {r.slug ? (
               <>
                 {" · "}
-                <Link href={`/rooms/${r.slug}`} style={{ color: "#2D46AF", textDecoration: "none" }}>
+                <Link href={`/rooms/${r.slug}`} style={{ color: C.blue, textDecoration: "none" }}>
                   open it
                 </Link>
               </>

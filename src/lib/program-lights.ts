@@ -1,5 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { allEnrolledPairs } from "@/lib/program-enrollment";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * Whether a coordinator may approach a school about a program.
@@ -41,9 +42,9 @@ export const LIGHT_MEANING: Record<Light, string> = {
 };
 
 export const LIGHT_COLOR: Record<Light, { dot: string; tint: string; text: string }> = {
-  GREEN: { dot: "#2FA457", tint: "#E3F4E8", text: "#1D6B37" },
-  AMBER: { dot: "#FA912D", tint: "#FFF0E0", text: "#C96C00" },
-  RED: { dot: "#D8412F", tint: "#FBE6E3", text: "#A3261A" },
+  GREEN: { dot: C.green, tint: C.greenTint, text: C.greenText },
+  AMBER: { dot: C.orange, tint: C.orangeTint, text: C.orangeText },
+  RED: { dot: C.red, tint: C.redTint, text: C.redText },
 };
 
 /** Green, then orange, then red, then by name. */

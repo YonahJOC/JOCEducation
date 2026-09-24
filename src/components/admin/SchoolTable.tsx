@@ -23,7 +23,7 @@ function ago(date: Date | null): string {
 
 export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
   if (schools.length === 0) {
-    return <p style={{ padding: "22px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>No schools yet.</p>;
+    return <p style={{ padding: "22px 20px", fontSize: "14px", color: C.muted, margin: 0 }}>No schools yet.</p>;
   }
   return (
     <div style={{ overflowX: "auto" }}>
@@ -31,7 +31,7 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
         <thead>
           <tr>
             {["School", "Status", "Plan", "Seats", "Staff", "Last contact"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "10px 20px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
+              <th key={h} style={{ textAlign: "left", padding: "10px 20px", ...label, color: C.muted, borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                 {h}
               </th>
             ))}
@@ -44,7 +44,7 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
                 <Link href={`/admin/schools/${s.id}`} style={{ color: C.ink, fontWeight: 600, textDecoration: "none" }}>
                   {s.name}
                 </Link>
-                <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "2px" }}>
+                <span style={{ display: "block", fontSize: "12px", color: C.muted, marginTop: "2px" }}>
                   {s.city ?? s.region ?? "Place not recorded"}{s.studentCount ? ` · ${s.studentCount} students` : ""}
                 </span>
               </td>
@@ -53,19 +53,19 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
                   {STATUS_LABELS[s.status]}
                 </span>
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, whiteSpace: "nowrap" }}>
                 {s.plan ? PLAN_LABELS[s.plan] : <Absent>No plan</Absent>}
                 {s.grantedManually && (
-                  <span style={{ display: "block", fontSize: "11px", color: "#1D6B37", fontWeight: 600 }}>granted</span>
+                  <span style={{ display: "block", fontSize: "11px", color: C.greenText, fontWeight: 600 }}>granted</span>
                 )}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, fontVariantNumeric: "tabular-nums" }}>
                 {s.seats ?? <Absent>Not set</Absent>}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", fontVariantNumeric: "tabular-nums" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, fontVariantNumeric: "tabular-nums" }}>
                 {s.memberCount}
               </td>
-              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, whiteSpace: "nowrap" }}>
                 {ago(s.lastActivityAt)}
               </td>
             </tr>

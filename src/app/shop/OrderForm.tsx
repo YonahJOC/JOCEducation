@@ -6,13 +6,13 @@ import { placeOrder } from "@/app/actions/orders";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "15px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "15px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "11px 13px", minHeight: "44px", outline: "none",
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "13px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
+  color: C.muted, marginBottom: "5px",
 };
 
 /**
@@ -61,7 +61,7 @@ export function OrderForm({
       <div style={{ textAlign: "center", padding: "12px 0" }}>
         <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: "22px" }}>✓</div>
         <h3 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>Order received</h3>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: 0 }}>
           Nothing has been charged. JOC will confirm the total{needsAddress ? ", including shipping," : ""}{" "}
           and arrange the invoice.
           {done.emailed
@@ -74,7 +74,7 @@ export function OrderForm({
 
   return (
     <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-      <p style={{ fontSize: "13px", color: "#4A5A74", lineHeight: 1.55, margin: 0 }}>
+      <p style={{ fontSize: "13px", color: C.muted, lineHeight: 1.55, margin: 0 }}>
         Card payment is not switched on yet. Send the order and JOC will confirm the total
         {needsAddress ? ", including shipping," : ""} and invoice your school.
       </p>
@@ -120,7 +120,7 @@ export function OrderForm({
         type="submit"
         disabled={pending}
         style={{
-          width: "100%", fontFamily: "var(--font-outfit)", backgroundColor: "#FA912D",
+          width: "100%", fontFamily: "var(--font-outfit)", backgroundColor: C.orange,
           color: C.ink, fontWeight: 700, fontSize: "15px", borderRadius: "12px",
           padding: "15px", minHeight: "50px", border: "none",
           cursor: pending ? "wait" : "pointer", opacity: pending ? 0.7 : 1,
@@ -128,7 +128,7 @@ export function OrderForm({
       >
         {pending ? "Sending…" : `Send this order — $${subtotal}`}
       </button>
-      <p style={{ fontSize: "12px", color: "#4A5A74", textAlign: "center", margin: 0 }}>
+      <p style={{ fontSize: "12px", color: C.muted, textAlign: "center", margin: 0 }}>
         Nothing is charged now.
       </p>
     </form>

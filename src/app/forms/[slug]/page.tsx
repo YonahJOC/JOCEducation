@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { R, C } from "@/lib/joc-tokens";
+import { sectionHeading, R, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedForm } from "@/lib/forms";
@@ -34,13 +34,13 @@ export default async function FormPage({ params, searchParams }: Props) {
         </h1>
 
         {form.description && (
-          <p style={{ fontSize: "16.5px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 18px", maxWidth: "58ch", whiteSpace: "pre-wrap" }}>
+          <p style={{ fontSize: "16.5px", lineHeight: 1.65, color: C.muted, margin: "0 0 18px", maxWidth: "58ch", whiteSpace: "pre-wrap" }}>
             {form.description}
           </p>
         )}
 
         {form.feeCents && (
-          <p style={{ display: "inline-block", fontSize: "15px", fontWeight: 600, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "8px 16px", margin: "0 0 22px" }}>
+          <p style={{ display: "inline-block", fontSize: "15px", fontWeight: 600, color: C.orangeText, backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "8px 16px", margin: "0 0 22px" }}>
             {money(form.feeCents)}{form.feeLabel ? ` — ${form.feeLabel}` : ""}
           </p>
         )}
@@ -48,9 +48,9 @@ export default async function FormPage({ params, searchParams }: Props) {
         {/* A closed form says so. Somebody was sent this link last week and
             needs to be told it has shut, not shown a page that is not found. */}
         {form.closed ? (
-          <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
-            <h2 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>This has closed</h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+          <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
+            <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 8px" }}>This has closed</h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0 }}>
               It is no longer taking answers. If you think it should be open, email{" "}
               <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
                 education@justonechesed.org
@@ -59,14 +59,14 @@ export default async function FormPage({ params, searchParams }: Props) {
             </p>
           </div>
         ) : needsSignIn ? (
-          <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
-            <h2 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>Please sign in first</h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
+          <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "30px 26px", maxWidth: "58ch" }}>
+            <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 8px" }}>Please sign in first</h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: "0 0 16px" }}>
               This one is for people with a JOC Education account.
             </p>
             <Link
               href={`/?next=${encodeURIComponent(`/forms/${form.slug}`)}`}
-              style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "12px 24px", textDecoration: "none" }}
+              style={{ display: "inline-block", backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "12px 24px", textDecoration: "none" }}
             >
               Sign in
             </Link>

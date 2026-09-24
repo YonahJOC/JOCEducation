@@ -11,8 +11,8 @@ const STATUS_LABEL: Record<string, string> = {
   FULFILLED: "Fulfilled", CANCELLED: "Cancelled",
 };
 const STATUS_COLOR: Record<string, string> = {
-  NEW: "#FA912D", QUOTED: "#2C7AC9", INVOICED: "#2D46AF",
-  FULFILLED: "#1D6B37", CANCELLED: "#7A8699",
+  NEW: C.orange, QUOTED: "#2C7AC9", INVOICED: C.blue,
+  FULFILLED: C.greenText, CANCELLED: C.muted,
 };
 
 export type OrderRow = {
@@ -53,8 +53,8 @@ export function OrdersClient({ orders, disabled }: { orders: OrderRow[]; disable
       />
 
       {orders.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>No orders yet.</p>
+        <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>No orders yet.</p>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -85,7 +85,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "18px" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "18px" }}>
       <div style={{ display: "flex", gap: "14px", alignItems: "flex-start", flexWrap: "wrap" }}>
         <span
           style={{
@@ -100,7 +100,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           <p style={{ fontSize: "15px", fontWeight: 700, color: C.ink, margin: 0 }}>
             {order.schoolName} — {order.subtotal}
           </p>
-          <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-word" }}>
+          <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0", wordBreak: "break-word" }}>
             {order.contactName} · {order.contactEmail}
             {order.phone ? ` · ${order.phone}` : ""}
             {order.poNumber ? ` · PO ${order.poNumber}` : ""} · {order.when}
@@ -120,7 +120,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
             {order.items.map((it, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px", color: C.ink }}>
                 <span>{it.quantity} × {it.name}</span>
-                <span style={{ color: "#4A5A74", whiteSpace: "nowrap" }}>{it.unitPrice} {it.unit}</span>
+                <span style={{ color: C.muted, whiteSpace: "nowrap" }}>{it.unitPrice} {it.unit}</span>
               </div>
             ))}
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${C.hairline}`, paddingTop: "6px", fontSize: "14px", fontWeight: 700, color: C.ink }}>
@@ -135,7 +135,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           {order.notes && <Block label="Notes from the school" text={order.notes} />}
 
           <div style={{ marginBottom: "12px" }}>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px" }}>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: C.muted, marginBottom: "5px" }}>
               What you told them (shipping, final total, invoice number)
             </label>
             <textarea
@@ -143,7 +143,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
               onChange={(e) => setResponse(e.target.value)}
               rows={2}
               disabled={disabled}
-              style={{ width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px", resize: "vertical", outline: "none" }}
+              style={{ width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px", resize: "vertical", outline: "none" }}
             />
           </div>
 
@@ -157,8 +157,8 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
                   fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                   padding: "8px 14px", minHeight: "40px", borderRadius: R.chip,
                   border: status === s ? `1.5px solid ${STATUS_COLOR[s]}` : `1px solid ${C.hairline}`,
-                  backgroundColor: status === s ? `${STATUS_COLOR[s]}14` : "#fff",
-                  color: status === s ? STATUS_COLOR[s] : "#4A5A74",
+                  backgroundColor: status === s ? `${STATUS_COLOR[s]}14` : C.white,
+                  color: status === s ? STATUS_COLOR[s] : C.muted,
                   cursor: disabled ? "not-allowed" : "pointer",
                 }}
               >
@@ -174,7 +174,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
           </div>
 
           {msg && (
-            <p style={{ fontSize: "13px", color: msg === "Saved." ? "#1D6B37" : C.redText, margin: "10px 0 0" }}>{msg}</p>
+            <p style={{ fontSize: "13px", color: msg === "Saved." ? C.greenText : C.redText, margin: "10px 0 0" }}>{msg}</p>
           )}
         </div>
       )}
@@ -185,8 +185,8 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
 function Block({ label, text }: { label: string; text: string }) {
   return (
     <div style={{ marginBottom: "12px" }}>
-      <p style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", margin: "0 0 4px" }}>{label}</p>
-      <p style={{ fontSize: "14px", color: C.ink, lineHeight: 1.55, margin: 0, whiteSpace: "pre-wrap", backgroundColor: "#FBF9F4", borderRadius: "10px", padding: "10px 12px" }}>
+      <p style={{ fontSize: "12px", fontWeight: 600, color: C.muted, margin: "0 0 4px" }}>{label}</p>
+      <p style={{ fontSize: "14px", color: C.ink, lineHeight: 1.55, margin: 0, whiteSpace: "pre-wrap", backgroundColor: C.paper, borderRadius: "10px", padding: "10px 12px" }}>
         {text}
       </p>
     </div>

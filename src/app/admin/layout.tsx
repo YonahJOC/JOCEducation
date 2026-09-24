@@ -6,7 +6,7 @@ import { signOutAction } from "@/app/actions/auth";
 import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { jocNav, roleLabel } from "@/lib/nav";
 import { needCount } from "@/lib/program-today";
-import { C, R, F, label } from "@/lib/joc-tokens";
+import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
 export const metadata = { title: "JOC Console", robots: { index: false, follow: false } };
 
@@ -36,7 +36,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "460px", textAlign: "center" }}>
-          <h1 style={{ fontFamily: F.ui, fontWeight: 700, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, marginBottom: "10px" }}>
+          <h1 style={{ ...pageTitle, color: C.ink, marginBottom: "10px" }}>
             {signedIn ? "The console isn't yours" : "Sign in required"}
           </h1>
           <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: C.muted, marginBottom: "22px" }}>

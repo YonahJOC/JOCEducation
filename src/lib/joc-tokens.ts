@@ -22,6 +22,10 @@ export const C = {
   hairline: "#E3E6EF",
   white: "#FFFFFF",
 
+  /** Label and body on a blue or ink fill — the two tints 2b and 3g use. */
+  onDarkLabel: "#FFD8AE",
+  onDarkBody: "#C6CFF0",
+
   green: "#2FA457",
   greenTint: "#E3F4E8",
   greenText: "#1D6B37",

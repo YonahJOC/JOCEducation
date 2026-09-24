@@ -30,7 +30,7 @@ function RailCard({
         flexShrink: 0,
         width: `${CARD_WIDTH}px`,
         scrollSnapAlign: "start",
-        backgroundColor: active ? "#fff" : C.hairline,
+        backgroundColor: active ? C.white : C.hairline,
         border: active ? `1px solid ${cycle.color}` : `1px solid ${C.hairline}`,
         borderRadius: "20px",
         padding: "20px",
@@ -59,7 +59,7 @@ function RailCard({
             style={{
               fontSize: "12px",
               fontWeight: 700,
-              color: active ? "#fff" : "#4A5A74",
+              color: active ? C.white : C.muted,
               lineHeight: 1,
             }}
           >
@@ -74,7 +74,7 @@ function RailCard({
               gap: "5px",
               fontSize: "11px",
               fontWeight: 600,
-              color: "#1D6B37",
+              color: C.greenText,
               background: "rgba(27,127,75,.1)",
               padding: "3px 8px",
               borderRadius: R.chip,
@@ -86,7 +86,7 @@ function RailCard({
                 width: "5px",
                 height: "5px",
                 borderRadius: "50%",
-                backgroundColor: "#1D6B37",
+                backgroundColor: C.greenText,
                 display: "inline-block",
                 flexShrink: 0,
               }}
@@ -99,7 +99,7 @@ function RailCard({
             style={{
               fontSize: "11px",
               fontWeight: 500,
-              color: "#4A5A74",
+              color: C.muted,
             }}
           >
             ✓ Done
@@ -111,7 +111,7 @@ function RailCard({
       <p
         style={{
           ...label,
-          color: active ? cycle.color : "#4A5A74",
+          color: active ? cycle.color : C.muted,
           marginBottom: "4px",
         }}
       >
@@ -124,14 +124,14 @@ function RailCard({
           fontWeight: 700,
           fontSize: "16px",
           letterSpacing: "-0.02em",
-          color: "#10233F",
+          color: C.ink,
           lineHeight: 1.25,
           marginBottom: "4px",
         }}
       >
         {cycle.theme}
       </p>
-      <p style={{ fontSize: "13px", color: "#4A5A74", marginBottom: "14px", lineHeight: 1.4 }}>
+      <p style={{ fontSize: "13px", color: C.muted, marginBottom: "14px", lineHeight: 1.4 }}>
         {cycle.gloss}
       </p>
 
@@ -158,7 +158,7 @@ function RailCard({
             }}
           />
         </div>
-        <p style={{ fontSize: "11px", color: "#4A5A74", marginTop: "5px" }}>{cycle.range}</p>
+        <p style={{ fontSize: "11px", color: C.muted, marginTop: "5px" }}>{cycle.range}</p>
       </div>
     </button>
   );
@@ -281,7 +281,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
       <p
         style={{
           ...label,
-          color: "#C96C00",
+          color: C.orangeText,
           marginBottom: "10px",
         }}
       >
@@ -303,7 +303,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
             fontSize: "clamp(30px, 4vw, 52px)",
             lineHeight: 1.04,
             letterSpacing: "-0.04em",
-            color: "#10233F",
+            color: C.ink,
             margin: 0,
           }}
         >
@@ -314,7 +314,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
             fontStyle: "italic",
             fontFamily: "var(--font-newsreader)",
             fontSize: "17px",
-            color: "#4A5A74",
+            color: C.muted,
             lineHeight: 1.5,
             maxWidth: "400px",
           }}
@@ -326,7 +326,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
       {/* Detail panel */}
       <div
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: C.white,
           border: `1px solid ${C.hairline}`,
           borderRadius: "26px",
           padding: "32px",
@@ -347,7 +347,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
           gap: "10px",
         }}
       >
-        <p style={{ fontSize: "13px", fontWeight: 600, color: "#4A5A74" }}>
+        <p style={{ fontSize: "13px", fontWeight: 600, color: C.muted }}>
           {selected + 1} of {CYCLES.length}
         </p>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
@@ -357,7 +357,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
             style={{
               fontSize: "13px",
               fontWeight: 600,
-              color: "#2D46AF",
+              color: C.blue,
               background: "rgba(45,70,175,.08)",
               border: "none",
               borderRadius: R.chip,
@@ -376,11 +376,11 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
               height: "36px",
               borderRadius: "50%",
               border: `1px solid ${C.hairline}`,
-              background: "#fff",
+              background: C.white,
               cursor: selected === 0 ? "default" : "pointer",
               opacity: selected === 0 ? 0.3 : 1,
               fontSize: "16px",
-              color: "#10233F",
+              color: C.ink,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -397,11 +397,11 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
               height: "36px",
               borderRadius: "50%",
               border: `1px solid ${C.hairline}`,
-              background: "#fff",
+              background: C.white,
               cursor: selected === CYCLES.length - 1 ? "default" : "pointer",
               opacity: selected === CYCLES.length - 1 ? 0.3 : 1,
               fontSize: "16px",
-              color: "#10233F",
+              color: C.ink,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -452,7 +452,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
           fontStyle: "italic",
           fontFamily: "var(--font-newsreader)",
           fontSize: "13px",
-          color: "#4A5A74",
+          color: C.muted,
           marginTop: "18px",
           lineHeight: 1.6,
         }}

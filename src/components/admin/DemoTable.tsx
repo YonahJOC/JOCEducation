@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { setDemoStatus, convertDemoToSchool } from "@/app/actions/admin";
 
 const STATUS_COLOR: Record<string, string> = {
-  NEW: "#FA912D", CONTACTED: "#2C7AC9", SCHEDULED: "#2D46AF",
-  COMPLETED: "#1D6B37", CONVERTED: "#1D6B37", LOST: "#7A8699",
+  NEW: C.orange, CONTACTED: "#2C7AC9", SCHEDULED: C.blue,
+  COMPLETED: C.greenText, CONVERTED: C.greenText, LOST: C.muted,
 };
 
 const STATUSES = ["NEW", "CONTACTED", "SCHEDULED", "COMPLETED", "LOST"] as const;
@@ -33,7 +33,7 @@ function fmt(d: Date | string | null, withTime = false) {
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "11px 20px", ...label, color: "#4A5A74",
+  textAlign: "left", padding: "11px 20px", ...label, color: C.muted,
   borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
@@ -43,7 +43,7 @@ const td: React.CSSProperties = {
 export function DemoTable({ demos, disabled }: { demos: DemoRowT[]; disabled?: boolean }) {
   if (demos.length === 0) {
     return (
-      <p style={{ padding: "24px 20px", fontSize: "14px", color: "#4A5A74", margin: 0 }}>
+      <p style={{ padding: "24px 20px", fontSize: "14px", color: C.muted, margin: 0 }}>
         No demo requests yet. They arrive here when someone books on the landing page.
       </p>
     );
@@ -105,14 +105,14 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
     <tr>
       <td style={td}>
         <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>{demo.name}</span>
-        <a href={`mailto:${demo.email}`} style={{ fontSize: "13px", color: "#2D46AF", textDecoration: "none", wordBreak: "break-all" }}>
+        <a href={`mailto:${demo.email}`} style={{ fontSize: "13px", color: C.blue, textDecoration: "none", wordBreak: "break-all" }}>
           {demo.email}
         </a>
-        {msg && <span style={{ display: "block", fontSize: "12px", color: "#A3261A", marginTop: "3px" }}>{msg}</span>}
+        {msg && <span style={{ display: "block", fontSize: "12px", color: C.redText, marginTop: "3px" }}>{msg}</span>}
       </td>
-      <td style={{ ...td, color: "#4A5A74" }}>{demo.schoolName ?? <Absent>No school given</Absent>}</td>
-      <td style={{ ...td, color: "#4A5A74", whiteSpace: "nowrap" }}>{fmt(demo.requestedFor, true)}</td>
-      <td style={{ ...td, color: "#4A5A74", whiteSpace: "nowrap" }}>{fmt(demo.createdAt)}</td>
+      <td style={{ ...td, color: C.muted }}>{demo.schoolName ?? <Absent>No school given</Absent>}</td>
+      <td style={{ ...td, color: C.muted, whiteSpace: "nowrap" }}>{fmt(demo.requestedFor, true)}</td>
+      <td style={{ ...td, color: C.muted, whiteSpace: "nowrap" }}>{fmt(demo.createdAt)}</td>
       <td style={td}>
         {converted ? (
           <span style={{
@@ -128,7 +128,7 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
             disabled={disabled || pending}
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-              color: STATUS_COLOR[status] ?? C.ink, backgroundColor: "#fff",
+              color: STATUS_COLOR[status] ?? C.ink, backgroundColor: C.white,
               border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
               minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
             }}
@@ -146,7 +146,7 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
             disabled={disabled || pending}
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 700,
-              color: "#fff", backgroundColor: "#2D46AF", border: "none", borderRadius: R.chip,
+              color: C.white, backgroundColor: C.blue, border: "none", borderRadius: R.chip,
               padding: "8px 14px", minHeight: "38px",
               cursor: disabled ? "not-allowed" : "pointer", opacity: disabled || pending ? 0.5 : 1,
             }}

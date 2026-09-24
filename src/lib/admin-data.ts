@@ -1,4 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * Data for the internal admin console.
@@ -46,12 +47,12 @@ export const STATUS_LABELS: Record<SchoolStatus, string> = {
 };
 
 export const STATUS_COLORS: Record<SchoolStatus, string> = {
-  PROSPECT: "#7A8699",
+  PROSPECT: C.muted,
   DEMO_SCHEDULED: "#2C7AC9",
-  TRIAL: "#FA912D",
-  ACTIVE: "#1D6B37",
-  LAPSED: "#C96C00",
-  CHURNED: "#A3261A",
+  TRIAL: C.orange,
+  ACTIVE: C.greenText,
+  LAPSED: C.orangeText,
+  CHURNED: C.redText,
 };
 
 export const PLAN_LABELS: Record<PlanKey, string> = {

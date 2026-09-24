@@ -1,3 +1,4 @@
+import { C } from "@/lib/joc-tokens";
 // Chesed Cycles — 5787 (2026–27). Eight consecutive cycles, school opening → Shavuos.
 // Dates are Sunday–Shabbos weeks mapped from the Hebrew anchors below.
 // TODO: verify every start/end date against a 5787 luach before launch;
@@ -130,7 +131,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Elul – Tishrei", anchor: "School opening → Yom Kippur",
     range: "Aug 30 – Sep 26",
     startDate: "2026-08-30", endDate: "2026-09-26", weeks: 4,
-    color: "#2D46AF",
+    color: C.blue,
     desc: "The year begins facing inward. Before a student gives anything away, Cycle 1 asks them to take an honest account of how they actually treat the people closest to them — at home, in the classroom, at recess — and to carry that accounting through the Yamim Noraim. Everything the year builds outward starts here.",
     focus: [
       "Daily cheshbon hanefesh journal in every classroom",
@@ -151,7 +152,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Tishrei – Cheshvan", anchor: "Sukkos → early Cheshvan",
     range: "Sep 27 – Oct 24",
     startDate: "2026-09-27", endDate: "2026-10-24", weeks: 4,
-    color: "#FA912D",
+    color: C.orange,
     desc: "The first step outward. Having looked honestly at themselves, students open a door — at the sukkah table, at recess, and at the lunch table where the same child sits alone every day. The cycle runs past Simchas Torah into Cheshvan so that welcoming outlasts yom tov.",
     focus: [
       "Sukkah hosting map across partner communities",
@@ -217,7 +218,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Shevat", anchor: "Shevat / Tu B'Shevat",
     range: "Jan 10 – Feb 13",
     startDate: "2027-01-10", endDate: "2027-02-13", weeks: 5,
-    color: "#1D6B37",
+    color: C.greenText,
     desc: "A tree is judged by its fruit, and a person by how they treat the people they don't have to be kind to. Cycle 5 is kavod habriyos in practice: honoring parents, teachers, the staff who keep the building running, and the classmate who is easiest to overlook — anchored by Tu B'Shevat and kavod for the world we were handed.",
     focus: [
       "Kavod chart: honoring the adults in the building nobody thanks",
@@ -239,7 +240,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Adar", anchor: "Adar / Purim",
     range: "Feb 14 – Mar 27",
     startDate: "2027-02-14", endDate: "2027-03-27", weeks: 6,
-    color: "#FA912D",
+    color: C.orange,
     desc: "Mishenichnas Adar marbim b'simcha — and this year there are two Adars to do it in. Cycle 6 treats joy as a chesed: the mishloach manos that reaches the student nobody remembers, the matanos l'evyonim that arrive without a name, the visit that makes someone's Purim. Every student sends, and every student receives.",
     focus: [
       "Mishloach manos matching so no student is missed",
@@ -262,7 +263,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Nisan", anchor: "Nisan / Pesach → Yom HaShoah",
     range: "Mar 28 – May 8",
     startDate: "2027-03-28", endDate: "2027-05-08", weeks: 6,
-    color: "#2D46AF",
+    color: C.blue,
     desc: "Kol dichfin yeisei v'yeichol — whoever is hungry, come and eat. Cycle 7 runs from maos chittim and seder placement for anyone alone, through Pesach itself, to Yom HaShoah at the month's end, remembering those who were denied every freedom we now take as given. One people, one table.",
     focus: [
       "Maos chittim distribution run by grades",
@@ -285,7 +286,7 @@ export const CYCLES: Cycle[] = [
     hebrew: "Iyar – Sivan", anchor: "Yom HaZikaron · Yom Ha'atzmaut · Yom Yerushalayim → Shavuos",
     range: "May 9 – Jun 12",
     startDate: "2027-05-09", endDate: "2027-06-12", weeks: 5,
-    color: "#10233F",
+    color: C.ink,
     desc: "The year closes at its widest. Iyar carries Yom HaZikaron, Yom Ha'atzmaut and Yom Yerushalayim back to back, and Cycle 8 widens the circle from the classroom to a whole people — including those who gave everything so it would exist — before handing every chesed to the grade behind at Shavuos.",
     focus: [
       "Yom HaZikaron letters to bereaved families in Israel",

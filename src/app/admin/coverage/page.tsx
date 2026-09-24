@@ -75,7 +75,7 @@ async function Inner() {
         note="This counts published lessons only. A draft you are still writing will not show here."
       />
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "660px" }}>
             <thead>
@@ -98,11 +98,11 @@ async function Inner() {
                         {c.num}. {c.theme}
                       </span>
                       {state === "current" && (
-                        <span style={{ ...label, color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
+                        <span style={{ ...label, color: C.white, backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
                           Now
                         </span>
                       )}
-                      <span style={{ display: "block", fontSize: "12px", color: "#4A5A74", marginTop: "2px" }}>
+                      <span style={{ display: "block", fontSize: "12px", color: C.muted, marginTop: "2px" }}>
                         {c.hebrew} · {c.range}
                       </span>
                     </td>
@@ -115,7 +115,7 @@ async function Inner() {
                             <span style={{
                               display: "inline-flex", alignItems: "center", justifyContent: "center",
                               minWidth: "34px", height: "30px", borderRadius: "9px",
-                              backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px",
+                              backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "15px",
                             }}>
                               {n}
                             </span>
@@ -137,7 +137,7 @@ async function Inner() {
                       );
                     })}
 
-                    <td style={{ ...td, textAlign: "center", color: res > 0 ? "#4A5A74" : C.orangeText }}>
+                    <td style={{ ...td, textAlign: "center", color: res > 0 ? C.muted : C.orangeText }}>
                       {res > 0 ? res : "Nothing yet"}
                     </td>
                   </tr>
@@ -148,7 +148,7 @@ async function Inner() {
         </div>
       </div>
 
-      <p style={{ fontSize: "13px", color: "#4A5A74", margin: "14px 0 0", lineHeight: 1.6, maxWidth: "62ch" }}>
+      <p style={{ fontSize: "13px", color: C.muted, margin: "14px 0 0", lineHeight: 1.6, maxWidth: "62ch" }}>
         A dashed square is a Cycle and grade band with nothing written for it. Those weeks will arrive
         whether or not there is material for them, so this is the list to work down.
       </p>
@@ -157,7 +157,7 @@ async function Inner() {
 }
 
 const th: React.CSSProperties = {
-  padding: "11px 16px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`,
+  padding: "11px 16px", ...label, color: C.muted, borderBottom: `1px solid ${C.hairline}`,
   backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 

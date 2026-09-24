@@ -16,7 +16,7 @@ import { addSchoolStaff } from "@/app/actions/admin";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
@@ -46,11 +46,11 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-      <p style={{ ...label, color: "#4A5A74", margin: "0 0 6px" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+      <p style={{ ...label, color: C.muted, margin: "0 0 6px" }}>
         Add a member of staff
       </p>
-      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
+      <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: "0 0 14px", maxWidth: "58ch" }}>
         Their name and email makes them an account at this school. <strong style={{ color: C.ink }}>No
         message is sent to them</strong> — nothing goes out to a school until JOC launches. Tell
         them yourself, whenever you are ready.
@@ -102,7 +102,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
             type="submit"
             disabled={disabled || pending || !name.trim() || !email.trim()}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
               backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
               minHeight: "44px", cursor: pending ? "wait" : "pointer",
               opacity: name.trim() && email.trim() && !disabled ? 1 : 0.5,
@@ -111,7 +111,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
             {pending ? "Adding…" : "Add them"}
           </button>
           {msg && (
-            <span style={{ fontSize: "13px", color: msg.good ? "#1D6B37" : C.redText, lineHeight: 1.45, maxWidth: "42ch" }}>
+            <span style={{ fontSize: "13px", color: msg.good ? C.greenText : C.redText, lineHeight: 1.45, maxWidth: "42ch" }}>
               {msg.text}
             </span>
           )}

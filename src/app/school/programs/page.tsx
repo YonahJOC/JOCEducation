@@ -123,7 +123,7 @@ export default async function SchoolProgramsPage() {
       )}
 
       {groups.size === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
+        <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "40px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px" }}>Nobody has signed up yet.</p>
           <p style={{ fontSize: "15px", color: C.muted, margin: 0 }}>
             <Link href="/programs" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
@@ -134,7 +134,7 @@ export default async function SchoolProgramsPage() {
       ) : (
         <div style={{ display: "grid", gap: "14px" }}>
           {[...groups.values()].map((g) => (
-            <div key={g.name} style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+            <div key={g.name} style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
               <div style={{ padding: "15px 18px", borderBottom: `1px solid ${C.hairline}`, display: "flex", gap: "10px", alignItems: "baseline", flexWrap: "wrap" }}>
                 <p style={{ fontSize: "16px", fontWeight: 600, color: C.ink, margin: 0, flex: 1, minWidth: 0 }}>
                   {g.slug ? (
@@ -169,7 +169,7 @@ export default async function SchoolProgramsPage() {
                         <td style={{ ...td, wordBreak: "break-all" }}>{r.email ?? <Absent>No email given</Absent>}</td>
                         {r.form?.feeCents ? (
                           <td style={td}>
-                            <span style={{ fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "2px 9px", color: r.paid ? "#1D6B37" : "#C96C00", backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
+                            <span style={{ fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "2px 9px", color: r.paid ? C.greenText : C.orangeText, backgroundColor: r.paid ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)" }}>
                               {r.paid ? "paid" : "unpaid"}
                             </span>
                           </td>
@@ -186,7 +186,7 @@ export default async function SchoolProgramsPage() {
 
       {/* Said plainly rather than shown as an empty panel: the hours and the
           approvals live in the JOC App, and this system cannot see them yet. */}
-      <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "18px 20px", marginTop: "18px" }}>
+      <div style={{ backgroundColor: C.panel, borderRadius: "14px", padding: "18px 20px", marginTop: "18px" }}>
         <p style={{ fontSize: "14px", fontWeight: 600, color: C.ink, margin: "0 0 5px" }}>
           Chesed hours are not here yet
         </p>
@@ -204,10 +204,10 @@ const h1: React.CSSProperties = {
   fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 6px",
 };
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "10px 18px", ...label, color: "#4A5A74",
+  textAlign: "left", padding: "10px 18px", ...label, color: C.muted,
   borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
-  padding: "11px 18px", borderBottom: `1px solid ${C.hairline}`, color: "#4A5A74",
+  padding: "11px 18px", borderBottom: `1px solid ${C.hairline}`, color: C.muted,
   verticalAlign: "top",
 };

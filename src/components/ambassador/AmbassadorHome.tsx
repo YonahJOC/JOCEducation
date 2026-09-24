@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { submitReport } from "@/app/actions/ambassadors";
 import type { AmbassadorScope, ReportForTeacher } from "@/lib/ambassadors";
-import { C, R, ROW_SHADOW, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import { sectionHeading, C, R, ROW_SHADOW, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
 
 /**
  * An ambassador's page.
@@ -33,11 +33,11 @@ export function AmbassadorHome({
       <div style={{ position: "relative", overflow: "hidden", backgroundColor: C.blue, borderRadius: R.hero, padding: "30px 26px", marginBottom: "20px" }}>
         <span aria-hidden="true" style={{ position: "absolute", top: "-80px", right: "-50px", width: "190px", height: "190px", borderRadius: "50%", backgroundColor: C.orange, opacity: 0.9 }} />
         <div style={{ position: "relative" }}>
-          <p style={{ ...bandLabel, color: "#FFD8AE", margin: "0 0 8px" }}>You run</p>
+          <p style={{ ...bandLabel, color: C.onDarkLabel, margin: "0 0 8px" }}>You run</p>
           <p style={{ fontFamily: "var(--font-outfit)", fontSize: "clamp(28px, 6vw, 40px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.08, color: C.white, margin: "0 0 8px" }}>
             {scope.programName}
           </p>
-          <p style={{ fontSize: "15px", color: "#C6CFF0", margin: 0, lineHeight: 1.55 }}>
+          <p style={{ fontSize: "15px", color: C.onDarkBody, margin: 0, lineHeight: 1.55 }}>
             At {scope.schoolName} · since {day(scope.startsAt)}
             {scope.endsAt && ` · until ${day(scope.endsAt)}`}
           </p>
@@ -62,7 +62,7 @@ export function AmbassadorHome({
         </button>
       )}
 
-      <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "24px 0 4px" }}>
+      <h2 style={{ ...sectionHeading, color: C.ink, margin: "24px 0 4px" }}>
         What you have written
       </h2>
       <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 14px", lineHeight: 1.6, maxWidth: "54ch" }}>

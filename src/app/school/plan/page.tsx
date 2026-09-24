@@ -1,6 +1,7 @@
 import { requireAccountHolder } from "../account-only";
 import { mySchool, myPlanRequests } from "@/lib/school-data";
 import { SchoolPlanPanel } from "@/components/school/PlanPanel";
+import { C } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Plan & seats" };
 
@@ -10,7 +11,7 @@ export default async function SchoolPlanPage() {
 
   if (!school) {
     return (
-      <p style={{ fontSize: "15px", color: "#4A5A74", maxWidth: "48ch", lineHeight: 1.6 }}>
+      <p style={{ fontSize: "15px", color: C.muted, maxWidth: "48ch", lineHeight: 1.6 }}>
         We could not load your school. Email{" "}
         <a href="mailto:education@justonechesed.org">education@justonechesed.org</a> if this continues.
       </p>

@@ -19,7 +19,7 @@ export type Msg = {
 
 const box: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "15px", lineHeight: 1.55, color: C.ink, backgroundColor: "#fff",
+  fontSize: "15px", lineHeight: 1.55, color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "14px",
   padding: "13px 15px", outline: "none", resize: "vertical",
 };
@@ -69,7 +69,7 @@ export function Conversation({
               disabled={pending || !body.trim()}
               style={{
                 fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-                color: "#fff", backgroundColor: C.blue, border: "none",
+                color: C.white, backgroundColor: C.blue, border: "none",
                 borderRadius: R.chip, padding: "12px 24px", minHeight: "46px",
                 cursor: pending || !body.trim() ? "default" : "pointer",
                 opacity: pending || !body.trim() ? 0.5 : 1,
@@ -77,7 +77,7 @@ export function Conversation({
             >
               {pending ? "Posting…" : "Post"}
             </button>
-            <span style={{ fontSize: "13px", color: "#4A5A74" }}>
+            <span style={{ fontSize: "13px", color: C.muted }}>
               Enter posts · Shift + Enter for a new line
             </span>
           </div>
@@ -86,13 +86,13 @@ export function Conversation({
       )}
 
       {closed && (
-        <p style={{ fontSize: "15px", color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "14px 18px", marginBottom: "28px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, backgroundColor: C.panel, borderRadius: "14px", padding: "14px 18px", marginBottom: "28px" }}>
           This room is closed to new messages. Everything in it stays readable.
         </p>
       )}
 
       {messages.length === 0 ? (
-        <p style={{ fontSize: "16px", color: "#4A5A74", textAlign: "center", padding: "48px 0" }}>
+        <p style={{ fontSize: "16px", color: C.muted, textAlign: "center", padding: "48px 0" }}>
           Nothing here yet. Whatever you are wondering about, someone else is too.
         </p>
       ) : (
@@ -157,13 +157,13 @@ function Message({ message: m, roomId, canPost }: { message: Msg; roomId: string
                 <button
                   onClick={sendReply}
                   disabled={pending || !reply.trim()}
-                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "10px 20px", minHeight: "42px", cursor: "pointer", opacity: pending || !reply.trim() ? 0.5 : 1 }}
+                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: C.white, backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "10px 20px", minHeight: "42px", cursor: "pointer", opacity: pending || !reply.trim() ? 0.5 : 1 }}
                 >
                   {pending ? "Posting…" : "Reply"}
                 </button>
                 <button
                   onClick={() => { setReplying(false); setReply(""); }}
-                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
+                  style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "15px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "42px" }}
                 >
                   Cancel
                 </button>
@@ -202,20 +202,20 @@ function Bubble({
         <div style={{ display: "flex", gap: "10px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "3px" }}>
           <span style={{ fontWeight: 700, fontSize: "15px", color: C.ink }}>{m.author}</span>
           {m.authorSchool && (
-            <span style={{ fontSize: "13px", color: "#4A5A74" }}>{m.authorSchool}</span>
+            <span style={{ fontSize: "13px", color: C.muted }}>{m.authorSchool}</span>
           )}
-          <span style={{ fontSize: "13px", color: "#4A5A74" }}>{m.when}</span>
+          <span style={{ fontSize: "13px", color: C.muted }}>{m.when}</span>
           {canRemove && !removed && (
             <button
               onClick={onRemove}
-              style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600, color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "32px" }}
+              style={{ marginLeft: "auto", fontFamily: "var(--font-outfit)", fontSize: "12px", fontWeight: 600, color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "32px" }}
             >
               Remove
             </button>
           )}
         </div>
         {removed ? (
-          <p style={{ fontSize: "15px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>
+          <p style={{ fontSize: "15px", color: C.muted, fontStyle: "italic", margin: 0 }}>
             {m.removedBy === "moderator" ? "Removed by the JOC team." : "Removed."}
           </p>
         ) : (
@@ -235,10 +235,10 @@ function ReplyBubble({ message: m }: { message: Msg }) {
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", gap: "9px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "2px" }}>
           <span style={{ fontWeight: 700, fontSize: "15px", color: C.ink }}>{m.author}</span>
-          <span style={{ fontSize: "12px", color: "#4A5A74" }}>{m.when}</span>
+          <span style={{ fontSize: "12px", color: C.muted }}>{m.when}</span>
         </div>
         {m.removed ? (
-          <p style={{ fontSize: "14px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>Removed.</p>
+          <p style={{ fontSize: "14px", color: C.muted, fontStyle: "italic", margin: 0 }}>Removed.</p>
         ) : (
           <p style={{ fontSize: "15px", color: C.ink, lineHeight: 1.6, margin: 0, whiteSpace: "pre-wrap" }}>
             {m.body}
@@ -256,7 +256,7 @@ function Avatar({ initial, small }: { initial: string; small?: boolean }) {
       aria-hidden="true"
       style={{
         width: `${size}px`, height: `${size}px`, borderRadius: R.chip,
-        backgroundColor: "#F4F7FD", color: C.blue, display: "flex",
+        backgroundColor: C.panel, color: C.blue, display: "flex",
         alignItems: "center", justifyContent: "center", flexShrink: 0,
         fontWeight: 700, fontSize: small ? "13px" : "15px",
       }}

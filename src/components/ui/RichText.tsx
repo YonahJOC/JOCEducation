@@ -1,4 +1,5 @@
 import React from "react";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * The small amount of formatting a lesson actually needs.
@@ -67,7 +68,7 @@ function inline(text: string, keyBase: string): React.ReactNode[] {
           href={m[4]}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: "#2D46AF", fontWeight: 600 }}
+          style={{ color: C.blue, fontWeight: 600 }}
         >
           {m[3]}
         </a>

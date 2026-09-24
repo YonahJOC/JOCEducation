@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { C, label } from "@/lib/joc-tokens";
+import { sectionHeading, pageTitle, C, label } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { requestPasswordReset } from "@/app/actions/reset";
 
@@ -28,8 +28,8 @@ export function ForgotPasswordForm() {
     return (
       <div style={{ textAlign: "center" }}>
         <p style={{ ...label, color: C.orangeText, marginBottom: "12px" }}>Reset link sent</p>
-        <h2 style={{ fontWeight: 800, fontSize: "22px", color: C.ink, marginBottom: "10px" }}>Check your inbox</h2>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "24px" }}>
+        <h2 style={{ ...sectionHeading, color: C.ink, marginBottom: "10px" }}>Check your inbox</h2>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, marginBottom: "24px" }}>
           If <strong>{email}</strong> has an account, a reset link is on its way. It expires in 30 minutes.
         </p>
         <button
@@ -46,14 +46,14 @@ export function ForgotPasswordForm() {
   if (state === "no-email") {
     return (
       <div>
-        <h2 style={{ fontWeight: 800, fontSize: "21px", color: C.ink, marginBottom: "10px" }}>
+        <h2 style={{ ...sectionHeading, color: C.ink, marginBottom: "10px" }}>
           We can&rsquo;t email you yet
         </h2>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "16px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, marginBottom: "16px" }}>
           JOC Education has not switched on its mail service, so no reset link was sent — and
           telling you to check your inbox would just leave you waiting.
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "22px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, marginBottom: "22px" }}>
           Write to{" "}
           <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600 }}>
             education@justonechesed.org
@@ -62,7 +62,7 @@ export function ForgotPasswordForm() {
         </p>
         <Link
           href="/login"
-          style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+          style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
         >
           Back to sign in
         </Link>
@@ -72,10 +72,10 @@ export function ForgotPasswordForm() {
 
   return (
     <>
-      <h1 style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, marginBottom: "8px" }}>
+      <h1 style={{ ...pageTitle, color: C.ink, marginBottom: "8px" }}>
         Reset your password
       </h1>
-      <p style={{ fontSize: "15px", color: "#4A5A74", marginBottom: "28px", lineHeight: 1.55 }}>
+      <p style={{ fontSize: "15px", color: C.muted, marginBottom: "28px", lineHeight: 1.55 }}>
         Enter the email you sign in with and we&rsquo;ll send a reset link.
       </p>
 
@@ -90,7 +90,7 @@ export function ForgotPasswordForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@school.edu"
             autoComplete="email"
-            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px", fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" }}
+            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" }}
           />
         </div>
 
@@ -102,7 +102,7 @@ export function ForgotPasswordForm() {
           style={{
             width: "100%", fontFamily: "var(--font-outfit)",
             backgroundColor: !pending && email ? C.blue : "rgba(45,70,175,.4)",
-            color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px",
+            color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: "12px",
             padding: "14px", minHeight: "48px", border: "none",
             cursor: !pending && email ? "pointer" : "default",
           }}

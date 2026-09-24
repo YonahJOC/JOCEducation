@@ -6,7 +6,7 @@ import { updateSchoolDetails } from "@/app/actions/admin";
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 
@@ -59,9 +59,9 @@ export function SchoolDetailsPanel({
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: C.muted, margin: 0 }}>
           School details
         </p>
         {!editing && (
@@ -82,11 +82,11 @@ export function SchoolDetailsPanel({
           <Row k="Type" v={type.replace(/_/g, " ").toLowerCase()} />
           <Row k="Students" v={studentCount ? String(studentCount) : "Enrolment not recorded"} />
           <div style={{ paddingTop: "10px", marginTop: "4px", borderTop: `1px solid ${C.hairline}` }}>
-            <p style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74", margin: "0 0 6px" }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, color: C.muted, margin: "0 0 6px" }}>
               Email domains
             </p>
             {emailDomains.length === 0 ? (
-              <p style={{ fontSize: "13px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
+              <p style={{ fontSize: "13px", lineHeight: 1.55, color: C.orangeText, margin: 0 }}>
                 None set. Teachers here have to be invited one by one. Add the school&rsquo;s domain and
                 anyone signing in with that address joins automatically.
               </p>
@@ -155,7 +155,7 @@ export function SchoolDetailsPanel({
               placeholder="darcheitorah.org, staff.darcheitorah.org"
               style={field}
             />
-            <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.5, color: C.muted, margin: "6px 0 0" }}>
               Anyone signing in with an address on these joins this school automatically. Separate several
               with commas. A domain can only belong to one school.
             </p>
@@ -168,7 +168,7 @@ export function SchoolDetailsPanel({
               placeholder="The id this school has inside the JOC App"
               style={field}
             />
-            <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: "6px 0 0" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.5, color: C.muted, margin: "6px 0 0" }}>
               How this school is matched to the JOC App. Until it is set, the app reports nothing
               for them — no hours, no approvals, nothing on the app console. Matching is by id and
               never by name: &ldquo;Yeshiva Darchei Torah&rdquo; and &ldquo;Darchei Torah&rdquo; are
@@ -180,7 +180,7 @@ export function SchoolDetailsPanel({
               onClick={save}
               disabled={pending || !f.name.trim()}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
                 backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
                 minHeight: "44px", cursor: "pointer", opacity: pending || !f.name.trim() ? 0.5 : 1,
               }}
@@ -189,7 +189,7 @@ export function SchoolDetailsPanel({
             </button>
             <button
               onClick={() => { setEditing(false); setMsg(null); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
             >
               Cancel
             </button>
@@ -198,7 +198,7 @@ export function SchoolDetailsPanel({
       )}
 
       {msg && (
-        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? C.greenText : "#A3261A" }}>
+        <p style={{ fontSize: "13px", marginTop: "12px", marginBottom: 0, color: msg === "Saved." ? C.greenText : C.redText }}>
           {msg}
         </p>
       )}
@@ -209,7 +209,7 @@ export function SchoolDetailsPanel({
 function Row({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "14px" }}>
-      <span style={{ color: "#4A5A74" }}>{k}</span>
+      <span style={{ color: C.muted }}>{k}</span>
       <span style={{ color: C.ink, fontWeight: 500, textAlign: "right", textTransform: k === "Type" ? "capitalize" : "none" }}>{v}</span>
     </div>
   );

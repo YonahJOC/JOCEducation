@@ -7,7 +7,7 @@ import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
 
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
-  fontSize: "15px", color: C.ink, backgroundColor: "#F8FAFE",
+  fontSize: "15px", color: C.ink, backgroundColor: C.panel,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   outline: "none", fontFamily: "var(--font-outfit)",
 };
@@ -37,7 +37,7 @@ export function LoginForm({
             {next && <input type="hidden" name="next" value={next} />}
             <button
               type="submit"
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: C.white, cursor: "pointer", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
             >
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
                 <path d="M17.64 9.2a10.34 10.34 0 0 0-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z" fill="#4285F4" />
@@ -51,7 +51,7 @@ export function LoginForm({
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
             <div style={{ flex: 1, height: "1px", backgroundColor: C.panel }} />
-            <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>or</span>
+            <span style={{ fontSize: "13px", color: C.muted, fontWeight: 500 }}>or</span>
             <div style={{ flex: 1, height: "1px", backgroundColor: C.panel }} />
           </div>
         </>
@@ -78,7 +78,7 @@ export function LoginForm({
           </div>
 
           {state?.error && (
-            <p style={{ fontSize: "15px", color: "#B91C1C", backgroundColor: "#FEF2F2", borderRadius: "10px", padding: "10px 14px", margin: 0 }}>
+            <p style={{ fontSize: "15px", color: C.redText, backgroundColor: C.redTint, borderRadius: "10px", padding: "10px 14px", margin: 0 }}>
               {state.error}
             </p>
           )}
@@ -88,7 +88,7 @@ export function LoginForm({
             disabled={pending}
             style={{
               marginTop: "4px", width: "100%", fontFamily: "var(--font-outfit)",
-              backgroundColor: pending ? "rgba(45,70,175,.6)" : C.blue, color: "#fff",
+              backgroundColor: pending ? "rgba(45,70,175,.6)" : C.blue, color: C.white,
               fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px",
               minHeight: "48px", border: "none", cursor: pending ? "default" : "pointer",
             }}
@@ -97,7 +97,7 @@ export function LoginForm({
           </button>
         </form>
       ) : (
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: 0 }}>
           Sign-in is not switched on yet. Write to{" "}
           <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600 }}>
             education@justonechesed.org

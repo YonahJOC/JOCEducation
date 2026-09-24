@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { sectionHeading, R, C } from "@/lib/joc-tokens";
 import { submitForm } from "@/app/actions/forms";
 import type { PublicForm } from "@/lib/forms";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "15px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "15px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "11px",
   padding: "12px 14px", minHeight: "46px", outline: "none",
 };
@@ -36,12 +36,12 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
 
   if (done) {
     return (
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "34px 28px", maxWidth: "58ch" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "34px 28px", maxWidth: "58ch" }}>
         <p style={{ fontSize: "28px", margin: "0 0 10px" }}>✓</p>
-        <h2 style={{ fontWeight: 800, fontSize: "21px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 8px" }}>
+        <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 8px" }}>
           {paid ? "Paid, and received" : "Sent"}
         </h2>
-        <p style={{ fontSize: "16px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>{done}</p>
+        <p style={{ fontSize: "16px", lineHeight: 1.6, color: C.muted, margin: 0 }}>{done}</p>
       </div>
     );
   }
@@ -116,8 +116,8 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
                       fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
                       padding: "11px 24px", borderRadius: R.chip, minHeight: "46px", cursor: "pointer",
                       border: values[f.id] === o ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
-                      backgroundColor: values[f.id] === o ? "rgba(45,70,175,.07)" : "#fff",
-                      color: values[f.id] === o ? C.blue : "#4A5A74",
+                      backgroundColor: values[f.id] === o ? "rgba(45,70,175,.07)" : C.white,
+                      color: values[f.id] === o ? C.blue : C.muted,
                     }}
                   >
                     {o}
@@ -142,7 +142,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
           type="submit"
           disabled={pending}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip,
             padding: "14px 28px", minHeight: "48px", cursor: pending ? "wait" : "pointer",
           }}
@@ -169,10 +169,10 @@ function Labelled({
     <div>
       <label style={{ display: "block", fontSize: "15px", fontWeight: 600, color: C.ink, marginBottom: "6px" }}>
         {label}
-        {required && <span style={{ color: "#C96C00", marginLeft: "5px" }} aria-label="required">*</span>}
+        {required && <span style={{ color: C.orangeText, marginLeft: "5px" }} aria-label="required">*</span>}
       </label>
       {help && (
-        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 7px", lineHeight: 1.5 }}>{help}</p>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 7px", lineHeight: 1.5 }}>{help}</p>
       )}
       {children}
     </div>

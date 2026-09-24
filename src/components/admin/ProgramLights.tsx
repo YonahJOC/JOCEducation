@@ -480,13 +480,13 @@ function NextMeeting({ data, programName }: { data: ProgramTraffic; programName:
   const m = data.meeting;
   return (
     <div style={{ backgroundColor: C.ink, borderRadius: R.row, padding: "20px 22px", marginTop: "14px" }}>
-      <p style={{ ...label, color: "#FFD8AE", margin: "0 0 4px" }}>Next admin meeting</p>
+      <p style={{ ...label, color: C.onDarkLabel, margin: "0 0 4px" }}>Next admin meeting</p>
       <p style={{ ...bandFigure, fontSize: "22px", color: C.white, margin: "0 0 10px" }}>
         {day(m.meetsAt)}
       </p>
 
       {m.items.length === 0 ? (
-        <p style={{ fontSize: "15px", color: "#C6CFF0", margin: 0, lineHeight: 1.55, maxWidth: "62ch" }}>
+        <p style={{ fontSize: "15px", color: C.onDarkBody, margin: 0, lineHeight: 1.55, maxWidth: "62ch" }}>
           Nothing from {programName} is on it yet.
         </p>
       ) : (
@@ -496,9 +496,9 @@ function NextMeeting({ data, programName }: { data: ProgramTraffic; programName:
               <span aria-hidden="true" style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: LIGHT_COLOR[i.light].dot, flexShrink: 0, marginTop: "4px" }} />
               <span style={{ minWidth: 0, flex: 1 }}>
                 <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: C.white }}>
-                  {i.schoolName} <span style={{ fontWeight: 400, color: "#C6CFF0" }}>· {i.kind}</span>
+                  {i.schoolName} <span style={{ fontWeight: 400, color: C.onDarkBody }}>· {i.kind}</span>
                 </span>
-                <span style={{ display: "block", fontSize: "14px", color: "#C6CFF0", lineHeight: 1.5, marginTop: "2px" }}>
+                <span style={{ display: "block", fontSize: "14px", color: C.onDarkBody, lineHeight: 1.5, marginTop: "2px" }}>
                   {i.note}
                 </span>
                 <span style={{ display: "block", fontSize: "13px", color: "rgba(255,255,255,.5)", marginTop: "3px" }}>

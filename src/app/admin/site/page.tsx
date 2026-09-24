@@ -1,5 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { pageTitle } from "@/lib/joc-tokens";
+import { C, pageTitle } from "@/lib/joc-tokens";
 import { isPreviewing } from "@/lib/site-content";
 import { SITE_FIELDS, sitePages } from "@/lib/site-fields";
 import { SiteEditor, type EditorField, type EditorPage } from "./SiteEditor";
@@ -52,7 +52,7 @@ async function Inner() {
         <h1 style={pageTitle}>
           Site content
         </h1>
-        <p style={{ fontSize: "15px", lineHeight: 1.65, color: "#4A5A74" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.65, color: C.muted }}>
           Editing the public site needs the database. Once <code>DATABASE_URL</code> is set, every
           field listed in the registry appears here with the wording the site currently uses.
         </p>

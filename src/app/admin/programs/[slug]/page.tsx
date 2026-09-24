@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { C, F } from "@/lib/joc-tokens";
+import { pageTitle, C, F } from "@/lib/joc-tokens";
 import { getProgramAdmin } from "@/lib/program-admin";
 import { listForms } from "@/lib/forms";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
@@ -54,7 +54,7 @@ export default async function ProgramAdminPage({
   if (view === "denied") {
     return (
       <div style={{ maxWidth: "460px", padding: "40px 0" }}>
-        <h1 style={{ fontFamily: F.ui, fontWeight: 700, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
+        <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 10px" }}>
           Not one of yours
         </h1>
         <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: C.muted, margin: 0 }}>

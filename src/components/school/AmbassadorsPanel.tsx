@@ -5,7 +5,7 @@ import {
   createInvite, revokeInvite, endTenure, markReportSeen, shareReportPhoto,
 } from "@/app/actions/ambassadors";
 import type { SupervisedAmbassador, ReportForTeacher } from "@/lib/ambassadors";
-import { C, R, ROW_SHADOW, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import { pageTitle, sectionHeading, C, R, ROW_SHADOW, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
 
 /**
  * Your ambassadors, for the teacher who supervises them.
@@ -30,7 +30,7 @@ export function AmbassadorsPanel({
 
   return (
     <div>
-      <h1 style={{ fontFamily: "var(--font-outfit)", fontSize: "30px", fontWeight: 600, letterSpacing: "-0.03em", color: C.ink, margin: "0 0 6px" }}>
+      <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 6px" }}>
         Your ambassadors
       </h1>
       <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 8px", maxWidth: "64ch" }}>
@@ -61,7 +61,7 @@ export function AmbassadorsPanel({
         </div>
       )}
 
-      <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 12px" }}>
+      <h2 style={{ ...sectionHeading, color: C.ink, margin: "0 0 12px" }}>
         {current.length === 0 ? "Nobody yet" : `${current.length} ambassador${current.length === 1 ? "" : "s"}`}
       </h2>
 
@@ -81,7 +81,7 @@ export function AmbassadorsPanel({
 
       {past.length > 0 && (
         <>
-          <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "20px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "26px 0 10px" }}>
+          <h2 style={{ ...sectionHeading, color: C.ink, margin: "26px 0 10px" }}>
             Finished
           </h2>
           <div style={{ display: "grid", gap: "12px" }}>

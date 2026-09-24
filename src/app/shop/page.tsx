@@ -1,7 +1,7 @@
 import { getPublishedProducts } from "@/lib/content";
 import { ShopClient, type ShopProduct } from "./ShopClient";
 import { siteContent } from "@/lib/site-content";
-import { label, R } from "@/lib/joc-tokens";
+import { C, label, R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Shop" };
 
@@ -28,17 +28,17 @@ export default async function ShopPage() {
   if (products.length === 0) {
     return (
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "72px 26px 96px", textAlign: "center" }}>
-        <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>SCHOOL SHOP</p>
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "14px" }}>
+        <p style={{ ...label, color: C.orangeText, marginBottom: "10px" }}>SCHOOL SHOP</p>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: C.ink, marginBottom: "14px" }}>
           The shop is not open yet.
         </h1>
-        <p style={{ fontSize: "16.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "26px" }}>
+        <p style={{ fontSize: "16.5px", color: C.muted, lineHeight: 1.6, marginBottom: "26px" }}>
           Printed materials — poster packs, journals, booth and assembly kits — are being prepared.
           If you need something for your school now, write to us and we will sort it out directly.
         </p>
         <a
           href="mailto:education@justonechesed.org"
-          style={{ display: "inline-block", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
+          style={{ display: "inline-block", backgroundColor: C.orange, color: C.ink, fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "14px 28px", textDecoration: "none" }}
         >
           education@justonechesed.org
         </a>

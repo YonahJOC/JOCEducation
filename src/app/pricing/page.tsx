@@ -21,11 +21,11 @@ export default async function PricingPage() {
     <div>
       {/* Page hero */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "56px 26px 0" }}>
-        <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
-        <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px", maxWidth: "16ch" }}>
+        <p style={{ ...label, color: C.orangeText, marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
+        <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: C.ink, marginBottom: "14px", maxWidth: "16ch" }}>
           {c.text("hero.headline", "Simple, transparent pricing.")}
         </h1>
-        <p style={{ fontSize: "17px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "55ch", marginBottom: "40px" }}>
+        <p style={{ fontSize: "17px", color: C.muted, lineHeight: 1.6, maxWidth: "55ch", marginBottom: "40px" }}>
           {c.text(
             "hero.standfirst",
             "No long-term commitment on monthly plans. Annual saves 15%. No school is turned away on cost — we offer full and partial scholarships."
@@ -42,8 +42,8 @@ export default async function PricingPage() {
             ["Monthly or annual", "annual saves 15%"],
           ].map(([stat, label]) => (
             <div key={label}>
-              <div style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: "#10233F" }}>{stat}</div>
-              <div style={{ fontSize: "15px", color: "#4A5A74", fontWeight: 500, marginTop: "2px" }}>{label}</div>
+              <div style={{ fontWeight: 800, fontSize: "20px", letterSpacing: "-0.03em", color: C.ink }}>{stat}</div>
+              <div style={{ fontSize: "15px", color: C.muted, fontWeight: 500, marginTop: "2px" }}>{label}</div>
             </div>
           ))}
         </div>
@@ -54,7 +54,7 @@ export default async function PricingPage() {
 
       {/* FAQ */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 26px 72px" }}>
-        <h2 style={{ fontWeight: 700, fontSize: "clamp(22px, 3vw, 30px)", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "32px" }}>Frequently asked questions</h2>
+        <h2 style={{ fontWeight: 700, fontSize: "clamp(22px, 3vw, 30px)", letterSpacing: "-0.03em", color: C.ink, marginBottom: "32px" }}>Frequently asked questions</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2px" }}>
           {(faq.length > 0
             ? faq.map((f) => ({ q: f.title ?? "", a: f.body ?? "" }))
@@ -64,12 +64,12 @@ export default async function PricingPage() {
           ))}
         </div>
 
-        <div style={{ marginTop: "48px", backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "28px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+        <div style={{ marginTop: "48px", backgroundColor: C.panel, borderRadius: "20px", padding: "28px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
           <div>
-            <p style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "5px" }}>Still have questions?</p>
-            <p style={{ fontSize: "15px", color: "#4A5A74" }}>Our team is happy to walk through the options for your school.</p>
+            <p style={{ fontWeight: 700, fontSize: "17px", color: C.ink, marginBottom: "5px" }}>Still have questions?</p>
+            <p style={{ fontSize: "15px", color: C.muted }}>Our team is happy to walk through the options for your school.</p>
           </div>
-          <a href="mailto:education@justonechesed.org" style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
+          <a href="mailto:education@justonechesed.org" style={{ backgroundColor: C.ink, color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
             Contact us
           </a>
         </div>
@@ -81,8 +81,8 @@ export default async function PricingPage() {
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <div style={{ padding: "24px 28px", border: `1px solid ${C.hairline}`, borderRadius: "0" }}>
-      <p style={{ fontWeight: 700, fontSize: "16px", color: "#10233F", marginBottom: "8px" }}>{q}</p>
-      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>{a}</p>
+      <p style={{ fontWeight: 700, fontSize: "16px", color: C.ink, marginBottom: "8px" }}>{q}</p>
+      <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: 0 }}>{a}</p>
     </div>
   );
 }

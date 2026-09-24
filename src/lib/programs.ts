@@ -1,3 +1,4 @@
+import { C } from "@/lib/joc-tokens";
 export type Program = {
   slug: string;
   name: string;
@@ -31,7 +32,7 @@ export const PROGRAMS: Program[] = [
     tagline: "Chesed students can run — and own.",
     description:
       "A JOC-branded station your school sets up at a community event. Students run it, giving out small acts of kindness — handwritten notes, baked goods, personal items — to passersby. JOC provides the full kit, training, and promotional materials.",
-    heroColor: "#2D46AF",
+    heroColor: C.blue,
     meta: "Half-day setup · All grade levels",
     available: ["JOC App + JOC Education", "Full JOC Partnership"],
     howItWorks: [
@@ -57,7 +58,7 @@ export const PROGRAMS: Program[] = [
     tagline: "Monthly cycles. Real deliveries. Real chesed.",
     description:
       "Students bake and deliver goods to local families, hospitals, or shelters. JOC handles all placement partnerships — you just bake. The program runs in monthly cycles so the commitment is predictable and every class can participate.",
-    heroColor: "#FA912D",
+    heroColor: C.orange,
     meta: "Monthly cycles · Any scale",
     available: ["JOC Education", "JOC App + JOC Education", "Full JOC Partnership"],
     howItWorks: [
@@ -109,7 +110,7 @@ export const PROGRAMS: Program[] = [
     tagline: "Real chesed opportunities, vetted and ready.",
     description:
       "Chesed Match connects your students to verified community chesed opportunities — elderly companion visits, hospital volunteer programs, food distribution, and more — through the chesedmatch.org platform. JOC handles the vetting; you handle the scheduling.",
-    heroColor: "#10233F",
+    heroColor: C.ink,
     meta: "Links to chesedmatch.org",
     available: ["JOC App + JOC Education", "Full JOC Partnership"],
     howItWorks: [

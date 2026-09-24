@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { label as uiLabel } from "@/lib/joc-tokens";
+import { C, label as uiLabel } from "@/lib/joc-tokens";
 
 export type NavItem = { label: string; href: string; hint?: string };
 
@@ -38,7 +38,7 @@ export function SideNav({ label, items }: { label: string; items: NavItem[] }) {
                 padding: "9px 20px",
                 fontSize: "14px",
                 fontWeight: active ? 700 : 400,
-                color: active ? "#fff" : "rgba(255,255,255,.8)",
+                color: active ? C.white : "rgba(255,255,255,.8)",
                 textDecoration: "none",
                 backgroundColor: active ? "rgba(255,255,255,.09)" : "transparent",
                 borderLeft: active ? "3px solid #FA912D" : "3px solid transparent",

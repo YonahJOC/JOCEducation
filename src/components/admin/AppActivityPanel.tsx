@@ -5,11 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "rea
 import { logSchoolTouch } from "@/app/actions/school-status";
 import { syncAppNow } from "@/app/actions/app-sync";
 import { hours, schoolYear, compareRows } from "@/lib/app-flags";
-import {
-  C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel,
-  bandFigure, rowCard, rowInner, rowBody, rowAction, rowDetail, rowTitle, field,
-  note,
-} from "@/lib/joc-tokens";
+import { sectionHeading, C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, bandFigure, rowCard, rowInner, rowBody, rowAction, rowDetail, rowTitle, field, note } from "@/lib/joc-tokens";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
 /**
@@ -35,7 +31,7 @@ export function AppActivityPanel({ data }: { data: AppActivity }) {
       <Hero data={data} />
 
       <div style={{ display: "flex", gap: "12px", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", margin: "24px 0 2px" }}>
-        <h2 style={{ fontFamily: "var(--font-outfit)", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: 0 }}>
+        <h2 style={{ ...sectionHeading, color: C.ink, margin: 0 }}>
           All schools on the app
         </h2>
         {data.flagged > 0 && (
@@ -87,7 +83,7 @@ function Hero({ data }: { data: AppActivity }) {
       <span aria-hidden="true" style={{ position: "absolute", top: "-90px", right: "-60px", width: "220px", height: "220px", borderRadius: "50%", backgroundColor: C.orange, opacity: 0.9 }} />
       <span aria-hidden="true" style={{ position: "absolute", bottom: "-28px", right: "128px", width: "90px", height: "90px", borderRadius: "50%", backgroundColor: "#4760C9" }} />
       <div style={{ position: "relative" }}>
-        <p style={{ ...bandLabel, color: "#FFD8AE", margin: "0 0 10px" }}>Today on the app</p>
+        <p style={{ ...bandLabel, color: C.onDarkLabel, margin: "0 0 10px" }}>Today on the app</p>
         <p style={{
           fontFamily: "var(--font-outfit)", fontSize: "clamp(30px, 5vw, 44px)", fontWeight: 800,
           letterSpacing: "-0.03em", lineHeight: 1.08, color: C.white, margin: "0 0 10px", maxWidth: "18ch",
@@ -96,7 +92,7 @@ function Hero({ data }: { data: AppActivity }) {
             ? "Nothing needs you today"
             : `${data.flagged} school${data.flagged === 1 ? "" : "s"} need${data.flagged === 1 ? "s" : ""} you today`}
         </p>
-        <p style={{ fontSize: "15px", color: data.sync.stale ? "#FFD8AE" : "#C6CFF0", margin: 0, lineHeight: 1.5, maxWidth: "48ch" }}>
+        <p style={{ fontSize: "15px", color: data.sync.stale ? C.onDarkLabel : C.onDarkBody, margin: 0, lineHeight: 1.5, maxWidth: "48ch" }}>
           {!data.sync.connected
             ? "The JOC App is not joined up yet, so nothing below has been read from it."
             : data.sync.stale

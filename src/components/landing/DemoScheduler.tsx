@@ -26,7 +26,7 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "var(--font-outfit)",
   fontSize: "15px",
   color: C.ink,
-  backgroundColor: "#F8FAFE",
+  backgroundColor: C.panel,
   border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "13px 14px",
@@ -82,7 +82,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
     return (
       <div
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: C.white,
           border: `1.5px solid ${C.greenText}`,
           borderRadius: "24px",
           padding: "34px 28px",
@@ -103,7 +103,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         <p style={{ fontWeight: 700, fontSize: "19px", color: C.ink, marginBottom: "8px", letterSpacing: "-0.02em" }}>
           Request sent
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, marginBottom: "18px" }}>
           You asked for <strong style={{ color: C.ink }}>{day.weekday} {day.month} {day.day} at {slot}</strong>.
           Someone from the JOC Education team will confirm by email.
         </p>
@@ -124,14 +124,14 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
     <form
       onSubmit={submit}
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: C.white,
         border: `1px solid ${C.hairline}`,
         borderRadius: "24px",
         boxShadow: ROW_SHADOW,
         padding: "26px",
       }}
     >
-      <p style={{ ...label, color: "#C96C00", marginBottom: "14px" }}>
+      <p style={{ ...label, color: C.orangeText, marginBottom: "14px" }}>
         PICK A TIME
       </p>
 
@@ -150,8 +150,8 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
                 display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px",
                 borderRadius: "14px", cursor: "pointer",
                 border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
-                backgroundColor: on ? C.blue : "#fff",
-                color: on ? "#fff" : C.ink,
+                backgroundColor: on ? C.blue : C.white,
+                color: on ? C.white : C.ink,
                 fontFamily: "var(--font-outfit)",
                 transition: "background .15s",
               }}
@@ -179,7 +179,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
                 fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
                 padding: "12px 8px", minHeight: "44px", borderRadius: "11px", cursor: "pointer",
                 border: on ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
-                backgroundColor: on ? "rgba(45,70,175,.08)" : "#fff",
+                backgroundColor: on ? "rgba(45,70,175,.08)" : C.white,
                 color: on ? C.blue : C.ink,
               }}
             >
@@ -206,7 +206,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
       </div>
 
       {error && (
-        <p role="alert" style={{ fontSize: "13px", color: "#A3261A", marginBottom: "12px" }}>{error}</p>
+        <p role="alert" style={{ fontSize: "13px", color: C.redText, marginBottom: "12px" }}>{error}</p>
       )}
 
       <button
@@ -214,7 +214,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         disabled={sending}
         style={{
           width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-          color: "#fff", backgroundColor: C.ink, border: "none", borderRadius: R.chip,
+          color: C.white, backgroundColor: C.ink, border: "none", borderRadius: R.chip,
           padding: "15px 20px", minHeight: "44px", cursor: sending ? "default" : "pointer", opacity: sending ? 0.7 : 1,
         }}
       >

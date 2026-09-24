@@ -20,7 +20,7 @@ export default async function SchoolActivityPage() {
   const cycles = await getCycles();
   const [school, activity] = await Promise.all([mySchool(), myActivity()]);
   if (!school || !activity) {
-    return <p style={{ fontSize: "15px", color: "#4A5A74" }}>Could not load your school.</p>;
+    return <p style={{ fontSize: "15px", color: C.muted }}>Could not load your school.</p>;
   }
 
   const byGrade = (["es", "ms", "hs"] as const).map((g) => ({
@@ -36,7 +36,7 @@ export default async function SchoolActivityPage() {
       <h1 style={pageTitle}>
         Chesed activity
       </h1>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 20px" }}>
         What teachers at {school.name} are actually using.
       </p>
 
@@ -47,12 +47,12 @@ export default async function SchoolActivityPage() {
       </div>
 
       {/* Grades */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-        <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 14px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
+        <p style={{ ...uiLabel, color: C.muted, margin: "0 0 14px" }}>
           By grade band
         </p>
         {activity.recent.length === 0 ? (
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0 }}>
             Nothing yet. Once teachers start saving lessons, you will see which grades are moving and
             which have not begun.
           </p>
@@ -65,7 +65,7 @@ export default async function SchoolActivityPage() {
                   <div key={g.grade}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "15px", marginBottom: "5px" }}>
                       <span style={{ color: C.ink }}>{g.label}</span>
-                      <span style={{ color: "#4A5A74" }}>{g.count}</span>
+                      <span style={{ color: C.muted }}>{g.count}</span>
                     </div>
                     <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: C.panel, overflow: "hidden" }}>
                       <div style={{ height: "100%", width: `${(g.count / max) * 100}%`, backgroundColor: g.count ? C.blue : "transparent", borderRadius: R.chip }} />
@@ -75,7 +75,7 @@ export default async function SchoolActivityPage() {
               })}
             </div>
             {notStarted.length > 0 && started.length > 0 && (
-              <p style={{ fontSize: "15px", lineHeight: 1.55, color: "#C96C00", margin: "14px 0 0" }}>
+              <p style={{ fontSize: "15px", lineHeight: 1.55, color: C.orangeText, margin: "14px 0 0" }}>
                 {notStarted.map((g) => g.label).join(" and ")} {notStarted.length === 1 ? "has" : "have"} not
                 started yet.
               </p>
@@ -85,12 +85,12 @@ export default async function SchoolActivityPage() {
       </div>
 
       {/* Feed */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 14px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
+        <p style={{ ...uiLabel, color: C.muted, margin: "0 0 14px" }}>
           Recently
         </p>
         {activity.recent.length === 0 ? (
-          <p style={{ fontSize: "14px", color: "#4A5A74", margin: 0 }}>Nothing to show yet.</p>
+          <p style={{ fontSize: "14px", color: C.muted, margin: 0 }}>Nothing to show yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {activity.recent.map((r, i) => {
@@ -102,7 +102,7 @@ export default async function SchoolActivityPage() {
                     <p style={{ fontSize: "14px", color: C.ink, margin: 0, lineHeight: 1.45 }}>
                       <strong style={{ fontWeight: 600 }}>{r.who}</strong> saved {r.lesson}
                     </p>
-                    <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0" }}>
                       {GRADE_LABEL[r.grade] ?? r.grade}
                       {cycle ? ` · ${cycle.theme}` : ""} · {ago(r.when)}
                     </p>
@@ -119,14 +119,14 @@ export default async function SchoolActivityPage() {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "16px 18px" }}>
-      <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 8px" }}>
+    <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "16px 18px" }}>
+      <p style={{ ...uiLabel, color: C.muted, margin: "0 0 8px" }}>
         {label}
       </p>
       <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: C.ink, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </p>
-      <p style={{ fontSize: "13px", color: "#4A5A74", margin: "6px 0 0" }}>{sub}</p>
+      <p style={{ fontSize: "13px", color: C.muted, margin: "6px 0 0" }}>{sub}</p>
     </div>
   );
 }

@@ -25,7 +25,7 @@ export default async function MeetingsPage() {
         <h1 style={pageTitle}>
           Not one of yours
         </h1>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0 }}>
           Running the admin meeting is its own permission. A super admin can add it to your admin
           type under Admin types.
         </p>

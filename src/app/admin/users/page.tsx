@@ -85,36 +85,36 @@ async function Inner() {
 
       <SectionLinks section="access" />
 
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 8px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 8px" }}>
         {internal.length} at Just One Chesed, {schoolUsers.length} at schools
         {unassigned > 0 && (
-          <span style={{ color: "#C96C00" }}> · {unassigned} with no school</span>
+          <span style={{ color: C.orangeText }}> · {unassigned} with no school</span>
         )}
         .
       </p>
 
-      <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", marginBottom: "20px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
+      <div style={{ backgroundColor: C.panel, borderRadius: "14px", padding: "16px 18px", marginBottom: "20px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>
           What the roles mean
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px 20px" }}>
           {(["STAFF", "PROGRAM_STAFF", "ADMIN", "SUPER_ADMIN", "SCHOOL_ADMIN"] as Role[]).map((r) => (
             <div key={r}>
               <p style={{ fontSize: "15px", fontWeight: 700, color: C.ink, margin: "0 0 2px" }}>{ROLE_LABELS[r]}</p>
-              <p style={{ fontSize: "13px", lineHeight: 1.5, color: "#4A5A74", margin: 0 }}>
+              <p style={{ fontSize: "13px", lineHeight: 1.5, color: C.muted, margin: 0 }}>
                 {ROLE_DESCRIPTIONS[r]}
               </p>
             </div>
           ))}
         </div>
-        <p style={{ fontSize: "13px", lineHeight: 1.55, color: "#4A5A74", margin: "12px 0 0", paddingTop: "10px", borderTop: `1px solid ${C.hairline}` }}>
+        <p style={{ fontSize: "13px", lineHeight: 1.55, color: C.muted, margin: "12px 0 0", paddingTop: "10px", borderTop: `1px solid ${C.hairline}` }}>
           A <strong style={{ color: C.ink }}>@{JOC_STAFF_DOMAIN}</strong> address becomes JOC staff
           automatically. Everything above staff is granted here, by hand.
         </p>
       </div>
 
       {!canEditRoles && (
-        <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "12px", padding: "11px 14px", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", color: C.orangeText, backgroundColor: C.orangeTint, borderRadius: "12px", padding: "11px 14px", margin: "0 0 16px" }}>
           You can see this list, but only a super admin can create accounts or change roles.
         </p>
       )}

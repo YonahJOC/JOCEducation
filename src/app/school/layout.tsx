@@ -5,7 +5,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { signOutAction } from "@/app/actions/auth";
 import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { schoolNav } from "@/lib/nav";
-import { C, R, F, label } from "@/lib/joc-tokens";
+import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Your school", robots: { index: false, follow: false } };
 
@@ -26,7 +26,7 @@ export default async function SchoolLayout({ children }: { children: React.React
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px" }}>
         <div style={{ maxWidth: "440px", textAlign: "center" }}>
-          <h1 style={{ fontFamily: F.ui, fontWeight: 700, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, marginBottom: "10px" }}>
+          <h1 style={{ ...pageTitle, color: C.ink, marginBottom: "10px" }}>
             For school administrators
           </h1>
           <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: C.muted, marginBottom: "22px" }}>

@@ -1,6 +1,7 @@
+import { C } from "@/lib/joc-tokens";
 export default function HomeLoading() {
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#FBF9F4" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: C.paper }}>
       <Skeleton style={{ height: "88vh", marginBottom: "0" }} />
     </div>
   );
@@ -10,7 +11,7 @@ function Skeleton({ style }: { style?: React.CSSProperties }) {
   return (
     <div
       style={{
-        backgroundColor: "#F0EDE8",
+        backgroundColor: C.hairline,
         borderRadius: "4px",
         animation: "shimmer 1.6s ease-in-out infinite",
         ...style,

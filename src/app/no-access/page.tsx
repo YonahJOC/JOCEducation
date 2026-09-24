@@ -22,7 +22,7 @@ export default async function NoAccessPage() {
   const looksLikeSchool = couldBeSchoolEmail(email);
 
   return (
-    <div style={{ backgroundColor: "#FBF9F4", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: C.paper, minHeight: "100vh" }}>
       <header style={{ borderBottom: `1px solid ${C.hairline}` }}>
         <div style={{ maxWidth: "760px", margin: "0 auto", padding: "16px 26px" }}>
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
@@ -43,7 +43,7 @@ export default async function NoAccessPage() {
           Your school isn&rsquo;t set up yet.
         </h1>
 
-        <p style={{ fontSize: "17px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "17px", lineHeight: 1.65, color: C.muted, margin: "0 0 14px" }}>
           {email ? (
             <>
               You&rsquo;re signed in as <strong style={{ color: C.ink }}>{email}</strong>, but that account
@@ -55,11 +55,11 @@ export default async function NoAccessPage() {
           )}
         </p>
 
-        <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", margin: "0 0 22px" }}>
+        <div style={{ backgroundColor: C.panel, borderRadius: "14px", padding: "16px 18px", margin: "0 0 22px" }}>
           <p style={{ fontSize: "16px", fontWeight: 700, color: C.ink, margin: "0 0 4px" }}>
             Has a teacher given you a code?
           </p>
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 12px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: "0 0 12px" }}>
             Students who run a JOC program at their school get a six-character code from the teacher
             who runs it. You do not need your school&rsquo;s plan for that.
           </p>
@@ -67,7 +67,7 @@ export default async function NoAccessPage() {
             href="/ambassador/join"
             style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center",
-              fontSize: "15px", fontWeight: 700, color: "#fff", backgroundColor: C.blue,
+              fontSize: "15px", fontWeight: 700, color: C.white, backgroundColor: C.blue,
               borderRadius: "12px", padding: "12px 20px", minHeight: "46px", textDecoration: "none",
             }}
           >
@@ -75,7 +75,7 @@ export default async function NoAccessPage() {
           </Link>
         </div>
 
-        <p style={{ fontSize: "16px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 28px" }}>
+        <p style={{ fontSize: "16px", lineHeight: 1.65, color: C.muted, margin: "0 0 28px" }}>
           {looksLikeSchool ? (
             <>
               If your school already works with Just One Chesed, ask whoever arranged it to invite this
@@ -91,14 +91,14 @@ export default async function NoAccessPage() {
 
         <div
           style={{
-            backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "20px",
+            backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "20px",
             padding: "24px", marginBottom: "26px",
           }}
         >
           <p style={{ fontWeight: 700, fontSize: "17px", color: C.ink, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
             In the meantime
           </p>
-          <p style={{ fontSize: "15px", lineHeight: 1.65, color: "#4A5A74", margin: "0 0 18px" }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.65, color: C.muted, margin: "0 0 18px" }}>
             The teaching platform is still being built, but Just One Chesed runs ten chesed programs your
             school can start this year — Kindness Booth, Bake for Chesed, Just One Tutor and more.
           </p>
@@ -106,7 +106,7 @@ export default async function NoAccessPage() {
             <Link
               href="/#demo"
               style={{
-                display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700,
+                display: "inline-block", backgroundColor: C.blue, color: C.white, fontWeight: 700,
                 fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none",
               }}
             >
@@ -129,7 +129,7 @@ export default async function NoAccessPage() {
             type="submit"
             style={{
               fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600,
-              color: "#4A5A74", background: "none", border: "none",
+              color: C.muted, background: "none", border: "none",
               cursor: "pointer", padding: 0,
             }}
           >

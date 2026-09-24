@@ -58,7 +58,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
       <section style={{ backgroundColor: C.blue, borderRadius: R.hero, padding: "30px", color: C.white, marginBottom: "16px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "28px", alignItems: "start" }}>
           <div>
-            <p style={{ ...label, color: "#FFD8AE", margin: "0 0 12px" }}>
+            <p style={{ ...label, color: C.onDarkLabel, margin: "0 0 12px" }}>
               Chesed Cycle {cycle.num} · Week {week} of {cycle.weeks} · {cycle.hebrew}
             </p>
             <h1 style={{
@@ -67,7 +67,7 @@ export async function PersonalHome({ data }: { data: HomeData }) {
             }}>
               {cycle.theme}
             </h1>
-            <p style={{ fontFamily: F.read, fontSize: "16px", color: "#C6CFF0", margin: "0 0 20px" }}>{cycle.gloss}</p>
+            <p style={{ fontFamily: F.read, fontSize: "16px", color: C.onDarkBody, margin: "0 0 20px" }}>{cycle.gloss}</p>
             <p style={{
               fontFamily: F.read, fontStyle: "italic",
               fontSize: "clamp(18px, 2.1vw, 23px)", lineHeight: 1.5,
@@ -79,11 +79,11 @@ export async function PersonalHome({ data }: { data: HomeData }) {
           </div>
 
           <div>
-            <p style={{ ...datum, color: "#C6CFF0", margin: "0 0 8px" }}>{cycle.range}</p>
+            <p style={{ ...datum, color: C.onDarkBody, margin: "0 0 8px" }}>{cycle.range}</p>
             <div style={{ height: "6px", borderRadius: R.chip, backgroundColor: "rgba(255,255,255,.16)", overflow: "hidden", marginBottom: "20px" }}>
               <div style={{ height: "100%", width: `${pct}%`, borderRadius: R.chip, backgroundColor: C.orange }} />
             </div>
-            <p style={{ fontFamily: F.read, fontSize: "16px", lineHeight: 1.55, color: "#C6CFF0", margin: "0 0 18px" }}>
+            <p style={{ fontFamily: F.read, fontSize: "16px", lineHeight: 1.55, color: C.onDarkBody, margin: "0 0 18px" }}>
               Everything published for these weeks points at this one middah.
             </p>
             {/* White on the blue: orange fill belongs to the public call to

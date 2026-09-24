@@ -233,7 +233,7 @@ export default async function ProgramDetailPage({ params }: Props) {
                 {program.testimonial.quote}
               </p>
             </blockquote>
-            <figcaption style={{ fontSize: "14px", color: "#C6CFF0", lineHeight: 1.5 }}>
+            <figcaption style={{ fontSize: "14px", color: C.onDarkBody, lineHeight: 1.5 }}>
               <Attribution value={program.testimonial.attribution} />
             </figcaption>
           </figure>
@@ -257,7 +257,7 @@ export default async function ProgramDetailPage({ params }: Props) {
                   href={`/programs/${p.slug}`}
                   style={{
                     display: "flex", alignItems: "center", gap: "14px", minHeight: "72px",
-                    backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "12px",
+                    backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "12px",
                     padding: "12px 16px 12px 12px", textDecoration: "none", minWidth: 0,
                   }}
                 >
@@ -300,10 +300,10 @@ function SectionLabel({ children, deep }: { children: React.ReactNode; deep: str
  */
 function Attribution({ value }: { value: string }) {
   const m = /^(.+?)\s*[,—–-]\s*(.+)$/.exec(value.trim());
-  if (!m) return <span style={{ fontWeight: 600, color: "#fff" }}>{value}</span>;
+  if (!m) return <span style={{ fontWeight: 600, color: C.white }}>{value}</span>;
   return (
     <>
-      <span style={{ fontWeight: 600, color: "#fff" }}>{m[1]}</span>
+      <span style={{ fontWeight: 600, color: C.white }}>{m[1]}</span>
       <span style={{ display: "block", marginTop: "2px" }}>{m[2]}</span>
     </>
   );

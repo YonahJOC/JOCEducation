@@ -159,14 +159,14 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
   }
 
   return (
-    <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+    <div style={{ backgroundColor: C.white, border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: C.muted, margin: 0 }}>
           Import from the workbook
         </p>
         <button
           onClick={() => { setOpen(false); setRows(null); setRaw(""); setResult(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.muted, background: "none", border: "none", cursor: "pointer" }}
         >
           Close
         </button>
@@ -174,7 +174,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
 
       {!rows ? (
         <>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 12px" }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.muted, margin: "0 0 12px" }}>
             Copy the rows straight out of the workbook and paste them here. Tabs or commas both work.
             Nothing is saved until you have seen every row.
           </p>
@@ -193,13 +193,13 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
 
           {columnCount > 0 && (
             <>
-              <p style={{ fontSize: "13px", fontWeight: 600, color: "#4A5A74", margin: "0 0 9px" }}>
+              <p style={{ fontSize: "13px", fontWeight: 600, color: C.muted, margin: "0 0 9px" }}>
                 What is each column?
               </p>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "14px" }}>
                 {Array.from({ length: columnCount }, (_, i) => (
                   <label key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <span style={{ fontSize: "11px", color: "#4A5A74" }}>
+                    <span style={{ fontSize: "11px", color: C.muted }}>
                       Column {i + 1}
                       {table[0]?.[i] ? ` · ${table[0][i].slice(0, 14)}` : ""}
                     </span>
@@ -208,7 +208,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                       onChange={(e) => setMapping((m) => { const n = [...m]; n[i] = e.target.value; return n; })}
                       style={{
                         fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.ink,
-                        backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "9px",
+                        backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "9px",
                         padding: "8px 10px", minHeight: "40px", outline: "none",
                       }}
                     >
@@ -222,7 +222,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                 onClick={build}
                 disabled={!mapping.includes("title")}
                 style={{
-                  fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+                  fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
                   backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
                   minHeight: "44px", cursor: mapping.includes("title") ? "pointer" : "not-allowed",
                   opacity: mapping.includes("title") ? 1 : 0.5,
@@ -240,7 +240,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
         </>
       ) : (
         <>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.muted, margin: "0 0 14px" }}>
             {rows.filter((r) => r.include).length} of {rows.length} will be imported, as unpublished
             drafts. Untick anything you do not want.
           </p>
@@ -270,7 +270,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                     <span style={{ fontSize: "14px", fontWeight: 600, color: C.ink, display: "block" }}>
                       {r.title || <em style={{ color: C.redText, fontWeight: 400 }}>No title</em>}
                     </span>
-                    <span style={{ fontSize: "13px", color: "#4A5A74" }}>
+                    <span style={{ fontSize: "13px", color: C.muted }}>
                       {[r.theme, r.grade.toUpperCase(), `${r.minutes} min`, cycle ? cycle.theme : null]
                         .filter(Boolean)
                         .join(" · ")}
@@ -291,7 +291,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
               onClick={runImport}
               disabled={pending || rows.filter((r) => r.include).length === 0}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
                 backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 22px",
                 minHeight: "44px", cursor: "pointer", opacity: pending ? 0.6 : 1,
               }}
@@ -300,7 +300,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
             </button>
             <button
               onClick={() => setRows(null)}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
             >
               Back
             </button>

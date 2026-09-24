@@ -1,4 +1,5 @@
 import { toEmbed } from "@/lib/video";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * The promo video at the top of a program page.
@@ -19,7 +20,7 @@ export function PromoVideo({ url, title }: { url: string | null | undefined; tit
         aspectRatio: "16 / 9",
         borderRadius: "18px",
         overflow: "hidden",
-        backgroundColor: "#10233F",
+        backgroundColor: C.ink,
         marginBottom: "40px",
       }}
     >

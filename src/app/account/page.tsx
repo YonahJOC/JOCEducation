@@ -10,11 +10,11 @@ import { signOutAction } from "@/app/actions/auth";
 export const metadata = { title: "Your account", robots: { index: false, follow: false } };
 
 const CARD: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
   borderRadius: "20px", padding: "24px", marginBottom: "16px",
 };
 const LABEL: React.CSSProperties = {
-  ...label, color: "#4A5A74", margin: "0 0 12px",
+  ...label, color: C.muted, margin: "0 0 12px",
 };
 
 /**
@@ -44,7 +44,7 @@ export default async function AccountPage() {
 
   return (
     <div style={{ maxWidth: "640px", margin: "0 auto", padding: "48px 26px 72px" }}>
-      <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>
+      <p style={{ ...label, color: C.orangeText, marginBottom: "10px" }}>
         YOUR ACCOUNT
       </p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, marginBottom: "28px" }}>
@@ -56,7 +56,7 @@ export default async function AccountPage() {
         <Row label="Email" value={u.email ?? "Not recorded"} />
         <Row label="Name" value={u.name ?? "Not set"} />
         <Row label="Role" value={ROLE_LABELS[role] ?? role} />
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "10px 0 0" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: "10px 0 0" }}>
           {ROLE_DESCRIPTIONS[role]}
         </p>
       </div>
@@ -66,7 +66,7 @@ export default async function AccountPage() {
         {schoolName ? (
           <Row label="You are with" value={schoolName} />
         ) : (
-          <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: 0 }}>
             Your account is not linked to a school. Signing in with your school email address
             is what makes the match — ask Just One Chesed if it should be and is not.
           </p>
@@ -75,12 +75,12 @@ export default async function AccountPage() {
 
       <div style={CARD}>
         <p style={LABEL}>Password</p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "0 0 16px" }}>
           Change the password you use to sign in.
         </p>
         <Link
           href="/account/password"
-          style={{ display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 22px", textDecoration: "none" }}
+          style={{ display: "inline-block", backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 22px", textDecoration: "none" }}
         >
           Change password
         </Link>
@@ -107,7 +107,7 @@ export default async function AccountPage() {
       <form action={signOutAction}>
         <button
           type="submit"
-          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: "#A3261A", background: "none", border: "none", padding: "8px 0", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: C.redText, background: "none", border: "none", padding: "8px 0", cursor: "pointer", minHeight: "44px" }}
         >
           Sign out
         </button>
@@ -119,7 +119,7 @@ export default async function AccountPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", padding: "7px 0", fontSize: "15px" }}>
-      <span style={{ color: "#4A5A74", minWidth: "110px" }}>{label}</span>
+      <span style={{ color: C.muted, minWidth: "110px" }}>{label}</span>
       <span style={{ color: C.ink, fontWeight: 500, wordBreak: "break-word" }}>{value}</span>
     </div>
   );

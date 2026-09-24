@@ -8,11 +8,11 @@ import { passwordProblem } from "@/lib/password";
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "12px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "12px",
   padding: "12px 14px", outline: "none", minHeight: "46px",
 };
 const label: React.CSSProperties = {
-  display: "block", fontSize: "13px", fontWeight: 600, color: "#4A5A74", marginBottom: "6px",
+  display: "block", fontSize: "13px", fontWeight: 600, color: C.muted, marginBottom: "6px",
 };
 
 export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; forced: boolean }) {
@@ -45,17 +45,17 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
 
   if (done) {
     return (
-      <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.greenText}`, borderRadius: "18px", padding: "26px" }}>
+      <div style={{ backgroundColor: C.white, border: `1.5px solid ${C.greenText}`, borderRadius: "18px", padding: "26px" }}>
         <p style={{ fontWeight: 700, fontSize: "19px", color: C.ink, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
           Password changed
         </p>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 18px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: "0 0 18px" }}>
           Use the new one next time you sign in.
         </p>
         <a
           href="/home"
           style={{
-            display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700,
+            display: "inline-block", backgroundColor: C.blue, color: C.white, fontWeight: 700,
             fontSize: "15px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none",
           }}
         >
@@ -66,7 +66,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
   }
 
   return (
-    <form onSubmit={submit} style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "26px" }}>
+    <form onSubmit={submit} style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "18px", padding: "26px" }}>
       {hasPassword && (
         <div style={{ marginBottom: "16px" }}>
           <label style={label} htmlFor="current">Current password</label>
@@ -83,10 +83,10 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
         <input
           id="next" type="password" autoComplete="new-password"
           value={next} onChange={(e) => setNext(e.target.value)}
-          style={{ ...field, borderColor: next && strength ? "#C96C00" : C.hairline }}
+          style={{ ...field, borderColor: next && strength ? C.orangeText : C.hairline }}
           autoFocus={forced}
         />
-        <p style={{ fontSize: "13px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? "#C96C00" : C.greenText) : "#4A5A74" }}>
+        <p style={{ fontSize: "13px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? C.orangeText : C.greenText) : C.muted }}>
           {next ? (strength ?? "That will do.") : "At least 10 characters. Avoid anything with the organisation's name in it."}
         </p>
       </div>
@@ -96,10 +96,10 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
         <input
           id="confirm" type="password" autoComplete="new-password"
           value={confirm} onChange={(e) => setConfirm(e.target.value)}
-          style={{ ...field, borderColor: mismatch ? "#C96C00" : C.hairline }}
+          style={{ ...field, borderColor: mismatch ? C.orangeText : C.hairline }}
         />
         {mismatch && (
-          <p style={{ fontSize: "13px", color: "#C96C00", margin: "6px 0 0" }}>These do not match yet.</p>
+          <p style={{ fontSize: "13px", color: C.orangeText, margin: "6px 0 0" }}>These do not match yet.</p>
         )}
       </div>
 
@@ -108,7 +108,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
         disabled={pending || !next || Boolean(strength) || mismatch || (hasPassword && !current)}
         style={{
           width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-          color: "#fff", backgroundColor: C.blue, border: "none", borderRadius: R.chip,
+          color: C.white, backgroundColor: C.blue, border: "none", borderRadius: R.chip,
           padding: "14px 22px", minHeight: "48px",
           cursor: pending ? "default" : "pointer",
           opacity: pending || !next || Boolean(strength) || mismatch || (hasPassword && !current) ? 0.5 : 1,
@@ -118,7 +118,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
       </button>
 
       {err && (
-        <p role="alert" style={{ fontSize: "15px", lineHeight: 1.5, color: "#A3261A", backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px", padding: "11px 14px", margin: "14px 0 0" }}>
+        <p role="alert" style={{ fontSize: "15px", lineHeight: 1.5, color: C.redText, backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px", padding: "11px 14px", margin: "14px 0 0" }}>
           {err}
         </p>
       )}

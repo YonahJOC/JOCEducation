@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getPublishedPrograms } from "@/lib/content";
-import { label } from "@/lib/joc-tokens";
+import { C, label } from "@/lib/joc-tokens";
 
 const EDUCATION = [
   { label: "Chesed Programs",  href: "/programs" },
@@ -49,7 +49,7 @@ const JOC = [
 export async function Footer() {
   const PROGRAMS = await programLinks();
   return (
-    <footer style={{ backgroundColor: "#10233F", padding: "54px 26px 34px" }}>
+    <footer style={{ backgroundColor: C.ink, padding: "54px 26px 34px" }}>
       <div
         className="mx-auto grid gap-10"
         style={{
@@ -68,7 +68,7 @@ export async function Footer() {
               height={21}
               style={{ height: "20px", width: "auto", display: "block" }}
             />
-            <div style={{ fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginTop: "7px" }}>
+            <div style={{ fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orange, marginTop: "7px" }}>
               EDUCATION
             </div>
           </div>
@@ -115,7 +115,7 @@ function FooterCol({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <h3 style={{ ...label, color: "#C96C00" }}>
+      <h3 style={{ ...label, color: C.orangeText }}>
         {title}
       </h3>
       <ul className="flex flex-col gap-2">

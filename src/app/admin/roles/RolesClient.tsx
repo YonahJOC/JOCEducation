@@ -12,7 +12,7 @@ import type { AdminRoleRow } from "@/lib/admin-roles";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
@@ -50,7 +50,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
           onClick={() => setEditing({ ...BLANK })}
           disabled={disabled}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -62,17 +62,17 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
       {/* The whole picture in one grid: every type down the side, every
           permission across. This is the question people actually ask —
           "who can do X" — and a list of cards cannot answer it. */}
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "auto" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "760px" }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "12px 20px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel }}>
+              <th style={{ textAlign: "left", padding: "12px 20px", ...label, color: C.muted, borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel }}>
                 Admin type
               </th>
               {CAPABILITY_GROUPS.map((g) => (
                 <th
                   key={g.label}
-                  style={{ textAlign: "center", padding: "12px 14px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}
+                  style={{ textAlign: "center", padding: "12px 14px", ...label, color: C.muted, borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}
                 >
                   {g.label}
                 </th>
@@ -87,17 +87,17 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
                   <span style={{ fontWeight: 600, color: C.ink, display: "block" }}>
                     {r.name}
                     {r.builtIn && (
-                      <span style={{ fontSize: "11px", fontWeight: 700, color: "#4A5A74", backgroundColor: C.panel, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 700, color: C.muted, backgroundColor: C.panel, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
                         built in
                       </span>
                     )}
                   </span>
                   {r.description && (
-                    <span style={{ fontSize: "13px", color: "#4A5A74", display: "block", marginTop: "2px", maxWidth: "46ch" }}>
+                    <span style={{ fontSize: "13px", color: C.muted, display: "block", marginTop: "2px", maxWidth: "46ch" }}>
                       {r.description}
                     </span>
                   )}
-                  <span style={{ fontSize: "12px", color: "#4A5A74", display: "block", marginTop: "3px" }}>
+                  <span style={{ fontSize: "12px", color: C.muted, display: "block", marginTop: "3px" }}>
                     {r.memberCount === 0
                       ? "nobody yet"
                       : `${r.memberCount} ${r.memberCount === 1 ? "person" : "people"}`}
@@ -121,7 +121,7 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
                       ) : (
                         <span style={{
                           fontSize: "12px", fontWeight: 700, borderRadius: R.chip, padding: "3px 9px",
-                          color: all ? "#1D6B37" : "#C96C00",
+                          color: all ? C.greenText : C.orangeText,
                           backgroundColor: all ? "rgba(27,127,75,.1)" : "rgba(250,145,45,.14)",
                         }}>
                           {all ? "all" : `${held.length} of ${g.capabilities.length}`}
@@ -145,20 +145,20 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
         </table>
       </div>
 
-      <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", marginTop: "18px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
+      <div style={{ backgroundColor: C.panel, borderRadius: "14px", padding: "16px 18px", marginTop: "18px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>
           What each permission covers
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px 24px" }}>
           {CAPABILITY_GROUPS.map((g) => (
             <div key={g.label}>
-              <p style={{ ...label, color: "#4A5A74", margin: "0 0 6px" }}>
+              <p style={{ ...label, color: C.muted, margin: "0 0 6px" }}>
                 {g.label}
               </p>
               {g.capabilities.map((c) => (
                 <div key={c} style={{ marginBottom: "6px" }}>
                   <p style={{ fontSize: "13px", fontWeight: 600, color: C.ink, margin: 0 }}>{CAPABILITY_LABELS[c]}</p>
-                  <p style={{ fontSize: "13px", lineHeight: 1.45, color: "#4A5A74", margin: 0 }}>
+                  <p style={{ fontSize: "13px", lineHeight: 1.45, color: C.muted, margin: 0 }}>
                     {CAPABILITY_DESCRIPTIONS[c]}
                   </p>
                 </div>
@@ -231,7 +231,7 @@ function RoleForm({
         {d.id ? d.name : "New admin type"}
       </h1>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
         <div style={{ marginBottom: "12px" }}>
           <label style={label}>Name</label>
           <input
@@ -239,11 +239,11 @@ function RoleForm({
             onChange={(e) => setD((p) => ({ ...p, name: e.target.value }))}
             placeholder="Shop manager"
             disabled={disabled || d.builtIn}
-            style={{ ...field, backgroundColor: d.builtIn ? "#FBF9F4" : "#fff" }}
+            style={{ ...field, backgroundColor: d.builtIn ? C.paper : C.white }}
             autoFocus={!d.id}
           />
           {d.builtIn && (
-            <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0" }}>
+            <p style={{ fontSize: "12px", color: C.muted, margin: "5px 0 0" }}>
               Built-in types keep their name. You can still change what this one can do.
             </p>
           )}
@@ -260,11 +260,11 @@ function RoleForm({
         </div>
       </div>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 4px" }}>
           What this type can do
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 14px", lineHeight: 1.55 }}>
           {locked
             ? "Super admin holds every permission and cannot be reduced — it is the way back from any other mistake made on this page."
             : "Anything not ticked is not just hidden: those pages refuse to open."}
@@ -276,7 +276,7 @@ function RoleForm({
           return (
             <div key={g.label} style={{ marginBottom: "18px" }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px", marginBottom: "8px" }}>
-                <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
+                <p style={{ ...label, color: C.muted, margin: 0 }}>
                   {g.label}
                 </p>
                 {!locked && (
@@ -306,7 +306,7 @@ function RoleForm({
                 style={{
                   display: "flex", gap: "12px", alignItems: "flex-start",
                   border: `1px solid ${on ? "rgba(45,70,175,.3)" : C.hairline}`,
-                  backgroundColor: on ? "rgba(45,70,175,.04)" : "#fff",
+                  backgroundColor: on ? "rgba(45,70,175,.04)" : C.white,
                   borderRadius: "12px", padding: "13px 15px",
                   cursor: locked || disabled ? "default" : "pointer",
                   opacity: locked ? 0.75 : 1,
@@ -323,7 +323,7 @@ function RoleForm({
                   <span style={{ display: "block", fontSize: "15px", fontWeight: 600, color: C.ink }}>
                     {CAPABILITY_LABELS[c]}
                   </span>
-                  <span style={{ display: "block", fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, marginTop: "2px" }}>
+                  <span style={{ display: "block", fontSize: "13px", color: C.muted, lineHeight: 1.5, marginTop: "2px" }}>
                     {CAPABILITY_DESCRIPTIONS[c]}
                   </span>
                 </span>
@@ -341,7 +341,7 @@ function RoleForm({
           type="submit"
           disabled={disabled || pending || !d.name.trim()}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}

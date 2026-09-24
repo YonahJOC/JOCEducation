@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { label, R, C } from "@/lib/joc-tokens";
+import { pageTitle, label, R, C } from "@/lib/joc-tokens";
 import {
   FIELD_TYPES, FIELD_TYPE_LABELS, NEEDS_OPTIONS, type FieldType,
 } from "@/lib/forms";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
 };
 const card: React.CSSProperties = {
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
   borderRadius: "16px", padding: "20px", marginBottom: "14px",
 };
 
@@ -118,7 +118,7 @@ export function FormBuilder({
           >
             {backLabel ?? "← All forms"}
           </button>
-          <h1 style={{ fontWeight: 800, fontSize: "24px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 20px" }}>
+          <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 20px" }}>
             {heading ?? (d.id ? d.title || "Edit form" : "New form")}
           </h1>
         </>
@@ -140,10 +140,10 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 6px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 6px" }}>
           Questions
         </p>
-        <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 14px", lineHeight: 1.55 }}>
           Name and email are always asked for — you do not need to add them.
         </p>
 
@@ -151,7 +151,7 @@ export function FormBuilder({
           {d.fields.map((f, i) => (
             <div key={i} style={{ border: `1px solid ${C.hairline}`, borderRadius: "12px", padding: "14px" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "#4A5A74", minWidth: "26px" }}>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: C.muted, minWidth: "26px" }}>
                   {i + 1}
                 </span>
                 <input
@@ -224,11 +224,11 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ ...label, color: "#4A5A74", margin: "0 0 12px" }}>
+        <p style={{ ...label, color: C.muted, margin: "0 0 12px" }}>
           Payment
         </p>
         {!paymentsOn && (
-          <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "10px", padding: "11px 14px", margin: "0 0 12px", lineHeight: 1.55 }}>
+          <p style={{ fontSize: "15px", color: C.orangeText, backgroundColor: C.orangeTint, borderRadius: "10px", padding: "11px 14px", margin: "0 0 12px", lineHeight: 1.55 }}>
             Card payment is not switched on yet. You can set an amount, but the form will not publish
             until Stripe is connected — better that than taking registrations and never charging anyone.
           </p>
@@ -263,7 +263,7 @@ export function FormBuilder({
           type="submit"
           disabled={disabled || pending || !d.title.trim()}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "12px 24px",
             minHeight: "44px", cursor: pending ? "wait" : "pointer", opacity: disabled ? 0.5 : 1,
           }}
@@ -282,7 +282,7 @@ export function FormBuilder({
         )}
         {msg && <p style={{ fontSize: "15px", color: C.redText, margin: 0, lineHeight: 1.5, maxWidth: "46ch" }}>{msg}</p>}
         {saved && !msg && (
-          <p style={{ fontSize: "15px", fontWeight: 600, color: "#1D6B37", margin: 0 }}>Saved.</p>
+          <p style={{ fontSize: "15px", fontWeight: 600, color: C.greenText, margin: 0 }}>Saved.</p>
         )}
       </div>
     </form>

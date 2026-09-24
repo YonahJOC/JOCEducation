@@ -7,7 +7,7 @@ import { ASSIGNABLE_ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/l
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
-  backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "44px",
 };
 
@@ -56,16 +56,16 @@ export function CreateUserForm({
   // The one moment the password is visible.
   if (created) {
     return (
-      <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.greenText}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
+      <div style={{ backgroundColor: C.white, border: `1.5px solid ${C.greenText}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
         <p style={{ ...label, color: C.greenText, margin: "0 0 12px" }}>
           Account created
         </p>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: "0 0 14px" }}>
           Give these to <strong style={{ color: C.ink }}>{created.email}</strong>. The password is not stored
           in readable form, so this is the only time it can be shown — they will be asked to change it when
           they first sign in.
         </p>
-        <div style={{ backgroundColor: "#F4F7FD", borderRadius: "12px", padding: "14px 16px", marginBottom: "16px" }}>
+        <div style={{ backgroundColor: C.panel, borderRadius: "12px", padding: "14px 16px", marginBottom: "16px" }}>
           <p style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "15px", color: C.ink, margin: "0 0 5px", wordBreak: "break-all" }}>
             {created.email}
           </p>
@@ -77,7 +77,7 @@ export function CreateUserForm({
           <button
             onClick={() => navigator.clipboard?.writeText(`${created.email}\n${created.password}`)}
             style={{
-              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+              fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
               backgroundColor: C.ink, border: "none", borderRadius: R.chip, padding: "11px 20px",
               minHeight: "44px", cursor: "pointer",
             }}
@@ -92,7 +92,7 @@ export function CreateUserForm({
           </button>
           <button
             onClick={() => { setCreated(null); setOpen(false); }}
-            style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+            style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
           >
             Done
           </button>
@@ -107,7 +107,7 @@ export function CreateUserForm({
         onClick={() => setOpen(true)}
         disabled={disabled}
         style={{
-          fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+          fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
           backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
           minHeight: "44px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
           whiteSpace: "nowrap",
@@ -121,9 +121,9 @@ export function CreateUserForm({
   return (
     <form
       onSubmit={submit}
-      style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
+      style={{ backgroundColor: C.white, border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
     >
-      <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: C.muted, margin: "0 0 14px" }}>
         Create an account
       </p>
 
@@ -144,7 +144,7 @@ export function CreateUserForm({
           <select value={role} onChange={(e) => setRole(e.target.value as Role)} style={field}>
             {ASSIGNABLE_ROLES.map((r) => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}
           </select>
-          <p style={{ fontSize: "12px", color: "#4A5A74", margin: "5px 0 0", lineHeight: 1.45 }}>
+          <p style={{ fontSize: "12px", color: C.muted, margin: "5px 0 0", lineHeight: 1.45 }}>
             {ROLE_DESCRIPTIONS[role]}
           </p>
         </div>
@@ -155,7 +155,7 @@ export function CreateUserForm({
             {schools.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
           {(role === "TEACHER" || role === "SCHOOL_ADMIN") && !schoolId && (
-            <p style={{ fontSize: "12px", color: "#C96C00", margin: "5px 0 0", lineHeight: 1.45 }}>
+            <p style={{ fontSize: "12px", color: C.orangeText, margin: "5px 0 0", lineHeight: 1.45 }}>
               Without a school they will sign in and see nothing.
             </p>
           )}
@@ -177,7 +177,7 @@ export function CreateUserForm({
           type="submit"
           disabled={pending || !email.includes("@")}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 22px",
             minHeight: "44px", cursor: email.includes("@") ? "pointer" : "not-allowed",
             opacity: pending || !email.includes("@") ? 0.5 : 1,
@@ -188,11 +188,11 @@ export function CreateUserForm({
         <button
           type="button"
           onClick={() => { setOpen(false); setErr(null); }}
-          style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: "#4A5A74", background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
+          style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "14px", color: C.muted, background: "none", border: "none", cursor: "pointer", minHeight: "44px" }}
         >
           Cancel
         </button>
-        {err && <span style={{ fontSize: "13px", color: "#A3261A" }}>{err}</span>}
+        {err && <span style={{ fontSize: "13px", color: C.redText }}>{err}</span>}
       </div>
     </form>
   );

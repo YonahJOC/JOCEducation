@@ -59,7 +59,7 @@ export function BoardClient({ posts, disabled }: { posts: BoardRow[]; disabled?:
 
       <SectionHead label={`Live on the board (${live.length})`} />
       {live.length === 0 ? (
-        <p style={{ fontSize: "14px", color: "#4A5A74" }}>Nothing published yet.</p>
+        <p style={{ fontSize: "14px", color: C.muted }}>Nothing published yet.</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {live.map((p) => <PostCard key={p.id} post={p} disabled={disabled} />)}
@@ -73,7 +73,7 @@ function SectionHead({ label, accent }: { label: string; accent?: boolean }) {
   return (
     <p style={{
       ...uiLabel,
-      color: accent ? "#C96C00" : "#4A5A74", margin: "0 0 10px",
+      color: accent ? C.orangeText : C.muted, margin: "0 0 10px",
     }}>
       {label}
     </p>
@@ -110,19 +110,19 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
   return (
     <div
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: C.white,
         border: approved ? `1px solid ${C.hairline}` : "1px solid rgba(250,145,45,.45)",
         borderRadius: "14px", padding: "16px 18px",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "6px" }}>
         <p style={{ fontWeight: 700, fontSize: "15px", color: C.ink, margin: 0 }}>{post.title}</p>
-        <span style={{ fontSize: "12px", color: "#4A5A74", whiteSpace: "nowrap" }}>{ago(post.createdAt)}</span>
+        <span style={{ fontSize: "12px", color: C.muted, whiteSpace: "nowrap" }}>{ago(post.createdAt)}</span>
       </div>
-      <p style={{ fontSize: "13px", color: "#4A5A74", margin: "0 0 9px" }}>
+      <p style={{ fontSize: "13px", color: C.muted, margin: "0 0 9px" }}>
         {post.author ?? "Unknown"} · {post.schoolName} · {post.region}
       </p>
-      <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>{post.body}</p>
+      <p style={{ fontSize: "14px", lineHeight: 1.6, color: C.muted, margin: "0 0 14px" }}>{post.body}</p>
 
       <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
         <button
@@ -130,7 +130,7 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
           disabled={disabled || pending}
           style={{
             fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "13px",
-            color: "#fff", backgroundColor: approved ? "#7A8699" : "#1D6B37",
+            color: C.white, backgroundColor: approved ? C.muted : C.greenText,
             border: "none", borderRadius: R.chip, padding: "9px 16px", minHeight: "40px",
             cursor: disabled ? "not-allowed" : "pointer", opacity: disabled || pending ? 0.6 : 1,
           }}
@@ -141,13 +141,13 @@ function PostCard({ post, disabled }: { post: BoardRow; disabled?: boolean }) {
           onClick={remove}
           disabled={disabled || pending}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", color: "#A3261A",
+            fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", color: C.redText,
             background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", padding: 0, minHeight: "40px",
           }}
         >
           Delete
         </button>
-        {msg && <span style={{ fontSize: "13px", color: "#A3261A" }}>{msg}</span>}
+        {msg && <span style={{ fontSize: "13px", color: C.redText }}>{msg}</span>}
       </div>
     </div>
   );

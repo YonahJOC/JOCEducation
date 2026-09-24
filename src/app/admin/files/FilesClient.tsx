@@ -67,7 +67,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
           onClick={() => input.current?.click()}
           disabled={disabled || pending}
           style={{
-            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: "#fff",
+            fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14px", color: C.white,
             backgroundColor: C.blue, border: "none", borderRadius: R.chip, padding: "11px 20px",
             minHeight: "44px", cursor: disabled || pending ? "not-allowed" : "pointer",
             opacity: disabled ? 0.5 : 1,
@@ -84,13 +84,13 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
       )}
 
       {files.length === 0 ? (
-        <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "16px", color: "#4A5A74", margin: 0 }}>
+        <div style={{ backgroundColor: C.white, border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "44px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: "16px", color: C.muted, margin: 0 }}>
             Nothing uploaded yet.
           </p>
         </div>
       ) : (
-        <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
           {files.map((f, i) => (
             <div
               key={f.id}
@@ -102,7 +102,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
             >
               <div style={{ minWidth: 0, flex: 1 }}>
                 <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0, wordBreak: "break-word" }}>{f.name}</p>
-                <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "13px", color: C.muted, margin: "2px 0 0" }}>
                   {f.size} · {f.when}
                   {f.uploadedBy ? ` · ${f.uploadedBy}` : ""}
                 </p>
@@ -121,7 +121,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
                   setCopied(f.id);
                   setTimeout(() => setCopied(null), 1500);
                 }}
-                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: copied === f.id ? "#1D6B37" : C.ink, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
+                style={{ fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600, color: copied === f.id ? C.greenText : C.ink, background: "none", border: "none", cursor: "pointer", minHeight: "40px" }}
               >
                 {copied === f.id ? "Copied" : "Copy link"}
               </button>

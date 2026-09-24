@@ -52,7 +52,7 @@ async function Inner(searchParams: Search) {
 
       <SectionLinks section="schools" />
       </PageIntro>
-      <p style={{ fontSize: "14px", color: "#4A5A74", margin: "0 0 20px" }}>
+      <p style={{ fontSize: "14px", color: C.muted, margin: "0 0 20px" }}>
         {all.length} accounts. Click a school to manage its plan, people and history.
       </p>
 
@@ -65,13 +65,13 @@ async function Inner(searchParams: Search) {
           style={{
             flex: "1 1 220px", maxWidth: "320px", fontFamily: "var(--font-outfit)", fontSize: "14px",
             padding: "10px 14px", borderRadius: "10px", border: `1px solid ${C.hairline}`,
-            backgroundColor: "#fff", color: C.ink, outline: "none", minHeight: "40px",
+            backgroundColor: C.white, color: C.ink, outline: "none", minHeight: "40px",
           }}
         />
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
           {statuses.map((s) => {
             const on = (status ?? "all") === s;
-            const color = s === "all" ? "#2D46AF" : STATUS_COLORS[s as SchoolStatus];
+            const color = s === "all" ? C.blue : STATUS_COLORS[s as SchoolStatus];
             const count = s === "all" ? all.length : all.filter((x) => x.status === s).length;
             return (
               <button
@@ -83,8 +83,8 @@ async function Inner(searchParams: Search) {
                   fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                   padding: "8px 13px", borderRadius: R.chip, cursor: "pointer", minHeight: "40px",
                   border: on ? `1.5px solid ${color}` : `1px solid ${C.hairline}`,
-                  backgroundColor: on ? `${color}14` : "#fff",
-                  color: on ? color : "#4A5A74",
+                  backgroundColor: on ? `${color}14` : C.white,
+                  color: on ? color : C.muted,
                   whiteSpace: "nowrap",
                 }}
               >
@@ -95,7 +95,7 @@ async function Inner(searchParams: Search) {
         </div>
       </form>
 
-      <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
+      <div style={{ backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
         <SchoolTable schools={rows} />
       </div>
     </div>

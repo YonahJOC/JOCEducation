@@ -40,7 +40,7 @@ export function FilePicker({
 
   return (
     <div>
-      <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px" }}>
+      <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: C.muted, marginBottom: "5px" }}>
         {label}
       </label>
 
@@ -62,7 +62,7 @@ export function FilePicker({
           disabled={disabled || pending}
           style={{
             fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
-            color: disabled ? C.muted : C.blue, backgroundColor: "#F4F7FD",
+            color: disabled ? C.muted : C.blue, backgroundColor: C.panel,
             border: "none", borderRadius: R.chip, padding: "10px 18px", minHeight: "42px",
             cursor: disabled || pending ? "not-allowed" : "pointer",
           }}
@@ -99,7 +99,7 @@ export function FilePicker({
         disabled={disabled || isUpload}
         style={{
           width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-          fontSize: "15px", color: C.ink, backgroundColor: isUpload ? "#FBF9F4" : "#fff",
+          fontSize: "15px", color: C.ink, backgroundColor: isUpload ? C.paper : C.white,
           border: `1px solid ${C.hairline}`, borderRadius: "10px",
           padding: "10px 12px", minHeight: "42px", outline: "none",
         }}

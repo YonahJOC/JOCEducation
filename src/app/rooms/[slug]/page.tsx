@@ -85,7 +85,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div style={{ maxWidth: "820px", margin: "0 auto", padding: "40px 26px 72px" }}>
-      <Link href="/rooms" style={{ fontSize: "15px", color: "#2D46AF", textDecoration: "none", fontWeight: 600 }}>
+      <Link href="/rooms" style={{ fontSize: "15px", color: C.blue, textDecoration: "none", fontWeight: 600 }}>
         ← Staff room
       </Link>
 
@@ -95,7 +95,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
           <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 36px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: C.ink, margin: 0 }}>
             {room.name}
           </h1>
-          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 0" }}>
+          <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "6px 0 0" }}>
             {room.description}
           </p>
         </div>

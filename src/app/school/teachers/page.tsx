@@ -2,6 +2,7 @@ import { requireAccountHolder } from "../account-only";
 import { safeAuth } from "@/auth";
 import { mySchool } from "@/lib/school-data";
 import { TeachersPanel } from "@/components/school/TeachersPanel";
+import { C } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Your teachers" };
 
@@ -11,7 +12,7 @@ export default async function SchoolTeachersPage() {
 
   if (!school) {
     return (
-      <p style={{ fontSize: "15px", color: "#4A5A74", maxWidth: "48ch", lineHeight: 1.6 }}>
+      <p style={{ fontSize: "15px", color: C.muted, maxWidth: "48ch", lineHeight: 1.6 }}>
         We could not load your school. If this keeps happening, email{" "}
         <a href="mailto:education@justonechesed.org">education@justonechesed.org</a>.
       </p>

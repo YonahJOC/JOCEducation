@@ -10,7 +10,7 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "var(--font-outfit)",
   fontSize: "15px",
   color: C.ink,
-  backgroundColor: "#F8FAFE",
+  backgroundColor: C.panel,
   border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "13px 14px",
@@ -21,7 +21,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: "13px",
   fontWeight: 600,
-  color: "#4A5A74",
+  color: C.muted,
   marginBottom: "6px",
 };
 
@@ -65,7 +65,7 @@ export function AuthCard({
     <div
       id="auth"
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: C.white,
         borderRadius: "24px",
         border: `1px solid ${C.hairline}`,
         boxShadow: ROW_SHADOW,
@@ -80,7 +80,7 @@ export function AuthCard({
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "4px",
-          backgroundColor: "#F4F7FD",
+          backgroundColor: C.panel,
           borderRadius: R.chip,
           padding: "4px",
           marginBottom: "22px",
@@ -101,8 +101,8 @@ export function AuthCard({
               border: "none",
               cursor: "pointer",
               minHeight: "44px",
-              backgroundColor: tab === t ? "#fff" : "transparent",
-              color: tab === t ? C.ink : "#4A5A74",
+              backgroundColor: tab === t ? C.white : "transparent",
+              color: tab === t ? C.ink : C.muted,
               boxShadow: tab === t ? ROW_SHADOW : "none",
               transition: "background .15s, color .15s",
             }}
@@ -132,7 +132,7 @@ export function AuthCard({
           fontWeight: 600,
           fontSize: "15px",
           color: C.ink,
-          backgroundColor: "#fff",
+          backgroundColor: C.white,
           border: `1.5px solid ${C.hairline}`,
           borderRadius: R.chip,
           padding: "13px 18px",
@@ -153,7 +153,7 @@ export function AuthCard({
       {/* Divider */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "18px 0" }}>
         <span style={{ flex: 1, height: "1px", backgroundColor: C.hairline }} />
-        <span style={{ fontSize: "12px", color: "#4A5A74" }}>or</span>
+        <span style={{ fontSize: "12px", color: C.muted }}>or</span>
         <span style={{ flex: 1, height: "1px", backgroundColor: C.hairline }} />
       </div>
 
@@ -163,7 +163,7 @@ export function AuthCard({
           the first, and the first would win. */}
       {tab === "signup" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: 0 }}>
             Anyone can make an account. It starts with nothing attached to it — what you can see
             follows your school, once your address is verified.
           </p>
@@ -172,7 +172,7 @@ export function AuthCard({
             style={{
               display: "flex", alignItems: "center", justifyContent: "center",
               width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
-              color: "#fff", backgroundColor: C.blue, borderRadius: R.chip,
+              color: C.white, backgroundColor: C.blue, borderRadius: R.chip,
               padding: "14px 20px", minHeight: "44px", textDecoration: "none",
             }}
           >
@@ -226,7 +226,7 @@ export function AuthCard({
             fontFamily: "var(--font-outfit)",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#fff",
+            color: C.white,
             backgroundColor: C.blue,
             border: "none",
             borderRadius: R.chip,
@@ -242,7 +242,7 @@ export function AuthCard({
 
         {/* Said plainly rather than after a fake wait. */}
         {!passwordEnabled && !googleEnabled && (
-          <p role="status" style={{ fontSize: "13px", lineHeight: 1.5, color: "#C96C00", backgroundColor: "#FFF0E0", borderRadius: "12px", padding: "11px 14px", margin: 0 }}>
+          <p role="status" style={{ fontSize: "13px", lineHeight: 1.5, color: C.orangeText, backgroundColor: C.orangeTint, borderRadius: "12px", padding: "11px 14px", margin: 0 }}>
             Signing in is not available right now. Book a walkthrough below and the JOC team will
             sort your school out.
           </p>
@@ -252,7 +252,7 @@ export function AuthCard({
           <p
             role="alert"
             style={{
-              fontSize: "13px", lineHeight: 1.5, color: "#A3261A",
+              fontSize: "13px", lineHeight: 1.5, color: C.redText,
               backgroundColor: "rgba(184,50,30,.07)", borderRadius: "12px",
               padding: "11px 14px", margin: 0,
             }}
@@ -267,8 +267,8 @@ export function AuthCard({
             style={{
               fontSize: "13px",
               lineHeight: 1.5,
-              color: "#C96C00",
-              backgroundColor: "#FFF0E0",
+              color: C.orangeText,
+              backgroundColor: C.orangeTint,
               borderRadius: "12px",
               padding: "11px 14px",
               margin: 0,
@@ -284,7 +284,7 @@ export function AuthCard({
         style={{
           fontSize: "13px",
           lineHeight: 1.55,
-          color: "#4A5A74",
+          color: C.muted,
           marginTop: "18px",
           paddingTop: "16px",
           borderTop: `1px solid ${C.hairline}`,

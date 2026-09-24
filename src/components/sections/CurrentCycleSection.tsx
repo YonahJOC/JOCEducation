@@ -4,8 +4,8 @@ import { label, C, R } from "@/lib/joc-tokens";
 
 function anchorStyle(tagged?: boolean): React.CSSProperties {
   return tagged
-    ? { background: "#F4F7FD", color: "#2D46AF", border: "1px solid rgba(45,70,175,.25)" }
-    : { background: C.hairline, color: "#4A5A74", border: `1px solid ${C.hairline}` };
+    ? { background: C.panel, color: C.blue, border: "1px solid rgba(45,70,175,.25)" }
+    : { background: C.hairline, color: C.muted, border: `1px solid ${C.hairline}` };
 }
 
 export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCycle: Cycle | null }) {
@@ -51,7 +51,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 alignItems: "center",
                 gap: "6px",
                 background: "rgba(27,127,75,.1)",
-                color: "#1D6B37",
+                color: C.greenText,
                 fontWeight: 600,
                 fontSize: "12px",
                 padding: "5px 11px",
@@ -66,7 +66,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                   width: "6px",
                   height: "6px",
                   borderRadius: "50%",
-                  backgroundColor: "#1D6B37",
+                  backgroundColor: C.greenText,
                   flexShrink: 0,
                 }}
               />
@@ -83,7 +83,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 padding: "5px 11px",
                 borderRadius: R.chip,
                 background: C.hairline,
-                color: "#4A5A74",
+                color: C.muted,
               }}
             >
               {statusLabel}
@@ -121,13 +121,13 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             fontSize: "clamp(28px, 3.2vw, 42px)",
             lineHeight: 1.06,
             letterSpacing: "-0.035em",
-            color: "#10233F",
+            color: C.ink,
             marginBottom: "4px",
           }}
         >
           {cycle.theme}
         </h2>
-        <p style={{ fontWeight: 400, fontSize: "15px", color: "#4A5A74", marginBottom: "16px" }}>
+        <p style={{ fontWeight: 400, fontSize: "15px", color: C.muted, marginBottom: "16px" }}>
           {cycle.gloss}
         </p>
 
@@ -137,7 +137,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             fontStyle: "italic",
             fontSize: "18px",
             lineHeight: 1.5,
-            color: "#10233F",
+            color: C.ink,
             borderLeft: `3px solid ${cycle.color}`,
             paddingLeft: "16px",
             marginBottom: "24px",
@@ -155,7 +155,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                 display: "flex",
                 justifyContent: "space-between",
                 fontSize: "12px",
-                color: "#4A5A74",
+                color: C.muted,
                 marginBottom: "6px",
               }}
             >
@@ -187,7 +187,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         <p
           style={{
             fontSize: "15px",
-            color: "#4A5A74",
+            color: C.muted,
             marginBottom: "22px",
           }}
         >
@@ -201,7 +201,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             style={{
               display: "inline-block",
               backgroundColor: cycle.color,
-              color: "#fff",
+              color: C.white,
               fontWeight: 700,
               fontSize: "15px",
               borderRadius: R.chip,
@@ -233,7 +233,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         {/* Description */}
         <div
           style={{
-            backgroundColor: "#F4F7FD",
+            backgroundColor: C.panel,
             borderRadius: "20px",
             padding: "24px",
           }}
@@ -241,7 +241,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
           <p
             style={{
               ...label,
-              color: "#10233F",
+              color: C.ink,
               marginBottom: "12px",
             }}
           >
@@ -253,7 +253,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         {/* Focus */}
         <div
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: C.white,
             borderRadius: "20px",
             border: `1px solid ${C.hairline}`,
             padding: "24px",
@@ -262,7 +262,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
           <p
             style={{
               ...label,
-              color: "#10233F",
+              color: C.ink,
               marginBottom: "14px",
             }}
           >
@@ -281,7 +281,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                     marginTop: "6px",
                   }}
                 />
-                <span style={{ fontSize: "15px", color: "#10233F", lineHeight: 1.5 }}>{f}</span>
+                <span style={{ fontSize: "15px", color: C.ink, lineHeight: 1.5 }}>{f}</span>
               </li>
             ))}
           </ul>
@@ -291,7 +291,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         {cycle.stats && (
           <div
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: C.white,
               borderRadius: "20px",
               border: `1px solid ${C.hairline}`,
               padding: "20px 24px",
@@ -313,7 +313,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               >
                 {cycle.stats.value}
               </span>
-              <span style={{ fontSize: "13px", color: "#4A5A74" }}>{cycle.stats.label}</span>
+              <span style={{ fontSize: "13px", color: C.muted }}>{cycle.stats.label}</span>
             </div>
             <div style={{ width: "1px", height: "40px", backgroundColor: C.panel }} />
             <div>
@@ -329,7 +329,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               >
                 {cycle.stats.people}
               </span>
-              <span style={{ fontSize: "13px", color: "#4A5A74" }}>{cycle.stats.peopleLabel}</span>
+              <span style={{ fontSize: "13px", color: C.muted }}>{cycle.stats.peopleLabel}</span>
             </div>
           </div>
         )}
@@ -346,16 +346,16 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
             <p
               style={{
                 ...label,
-                color: "#4A5A74",
+                color: C.muted,
                 marginBottom: "8px",
               }}
             >
               UP NEXT
             </p>
-            <p style={{ fontWeight: 700, fontSize: "20px", letterSpacing: "-0.025em", color: "#10233F", marginBottom: "4px" }}>
+            <p style={{ fontWeight: 700, fontSize: "20px", letterSpacing: "-0.025em", color: C.ink, marginBottom: "4px" }}>
               {nextCycle.theme}
             </p>
-            <p style={{ fontSize: "14px", color: "#4A5A74", marginBottom: "14px" }}>
+            <p style={{ fontSize: "14px", color: C.muted, marginBottom: "14px" }}>
               {nextCycle.hebrew} · {nextCycle.range} · {nextCycle.weeks} weeks
             </p>
             <Link

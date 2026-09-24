@@ -46,7 +46,7 @@ export default async function AmbassadorLayout({ children }: { children: React.R
           <span style={{ flex: 1 }} />
           <Link
             href="/home"
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: "#C6CFF0", textDecoration: "none", minHeight: "44px", display: "flex", alignItems: "center" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: C.onDarkBody, textDecoration: "none", minHeight: "44px", display: "flex", alignItems: "center" }}
           >
             Back to the site
           </Link>

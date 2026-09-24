@@ -115,25 +115,25 @@ export function BoardClient({
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px", marginBottom: "36px" }}>
         <div>
-          <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
-          <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
+          <p style={{ ...label, color: C.orangeText, marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
+          <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: C.ink, marginBottom: "10px" }}>
             {headline}
           </h1>
-          <p style={{ fontSize: "16px", color: "#4A5A74", lineHeight: 1.6, maxWidth: "56ch" }}>
+          <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, maxWidth: "56ch" }}>
             {standfirst}
           </p>
         </div>
         {signedIn ? (
           <button
             onClick={() => { setShowForm(!showForm); setNotice(null); setError(null); }}
-            style={{ fontFamily: "var(--font-outfit)", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0, minHeight: "46px" }}
+            style={{ fontFamily: "var(--font-outfit)", backgroundColor: C.orange, color: C.ink, fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0, minHeight: "46px" }}
           >
             {showForm ? "Close" : "+ Share an idea"}
           </button>
         ) : (
           <Link
             href="/login"
-            style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}
+            style={{ backgroundColor: C.orange, color: C.ink, fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}
           >
             Sign in to share an idea
           </Link>
@@ -142,19 +142,19 @@ export function BoardClient({
 
       {notice && (
         <div style={{ backgroundColor: "rgba(27,127,75,.08)", border: "1px solid rgba(27,127,75,.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px" }}>
-          <p style={{ fontSize: "15px", color: "#1D6B37", margin: 0, lineHeight: 1.5 }}>{notice}</p>
+          <p style={{ fontSize: "15px", color: C.greenText, margin: 0, lineHeight: 1.5 }}>{notice}</p>
         </div>
       )}
       {error && (
         <div style={{ backgroundColor: "rgba(184,50,30,.07)", border: "1px solid rgba(184,50,30,.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px" }}>
-          <p style={{ fontSize: "15px", color: "#A3261A", margin: 0, lineHeight: 1.5 }}>{error}</p>
+          <p style={{ fontSize: "15px", color: C.redText, margin: 0, lineHeight: 1.5 }}>{error}</p>
         </div>
       )}
 
       {/* Post form */}
       {showForm && signedIn && (
-        <div style={{ backgroundColor: "#fff", border: "2px solid #FA912D", borderRadius: "20px", padding: "28px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "14px" }}>
-          <h3 style={{ fontWeight: 700, fontSize: "18px", color: "#10233F", margin: "0 0 4px" }}>Share what you ran</h3>
+        <div style={{ backgroundColor: C.white, border: "2px solid #FA912D", borderRadius: "20px", padding: "28px", marginBottom: "28px", display: "flex", flexDirection: "column", gap: "14px" }}>
+          <h3 style={{ fontWeight: 700, fontSize: "18px", color: C.ink, margin: "0 0 4px" }}>Share what you ran</h3>
           <input value={fTitle} onChange={(e) => setFTitle(e.target.value)} placeholder="Idea title (required)" style={inputStyle} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "12px" }}>
             <input value={fSchool} onChange={(e) => setFSchool(e.target.value)} placeholder="School name" style={inputStyle} />
@@ -172,20 +172,20 @@ export function BoardClient({
             rows={5}
             style={{ ...inputStyle, resize: "vertical" }}
           />
-          <p style={{ fontSize: "13px", color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "13px", color: C.muted, margin: 0 }}>
             Posts appear on the board once the JOC education team has read them.
           </p>
           <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
             <button
               onClick={submit}
               disabled={pending}
-              style={{ fontFamily: "var(--font-outfit)", backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 24px", border: "none", cursor: pending ? "wait" : "pointer", opacity: pending ? 0.6 : 1, minHeight: "46px" }}
+              style={{ fontFamily: "var(--font-outfit)", backgroundColor: C.ink, color: C.white, fontWeight: 700, fontSize: "14px", borderRadius: R.chip, padding: "12px 24px", border: "none", cursor: pending ? "wait" : "pointer", opacity: pending ? 0.6 : 1, minHeight: "46px" }}
             >
               {pending ? "Posting…" : "Post to the board"}
             </button>
             <button
               onClick={() => setShowForm(false)}
-              style={{ fontFamily: "var(--font-outfit)", background: "none", border: "none", color: "#4A5A74", cursor: "pointer", fontSize: "14px", fontWeight: 500, minHeight: "46px" }}
+              style={{ fontFamily: "var(--font-outfit)", background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: "14px", fontWeight: 500, minHeight: "46px" }}
             >
               Cancel
             </button>
@@ -194,13 +194,13 @@ export function BoardClient({
       )}
 
       {/* Filters + sort */}
-      <div style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "18px 22px", marginBottom: "24px", display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
+      <div style={{ backgroundColor: C.white, borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "18px 22px", marginBottom: "24px", display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
           {allRegions.map((r) => (
             <button
               key={r}
               onClick={() => { setRegion(r); setPage(1); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: R.chip, border: region === r ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: region === r ? "#10233F" : "#fff", color: region === r ? "#fff" : "#10233F", cursor: "pointer" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: R.chip, border: region === r ? "1.5px solid #10233F" : `1px solid ${C.hairline}`, backgroundColor: region === r ? C.ink : C.white, color: region === r ? C.white : C.ink, cursor: "pointer" }}
             >
               {r}
             </button>
@@ -212,20 +212,20 @@ export function BoardClient({
             <button
               key={g.key}
               onClick={() => { setGrade(g.key); setPage(1); }}
-              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: R.chip, border: grade === g.key ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`, backgroundColor: grade === g.key ? "#2D46AF" : "#fff", color: grade === g.key ? "#fff" : "#10233F", cursor: "pointer" }}
+              style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: R.chip, border: grade === g.key ? "1.5px solid #2D46AF" : `1px solid ${C.hairline}`, backgroundColor: grade === g.key ? C.blue : C.white, color: grade === g.key ? C.white : C.ink, cursor: "pointer" }}
             >
               {g.label}
             </button>
           ))}
         </div>
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>
+          <span style={{ fontSize: "13px", color: C.muted, fontWeight: 500 }}>
             {filtered.length} {filtered.length === 1 ? "idea" : "ideas"}
           </span>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: "#10233F", fontWeight: 600, border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "8px 14px", minHeight: "40px", backgroundColor: "#fff", cursor: "pointer", outline: "none" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink, fontWeight: 600, border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "8px 14px", minHeight: "40px", backgroundColor: C.white, cursor: "pointer", outline: "none" }}
           >
             {SORT_OPTIONS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
@@ -235,10 +235,10 @@ export function BoardClient({
       {/* Ideas */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 0" }}>
-          <p style={{ fontSize: "16px", color: "#4A5A74" }}>No ideas match those filters yet.</p>
+          <p style={{ fontSize: "16px", color: C.muted }}>No ideas match those filters yet.</p>
           <button
             onClick={() => { setRegion("All"); setGrade("all"); setPage(1); }}
-            style={{ fontFamily: "var(--font-outfit)", marginTop: "16px", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "14px", borderRadius: R.chip, padding: "11px 22px", border: "none", cursor: "pointer", minHeight: "44px" }}
+            style={{ fontFamily: "var(--font-outfit)", marginTop: "16px", backgroundColor: C.panel, color: C.ink, fontWeight: 600, fontSize: "14px", borderRadius: R.chip, padding: "11px 22px", border: "none", cursor: "pointer", minHeight: "44px" }}
           >
             Clear filters
           </button>
@@ -247,23 +247,23 @@ export function BoardClient({
         <>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "18px" }}>
             {visible.map((idea) => (
-              <div key={idea.id} style={{ backgroundColor: "#fff", borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "24px" }}>
+              <div key={idea.id} style={{ backgroundColor: C.white, borderRadius: "20px", border: `1px solid ${C.hairline}`, padding: "24px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px", flexWrap: "wrap", gap: "8px" }}>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 600, fontSize: "12px", borderRadius: R.chip, padding: "4px 12px" }}>{idea.region}</span>
-                    <span style={{ backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "12px", borderRadius: R.chip, padding: "4px 12px" }}>
+                    <span style={{ backgroundColor: C.panel, color: C.blue, fontWeight: 600, fontSize: "12px", borderRadius: R.chip, padding: "4px 12px" }}>{idea.region}</span>
+                    <span style={{ backgroundColor: C.panel, color: C.ink, fontWeight: 600, fontSize: "12px", borderRadius: R.chip, padding: "4px 12px" }}>
                       {idea.grade === "es" ? "Elementary" : idea.grade === "ms" ? "Middle" : "High school"}
                     </span>
                   </div>
-                  <span style={{ fontSize: "12px", color: "#4A5A74" }}>{idea.ts}</span>
+                  <span style={{ fontSize: "12px", color: C.muted }}>{idea.ts}</span>
                 </div>
-                <h2 style={{ fontWeight: 700, fontSize: "18.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: "#10233F", marginBottom: "8px" }}>{idea.title}</h2>
-                <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px", whiteSpace: "pre-wrap" }}>{idea.body}</p>
+                <h2 style={{ fontWeight: 700, fontSize: "18.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: C.ink, marginBottom: "8px" }}>{idea.title}</h2>
+                <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, marginBottom: "18px", whiteSpace: "pre-wrap" }}>{idea.body}</p>
                 <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>{idea.school}</span>
+                  <span style={{ fontSize: "13px", color: C.muted, fontWeight: 500 }}>{idea.school}</span>
                   <button
                     onClick={() => like(idea)}
-                    style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: R.chip, cursor: "pointer", border: isLiked(idea) ? "1px solid #FA912D" : `1px solid ${C.hairline}`, backgroundColor: isLiked(idea) ? "#FFF0E0" : "transparent", color: isLiked(idea) ? "#C96C00" : "#4A5A74" }}
+                    style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "13px", padding: "8px 14px", minHeight: "40px", borderRadius: R.chip, cursor: "pointer", border: isLiked(idea) ? "1px solid #FA912D" : `1px solid ${C.hairline}`, backgroundColor: isLiked(idea) ? C.orangeTint : "transparent", color: isLiked(idea) ? C.orangeText : C.muted }}
                   >
                     {isLiked(idea) ? "★" : "☆"} {likeCount(idea)} useful
                   </button>
@@ -276,7 +276,7 @@ export function BoardClient({
             <div style={{ textAlign: "center", marginTop: "32px" }}>
               <button
                 onClick={() => setPage(page + 1)}
-                style={{ fontFamily: "var(--font-outfit)", backgroundColor: "#F4F7FD", color: "#10233F", fontWeight: 600, fontSize: "15px", borderRadius: R.chip, padding: "13px 28px", border: "none", cursor: "pointer", minHeight: "46px" }}
+                style={{ fontFamily: "var(--font-outfit)", backgroundColor: C.panel, color: C.ink, fontWeight: 600, fontSize: "15px", borderRadius: R.chip, padding: "13px 28px", border: "none", cursor: "pointer", minHeight: "46px" }}
               >
                 Load more ({filtered.length - visible.length} remaining)
               </button>
@@ -289,7 +289,7 @@ export function BoardClient({
 }
 
 const inputStyle: React.CSSProperties = {
-  backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "12px",
-  padding: "12px 16px", fontSize: "15px", color: "#10233F", fontFamily: "var(--font-outfit)",
+  backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px",
+  padding: "12px 16px", fontSize: "15px", color: C.ink, fontFamily: "var(--font-outfit)",
   width: "100%", boxSizing: "border-box", outline: "none", minHeight: "46px",
 };

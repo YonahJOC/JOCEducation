@@ -5,6 +5,7 @@ import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { can } from "@/lib/access";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * Editing the Chesed Cycles.
@@ -147,7 +148,7 @@ export async function saveCycle(input: {
       // the dates used to change nothing anybody could see.
       range: formatCycleRange(start, end),
       weeks: weeksBetween(start, end),
-      color: input.color.trim() || "#2D46AF",
+      color: input.color.trim() || C.blue,
       tags: input.tags.map((t) => t.trim()).filter(Boolean).slice(0, 12),
       desc: input.desc.trim(),
       focus: input.focus.map((f) => f.trim()).filter(Boolean),

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { C } from "@/lib/joc-tokens";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -7,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Educating Towards Chesed — Just One Student at a Time.",
     start_url: "/",
     display: "standalone",
-    background_color: "#FBF9F4",
-    theme_color: "#10233F",
+    background_color: C.paper,
+    theme_color: C.ink,
     orientation: "portrait",
     categories: ["education", "lifestyle"],
     icons: [

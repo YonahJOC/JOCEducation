@@ -1,4 +1,4 @@
-import { R } from "@/lib/joc-tokens";
+import { C, R } from "@/lib/joc-tokens";
 /**
  * "Download the answers" — a plain link, deliberately.
  *
@@ -14,7 +14,7 @@ export function Download({ formId, label = "Download as a spreadsheet" }: { form
       style={{
         display: "inline-flex", alignItems: "center", gap: "8px",
         fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
-        color: "#2D46AF", backgroundColor: "rgba(45,70,175,.08)",
+        color: C.blue, backgroundColor: "rgba(45,70,175,.08)",
         borderRadius: R.chip, padding: "9px 16px", minHeight: "40px",
         textDecoration: "none", marginBottom: "14px",
       }}

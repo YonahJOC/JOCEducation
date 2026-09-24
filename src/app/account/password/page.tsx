@@ -34,7 +34,7 @@ export default async function ChangePasswordPage({
   const isForced = mustChange || forced === "1";
 
   return (
-    <div style={{ backgroundColor: "#FBF9F4", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: C.paper, minHeight: "100vh" }}>
       <header style={{ borderBottom: `1px solid ${C.hairline}` }}>
         <div style={{ maxWidth: "620px", margin: "0 auto", padding: "16px 26px" }}>
           <Link href="/home" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
@@ -49,8 +49,8 @@ export default async function ChangePasswordPage({
 
       <main style={{ maxWidth: "520px", margin: "0 auto", padding: "48px 26px 70px" }}>
         {isForced && (
-          <div style={{ backgroundColor: "#FFF0E0", border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "14px 16px", marginBottom: "20px" }}>
-            <p style={{ fontSize: "15px", lineHeight: 1.55, color: "#C96C00", margin: 0 }}>
+          <div style={{ backgroundColor: C.orangeTint, border: "1px solid rgba(154,84,5,.25)", borderRadius: "14px", padding: "14px 16px", marginBottom: "20px" }}>
+            <p style={{ fontSize: "15px", lineHeight: 1.55, color: C.orangeText, margin: 0 }}>
               <strong>Choose your own password.</strong> The one you have was issued by an administrator,
               so somebody else has seen it.
             </p>
@@ -60,7 +60,7 @@ export default async function ChangePasswordPage({
         <h1 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.6vw, 34px)", lineHeight: 1.08, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 8px" }}>
           {hasPassword ? "Change your password" : "Set a password"}
         </h1>
-        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 24px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.muted, margin: "0 0 24px" }}>
           {hasPassword
             ? "Signed in as " + (session?.user?.email ?? "your account") + "."
             : "You sign in with Google. Setting a password gives you a second way in."}

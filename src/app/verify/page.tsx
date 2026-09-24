@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { pageTitle, C } from "@/lib/joc-tokens";
 import { BrandLockup } from "@/components/ui/Brand";
 import { verifyEmail } from "@/app/actions/signup";
 
@@ -16,29 +16,29 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
   const result = token && email ? await verifyEmail(email, token) : null;
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", backgroundColor: "#FBF9F4" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", backgroundColor: C.paper }}>
       <div style={{ width: "100%", maxWidth: "440px" }}>
         <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "12px", textDecoration: "none", marginBottom: "36px" }}>
           <BrandLockup height={20} />
         </Link>
 
-        <div style={{ backgroundColor: "#fff", borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px", textAlign: "center" }}>
+        <div style={{ backgroundColor: C.white, borderRadius: "24px", border: `1px solid ${C.hairline}`, padding: "36px", textAlign: "center" }}>
           {!result ? (
             <>
-              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
+              <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 10px" }}>
                 That link is incomplete
               </h1>
-              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: 0 }}>
                 Open the link from your email exactly as it was sent.
               </p>
             </>
           ) : result.ok ? (
             <>
               <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "24px" }}>✓</div>
-              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
+              <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 10px" }}>
                 Email confirmed
               </h1>
-              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 24px" }}>
+              <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "0 0 24px" }}>
                 {result.schoolName
                   ? `You are connected to ${result.schoolName}. Everything your school has access to is waiting.`
                   : result.staff
@@ -47,29 +47,29 @@ export default async function VerifyPage({ searchParams }: { searchParams: Searc
               </p>
               <Link
                 href="/login"
-                style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+                style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
               >
                 Sign in
               </Link>
             </>
           ) : (
             <>
-              <h1 style={{ fontWeight: 800, fontSize: "23px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 10px" }}>
+              <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 10px" }}>
                 That link did not work
               </h1>
-              <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 22px" }}>
+              <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "0 0 22px" }}>
                 {result.error}
               </p>
               <a
                 href="mailto:education@justonechesed.org"
-                style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
+                style={{ display: "block", textAlign: "center", backgroundColor: C.blue, color: C.white, fontWeight: 700, fontSize: "15px", borderRadius: "12px", padding: "14px", textDecoration: "none" }}
               >
                 Write to JOC
               </a>
             </>
           )}
 
-          <p style={{ marginTop: "24px", fontSize: "14px", color: "#4A5A74" }}>
+          <p style={{ marginTop: "24px", fontSize: "14px", color: C.muted }}>
             <Link href="/login" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
           </p>
         </div>
