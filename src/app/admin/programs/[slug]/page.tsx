@@ -124,7 +124,7 @@ export default async function ProgramAdminPage({
 
   const lead = view.leads[0] ? view.leads[0].name ?? view.leads[0].email : null;
   const counts = [
-    `${enrolled.length} SCHOOLS IN`,
+    `${enrolled.length} SCHOOL${enrolled.length === 1 ? "" : "S"} IN`,
     `${traffic.counts.all} NOT YET`,
     today.comingUp[0]
       ? `NEXT RUN ${today.comingUp[0].startsAt.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" }).toUpperCase()}`

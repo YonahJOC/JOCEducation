@@ -1007,3 +1007,59 @@ app — and that two things are structurally missing: a `ProgramEnrollment` tabl
 to say which school runs which program and how far along it is, and the entire
 student-ambassador layer, which needs that table underneath it before anything
 else in it can be scoped correctly.
+
+---
+
+## The fix pass, against the reference (28 Sep 2026)
+
+`design/Portal Redesign (standalone).html` is the visual reference, and it was
+in the repo the whole time without being opened. Everything below was measured
+off it rather than inferred from the brief's prose.
+
+**The row (2b).** Band `flex 1 1 140`, body `100 1 220` centred with a 4px gap,
+action `1 1 170` — a column that grows with its button filling it. It had been
+170/280/auto with the button shrink-wrapped and pushed right, so every row
+ended on a ragged edge. `BandRow` is that row, and Today, Schools, the traffic
+light, the school's Today and the teacher's home all use it.
+
+**The program card (2a).** The kind sits on the name's line; then who runs it;
+then the figure on one baseline with "need you today" beside it; then one mono
+status line. Three across at 300px.
+
+**Today (3a).** The date in mono above a heading that is the answer — "Three
+things need you" — then the rows, then four figures with the number first.
+
+**One label, one scale, one palette.** 134 hand-built uppercase labels became
+the token; 18 headings became `pageTitle` 30/600 and `sectionHeading` 24/700;
+1,377 hexes became `C.*`. `14.5px`, `13.5px` and `10.5px` are gone.
+
+**Said once, not eight times.** `/admin/my-programs` repeated "nobody is down
+as running it" on seven cards and "nothing needs you today" on eight. The
+seven are one warn row with a count and an action; the eight are gone.
+
+### The Kindness Booth's real content
+
+Read off `justonechesed.org/education/kindness-booths-for-schools`. The portal's
+copy had been written from the program's name: it said the booth goes to a
+community event and students hand things to passersby, when it is a table
+inside the school where students and faculty choose an act of kindness. Three
+parts of the real page had no field, and now do:
+
+| Content | Field |
+|---|---|
+| The four acts — write a note, take a candy, say a Tehillim, help someone | `ProgramActivity` |
+| "A new act is added each month, often tied to a yom tov" | `ProgramPage.activitiesNote` |
+| The heading over them | `ProgramPage.activitiesTitle` |
+| Folding table, speaker, candies | `ProgramPage.schoolProvides` |
+
+The kit (`whatsIncluded`) is the real eleven items, and `videoUrl` is the
+booth's own film rather than a channel playlist.
+`scripts/kindness-booth-content.mjs` writes it and can be re-run.
+
+### Still open
+
+- The school side (3e, 3f) is built on `BandRow` but has never been rendered
+  with a school session in this environment, so it is type-checked and built
+  rather than seen.
+- The other seven programs' pages carry copy written the same way the Kindness
+  Booth's was. Each needs reading off its own page on justonechesed.org.
