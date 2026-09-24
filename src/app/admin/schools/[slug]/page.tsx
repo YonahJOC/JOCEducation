@@ -24,7 +24,7 @@ const CARD: React.CSSProperties = {
 const ACTIVITY_ICON: Record<string, string> = {
   CALL: "CALL", EMAIL: "EMAIL", MEETING: "MEETING", DEMO: "DEMO", NOTE: "NOTE",
   PLAN_CHANGE: "PLAN", ACCESS_GRANTED: "ACCESS ON", ACCESS_REVOKED: "ACCESS OFF",
-  STATUS_CHANGE: "STATUS", VISIT: "VISIT",
+  STATUS_CHANGE: "STATUS", VISIT: "VISIT", ASK: "ASKED",
 };
 
 function fmt(d: Date | null | undefined) {
@@ -221,8 +221,28 @@ async function Inner({ slug }: { slug: string }) {
                       {a.detail && (
                         <p style={{ fontSize: "15px", color: C.muted, margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
                       )}
+                      {/* An ask is the school writing to us. Everything else
+                          on this list is us recording what we did, so both the
+                          direction and whether anybody has answered matter. */}
+                      {a.inbound && (
+                        <p style={{
+                          fontSize: "13px", margin: "4px 0 0", lineHeight: 1.5, fontWeight: 600,
+                          color: a.answeredAt ? C.greenText : C.orangeText,
+                        }}>
+                          {a.answeredAt
+                            ? a.reply
+                              ? `Answered — they were told: "${a.reply}"`
+                              : "Answered, with nothing written back"
+                            : "Waiting on us"}
+                        </p>
+                      )}
                       <p style={{ fontSize: "12px", color: C.muted, margin: "4px 0 0" }}>
-                        {fmt(a.occurredAt)}{a.author ? ` · ${a.author}` : " · system"}
+                        {fmt(a.occurredAt)}
+                        {a.inbound
+                          ? " · from the school"
+                          : a.author
+                          ? ` · ${a.author}`
+                          : " · system"}
                       </p>
                     </div>
                   </div>

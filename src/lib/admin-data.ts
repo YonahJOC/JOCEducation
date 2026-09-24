@@ -106,6 +106,13 @@ export type ActivityRow = {
   occurredAt: Date;
   author: string | null;
   schoolName?: string;
+
+  /// Set only on an ask — a school writing to us rather than us recording
+  /// what we did. Optional so the sample rows stay as they are.
+  inbound?: boolean;
+  topic?: string | null;
+  answeredAt?: Date | null;
+  reply?: string | null;
 };
 
 const SAMPLE_ACTIVITY: ActivityRow[] = [
@@ -255,6 +262,13 @@ export async function getSchool(id: string) {
       detail: a.detail,
       occurredAt: a.occurredAt,
       author: a.author?.name ?? a.author?.email ?? null,
+      // An ask runs the other way to everything else on this list, and
+      // whether anybody has answered it is the only thing worth knowing
+      // about one.
+      inbound: a.inbound,
+      topic: a.topic,
+      answeredAt: a.answeredAt,
+      reply: a.reply,
     })),
     invitations: s.invitations,
   };
