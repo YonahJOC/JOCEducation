@@ -21,11 +21,24 @@ async function mayLookIn(): Promise<boolean> {
   return can(session?.user, "schools");
 }
 
-export async function viewAsSchool(slug: string): Promise<void> {
+/**
+ * @param ref Either a school's id or its slug.
+ *
+ * Both, because the two places this is called from hold different things. The
+ * console's school page is routed by id — its parameter is *named* slug and
+ * is not one — while the switcher on the school side has the slug. Looking up
+ * only one of them is why the button on the school page silently did nothing:
+ * findUnique on slug was handed an id, found no school, and redirected
+ * straight back to the list it came from.
+ */
+export async function viewAsSchool(ref: string): Promise<void> {
   if (!(await mayLookIn())) redirect("/admin");
   if (!isDatabaseConfigured()) redirect("/admin/schools");
 
-  const school = await prisma.school.findUnique({ where: { slug }, select: { slug: true } });
+  const school = await prisma.school.findFirst({
+    where: { OR: [{ id: ref }, { slug: ref }] },
+    select: { slug: true },
+  });
   if (!school) redirect("/admin/schools");
 
   const jar = await cookies();

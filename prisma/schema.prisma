@@ -1609,15 +1609,29 @@ model AppSchoolStats {
   storeTopPrize          String?
   storeLastRedeemedAt    DateTime?
 
+  /// True when this row came from the app's public endpoints only.
+  ///
+  /// Those answer two things: acts logged all-time, and what the last one
+  /// was. Every other column here keeps its default of nought, and a nought
+  /// that means "we never asked" is indistinguishable from one that means
+  /// "nobody did anything" — which is how a school with three thousand acts
+  /// on record came to read "0 taken this week". Nothing renders a figure
+  /// from this row unless the public endpoints actually carried it.
+  publicOnly Boolean @default(false)
+
   /// Acts logged at this school since it joined, as the app reports it.
   /// All-time, not this year — the public dashboard offers no year window.
   actsAllTime Int?
 
-  /// Time logged at this school, all-time, in whatever unit the app means by
-  /// spendTimeByOrganization. Deliberately not called minutes or hours: the
-  /// field name does not say, and a figure shown in the wrong unit is worse
-  /// than one not shown. Nothing renders it until JOC confirms which it is.
-  timeAllTimeRaw Int?
+  /// Hours logged at this school, all-time.
+  ///
+  /// The app calls this spendTimeByOrganization and does not say what unit it
+  /// is in. Hours, worked out from the schools themselves: Hebrew Academy
+  /// Montreal reports 3 against 9 acts, which as minutes would be twenty
+  /// seconds an act and as hours is twenty minutes an act. Every other school
+  /// lands between 0.3 and 8.3 an act, which is sensible for hours and absurd
+  /// for minutes. Worth confirming with whoever runs the app.
+  hoursAllTime Int?
 
   /// When the sync last read all of this out of the app.
   syncedAt DateTime

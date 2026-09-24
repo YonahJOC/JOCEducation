@@ -41,6 +41,11 @@ export type AppRow = {
     storeRedeemedThisMonth: number | null;
     storeTopPrize: string | null;
     storeLastRedeemedAt: Date | null;
+    /// True when only the app's public endpoints answered, so every count
+    /// above is a default rather than a reading.
+    publicOnly: boolean;
+    actsAllTime: number | null;
+    hoursAllTime: number | null;
     syncedAt: Date;
   } | null;
 

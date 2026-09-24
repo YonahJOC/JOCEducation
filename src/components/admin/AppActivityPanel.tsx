@@ -139,8 +139,14 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
     <div data-school={row.schoolId}>
       <BandRow
         tone={tone}
-        label={f ? f.label : "Opportunities this week"}
-        figure={f ? f.figure : `${row.stats?.opportunitiesThisWeek ?? 0} taken`}
+        label={f ? f.label : row.stats?.publicOnly ? "Acts logged" : "Opportunities this week"}
+        figure={
+          f
+            ? f.figure
+            : row.stats?.publicOnly
+            ? (row.stats.actsAllTime ?? 0).toLocaleString("en-US")
+            : `${row.stats?.opportunitiesThisWeek ?? 0} taken`
+        }
         word={!f || /[a-z]/.test(f.figure)}
         title={row.name}
         line={line}
@@ -185,20 +191,34 @@ function Badges({ row }: { row: AppRow }) {
         {row.payment.state === "unknown" ? row.payment.label : `${row.payment.label} ${schoolYear()}`}
       </span>
 
-      {st?.storeRedeemedThisMonth == null ? (
-        <span style={{ ...chip, ...plain, color: C.orangeText }}>Prize store not open</span>
+      {/* The prize store and the approval queue are both behind a login we
+          do not have. For a school read from the public endpoints they are
+          unknown, and "Prize store not open" and "All approved" are both
+          claims rather than readings. */}
+      {st?.publicOnly ? (
+        st.hoursAllTime != null && (
+          <span style={{ ...chip, ...plain }}>
+            {st.hoursAllTime.toLocaleString("en-US")} hours logged
+          </span>
+        )
       ) : (
-        <span style={{ ...chip, ...plain }}>
-          Prize store · {st.storeRedeemedThisMonth} redeemed this month
-        </span>
-      )}
+        <>
+          {st?.storeRedeemedThisMonth == null ? (
+            <span style={{ ...chip, ...plain, color: C.orangeText }}>Prize store not open</span>
+          ) : (
+            <span style={{ ...chip, ...plain }}>
+              Prize store · {st.storeRedeemedThisMonth} redeemed this month
+            </span>
+          )}
 
-      {!st ? null : st.unapprovedMinutes === 0 ? (
-        <span style={{ ...chip, ...plain }}>All approved</span>
-      ) : (
-        <span style={{ ...chip, ...plain, color: oldHours ? C.orangeText : C.ink }}>
-          {hours(st.unapprovedMinutes)} h to approve
-        </span>
+          {!st ? null : st.unapprovedMinutes === 0 ? (
+            <span style={{ ...chip, ...plain }}>All approved</span>
+          ) : (
+            <span style={{ ...chip, ...plain, color: oldHours ? C.orangeText : C.ink }}>
+              {hours(st.unapprovedMinutes)} h to approve
+            </span>
+          )}
+        </>
       )}
     </div>
   );
@@ -228,9 +248,63 @@ function Detail({ row }: { row: AppRow }) {
         <p style={{ fontSize: "15px", color: C.orangeText, fontWeight: 600, margin: 0 }}>
           The JOC App has not reported this school yet.
         </p>
+      ) : st.publicOnly ? (
+        /*
+         * What the app's public endpoints carry, and nothing else.
+         *
+         * The cells this leaves out — opportunities open, hours this week,
+         * waiting for approval, active students, the prize store, challenges —
+         * are all behind a login we do not have. Their columns sit at their
+         * default of nought, so rendering them put "0 taken this week" on a
+         * school with three thousand acts to its name. A cell that cannot be
+         * answered is not shown at all.
+         */
+        <>
+          <div className="joc-app-detail">
+            <Cell label="Subscription">{row.payment.label}</Cell>
+
+            {st.actsAllTime != null && (
+              <Cell label="Acts logged">
+                {st.actsAllTime.toLocaleString("en-US")}
+                <Sub>Since they joined. The app&rsquo;s public figures carry no year window.</Sub>
+              </Cell>
+            )}
+
+            {st.hoursAllTime != null && (
+              <Cell label="Hours logged">
+                {st.hoursAllTime.toLocaleString("en-US")}
+                <Sub>Since they joined.</Sub>
+              </Cell>
+            )}
+
+            <Cell label="Last activity">
+              {st.lastActivityText ? (
+                <>
+                  {st.lastActivityText}
+                  <Sub>The act, never the student.</Sub>
+                </>
+              ) : (
+                <Absent>Nothing logged yet</Absent>
+              )}
+            </Cell>
+          </div>
+
+          <p style={{ fontSize: "13px", color: C.muted, margin: "12px 0 0", lineHeight: 1.55, maxWidth: "62ch" }}>
+            These are the only figures the app will give us without a login.
+            Hours waiting on a teacher, active students, opportunities open and
+            the prize store all need one.
+          </p>
+        </>
       ) : (
         <div className="joc-app-detail">
           <Cell label="Subscription">{row.payment.label}</Cell>
+
+          {st.actsAllTime != null && (
+            <Cell label="Acts logged">
+              {st.actsAllTime.toLocaleString("en-US")}
+              <Sub>Since they joined.</Sub>
+            </Cell>
+          )}
 
           <Cell label="Opportunities">
             {st.opportunitiesOpen} open now
@@ -308,7 +382,7 @@ function Detail({ row }: { row: AppRow }) {
                 <span key={c.title} style={{ display: "block", fontSize: "15px", marginBottom: "3px" }}>
                   {c.title}{" "}
                   <span style={{ color: C.muted }}>
-                    — {c.joined === 0 ? "nobody joined" : `${Math.round((c.finished / c.joined) * 100)}% finished`}
+                    {c.joined} joined · {c.finished} finished
                   </span>
                 </span>
               ))

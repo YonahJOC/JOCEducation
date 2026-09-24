@@ -64,46 +64,47 @@ export async function SchoolAppPanel({ schoolId }: { schoolId: string }) {
         {stale ? " · older than we'd like" : ""}
       </p>
 
+      {/* Only what the app actually answered. A cell it cannot answer is
+          not shown — a nought there reads as "nobody did anything", which on
+          a school with three thousand acts to its name is simply false. */}
       <div className="joc-figures" style={{ marginBottom: "16px" }}>
-        {/* All-time, because the app's public figures carry no year window.
-            Said as "since you joined" rather than dressed up as this year. */}
-        {s.actsAllTime != null ? (
+        {s.actsAllTime != null && (
           <Cell
             value={s.actsAllTime.toLocaleString("en-US")}
             name="Acts logged since you joined"
           />
-        ) : (
-          <Cell value="Not read" word name="Acts logged" note="The app hasn't reported it yet" />
         )}
 
-        {s.activeStudents > 0 ? (
+        {s.hoursAllTime != null && (
           <Cell
-            value={String(s.activeStudents)}
-            unit={school?.studentCount ? `of ${school.studentCount}` : null}
-            name="Active this month"
-            note={school?.studentCount ? null : "Nobody has recorded your enrolment"}
-          />
-        ) : (
-          <Cell
-            value="Not read"
-            word
-            name="Active this month"
-            note="This one needs a login to the app"
+            value={s.hoursAllTime.toLocaleString("en-US")}
+            name="Hours logged since you joined"
           />
         )}
 
-        {/* Null is the app saying it cannot answer; 0 is the app saying none.
-            They are different facts and are never shown the same way. */}
-        {school?.storeOpenAt == null ? (
-          <Cell value="Not open" word name="Prize store" note="Not open at your school yet" />
-        ) : s.storeRedeemedThisMonth == null ? (
-          <Cell value="Not read" word name="Prize store" note="The app hasn't reported it yet" />
-        ) : (
-          <Cell
-            value={String(s.storeRedeemedThisMonth)}
-            name="Prizes claimed this month"
-            note={s.storeTopPrize ? `Most claimed: ${s.storeTopPrize}` : null}
-          />
+        {!s.publicOnly && (
+          <>
+            <Cell
+              value={String(s.activeStudents)}
+              unit={school?.studentCount ? `of ${school.studentCount}` : null}
+              name="Active this month"
+              note={school?.studentCount ? null : "Nobody has recorded your enrolment"}
+            />
+
+            <Cell value={String(s.opportunitiesOpen)} name="Opportunities open" />
+
+            {school?.storeOpenAt == null ? (
+              <Cell value="Not open" word name="Prize store" note="Not open at your school yet" />
+            ) : s.storeRedeemedThisMonth == null ? (
+              <Cell value="Not read" word name="Prize store" note="The app hasn&rsquo;t reported it yet" />
+            ) : (
+              <Cell
+                value={String(s.storeRedeemedThisMonth)}
+                name="Prizes claimed this month"
+                note={s.storeTopPrize ? `Most claimed: ${s.storeTopPrize}` : null}
+              />
+            )}
+          </>
         )}
       </div>
 
@@ -117,7 +118,7 @@ export async function SchoolAppPanel({ schoolId }: { schoolId: string }) {
         </p>
       )}
 
-      {s.unapprovedMinutes > 0 && (
+      {!s.publicOnly && s.unapprovedMinutes > 0 && (
         <BandRow
           tone="warn"
           label="To approve"

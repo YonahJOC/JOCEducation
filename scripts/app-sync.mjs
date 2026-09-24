@@ -78,8 +78,11 @@ for (const s of schools) {
   const last = typeof dash.recentlyOppoName === "string" ? dash.recentlyOppoName : null;
 
   const data = {
+    // Everything else on this table keeps its default of nought, and this
+    // flag is what stops a screen reading those noughts as measurements.
+    publicOnly: true,
     actsAllTime: acts,
-    timeAllTimeRaw: time,
+    hoursAllTime: time,
     lastActivityText: last,
     syncedAt: new Date(),
   };
