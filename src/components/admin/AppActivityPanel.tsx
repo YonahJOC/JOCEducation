@@ -5,7 +5,8 @@ import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "rea
 import { logSchoolTouch } from "@/app/actions/school-status";
 import { syncAppNow } from "@/app/actions/app-sync";
 import { hours, schoolYear, compareRows } from "@/lib/app-flags";
-import { sectionHeading, C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, bandFigure, rowCard, rowInner, rowBody, rowAction, rowDetail, rowTitle, field, note } from "@/lib/joc-tokens";
+import { sectionHeading, C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, rowDetail, field, note, type Tone } from "@/lib/joc-tokens";
+import { BandRow } from "@/components/ui/BandRow";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
 /**
@@ -124,61 +125,37 @@ function Row({ row, open, onToggle }: { row: AppRow; open: boolean; onToggle: ()
   const f = row.flag;
   // A waiting message is somebody speaking to us, so its band is blue. Orange
   // is for a thing that has gone wrong on its own.
-  const band = !f
-    ? { bg: C.panel, fg: C.blue }
-    : f.kind === "message"
-    ? { bg: C.blue, fg: C.white }
-    : { bg: C.orange, fg: C.ink };
+  const tone: Tone = !f ? "quiet" : f.kind === "message" ? "info" : "warn";
+
+  const line = f
+    ? `${f.kind === "message" && row.message ? row.message.body : f.reason} · true for ${
+        f.days === 0 ? "less than a day" : `${f.days} day${f.days === 1 ? "" : "s"}`
+      }`
+    : !row.stats
+    ? "The app has not reported this school yet"
+    : "Nothing needs you here.";
 
   return (
-    <div data-school={row.schoolId} style={rowCard}>
-      <div style={rowInner}>
-        <div style={{
-          flex: "1 1 170px", minWidth: 0, padding: "14px 18px",
-          backgroundColor: band.bg, color: band.fg,
-          display: "flex", flexDirection: "column", justifyContent: "center", gap: "3px",
-        }}>
-          <span style={{ ...bandLabel, color: band.fg }}>
-            {f ? f.label : "Opportunities this week"}
-          </span>
-          <span style={{ ...bandFigure, color: band.fg }}>
-            {f ? f.figure : `${row.stats?.opportunitiesThisWeek ?? 0} taken`}
-          </span>
-        </div>
-
-        <div style={rowBody}>
-          <p style={rowTitle}>
-            {row.name}
-          </p>
-          {f ? (
-            <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 10px", lineHeight: 1.5 }}>
-              {/* For a waiting message, what they actually asked. */}
-              {f.kind === "message" && row.message ? row.message.body : f.reason}
-              <span style={{ color: C.orangeText, fontWeight: 600 }}>
-                {" · "}true for {f.days === 0 ? "less than a day" : `${f.days} day${f.days === 1 ? "" : "s"}`}
-              </span>
-            </p>
-          ) : !row.stats ? (
-            <p style={{ fontSize: "15px", color: C.orangeText, fontWeight: 600, margin: "0 0 10px", lineHeight: 1.5 }}>
-              The app has not reported this school yet
-            </p>
-          ) : (
-            <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 10px", lineHeight: 1.5 }}>
-              Nothing needs you here.
-            </p>
-          )}
-          <Badges row={row} />
-        </div>
-
-        <div style={rowAction}>
-          <button type="button" onClick={onToggle} style={f ? primaryButton : secondaryButton}>
-            {open ? "Close" : f ? f.action.label : "Open school"}
-          </button>
-          <LogCall schoolId={row.schoolId} contact={row.contact} lastCall={row.lastCall} />
-        </div>
-      </div>
-
-      {open && <Detail row={row} />}
+    <div data-school={row.schoolId}>
+      <BandRow
+        tone={tone}
+        label={f ? f.label : "Opportunities this week"}
+        figure={f ? f.figure : `${row.stats?.opportunitiesThisWeek ?? 0} taken`}
+        word={!f || /[a-z]/.test(f.figure)}
+        title={row.name}
+        line={line}
+        chips={<Badges row={row} />}
+        actionNode={
+          <>
+            <button type="button" onClick={onToggle} style={f ? primaryButton : secondaryButton}>
+              {open ? "Close" : f ? f.action.label : "Open school"}
+            </button>
+            <LogCall schoolId={row.schoolId} contact={row.contact} lastCall={row.lastCall} />
+          </>
+        }
+      >
+        {open && <Detail row={row} />}
+      </BandRow>
     </div>
   );
 }
