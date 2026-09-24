@@ -424,3 +424,12 @@ body {
 @media (max-width: 560px) {
   .joc-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 }
+
+/* The acts a person can choose at a booth. Two across on a desktop, one on a
+   phone: they are four short cards and a four-column row makes them read as
+   a table of features rather than as things to do. */
+.joc-acts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}

@@ -10,6 +10,16 @@ export type Program = {
   available: string[];
   howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   whatsIncluded: string[];
+  /** What the school brings on the day: a table, a speaker, the candies. */
+  schoolProvides: string[];
+  /**
+   * What a student can actually do in this program, and what to call the
+   * list. The Kindness Booth's four acts are the programme, not a detail of
+   * it; a school deciding whether to run it is deciding about these.
+   */
+  activitiesTitle?: string | null;
+  activitiesNote?: string | null;
+  activities: { title: string; description: string }[];
   /** A real quote from a real school. Never a written one — the five that
    *  used to sit here were invented and attributed to named rebbeim. */
   testimonial?: { quote: string; attribution: string };
@@ -29,9 +39,9 @@ export const PROGRAMS: Program[] = [
     slug: "kindness-booth",
     name: "Kindness Booth",
     tag: "Event",
-    tagline: "Chesed students can run — and own.",
+    tagline: "Unite your school through acts of kindness.",
     description:
-      "A JOC-branded station your school sets up at a community event. Students run it, giving out small acts of kindness — handwritten notes, baked goods, personal items — to passersby. JOC provides the full kit, training, and promotional materials.",
+      "A table your school sets up where students and faculty are invited to choose from a variety of simple acts of kindness — whichever one speaks to them most. JOC provides the booth, the materials and the training; your students run it.",
     heroColor: C.blue,
     meta: "Half-day setup · All grade levels",
     available: ["JOC App + JOC Education", "Full JOC Partnership"],
@@ -41,6 +51,8 @@ export const PROGRAMS: Program[] = [
       { step: "03", title: "Train your students", description: "One 20-minute training session prepares students to run the booth — how to approach people, what to offer, and what to do if someone declines." },
       { step: "04", title: "Run the booth", description: "Students staff the booth during the event. A JOC coordinator is available by phone throughout. Students log their acts in the JOC App." },
     ],
+    schoolProvides: [],
+    activities: [],
     whatsIncluded: [
       "Branded Kindness Booth display stand and signage",
       "Student role cards and conversation starters",
@@ -67,6 +79,8 @@ export const PROGRAMS: Program[] = [
       { step: "03", title: "Bake and package", description: "Use the included packaging labels and thank-you note templates. A JOC volunteer coordinator will arrange pickup or delivery." },
       { step: "04", title: "Deliver and debrief", description: "Students (or a teacher representative) deliver the goods. A guided debrief helps students reflect on who they helped and what chesed means." },
     ],
+    schoolProvides: [],
+    activities: [],
     whatsIncluded: [
       "Monthly cycle packs with recipe suggestions and allergen notes",
       "Branded packaging labels and thank-you card templates",
@@ -93,6 +107,8 @@ export const PROGRAMS: Program[] = [
       { step: "03", title: "Run weekly sessions", description: "Pairs meet once a week for 30–45 minutes. The portal tracks sessions, and students log hours in the JOC App." },
       { step: "04", title: "Monthly check-in", description: "A brief monthly form captures how pairs are progressing. JOC flags pairs that may need reassignment or a facilitator check-in." },
     ],
+    schoolProvides: [],
+    activities: [],
     whatsIncluded: [
       "Pairing algorithm via the JOC portal",
       "45-minute tutor training module (video + workbook)",
@@ -119,6 +135,8 @@ export const PROGRAMS: Program[] = [
       { step: "03", title: "Coordinate and confirm", description: "Chesed Match handles scheduling logistics. You receive a confirmation with all details — time, location, what to bring, what to expect." },
       { step: "04", title: "Log and reflect", description: "Students log their hours through the JOC App. A reflection prompt in the app asks them to describe the experience. Hours count toward school chesed goals." },
     ],
+    schoolProvides: [],
+    activities: [],
     whatsIncluded: [
       "Full access to chesedmatch.org opportunity network",
       "Vetted partner organizations with background-checked contacts",
@@ -147,6 +165,8 @@ export const PROGRAMS: Program[] = [
       { step: "03", title: "Confirm logistics", description: "JOC confirms AV requirements, room setup, and arrival time. Most assemblies run 45–90 minutes. Teacher training days run 3–4 hours." },
       { step: "04", title: "Host the event", description: "The JOC presenter runs the program. Follow-up materials — discussion guides, classroom follow-up activities — arrive by email within 24 hours." },
     ],
+    schoolProvides: [],
+    activities: [],
     whatsIncluded: [
       "One JOC presenter for the full event",
       "Custom content planning call",
@@ -173,6 +193,8 @@ export const PROGRAMS: Program[] = [
       { step: "03", title: "Travel and arrive", description: "JOC coordinates ground transportation from your arrival airport. Students stay at a partner facility near the JOC Center." },
       { step: "04", title: "The JOC Center day", description: "A full day at the JOC Center: facility tour, meeting program staff and beneficiaries, and a structured volunteer session alongside Israeli students." },
     ],
+    schoolProvides: [],
+    activities: [],
     whatsIncluded: [
       "Full-day JOC Center program and guided tour",
       "Volunteer session with Israeli youth",

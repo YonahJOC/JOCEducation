@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { R, C, F, label } from "@/lib/joc-tokens";
+import { R, C, F, label, rowCard, note, noteText } from "@/lib/joc-tokens";
 import { notFound } from "next/navigation";
 import { getPublishedProgram, getPublishedPrograms } from "@/lib/content";
 import { heroFg, deepFrom } from "@/lib/hero-color";
@@ -174,6 +174,37 @@ export default async function ProgramDetailPage({ params }: Props) {
           </p>
         </details>
 
+        {program.activities.length > 0 && (
+          <section style={{ marginTop: "44px" }}>
+            <p style={{ ...label, color: deep, margin: "0 0 8px" }}>On the day</p>
+            <h2 style={{
+              fontFamily: F.ui, fontSize: "clamp(22px, 2.4vw, 28px)", fontWeight: 700,
+              letterSpacing: "-0.025em", color: C.ink, margin: "0 0 18px",
+            }}>
+              {program.activitiesTitle ?? `What people can do at the ${program.name}`}
+            </h2>
+
+            <div className="joc-acts">
+              {program.activities.map((a) => (
+                <div key={a.title} style={{ ...rowCard, padding: "20px" }}>
+                  <p style={{ fontFamily: F.ui, fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: "0 0 6px" }}>
+                    {a.title}
+                  </p>
+                  <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.55, color: C.muted, margin: 0 }}>
+                    {a.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {program.activitiesNote && (
+              <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: C.muted, margin: "18px 0 0", maxWidth: "70ch" }}>
+                {program.activitiesNote}
+              </p>
+            )}
+          </section>
+        )}
+
         {/* The video beside what a school actually gets. */}
         <section className="joc-program-box" style={{ marginTop: "44px" }}>
           <div style={{ minWidth: 0 }}>
@@ -209,6 +240,15 @@ export default async function ProgramDetailPage({ params }: Props) {
                   </li>
                 ))}
               </ol>
+            )}
+
+            {program.schoolProvides.length > 0 && (
+              <div style={{ ...note("info"), marginTop: "22px" }}>
+                <p style={{ ...label, color: C.muted, margin: "0 0 8px" }}>Your school provides</p>
+                <p style={{ ...noteText("info"), fontFamily: F.read, fontSize: "17px" }}>
+                  {program.schoolProvides.join(" · ")}
+                </p>
+              </div>
             )}
 
             <p style={{ marginTop: "20px" }}>

@@ -211,7 +211,11 @@ export async function getPublishedPrograms(): Promise<Program[]> {
     const rows = await prisma.programPage.findMany({
       where: { published: true },
       orderBy: [{ sort: "asc" }, { id: "asc" }],
-      include: { steps: { orderBy: { order: "asc" } }, form: { select: { slug: true, published: true, closed: true } } },
+      include: {
+        steps: { orderBy: { order: "asc" } },
+        activities: { orderBy: { order: "asc" } },
+        form: { select: { slug: true, published: true, closed: true } },
+      },
     });
     if (rows.length === 0) return [];
 
@@ -225,6 +229,10 @@ export async function getPublishedPrograms(): Promise<Program[]> {
       meta: p.meta,
       available: p.available,
       whatsIncluded: p.whatsIncluded,
+      schoolProvides: p.schoolProvides,
+      activitiesTitle: p.activitiesTitle,
+      activitiesNote: p.activitiesNote,
+      activities: p.activities.map((a) => ({ title: a.title, description: a.description })),
       comingSoon: p.comingSoon,
       // Only a form that is actually open: a draft or a closed one must not
       // put a sign-up box on a live program page.

@@ -7,6 +7,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getProgramToday } from "@/lib/program-today";
 import { schoolsInProgram } from "@/lib/program-enrollment";
 import { C, rowCard, label, bandFigure, datum, F, pageTitle } from "@/lib/joc-tokens";
+import { BandRow } from "@/components/ui/BandRow";
 
 /**
  * Every program console, as cards.
@@ -60,16 +61,36 @@ export default async function MyProgramsPage() {
   // where somebody with twenty minutes should find it.
   cards.sort((a, b) => b.need - a.need || a.name.localeCompare(b.name));
 
+  // Seven of eight programs having nobody down as running them is one fact,
+  // not seven. It was an orange sentence on every card, which made the page
+  // read as broken and said nothing you could act on.
+  const unled = cards.filter((c) => !c.lead).length;
+  const needing = cards.filter((c) => c.need > 0).length;
+
   return (
     <div>
       <h1 style={pageTitle}>{all ? "Program consoles" : "Your programs"}</h1>
 
       <SectionLinks section="programs" />
-      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 22px", maxWidth: "62ch" }}>
-        {all
-          ? "Every program's own console — the same page its coordinator opens. Sorted by what needs somebody today."
-          : "The programs you run. Sorted by what needs you today."}
+      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 18px", maxWidth: "62ch" }}>
+        {all ? "Every program's own console — the same page its coordinator opens. " : "The programs you run. "}
+        {needing === 0
+          ? "Nothing needs anybody today."
+          : `${needing} of the ${cards.length} needs somebody today, and ${needing === 1 ? "it is" : "they are"} first.`}
       </p>
+
+      {all && unled > 0 && (
+        <div style={{ marginBottom: "18px" }}>
+          <BandRow
+            tone="warn"
+            label="No lead"
+            figure={String(unled)}
+            title={`${unled === 1 ? "A program has" : "Programs have"} nobody down as running ${unled === 1 ? "it" : "them"}`}
+            line="Being named on a program is what opens its console, so until somebody is, nobody but an admin can work on it."
+            action={{ label: "Name them", href: `/admin/programs/${cards.find((c) => !c.lead)!.slug}?tab=setup` }}
+          />
+        </div>
+      )}
 
       {cards.length === 0 ? (
         <div style={{ ...rowCard, padding: "24px" }}>
@@ -117,8 +138,8 @@ export default async function MyProgramsPage() {
                     </span>
                   </div>
 
-                  <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.45, color: p.lead ? C.muted : C.orangeText, margin: 0 }}>
-                    {p.lead ? `Run by ${p.lead}` : "Nobody is down as running it"}
+                  <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.45, color: C.muted, margin: 0 }}>
+                    {p.lead ? `Run by ${p.lead}` : "Nobody named yet"}
                   </p>
 
                   {/* The figure and its words on one baseline, as in 2a. The
@@ -132,11 +153,7 @@ export default async function MyProgramsPage() {
                         {p.need === 1 ? "needs you today" : "need you today"}
                       </span>
                     </p>
-                  ) : (
-                    <p style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.greenText, margin: 0 }}>
-                      Nothing needs you today
-                    </p>
-                  )}
+                  ) : null}
 
                   <p style={{ ...datum, color: C.muted, margin: 0 }}>{status}</p>
                 </div>

@@ -803,6 +803,19 @@ model ProgramPage {
   available     String[]
   whatsIncluded String[]
 
+  /// What the school has to bring on the day — a folding table, a speaker,
+  /// the candies. Every program the team runs has some of this, and until
+  /// now it lived in an email rather than on the page.
+  schoolProvides String[]
+
+  /// The heading over the activities below: "Acts of kindness on offer",
+  /// "What students bake". Null hides the whole section.
+  activitiesTitle String?
+
+  /// One line under them — "a new act is added each month, tied to the
+  /// coming yom tov".
+  activitiesNote String? @db.Text
+
   /// Set for a program that lives on another JOC site, e.g. Chesed Match.
   externalHref String?
   cta          String  @default("Register your school")
@@ -836,10 +849,30 @@ model ProgramPage {
   /// direct file — whatever the team has.
   videoUrl String?
   steps ProgramStep[]
+  activities ProgramActivity[]
   events ProgramEvent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+/**
+ * One thing a student can actually do in this program.
+ *
+ * The Kindness Booth offers four — write a note, take a candy, say a
+ * Tehillim, help someone — and they are the programme, not a detail of it. A
+ * school deciding whether to run it is deciding about these.
+ */
+model ProgramActivity {
+  id          Int    @id @default(autoincrement())
+  programId   Int
+  title       String
+  description String @db.Text
+  order       Int    @default(0)
+
+  program ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@index([programId])
 }
 
 model ProgramStep {
