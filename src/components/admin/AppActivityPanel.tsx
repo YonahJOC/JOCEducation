@@ -277,6 +277,13 @@ function Detail({ row }: { row: AppRow }) {
               </Cell>
             )}
 
+            {st.studentsOnApp != null && (
+              <Cell label="Students on the app">
+                {st.studentsOnApp.toLocaleString("en-US")}
+                <Sub>Signed up. Not how many are active — that needs a login.</Sub>
+              </Cell>
+            )}
+
             <Cell label="Last activity">
               {st.lastActivityText ? (
                 <>

@@ -46,6 +46,7 @@ export type AppRow = {
     publicOnly: boolean;
     actsAllTime: number | null;
     hoursAllTime: number | null;
+    studentsOnApp: number | null;
     syncedAt: Date;
   } | null;
 

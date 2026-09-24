@@ -101,7 +101,28 @@ for (const s of schools) {
   // fields on this response are a child and are not read.
   const last = typeof dash.recentlyOppoName === "string" ? dash.recentlyOppoName : null;
 
+  // How many of their students are on the app. The public leaderboard is the
+  // only place this is exposed without a login — and only the count is read.
+  // The list itself is a hundred and fifty children with initials and towns.
+  let students = null;
+  try {
+    const res = await fetch(`${BASE}/organisations/${s.appSchoolId}/publicLeaderBoard`, {
+      method: "POST",
+      headers: { accept: "application/json", "content-type": "application/json" },
+      body: "{}",
+      signal: AbortSignal.timeout(20000),
+    });
+    if (res.ok) {
+      const j = await res.json();
+      students = Number(j.total ?? 0) || 0;
+    }
+  } catch {
+    // A missing count is a missing count. It is not a nought.
+  }
+  await sleep(200);
+
   const data = {
+    studentsOnApp: students,
     // Everything else on this table keeps its default of nought, and this
     // flag is what stops a screen reading those noughts as measurements.
     publicOnly: true,

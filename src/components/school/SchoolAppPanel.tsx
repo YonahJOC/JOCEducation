@@ -82,6 +82,13 @@ export async function SchoolAppPanel({ schoolId }: { schoolId: string }) {
           />
         )}
 
+        {s.studentsOnApp != null && (
+          <Cell
+            value={s.studentsOnApp.toLocaleString("en-US")}
+            name="Your students on the app"
+          />
+        )}
+
         {!s.publicOnly && (
           <>
             <Cell

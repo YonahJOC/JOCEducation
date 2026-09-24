@@ -1623,6 +1623,14 @@ model AppSchoolStats {
   /// All-time, not this year — the public dashboard offers no year window.
   actsAllTime Int?
 
+  /// Students signed up on the app at this school.
+  ///
+  /// From the public leaderboard, which is the only place the app exposes it
+  /// without a login. Only the count is read — the leaderboard itself is a
+  /// hundred and fifty children per school with their initials, town and
+  /// hours, and none of that is touched.
+  studentsOnApp Int?
+
   /// Hours logged at this school, all-time.
   ///
   /// The app calls this spendTimeByOrganization and does not say what unit it
