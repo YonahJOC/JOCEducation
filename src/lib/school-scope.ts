@@ -47,7 +47,7 @@ export async function currentSchoolId(): Promise<string | null> {
  * Returns null for everybody else, including anyone without the capability,
  * so a stale cookie on a teacher's browser does nothing at all.
  */
-export async function viewingAs(): Promise<{ id: string; name: string } | null> {
+export async function viewingAs(): Promise<{ id: string; name: string; slug: string } | null> {
   if (!isDatabaseConfigured()) return null;
 
   const jar = await cookies();
@@ -59,7 +59,7 @@ export async function viewingAs(): Promise<{ id: string; name: string } | null> 
 
   const school = await prisma.school.findUnique({
     where: { slug },
-    select: { id: true, name: true },
+    select: { id: true, name: true, slug: true },
   });
   return school ?? null;
 }

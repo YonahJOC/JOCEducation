@@ -7,6 +7,7 @@ import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { schoolNav } from "@/lib/nav";
 import { viewingAs, currentSchoolId } from "@/lib/school-scope";
 import { stopViewingAsSchool } from "@/app/actions/view-as-school";
+import { SchoolSwitcher } from "@/components/school/SchoolSwitcher";
 import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Your school", robots: { index: false, follow: false } };
@@ -53,6 +54,18 @@ export default async function SchoolLayout({ children }: { children: React.React
         </div>
       </div>
     );
+  }
+
+  let allSchools: { slug: string; name: string }[] = [];
+  if (looking && isDatabaseConfigured()) {
+    try {
+      allSchools = await prisma.school.findMany({
+        orderBy: { name: "asc" },
+        select: { slug: true, name: true },
+      });
+    } catch {
+      // The switcher is a convenience; the banner works without it.
+    }
   }
 
   let schoolName = "Your school";
@@ -122,9 +135,11 @@ export default async function SchoolLayout({ children }: { children: React.React
           backgroundColor: C.ink, borderRadius: R.form, padding: "12px 16px", marginBottom: "16px",
         }}>
           <span style={{ ...label, color: C.onDarkLabel }}>Looking in</span>
-          <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.white, flex: 1, minWidth: 0 }}>
+          <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.white, flex: 1, minWidth: "180px" }}>
             This is {looking.name}&rsquo;s own panel, as they see it.
           </span>
+
+          <SchoolSwitcher schools={allSchools} current={looking.slug} />
           <form action={stopViewingAsSchool}>
             <button
               type="submit"
