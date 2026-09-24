@@ -149,8 +149,19 @@ body {
   animation: jocPulse 2.4s ease-in-out infinite;
 }
 
+/* Somebody who has asked their machine to stop moving things has asked
+   everything, not one class. The shimmer on every loading skeleton is set as
+   an inline style, and an inline style beats a stylesheet rule — so this has
+   to carry !important to reach it at all. */
 @media (prefers-reduced-motion: reduce) {
-  .joc-pulse { animation: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Program stages: the four-across rail becomes a vertical one on narrow
