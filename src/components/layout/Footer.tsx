@@ -33,7 +33,12 @@ async function programLinks() {
   try {
     const rows = await getPublishedPrograms();
     return rows.slice(0, 6).map((p) => ({ label: p.name, href: `/programs/${p.slug}` }));
-  } catch {
+  } catch (e) {
+    // An empty footer is honest at runtime. At build time it is baked into a
+    // static page and served that way until the next deploy, so it must not
+    // pass in silence — this is how every page on the site quietly lost its
+    // Programs column once already.
+    console.error("[footer] could not read the programs; this page ships without them:", e);
     return [];
   }
 }
