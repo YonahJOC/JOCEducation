@@ -1,22 +1,26 @@
 import Link from "next/link";
 import { requireSchoolPanel } from "./account-only";
 import { safeAuth, openForReview } from "@/auth";
-import { canRunOwnSchool } from "@/lib/access";
-import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { STAGE_LABEL, STAGE_MEANING, STAGE_TONE, type Stage } from "@/lib/program-enrollment";
-import { stepFor, STEPS, STEP_NEXT } from "@/lib/program-step";
-import { C, rowCard, F, pageTitle, sectionHeading, type Tone } from "@/lib/joc-tokens";
+import { canRunOwnSchool, canRunSchoolApp } from "@/lib/access";
+import { isDatabaseConfigured } from "@/lib/prisma";
+import { STAGE_LABEL } from "@/lib/program-enrollment";
+import { STEPS } from "@/lib/program-step";
+import { getSchoolToday } from "@/lib/school-today";
+import { C, F, R, label, datum, pageTitle, sectionHeading, rowCard } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
 import { currentSchoolId } from "@/lib/school-scope";
 
 /**
- * Today, for a school.
+ * Today, for a school (5a).
  *
  * The school panel used to open on its teacher list, which is an admin chore
- * rather than the reason anybody signs in. This is where each program has got
- * to and what happens next — plus, for whoever runs the account, the two
- * things that go wrong quietly: teachers who never signed in, and a renewal
- * nobody is watching.
+ * rather than the reason anybody signs in. It opens instead on the handful of
+ * things that are actually waiting this week, and then on where each program
+ * has got to.
+ *
+ * The rows are computed in lib/school-today.ts, which also guarantees the one
+ * rule this page depends on: at most one solid-orange band, so the page never
+ * reads as a telling-off.
  */
 
 export const metadata = { title: "Today" };
@@ -43,114 +47,37 @@ export default async function SchoolToday() {
     );
   }
 
-  const [enrollments, school, unread, invitations] = await Promise.all([
-    prisma.programEnrollment.findMany({
-      where: { schoolId },
-      select: {
-        stage: true, stageSince: true,
-        program: { select: { name: true, slug: true, heroColor: true } },
-      },
-    }),
-    prisma.school.findUnique({
-      where: { id: schoolId },
-      select: {
-        name: true, unapprovedHours: true, unapprovedCheckedAt: true,
-        appStats: { select: { unapprovedMinutes: true, syncedAt: true } },
-        subscription: { select: { currentPeriodEnd: true, seats: true } },
-        _count: { select: { members: true } },
-      },
-    }),
-    prisma.eventReport.count({
-      where: { ambassador: { schoolId }, seenBySupervisorAt: null },
-    }),
-    prisma.invitation.count({ where: { schoolId, status: "PENDING" } }),
-  ]);
+  // A write-up names a student, so only somebody who supervises them sees
+  // that it exists.
+  const canReadReports = openForReview || canRunSchoolApp(session?.user);
 
-  // Furthest along first, so what is running reads before what is being set up.
-  const rows = enrollments
-    .map((e) => ({ ...e, step: stepFor(e.stage as Stage) }))
-    .sort((a, b) => b.step - a.step || a.program.name.localeCompare(b.program.name));
+  const { rows, programs } = await getSchoolToday(schoolId, { canReadReports });
 
-  const hours = school?.appStats
-    ? { minutes: school.appStats.unapprovedMinutes, at: school.appStats.syncedAt }
-    : school?.unapprovedHours != null
-    ? { minutes: school.unapprovedHours * 60, at: school.unapprovedCheckedAt }
-    : null;
-
-  // Each one is a real count. Nothing appears here with nothing behind it.
-  const needs: {
-    label: string; figure: string; word?: boolean; title: string;
-    line?: string; tone: Tone; action?: { label: string; href: string };
-  }[] = [];
-
-  if (hours && hours.minutes > 0) {
-    needs.push({
-      label: "To approve",
-      figure: `${(hours.minutes / 60).toFixed(1)} h`,
-      tone: "warn",
-      title: "Chesed hours waiting on a teacher",
-      line: hours.at
-        ? `Read from the JOC App on ${day(hours.at)}. Teachers approve them in the app.`
-        : "Nobody has recorded when this was last checked.",
-    });
-  }
-
-  if (unread > 0) {
-    needs.push({
-      label: "Unread",
-      figure: String(unread),
-      tone: "info",
-      title: `Ambassador report${unread === 1 ? "" : "s"} nobody has read`,
-      action: { label: "Read them", href: "/school/ambassadors" },
-    });
-  }
-
-  if (runsAccount && invitations > 0) {
-    needs.push({
-      label: "Never signed in",
-      figure: String(invitations),
-      tone: "warn",
-      title: `Teacher${invitations === 1 ? " was" : "s were"} invited and never signed in`,
-      action: { label: "Open your teachers", href: "/school/teachers" },
-    });
-  }
-
-  const renews = runsAccount ? school?.subscription?.currentPeriodEnd ?? null : null;
-  if (renews) {
-    needs.push({
-      label: "Renews",
-      figure: day(renews),
-      word: true,
-      tone: daysUntil(renews) < 60 ? "warn" : "quiet",
-      title: "Your plan",
-      line: school?.subscription?.seats != null
-        ? `${school._count.members} of ${school.subscription.seats} seats used.`
-        : "Nobody has recorded how many seats this plan carries.",
-      action: { label: "Open your plan", href: "/school/plan" },
-    });
-  }
+  const heading = rows.length === 0
+    ? "Nothing needs you this week"
+    : `${rows.length} thing${rows.length === 1 ? "" : "s"} for you this week`;
 
   return (
     <div>
-      <h1 style={pageTitle}>Today</h1>
+      <h1 style={pageTitle}>{heading}</h1>
       <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 20px", maxWidth: "62ch" }}>
-        Where each of your programs has got to, and the one thing that happens next on each.
+        {rows.length === 0
+          ? "Nothing is waiting on anybody at your school. Your programs are below, with where each one has got to."
+          : "Worst first. Everything below is something at your school, not something we are waiting to tell you."}
       </p>
 
-      {/* What needs somebody at the school, before the programs. The same row
-          as everywhere else: a figure to read first, then one thing to do. */}
-      {needs.length > 0 && (
+      {rows.length > 0 && (
         <div style={{ display: "grid", gap: "10px", marginBottom: "26px" }}>
-          {needs.map((n) => (
+          {rows.map((r) => (
             <BandRow
-              key={n.label}
-              tone={n.tone}
-              label={n.label}
-              figure={n.figure}
-              word={n.word}
-              title={n.title}
-              line={n.line}
-              action={n.action}
+              key={r.id}
+              tone={r.tone}
+              label={r.label}
+              figure={r.figure}
+              word={r.word}
+              title={r.title}
+              line={r.line}
+              action={r.action}
             />
           ))}
         </div>
@@ -158,7 +85,7 @@ export default async function SchoolToday() {
 
       <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>Your programs</h2>
 
-      {rows.length === 0 ? (
+      {programs.length === 0 ? (
         <div style={{ ...rowCard, padding: "24px" }}>
           <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "58ch" }}>
             Your school is not down as running any JOC program yet. That fills in as JOC records
@@ -166,29 +93,51 @@ export default async function SchoolToday() {
           </p>
         </div>
       ) : (
-        <div style={{ display: "grid", gap: "10px" }}>
-          {rows.map((e) => {
-            const stage = e.stage as Stage;
-            const tone = STAGE_TONE[stage];
-            return (
-              <BandRow
-                key={e.program.slug}
-                tone={tone === "going" ? "good" : tone === "setup" ? "info" : "quiet"}
-                label={`Step 0${e.step} of 0${STEPS}`}
-                figure={STAGE_LABEL[stage]}
-                word
-                title={e.program.name}
-                line={`${STAGE_MEANING[stage]} ${STEP_NEXT[e.step]}`}
-                action={{ label: "Open the program", href: `/programs/${e.program.slug}` }}
-              />
-            );
-          })}
+        <div className="joc-also">
+          {programs.map((p) => (
+            <Link
+              key={p.slug}
+              href={`/school/programs/${p.slug}`}
+              style={{
+                ...rowCard, display: "block", textDecoration: "none",
+                overflow: "hidden", padding: 0,
+              }}
+            >
+              {/* The program's own colour, so two cards are never confused. */}
+              <span aria-hidden="true" style={{ display: "block", height: "8px", backgroundColor: p.heroColor }} />
+
+              <span style={{ display: "block", padding: "18px 20px 20px" }}>
+                <span style={{
+                  display: "block", fontFamily: F.ui, fontSize: "20px", fontWeight: 700,
+                  letterSpacing: "-0.02em", color: C.ink, lineHeight: 1.2, marginBottom: "6px",
+                }}>
+                  {p.name}
+                </span>
+
+                <span style={{ ...datum, display: "block", marginBottom: "10px" }}>
+                  STEP 0{p.step} / 0{STEPS} · {STAGE_LABEL[p.stage].toUpperCase()} SINCE{" "}
+                  {day(p.since).toUpperCase()}
+                </span>
+
+                <span style={{
+                  display: "block", fontFamily: F.read, fontSize: "15px", lineHeight: 1.5,
+                  color: p.headline ? C.muted : C.orangeText,
+                }}>
+                  {p.headline ?? "Nothing has been recorded against it yet."}
+                </span>
+              </span>
+            </Link>
+          ))}
         </div>
+      )}
+
+      {runsAccount && (
+        <p style={{ ...label, color: C.muted, margin: "26px 0 0" }}>
+          <Link href="/school/plan" style={{ color: C.blue }}>Your plan</Link>
+          {" · "}
+          <Link href="/school/teachers" style={{ color: C.blue }}>Who has a login</Link>
+        </p>
       )}
     </div>
   );
-}
-
-function daysUntil(d: Date) {
-  return Math.floor((d.getTime() - Date.now()) / 86_400_000);
 }

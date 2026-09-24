@@ -23,7 +23,13 @@ const WRITE_UP_DAYS = 5;
 /** A run happening inside this window that nobody has announced. */
 const SOON_DAYS = 14;
 
-export type TodayKind = "STUCK" | "NEW_SIGN_UP" | "NO_WRITE_UP" | "DECIDED" | "UNANNOUNCED";
+export type TodayKind =
+  | "STUCK"
+  | "NEW_SIGN_UP"
+  | "NO_WRITE_UP"
+  | "DECIDED"
+  | "UNANNOUNCED"
+  | "ASKED";
 
 export type TodayRow = {
   id: string;
@@ -41,6 +47,8 @@ export type TodayRow = {
   /** One line, around ninety characters. */
   line: string;
   action: { label: string; href: string };
+  /** The SchoolActivity this row is, for the rows a coordinator can answer. */
+  askId?: string;
 };
 
 export type ProgramToday = {
@@ -90,6 +98,35 @@ export async function getProgramToday(programId: number, slug: string): Promise<
       }),
       prisma.programAmbassador.count({ where: { programId } }),
     ]);
+
+    // ── A school asked something and nobody has answered ───────────────────
+    // Top of the list. Everything else here is a thing that has gone quiet;
+    // this is a person waiting, and a person waiting outranks a process.
+    const asks = await prisma.schoolActivity.findMany({
+      where: { programId, inbound: true, answeredAt: null },
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true, topic: true, detail: true, createdAt: true,
+        school: { select: { id: true, name: true } },
+      },
+    });
+
+    for (const a of asks) {
+      const age = days(a.createdAt, now);
+      rows.push({
+        id: `ask:${a.id}`,
+        kind: "ASKED",
+        label: `Asked · ${a.topic ?? "something"}`,
+        figure: age === 0 ? "today" : `${age} day${age === 1 ? "" : "s"}`,
+        tone: "info",
+        weight: 2000 + age,
+        schoolId: a.school.id,
+        title: a.school.name,
+        line: (a.detail ?? "").slice(0, 160) || "They left no detail.",
+        action: { label: "Mark it answered", href: `/admin/programs/${slug}` },
+        askId: a.id,
+      });
+    }
 
     // ── Stuck: a school that has sat in the same setup stage too long ──────
     for (const e of enrollments) {

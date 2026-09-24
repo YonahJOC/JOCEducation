@@ -195,3 +195,83 @@ export async function programMoney(programId: number): Promise<ProgramMoney> {
 export function money(cents: number): string {
   return `$${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
+
+/**
+ * What one school did about paying for one program (5b's side card).
+ *
+ * The same five states the console's Money tab shows, for a single school,
+ * because the school is entitled to see its own row and nobody else's. It is
+ * only ever rendered for somebody who runs the account: a teacher who runs
+ * the school's app has no business seeing what the school pays.
+ */
+export async function schoolPaymentFor(
+  schoolId: string,
+  programId: number,
+): Promise<SchoolPayment> {
+  if (!isDatabaseConfigured()) return { state: "none" };
+
+  try {
+    const [payments, school, planCovers] = await Promise.all([
+      prisma.payment.findMany({
+        where: { schoolId, programId },
+        orderBy: { paidAt: "desc" },
+        select: {
+          kind: true, amountCents: true, paidAt: true, reason: true,
+          grantKind: true, stripeChargeId: true,
+          decidedBy: { select: { name: true, email: true } },
+          recordedBy: { select: { name: true, email: true } },
+        },
+      }),
+      prisma.school.findUnique({
+        where: { id: schoolId },
+        select: { subscription: { select: { plan: true, status: true } } },
+      }),
+      prisma.programPage.count({ where: { published: true } }),
+    ]);
+
+    const who = (u: { name: string | null; email: string } | null) => u?.name ?? u?.email ?? null;
+
+    const refund = payments.find((p) => p.kind === "REFUND");
+    const fee = payments.find((p) => p.kind === "PROGRAM_FEE");
+    const grant = payments.find((p) => p.kind === "GRANT");
+
+    if (refund && fee) {
+      return {
+        state: "refunded",
+        amountCents: Math.abs(refund.amountCents),
+        paidAt: fee.paidAt,
+        at: refund.paidAt,
+        by: who(refund.decidedBy),
+      };
+    }
+    if (fee) {
+      return {
+        state: "paid",
+        amountCents: fee.amountCents,
+        at: fee.paidAt,
+        byHand: who(fee.recordedBy),
+        reference: fee.stripeChargeId,
+      };
+    }
+    if (grant) {
+      return {
+        state: "granted",
+        kind: (grant.grantKind ?? "GRANT").toLowerCase(),
+        at: grant.paidAt,
+        by: who(grant.decidedBy),
+        reason: grant.reason,
+      };
+    }
+    const sub = school?.subscription;
+    if (sub?.status === "ACTIVE" || sub?.status === "TRIALING") {
+      return {
+        state: "in-plan",
+        plan: sub.plan.replace(/_/g, " ").toLowerCase(),
+        programs: planCovers,
+      };
+    }
+    return { state: "none" };
+  } catch {
+    return { state: "none" };
+  }
+}

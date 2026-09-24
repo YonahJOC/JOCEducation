@@ -57,17 +57,27 @@ export default async function SchoolLayout({ children }: { children: React.React
 
   let schoolName = "Your school";
   let planLabel: string | null = null;
+  let programs: { slug: string; name: string; heroColor: string }[] = [];
   const schoolId = await currentSchoolId();
   if (isDatabaseConfigured() && schoolId) {
     try {
-      const s = await prisma.school.findUnique({
-        where: { id: schoolId },
-        select: { name: true, subscription: { select: { plan: true } } },
-      });
+      const [s, enrolled] = await Promise.all([
+        prisma.school.findUnique({
+          where: { id: schoolId },
+          select: { name: true, subscription: { select: { plan: true } } },
+        }),
+        prisma.programEnrollment.findMany({
+          where: { schoolId },
+          select: { program: { select: { slug: true, name: true, heroColor: true } } },
+        }),
+      ]);
       if (s) {
         schoolName = s.name;
         planLabel = s.subscription?.plan?.replace(/_/g, " ").toLowerCase() ?? null;
       }
+      programs = enrolled
+        .map((e) => e.program)
+        .sort((a, b) => a.name.localeCompare(b.name));
     } catch {
       // The name is decoration; the panel still works without it.
     }
@@ -78,7 +88,10 @@ export default async function SchoolLayout({ children }: { children: React.React
       side="school"
       who={session?.user?.email ?? "Nobody signed in"}
       role={schoolName}
-      items={schoolNav(session?.user, { asSchoolAdmin: Boolean(looking) || openForReview })}
+      items={schoolNav(session?.user, {
+        asSchoolAdmin: Boolean(looking) || openForReview,
+        programs,
+      })}
       action={
         <div style={{ display: "grid", gap: "8px" }}>
           {planLabel && (

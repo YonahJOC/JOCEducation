@@ -114,9 +114,25 @@ export function jocNav(
 /** The school side. Two audiences, and the money is only one of them. */
 export function schoolNav(
   user: Parameters<typeof canRunOwnSchool>[0],
-  opts: { asSchoolAdmin?: boolean } = {},
+  opts: {
+    asSchoolAdmin?: boolean;
+    /**
+     * The programs this school actually runs, each with its own colour.
+     *
+     * A school signs in to do something about one program, so the rail names
+     * them rather than hiding all of them behind "Our programs". Left empty
+     * the rail is what it always was, which is what a school with nothing
+     * recorded against it should see.
+     */
+    programs?: { slug: string; name: string; heroColor: string }[];
+  } = {},
 ): NavItem[] {
+  const MAX = 7;
   const items: NavItem[] = [{ label: "Today", href: "/school", hint: "Where each program is up to" }];
+
+  for (const p of opts.programs ?? []) {
+    items.push({ label: p.name, href: `/school/programs/${p.slug}`, dot: p.heroColor });
+  }
 
   // Somebody looking in on a school, or reviewing with no auth configured,
   // sees the rail that school sees. A rail with one item on it is not what
@@ -124,7 +140,9 @@ export function schoolNav(
   const full = opts.asSchoolAdmin === true;
 
   if (full || canRunSchoolApp(user) || canRunOwnSchool(user)) {
-    items.push({ label: "Our programs", href: "/school/programs" });
+    if ((opts.programs ?? []).length === 0) {
+      items.push({ label: "Our programs", href: "/school/programs" });
+    }
     items.push({ label: "Chesed activity", href: "/school/activity" });
     // How the school is doing on each Cycle against the rest. It has been
     // built and reachable by typing the address only — nothing has ever
@@ -140,7 +158,27 @@ export function schoolNav(
     items.push({ label: "Plan & seats", href: "/school/plan" });
   }
 
-  return items.slice(0, 7);
+  if (items.length <= MAX) return items;
+
+  // Cycle progress first: it is a comparison, and a comparison is the thing
+  // somebody looks at when nothing needs them. Ambassadors and Chesed
+  // activity both live one click inside Today.
+  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity"]) {
+    if (items.length <= MAX) break;
+    const i = items.findIndex((it) => it.label === label);
+    if (i >= 0) items.splice(i, 1);
+  }
+
+  // A school with more programs than a rail can hold goes back to one item
+  // for all of them, rather than an arbitrary four of eight.
+  if (items.length > MAX && (opts.programs ?? []).length > 0) {
+    const named = new Set((opts.programs ?? []).map((x) => `/school/programs/${x.slug}`));
+    const kept = items.filter((it) => !named.has(it.href));
+    kept.splice(1, 0, { label: "Our programs", href: "/school/programs" });
+    return kept.slice(0, MAX);
+  }
+
+  return items.slice(0, MAX);
 }
 
 /** The two sides of the portal, which differ only in colour. */

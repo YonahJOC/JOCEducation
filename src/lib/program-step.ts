@@ -106,3 +106,22 @@ export async function myStepOn(slug: string): Promise<SchoolStep | null> {
     return null;
   }
 }
+
+/**
+ * What a school does next, per step, and where.
+ *
+ * One table, used by the public program page's next-step card and by the
+ * school's own program page (5c). The two said different things for a while,
+ * which is the kind of disagreement nobody notices until a school acts on
+ * the wrong one.
+ *
+ * `href` is null where the next move is ours rather than theirs. The card
+ * then shows the sentence with no button, which is honest: a button that
+ * opens a page where nothing can be done is worse than no button.
+ */
+export const STEP_ACTION: Record<number, { label: string; href: string | null }> = {
+  1: { label: "Book a 20-minute meeting", href: "/contact" },
+  2: { label: "Fill in the sign-up form", href: null },
+  3: { label: "See what's coming to you", href: null },
+  4: { label: "Open your dates", href: null },
+};

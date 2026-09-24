@@ -141,11 +141,41 @@ model SchoolActivity {
   authorId String?
   author   User?   @relation("ActivityAuthor", fields: [authorId], references: [id], onDelete: SetNull)
 
+  /// True when somebody at the school wrote it rather than somebody at JOC.
+  /// Every row before this one was JOC recording what it did; an ask runs the
+  /// other way, and the console has to show it as something waiting rather
+  /// than something done.
+  inbound Boolean @default(false)
+
+  /// Which program it is about, so it lands on that console's Today tab
+  /// rather than in a general pile nobody owns.
+  programId Int?
+  program   ProgramPage? @relation("ActivityProgram", fields: [programId], references: [id], onDelete: SetNull)
+
+  /// The chip they picked: "A date", "The kit", "Something else".
+  topic String?
+
+  /// Set when a coordinator marks it answered. The answer happened on the
+  /// phone; this only records that it did.
+  answeredAt   DateTime?
+  answeredById String?
+  answeredBy   User?     @relation("ActivityAnswerer", fields: [answeredById], references: [id], onDelete: SetNull)
+
+  /// What the coordinator chose to say back, in their words. Shown to the
+  /// school verbatim and only when it is set, because silence is not a reply
+  /// and "answered" on its own tells them nothing.
+  reply String? @db.Text
+
+  /// Set once somebody at the school has seen the reply.
+  seenBySchoolAt DateTime?
+
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
   @@index([schoolId, occurredAt])
+  @@index([programId, answeredAt])
+  @@index([schoolId, inbound, answeredAt])
 }
 
 /// Granting access. A JOC admin invites an email to a school; the invite is
@@ -408,6 +438,7 @@ model User {
 
   managedSchools   School[]            @relation("AccountManager")
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
+  answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentInvitations  Invitation[]        @relation("Inviter")
   editedFields     SiteField[]         @relation("FieldEditor")
   publishedFields  SiteFieldHistory[]  @relation("FieldPublisher")
@@ -831,6 +862,8 @@ enum ActivityType {
   /// Somebody from JOC physically went to the school.
   VISIT
   DEMO
+  /// Somebody at the school asked their coordinator something, from the portal.
+  ASK
   /// System-generated audit entries
   PLAN_CHANGE
   ACCESS_GRANTED
@@ -996,6 +1029,7 @@ model ProgramPage {
   activities ProgramActivity[]
   inquiries Inquiry[]
   payments  Payment[]
+  asks      SchoolActivity[] @relation("ActivityProgram")
   events ProgramEvent[]
 
   createdAt DateTime @default(now())

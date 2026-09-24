@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { C, rowCard, label, F, sectionHeading } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
+import { AnswerAsk } from "@/components/admin/AnswerAsk";
+import type { TodayRow } from "@/lib/program-today";
 import type { ProgramToday } from "@/lib/program-today";
 
 /**
@@ -52,17 +54,7 @@ export function ProgramTodayPanel({
           </div>
         ) : (
           <div style={{ display: "grid", gap: "10px" }}>
-            {first.map((r) => (
-              <BandRow
-                key={r.id}
-                tone={r.tone}
-                label={r.label}
-                figure={r.figure}
-                title={r.title}
-                line={r.line}
-                action={r.action}
-              />
-            ))}
+            {first.map((r) => <Row key={r.id} r={r} />)}
 
             {rest.length > 0 && (
               <details>
@@ -73,17 +65,7 @@ export function ProgramTodayPanel({
                   Show {rest.length} more
                 </summary>
                 <div style={{ display: "grid", gap: "10px", marginTop: "10px" }}>
-                  {rest.map((r) => (
-                    <BandRow
-                      key={r.id}
-                      tone={r.tone}
-                      label={r.label}
-                      figure={r.figure}
-                      title={r.title}
-                      line={r.line}
-                      action={r.action}
-                    />
-                  ))}
+                  {rest.map((r) => <Row key={r.id} r={r} />)}
                 </div>
               </details>
             )}
@@ -147,5 +129,28 @@ export function EmptySlot({ title, missing }: { title: string; missing: string }
         </p>
       </div>
     </div>
+  );
+}
+
+/**
+ * One row.
+ *
+ * An ask is the only row a coordinator can close from here, because it is the
+ * only one that is not derived from the state of the program — a school
+ * wrote it, and somebody has to say it has been dealt with. Every other row
+ * stops appearing when the thing behind it stops being true.
+ */
+function Row({ r }: { r: TodayRow }) {
+  return (
+    <BandRow
+      tone={r.tone}
+      label={r.label}
+      figure={r.figure}
+      word={/[a-z]/.test(r.figure)}
+      title={r.title}
+      line={r.line}
+      action={r.askId ? undefined : r.action}
+      actionNode={r.askId ? <AnswerAsk askId={r.askId} /> : undefined}
+    />
   );
 }
