@@ -31,12 +31,30 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const BASE = "https://api.justonechesed.org";
+const TOKEN = process.env.JOC_APP_TOKEN ?? null;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function ask(path) {
+/**
+ * Which dashboard field means "logged and waiting for a teacher".
+ *
+ * /organisations/{id}/dashboard returns opportunitiesPendingVolunteers,
+ * opportunitiesStaged and opportunitiesManual. A manually logged act is the
+ * kind a teacher verifies — verificateManualOpportunity is the action — but
+ * none of those three names says outright "logged and not yet verified", and
+ * putting the wrong one on a console under "waiting on you" would send
+ * somebody chasing a queue that does not exist.
+ *
+ * Set this once JOC confirms which it is. The figure then appears on the
+ * console and the school's own panel with no other change.
+ */
+const PENDING_FIELD = null; // e.g. "opportunitiesStaged"
+
+async function ask(path, withToken = false) {
   try {
+    const headers = { accept: "application/json" };
+    if (withToken && TOKEN) headers.authorization = `Bearer ${TOKEN}`;
     const res = await fetch(`${BASE}${path}`, {
-      headers: { accept: "application/json" },
+      headers,
       signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) return null;
@@ -52,7 +70,13 @@ const schools = await prisma.school.findMany({
   orderBy: { name: "asc" },
 });
 
-console.log(`${schools.length} schools linked to an app organisation.\n`);
+console.log(
+  `${schools.length} schools linked. ` +
+    (TOKEN
+      ? "Token set — reading the full dashboard too."
+      : "No JOC_APP_TOKEN — public figures only."),
+);
+console.log();
 
 let written = 0;
 const quiet = [];
@@ -87,6 +111,24 @@ for (const s of schools) {
     syncedAt: new Date(),
   };
 
+  // Everything the console actually wants lives behind the login.
+  if (TOKEN) {
+    const full = await ask(`/organisations/${s.appSchoolId}/dashboard`, true);
+    await sleep(250);
+
+    if (full) {
+      data.publicOnly = false;
+      data.minutesThisYear = Math.round((Number(full.hoursInSchoolYear ?? 0) || 0) * 60);
+      data.opportunitiesThisCycle = Number(full.countOpportunitiesInSchoolYear ?? 0) || 0;
+      data.opportunitiesOpen = Number(full.opportunitiesUpcoming ?? 0) || 0;
+      data.activeStudents = Number(full.volunteersTotal ?? 0) || 0;
+
+      if (PENDING_FIELD && full[PENDING_FIELD] != null) {
+        data.unapprovedEntries = Number(full[PENDING_FIELD]) || 0;
+      }
+    }
+  }
+
   await prisma.appSchoolStats.upsert({
     where: { schoolId: s.id },
     create: { schoolId: s.id, ...data },
@@ -99,6 +141,14 @@ for (const s of schools) {
 }
 
 console.log(`\n${written} schools read.`);
+
+if (!TOKEN) {
+  console.log(
+    "\nHow many acts are waiting on a teacher cannot be read without a token:\n" +
+      "/opportunities/{id}/counts and /organisations/{id}/dashboard both answer\n" +
+      "401. Nothing shows a made-up figure in the meantime.",
+  );
+}
 
 if (quiet.length > 0) {
   console.log(`\nLinked, but nothing logged yet (${quiet.length}):`);
