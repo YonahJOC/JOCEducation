@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, R, CONTENT_MAX, label, F, secondaryButton } from "@/lib/joc-tokens";
+import { C, R, CONTENT_MAX, label, F } from "@/lib/joc-tokens";
 
 /**
  * The band at the top of every program console, and its tabs.
@@ -13,19 +13,18 @@ import { C, R, CONTENT_MAX, label, F, secondaryButton } from "@/lib/joc-tokens";
  * column, where it read as a floating rectangle.
  */
 
-export type TabKey = "today" | "schools" | "not-in-yet" | "calendar" | "sign-ups" | "setup";
+export type TabKey = "today" | "schools" | "calendar" | "sign-ups" | "setup";
 
 export const TAB_LABEL: Record<TabKey, string> = {
   today: "Today",
-  schools: "Schools in",
-  "not-in-yet": "Not in yet",
+  schools: "Schools",
   calendar: "Calendar",
   "sign-ups": "Sign-ups",
   setup: "Setup",
 };
 
 export function ProgramConsoleHeader({
-  name, slug, tag, lead, heroColor, fg, counts, tabs, active, asCoordinator, tabCounts,
+  name, slug, tag, lead, heroColor, fg, counts, tabs, active, tabCounts,
 }: {
   name: string;
   slug: string;
@@ -37,7 +36,6 @@ export function ProgramConsoleHeader({
   counts: string;
   tabs: TabKey[];
   active: TabKey;
-  asCoordinator: boolean;
   /** Shown after a tab's name, where there is something to count. */
   tabCounts?: Partial<Record<TabKey, number>>;
 }) {
@@ -66,23 +64,6 @@ export function ProgramConsoleHeader({
 
         <p style={{ ...label, color: fg, opacity: 0.85, margin: "0 0 20px" }}>{counts}</p>
 
-        {asCoordinator && (
-          <div style={{
-            display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap",
-            backgroundColor: C.ink, borderRadius: R.form, padding: "10px 14px", margin: "0 0 16px",
-          }}>
-            <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.white, flex: 1 }}>
-              Coordinator&rsquo;s view
-            </span>
-            <Link
-              href={`/admin/programs/${slug}`}
-              style={{ ...secondaryButton, backgroundColor: "transparent", color: C.white, border: `2px solid ${C.white}`, textDecoration: "none" }}
-            >
-              Back to your view
-            </Link>
-          </div>
-        )}
-
         {/* Tabs are addresses, not state, so a link opens the right one. */}
         <nav aria-label="Console sections" style={{ display: "flex", gap: "2px", flexWrap: "wrap", overflowX: "auto" }}>
           {tabs.map((t) => {
@@ -91,7 +72,7 @@ export function ProgramConsoleHeader({
             return (
               <Link
                 key={t}
-                href={`/admin/programs/${slug}?tab=${t}${asCoordinator ? "&as=coordinator" : ""}`}
+                href={`/admin/programs/${slug}?tab=${t}`}
                 style={{
                   display: "flex", alignItems: "center", gap: "7px", whiteSpace: "nowrap",
                   fontFamily: F.ui, fontSize: "15px", fontWeight: 600,

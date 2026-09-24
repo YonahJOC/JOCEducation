@@ -364,3 +364,35 @@ body {
   }
   .joc-shell-body > * { margin-top: 18px; }
 }
+
+/* A category you can open or shut. The default triangle is the one thing on
+   the page nobody can style, so it goes and the summary says "Show 36" or
+   "Hide" instead — which also says how many are in there before you open it. */
+.joc-group > summary { list-style: none; cursor: pointer; }
+.joc-group > summary::-webkit-details-marker { display: none; }
+.joc-group > summary:focus-visible { outline: 3px solid #2D46AF; outline-offset: -3px; }
+.joc-group > summary .joc-group-open { display: none; }
+.joc-group[open] > summary .joc-group-open { display: inline; }
+.joc-group[open] > summary .joc-group-shut { display: none; }
+
+/* Page instructions open over the page, not inside it. The dialog itself is
+   only the box: the panel inside carries the paper, the radius and the
+   padding, so the backdrop is the only thing this has to say. */
+.joc-steps {
+  border: none;
+  padding: 0;
+  background: transparent;
+  width: calc(100% - 32px);
+  max-width: 480px;
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+  margin: auto;
+}
+.joc-steps::backdrop { background: #10233F73; }
+
+/* A card whose title is the link, stretched over the whole card — so the card
+   is clickable and can still hold a second link, which a card that is itself
+   an <a> cannot. Anything that must stay clickable sits on joc-card-aside. */
+.joc-card { position: relative; }
+.joc-card-link::after { content: ""; position: absolute; inset: 0; }
+.joc-card-aside { position: relative; z-index: 1; }

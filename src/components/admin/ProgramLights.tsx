@@ -2,16 +2,12 @@
 
 import { useState, useTransition } from "react";
 import {
-  reachOut, sendToMeeting, setLight, refreshLights, dismissExpiry,
-  type Channel, type AgendaKind,
-} from "@/app/actions/program-lights";
+  reachOut, sendToMeeting, setLight, refreshLights, dismissExpiry, type Channel, type AgendaKind, } from "@/app/actions/program-lights";
 import { LIGHT_LABEL, LIGHT_WORD, LIGHT_MEANING, LIGHT_COLOR, type Light } from "@/lib/program-lights";
 import {
-  C, R, F, ROW_SHADOW, primaryButton, secondaryButton, chip, textButton,
-  rowCard, rowDetail, sectionHeading, sectionIntro,
-  field, fieldLabel, quietButton, note, label, bandFigure, type Tone,
-} from "@/lib/joc-tokens";
+  C, R, F, primaryButton, secondaryButton, chip, textButton, rowCard, rowDetail, field, fieldLabel, quietButton, note, label, bandFigure, type Tone } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
+import { RowGroup } from "@/components/ui/RowGroup";
 
 /** A light is one of the site's tones; it has been since the tones existed. */
 const TONE_OF: Record<Light, Tone> = { GREEN: "good", AMBER: "warn", RED: "system" };
@@ -35,8 +31,6 @@ const day = (d: Date | string) =>
 const dayYear = (d: Date | string) =>
   new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 
-type Filter = "all" | Light;
-
 export function ProgramLights({
   programId, slug, programName, data,
 }: {
@@ -45,60 +39,68 @@ export function ProgramLights({
   programName: string;
   data: ProgramTraffic;
 }) {
-  const [filter, setFilter] = useState<Filter>("all");
-  const rows = filter === "all" ? data.rows : data.rows.filter((r) => r.light === filter);
+  const rowsFor = (light: Light) =>
+    data.rows
+      .filter((r) => r.light === light)
+      .map((r) => (
+        <LightRow
+          key={r.schoolId}
+          row={r}
+          programId={programId}
+          slug={slug}
+          canSetLight={data.canSetLight}
+          meetingBooked={Boolean(data.meeting)}
+        />
+      ));
+
+  const LINE: Record<Light, string> = {
+    GREEN: "Not in it yet, and fine to introduce the program.",
+    AMBER: "Not in it yet. Talk it through with the admin meeting before contacting them.",
+    RED: "Not in it yet, and not to be pitched this program now.",
+  };
+
+  const NONE: Record<Light, string> = {
+    GREEN: "No school is clear to approach.",
+    AMBER: "No school is waiting on a decision.",
+    RED: "No school is being held off.",
+  };
 
   return (
     <div style={{ marginBottom: "16px" }} id="not-in-yet">
-      <h2 style={{ ...sectionHeading, margin: "0 0 4px" }}>
-        Not in {programName} yet
-      </h2>
-      <p style={sectionIntro}>
-        Every school this program has not reached. The light says whether to approach them — it is
-        worked out overnight from what the rest of JOC is already doing with that school.
-      </p>
-
       <Expiries expired={data.expired} slug={slug} />
 
       {!data.everComputed && (
         <Note tone="warn">
-          The lights have not been worked out yet. Until somebody runs them, treat every school here
-          as a discuss-first.
+          The lights have not been worked out yet. Until somebody runs them, treat every school not
+          in this program as a discuss-first.
           {data.canSetLight && " Run them now with the button below."}
         </Note>
       )}
 
-      <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", margin: "0 0 14px" }}>
-        <Chip on={filter === "all"} onClick={() => setFilter("all")}>All · {data.counts.all}</Chip>
-        {(["GREEN", "AMBER", "RED"] as const).map((l) => (
-          <Chip key={l} on={filter === l} onClick={() => setFilter(l)} light={l}>
-            {LIGHT_LABEL[l]} · {data.counts[l]}
-          </Chip>
-        ))}
-        {data.canSetLight && <RunRules slug={slug} />}
-      </div>
-
-      {rows.length === 0 ? (
-        <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "28px 24px" }}>
-          <p style={{ fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.6, maxWidth: "62ch" }}>
-            {data.counts.all === 0
-              ? `Every school on the system is already in ${programName}.`
-              : `No school is on ${LIGHT_LABEL[filter as Light].toLowerCase()}.`}
+      {data.counts.all === 0 ? (
+        <div style={{ ...rowCard, padding: "24px", marginBottom: "10px" }}>
+          <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "62ch" }}>
+            Every school on the system is already in {programName}.
           </p>
         </div>
       ) : (
-        <div style={{ display: "grid", gap: "10px" }}>
-          {rows.map((r) => (
-            <LightRow
-              key={r.schoolId}
-              row={r}
-              programId={programId}
-              slug={slug}
-              canSetLight={data.canSetLight}
-              meetingBooked={Boolean(data.meeting)}
-            />
-          ))}
-        </div>
+        (["GREEN", "AMBER", "RED"] as const).map((l) => (
+          <RowGroup
+            key={l}
+            tone={TONE_OF[l]}
+            title={LIGHT_LABEL[l]}
+            count={data.counts[l]}
+            line={data.counts[l] === 0 ? NONE[l] : LINE[l]}
+          >
+            {rowsFor(l)}
+          </RowGroup>
+        ))
+      )}
+
+      {data.canSetLight && (
+        <p style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", margin: "4px 0 0" }}>
+          <RunRules slug={slug} />
+        </p>
       )}
 
       <NextMeeting data={data} programName={programName} />
@@ -565,27 +567,6 @@ function RunRules({ slug }: { slug: string }) {
       </button>
       {msg && <span style={{ fontFamily: F.read, fontSize: "14px", color: C.muted, lineHeight: 1.45 }}>{msg}</span>}
     </>
-  );
-}
-
-function Chip({
-  on, onClick, light, children,
-}: {
-  on: boolean; onClick: () => void; light?: Light; children: React.ReactNode;
-}) {
-  const c = light ? LIGHT_COLOR[light] : null;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        ...chip, fontSize: "14px", padding: "10px 15px", minHeight: "44px", cursor: "pointer", border: "none",
-        backgroundColor: on ? C.ink : c ? c.tint : C.panel,
-        color: on ? C.white : c ? c.text : C.ink,
-      }}
-    >
-      {children}
-    </button>
   );
 }
 

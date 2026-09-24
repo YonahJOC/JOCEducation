@@ -164,7 +164,7 @@ function Meeting({ m, openByDefault = false }: { m: MeetingView; openByDefault?:
                   <h3 style={{ fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, margin: 0 }}>
                     {items[0].programName}
                   </h3>
-                  <Link href={`/admin/programs/${items[0].programSlug}#not-in-yet`} style={{ fontSize: "15px", fontWeight: 700, color: C.blue, textDecoration: "none" }}>
+                  <Link href={`/admin/programs/${items[0].programSlug}?tab=schools#not-in-yet`} style={{ fontSize: "15px", fontWeight: 700, color: C.blue, textDecoration: "none" }}>
                     Open its console →
                   </Link>
                 </div>

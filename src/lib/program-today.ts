@@ -209,7 +209,7 @@ export async function getProgramToday(programId: number, slug: string): Promise<
         schoolId: d.school.id,
         title: d.school.name,
         line: d.outcomeNote ?? "The admin meeting settled it.",
-        action: { label: "See the light", href: `/admin/programs/${slug}?tab=not-in-yet` },
+        action: { label: "See the light", href: `/admin/programs/${slug}?tab=schools` },
       });
     }
 

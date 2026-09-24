@@ -31,19 +31,24 @@ import { can } from "@/lib/access";
 export const metadata = { title: "Program — JOC Console" };
 export const dynamic = "force-dynamic";
 
-const TABS: TabKey[] = ["today", "schools", "not-in-yet", "calendar", "sign-ups", "setup"];
+const TABS: TabKey[] = ["today", "schools", "calendar", "sign-ups", "setup"];
+
+/** Schools in the program and schools not in it used to be two tabs. */
+const MOVED: Record<string, TabKey> = { "not-in-yet": "schools" };
 
 export default async function ProgramAdminPage({
   params, searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ as?: string; tab?: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
-  const [{ slug }, { as, tab: wanted }] = await Promise.all([params, searchParams]);
+  const [{ slug }, { tab: wanted }] = await Promise.all([params, searchParams]);
 
-  // ?as=coordinator shows the page as whoever runs this program sees it.
-  const asCoordinator = as === "coordinator";
-  const view = await getProgramAdmin(slug, { asCoordinator });
+  // One view of a program, whoever opens it. An admin's is a coordinator's
+  // with Setup on the end — there was a ?as=coordinator that swapped one for
+  // the other, which meant an admin checking a coordinator's console stopped
+  // being able to fix what they found.
+  const view = await getProgramAdmin(slug);
 
   if (view === null) notFound();
   if (view === "denied") {
@@ -64,9 +69,10 @@ export default async function ProgramAdminPage({
 
   // Setup is the one tab that is not for everybody: it edits the questions a
   // school is asked, and says who runs the program.
-  const canSetup = !asCoordinator && (view.canEditForm || view.canSetCoordinators);
+  const canSetup = view.canEditForm || view.canSetCoordinators;
   const tabs = TABS.filter((t) => t !== "setup" || canSetup);
-  const tab: TabKey = tabs.includes(wanted as TabKey) ? (wanted as TabKey) : "today";
+  const asked = (wanted ? MOVED[wanted] : undefined) ?? (wanted as TabKey | undefined);
+  const tab: TabKey = asked && tabs.includes(asked) ? asked : "today";
 
   // The JOC App is the one program whose figures are behind their own
   // capability — that panel is full of every school's data.
@@ -77,7 +83,7 @@ export default async function ProgramAdminPage({
 
   const [traffic, enrolled, reporting, today] = await Promise.all([
     getProgramTraffic(view.id, {
-      canSetLight: !asCoordinator && (openForReview || can(session?.user, "set_program_light")),
+      canSetLight: openForReview || can(session?.user, "set_program_light"),
     }),
     enrolledSchools(view.id),
     programReporting(view.id),
@@ -139,10 +145,8 @@ export default async function ProgramAdminPage({
           counts={counts}
           tabs={tabs}
           active={tab}
-          asCoordinator={asCoordinator}
           tabCounts={{
-            schools: enrolled.length,
-            "not-in-yet": traffic.counts.all,
+            schools: enrolled.length + traffic.counts.all,
             today: today.rows.length,
           }}
         />
@@ -154,7 +158,6 @@ export default async function ProgramAdminPage({
         team={team}
         feeLabel={view.form?.feeCents ? money(view.form.feeCents) : null}
         paymentsOn={isPaymentConfigured}
-        asCoordinator={asCoordinator}
         traffic={traffic}
         enrolled={enrolled}
         tab={tab}

@@ -42,7 +42,7 @@ const body: React.CSSProperties = {
 };
 
 export function ProgramAdminClient({
-  view, forms, team, feeLabel, paymentsOn, asCoordinator = false, traffic = null,
+  view, forms, team, feeLabel, paymentsOn, traffic = null,
   enrolled = [], tab = "today", today = null,
 }: {
   view: ProgramAdminView;
@@ -50,8 +50,6 @@ export function ProgramAdminClient({
   team: { id: string; name: string | null; email: string }[];
   feeLabel: string | null;
   paymentsOn: boolean;
-  /** Previewing the coordinator's view rather than your own. */
-  asCoordinator?: boolean;
   /** Every school not in this program yet, and whether to approach it. */
   traffic?: ProgramTraffic | null;
   /** Every school that is in it, and how far along. */
@@ -102,18 +100,21 @@ export function ProgramAdminClient({
 
       {tab === "today" && today}
 
+      {/* One list of every school: the ones in this program, then the ones
+          that are not, each category opened or shut on its own. */}
       {tab === "schools" && (
-        <ProgramSchools
-          programId={view.id}
-          slug={view.slug}
-          programName={view.name}
-          rows={enrolled}
-          canEdit={!asCoordinator || view.asLead}
-        />
-      )}
-
-      {tab === "not-in-yet" && traffic && (
-        <ProgramLights programId={view.id} slug={view.slug} programName={view.name} data={traffic} />
+        <>
+          <ProgramSchools
+            programId={view.id}
+            slug={view.slug}
+            programName={view.name}
+            rows={enrolled}
+            canEdit
+          />
+          {traffic && (
+            <ProgramLights programId={view.id} slug={view.slug} programName={view.name} data={traffic} />
+          )}
+        </>
       )}
 
       {/* ── Where it is running ────────────────────────────────────────── */}
@@ -405,16 +406,6 @@ export function ProgramAdminClient({
             </div>
           )}
         </div>
-      )}
-      {!asCoordinator && (view.canEditForm || view.canSetCoordinators) && (
-        <p style={{ margin: "18px 0 0" }}>
-          <Link
-            href={`/admin/programs/${view.slug}?tab=${tab}&as=coordinator`}
-            style={{ ...textButton, display: "inline-flex", alignItems: "center" }}
-          >
-            See this as its coordinator does
-          </Link>
-        </p>
       )}
     </div>
   );

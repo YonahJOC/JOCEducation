@@ -90,31 +90,39 @@ export default async function MyProgramsPage() {
             ].join(" · ");
 
             return (
-              <Link
+              <div
                 key={p.id}
-                href={`/admin/programs/${p.slug}`}
+                className="joc-card"
                 style={{
                   backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW,
-                  overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column",
+                  overflow: "hidden", display: "flex", flexDirection: "column",
                 }}
               >
                 <span aria-hidden="true" style={{ display: "block", height: "8px", backgroundColor: p.heroColor }} />
 
-                <span style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                  <span>
+                <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
+                  <div>
                     <span style={{ ...label, color: C.muted, display: "block", marginBottom: "4px" }}>
                       {p.tag}
                       {!p.published && " · draft"}
                     </span>
-                    <span style={{ fontFamily: F.ui, fontSize: "20px", fontWeight: 700, letterSpacing: "-0.025em", color: C.ink, display: "block", lineHeight: 1.2 }}>
+                    {/* The name is the link, and it covers the card — so the
+                        whole card is clickable without nesting a link in a
+                        link, which is what stopped the coordinator's view
+                        being reachable from here. */}
+                    <Link
+                      href={`/admin/programs/${p.slug}`}
+                      className="joc-card-link"
+                      style={{ fontFamily: F.ui, fontSize: "20px", fontWeight: 700, letterSpacing: "-0.025em", color: C.ink, display: "block", lineHeight: 1.2, textDecoration: "none" }}
+                    >
                       {p.name}
-                    </span>
-                  </span>
+                    </Link>
+                  </div>
 
                   {/* A label over a figure, the same anatomy as every row.
                       It was a 26px sentence, which outweighed the program's
                       own name — the thing somebody is here to click. */}
-                  <span>
+                  <div>
                     <span style={{ ...label, color: C.muted, display: "block", marginBottom: "2px" }}>
                       Needs you today
                     </span>
@@ -124,17 +132,18 @@ export default async function MyProgramsPage() {
                     }}>
                       {p.need > 0 ? p.need : "None"}
                     </span>
-                  </span>
+                  </div>
 
                   <span style={{ ...label, color: C.muted, display: "block" }}>{status}</span>
 
-                  <span style={{ marginTop: "auto", paddingTop: "6px" }}>
-                    <span style={{ fontFamily: F.read, fontSize: "15px", color: p.lead ? C.muted : C.orangeText, lineHeight: 1.5 }}>
+                  <div style={{ marginTop: "auto", paddingTop: "6px" }}>
+                    <p style={{ fontFamily: F.read, fontSize: "15px", color: p.lead ? C.muted : C.orangeText, lineHeight: 1.5, margin: 0 }}>
                       {p.lead ? `Run by ${p.lead}` : "Nobody is down as running it"}
-                    </span>
-                  </span>
-                </span>
-              </Link>
+                    </p>
+
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>

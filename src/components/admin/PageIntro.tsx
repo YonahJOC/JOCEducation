@@ -1,18 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { C } from "@/lib/joc-tokens";
+import { useEffect, useRef, useState } from "react";
+import {
+  C, R, F, label, pageTitle, sectionHeading, textButton, primaryButton, noteText, note,
+} from "@/lib/joc-tokens";
 
 /**
- * The header every console page wears: what this page is, and — folded away
- * until wanted — exactly how to change something on it.
+ * The header every console page wears: what this page is, and a link to how
+ * to change something on it.
  *
- * The steps are written for someone who has not used the console before and
- * is not going to guess. They are collapsed by default so they stop being
- * furniture once you know the page, and remembered per page in this browser.
+ * The steps used to open in place — a full-width blue slab that pushed the
+ * page below the fold, and that opened by itself the first time anybody saw
+ * the page. Instructions are a thing you go and read, not a thing the page
+ * wears, so they open over the page now and leave it exactly where it was.
+ *
+ * A <dialog>, so Escape closes it, focus is trapped and returned, and the
+ * page behind it is inert — none of which is worth hand-rolling.
  */
 export function PageIntro({
-  title, what, steps, note, children, as: Heading = "h1",
+  title, what, steps, note: warning, children, as: Heading = "h1",
 }: {
   title: string;
   /** One or two sentences: what this page is for. */
@@ -30,80 +36,70 @@ export function PageIntro({
    */
   as?: "h1" | "h2";
 }) {
-  const key = `joc-intro-${title.toLowerCase().replace(/[^a-z]+/g, "-")}`;
-  // Closed on the first render, always — the server cannot know what is in
-  // this browser's storage, and reading it while hydrating made the server
-  // render "How do I change this?" while the browser rendered "Hide the
-  // steps". That is a hydration mismatch on every page of the console, and it
-  // threw away and rebuilt the whole tree each time.
-  //
-  // So the answer arrives a moment later instead, in an effect, which is the
-  // only honest place for a question only the browser can answer.
+  const ref = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
 
+  // showModal() is the only way to get the backdrop and the inert page, and
+  // it cannot be set as a prop — the element has to be told.
   useEffect(() => {
-    try {
-      // Open the first time somebody sees this page, closed after that.
-      if (window.localStorage.getItem(key) !== "seen") setOpen(true);
-    } catch {
-      // A private window, or storage blocked. Staying closed is fine.
-    }
-  }, [key]);
-
-  function toggle() {
-    setOpen((v) => {
-      try { window.localStorage.setItem(key, "seen"); } catch { /* private window */ }
-      return !v;
-    });
-  }
+    const d = ref.current;
+    if (!d) return;
+    if (open && !d.open) d.showModal();
+    if (!open && d.open) d.close();
+  }, [open]);
 
   return (
-    <div style={{ marginBottom: "22px" }}>
+    <div style={{ marginBottom: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
-        <Heading style={{ fontWeight: 800, fontSize: Heading === "h1" ? "26px" : "19px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 4px" }}>
+        <Heading style={Heading === "h1" ? { ...pageTitle, margin: "0 0 4px" } : { ...sectionHeading, margin: "0 0 4px" }}>
           {title}
         </Heading>
         {children}
       </div>
 
-      <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: "0 0 10px", maxWidth: "74ch" }}>
+      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: 0, maxWidth: "70ch" }}>
         {what}
+        {steps && steps.length > 0 && (
+          <>
+            {" "}
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              style={{ ...textButton, minHeight: 0, verticalAlign: "baseline" }}
+            >
+              How this page works
+            </button>
+          </>
+        )}
       </p>
 
       {steps && steps.length > 0 && (
-        <>
-          <button
-            onClick={toggle}
-            aria-expanded={open}
-            style={{
-              fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
-              color: C.blue, background: "none", border: "none", padding: "6px 0",
-              cursor: "pointer", minHeight: "38px",
-            }}
-          >
-            {open ? "Hide the steps" : "How do I change this?"}
-          </button>
+        <dialog ref={ref} className="joc-steps" onClose={() => setOpen(false)}>
+          <div style={{ backgroundColor: C.white, borderRadius: R.row, padding: "22px 24px" }}>
+            <p style={{ ...label, color: C.muted, margin: "0 0 4px" }}>How this page works</p>
+            <p style={{ ...sectionHeading, margin: "0 0 14px" }}>{title}</p>
 
-          {open && (
-            <div
-              style={{
-                backgroundColor: "#F4F7FD", borderRadius: "14px",
-                padding: "18px 22px", marginTop: "4px", maxWidth: "74ch",
-              }}
-            >
-              <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "9px" }}>
-                {steps.map((s, i) => (
-                  <li key={i} style={{ fontSize: "14.5px", color: C.ink, lineHeight: 1.6 }}>{s}</li>
-                ))}
-              </ol>
-              {note && (
-                <p style={{ fontSize: "15px", color: "#C96C00", backgroundColor: "rgba(250,145,45,.12)", borderRadius: "10px", padding: "11px 14px", margin: "14px 0 0", lineHeight: 1.55 }}>
-                  {note}
-                </p>
-              )}
-            </div>
-          )}
-        </>
+            <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: "12px" }}>
+              {steps.map((s, i) => (
+                <li key={i} style={{ display: "flex", gap: "12px", alignItems: "baseline" }}>
+                  <span style={{ ...label, color: C.blue, flexShrink: 0, minWidth: "16px" }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span style={{ fontFamily: F.read, fontSize: "15px", color: C.ink, lineHeight: 1.5 }}>{s}</span>
+                </li>
+              ))}
+            </ol>
+
+            {warning && (
+              <p style={{ ...note("warn"), ...noteText("warn"), margin: "16px 0 0" }}>{warning}</p>
+            )}
+
+            {/* The dialog's own form: this closes it with no JavaScript of ours. */}
+            <form method="dialog" style={{ marginTop: "20px" }}>
+              <button type="submit" style={primaryButton}>Got it</button>
+            </form>
+          </div>
+        </dialog>
       )}
     </div>
   );

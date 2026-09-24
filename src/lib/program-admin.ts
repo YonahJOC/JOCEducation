@@ -95,7 +95,7 @@ export type ProgramAdminView = {
  */
 export async function getProgramAdmin(
   slug: string,
-  opts: { asCoordinator?: boolean } = {},
+
 ): Promise<ProgramAdminView | null | "denied"> {
   if (!isDatabaseConfigured()) return null;
 
@@ -186,10 +186,10 @@ export async function getProgramAdmin(
         audience: e.audience,
       })),
       leads: p.leads,
-      asLead: opts.asCoordinator || (isLead && !managesPrograms && !readsForms && !namesCoordinators),
-      canEditProgram: !opts.asCoordinator && (open || managesPrograms),
-      canSetCoordinators: !opts.asCoordinator && (open || namesCoordinators),
-      canEditForm: !opts.asCoordinator && (open || managesPrograms || readsForms || namesCoordinators),
+      asLead: isLead && !managesPrograms && !readsForms && !namesCoordinators,
+      canEditProgram: open || managesPrograms,
+      canSetCoordinators: open || namesCoordinators,
+      canEditForm: open || managesPrograms || readsForms || namesCoordinators,
     };
   } catch {
     return null;

@@ -4,17 +4,13 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { setStage, setEnrollmentContact, reconcileEnrollments } from "@/app/actions/program-enrollment";
 import {
-  STAGES, STAGE_LABEL, STAGE_MEANING, STAGE_TONE, countsAsIn,
-  type Stage, type EnrolledRow,
-} from "@/lib/program-enrollment";
+  STAGES, STAGE_LABEL, STAGE_MEANING, STAGE_TONE, countsAsIn, type Stage, type EnrolledRow, } from "@/lib/program-enrollment";
 import { STUCK_DAYS } from "@/lib/program-today";
 import {
-  C, R, F, rowCard, rowDetail, primaryButton, secondaryButton, chip,
-  sectionHeading, sectionIntro, field, fieldLabel, quietButton, plainChip,
-  textButton, type Tone,
-} from "@/lib/joc-tokens";
+  C, F, rowDetail, primaryButton, secondaryButton, chip, sectionHeading, sectionIntro, field, fieldLabel, quietButton, plainChip, textButton, type Tone } from "@/lib/joc-tokens";
 import { TONE } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
+import { RowGroup } from "@/components/ui/RowGroup";
 
 /**
  * "Schools in <Program>" — who runs it, and how far along each one is.
@@ -50,54 +46,72 @@ export function ProgramSchools({
   rows: EnrolledRow[];
   canEdit: boolean;
 }) {
-  const [filter, setFilter] = useState<"all" | "going" | "setup" | "stopped">("all");
-  const shown = filter === "all" ? rows : rows.filter((r) => STAGE_TONE[r.stage] === filter);
+  // Three categories, each with its own count, each opened or shut on its
+  // own. It was one list behind four filter chips, so picking a category hid
+  // every other school — and the schools not in the program at all were on a
+  // different tab, which is a coordinator's whole list split in two.
+  const group = (t: "going" | "setup" | "stopped") => rows.filter((r) => STAGE_TONE[r.stage] === t);
+  const going = group("going");
+  const setup = group("setup");
+  const stopped = group("stopped");
 
-  const counts = {
-    all: rows.length,
-    going: rows.filter((r) => STAGE_TONE[r.stage] === "going").length,
-    setup: rows.filter((r) => STAGE_TONE[r.stage] === "setup").length,
-    stopped: rows.filter((r) => STAGE_TONE[r.stage] === "stopped").length,
-  };
+  const rowsFor = (list: EnrolledRow[]) =>
+    list.map((r) => <Row key={r.id} row={r} programId={programId} slug={slug} canEdit={canEdit} />);
 
   return (
     <div style={{ marginBottom: "16px" }} id="schools-in">
-      <h2 style={{ ...sectionHeading, margin: "0 0 4px" }}>Schools in {programName}</h2>
+      <h2 style={{ ...sectionHeading, margin: "0 0 4px" }}>Schools</h2>
       <p style={sectionIntro}>
-        Every school this program has reached, and how far along each one is. A school here is not on
-        the &ldquo;not in {programName} yet&rdquo; list below, and counts as busy on every other
-        program&rsquo;s traffic light.
+        Every school on the system, whether or not it is in {programName} yet. Open a category to
+        see who is in it.
       </p>
 
-      <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", margin: "0 0 14px" }}>
-        <Chip on={filter === "all"} onClick={() => setFilter("all")}>All · {counts.all}</Chip>
-        <Chip on={filter === "going"} onClick={() => setFilter("going")} tone="going">Running · {counts.going}</Chip>
-        <Chip on={filter === "setup"} onClick={() => setFilter("setup")} tone="setup">Being set up · {counts.setup}</Chip>
-        <Chip on={filter === "stopped"} onClick={() => setFilter("stopped")} tone="stopped">Stopped · {counts.stopped}</Chip>
-        {canEdit && <Reconcile slug={slug} />}
-      </div>
-
-      {shown.length === 0 ? (
-        <div style={{ ...rowCard, padding: "24px" }}>
-          <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "62ch" }}>
-            {rows.length === 0 ? (
-              <>
-                No school is in {programName} yet. A school joins it from the list below — reach out,
-                and it starts at &ldquo;introduced&rdquo;.
-                {canEdit && " If it has been running and nobody recorded it, reconcile above."}
-              </>
-            ) : (
-              <>No school is at that stage.</>
-            )}
-          </p>
-        </div>
-      ) : (
-        <div style={{ display: "grid", gap: "10px" }}>
-          {shown.map((r) => (
-            <Row key={r.id} row={r} programId={programId} slug={slug} canEdit={canEdit} />
-          ))}
-        </div>
+      {canEdit && (
+        <p style={{ margin: "0 0 14px" }}>
+          <Reconcile slug={slug} />
+        </p>
       )}
+
+      <RowGroup
+        tone="good"
+        title="Running"
+        count={going.length}
+        open
+        line={
+          going.length === 0
+            ? `No school is running ${programName} yet.`
+            : `In ${programName} and running it.`
+        }
+      >
+        {rowsFor(going)}
+      </RowGroup>
+
+      <RowGroup
+        tone="info"
+        title="Being set up"
+        count={setup.length}
+        open
+        line={
+          setup.length === 0
+            ? "Nobody is part-way through signing up."
+            : "Introduced, registered or booked — not running yet."
+        }
+      >
+        {rowsFor(setup)}
+      </RowGroup>
+
+      <RowGroup
+        tone="quiet"
+        title="Stopped"
+        count={stopped.length}
+        line={
+          stopped.length === 0
+            ? "No school has stopped."
+            : `Was in ${programName} and is not any more.`
+        }
+      >
+        {rowsFor(stopped)}
+      </RowGroup>
     </div>
   );
 }
@@ -306,26 +320,5 @@ function Reconcile({ slug }: { slug: string }) {
       </button>
       {msg && <span style={{ fontFamily: F.read, fontSize: "14px", color: C.muted, lineHeight: 1.45, maxWidth: "46ch" }}>{msg}</span>}
     </>
-  );
-}
-
-function Chip({
-  on, onClick, tone, children,
-}: {
-  on: boolean; onClick: () => void; tone?: "going" | "setup" | "stopped"; children: React.ReactNode;
-}) {
-  const t = tone ? TONE[TONE_OF[tone]] : null;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        ...chip, fontSize: "14px", padding: "10px 15px", minHeight: "44px", cursor: "pointer", border: "none",
-        backgroundColor: on ? C.ink : t ? t.bg : C.panel,
-        color: on ? C.white : t ? t.fg : C.ink,
-      }}
-    >
-      {children}
-    </button>
   );
 }
