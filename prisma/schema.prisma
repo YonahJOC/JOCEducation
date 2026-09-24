@@ -1609,6 +1609,16 @@ model AppSchoolStats {
   storeTopPrize          String?
   storeLastRedeemedAt    DateTime?
 
+  /// Acts logged at this school since it joined, as the app reports it.
+  /// All-time, not this year — the public dashboard offers no year window.
+  actsAllTime Int?
+
+  /// Time logged at this school, all-time, in whatever unit the app means by
+  /// spendTimeByOrganization. Deliberately not called minutes or hours: the
+  /// field name does not say, and a figure shown in the wrong unit is worse
+  /// than one not shown. Nothing renders it until JOC confirms which it is.
+  timeAllTimeRaw Int?
+
   /// When the sync last read all of this out of the app.
   syncedAt DateTime
 

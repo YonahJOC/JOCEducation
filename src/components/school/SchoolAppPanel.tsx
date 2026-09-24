@@ -65,18 +65,32 @@ export async function SchoolAppPanel({ schoolId }: { schoolId: string }) {
       </p>
 
       <div className="joc-figures" style={{ marginBottom: "16px" }}>
-        <Cell
-          value={String(s.activeStudents)}
-          unit={
-            school?.studentCount
-              ? `of ${school.studentCount}`
-              : null
-          }
-          name="Active this month"
-          note={school?.studentCount ? null : "Nobody has recorded your enrolment"}
-        />
+        {/* All-time, because the app's public figures carry no year window.
+            Said as "since you joined" rather than dressed up as this year. */}
+        {s.actsAllTime != null ? (
+          <Cell
+            value={s.actsAllTime.toLocaleString("en-US")}
+            name="Acts logged since you joined"
+          />
+        ) : (
+          <Cell value="Not read" word name="Acts logged" note="The app hasn't reported it yet" />
+        )}
 
-        <Cell value={String(s.opportunitiesOpen)} name="Opportunities open" />
+        {s.activeStudents > 0 ? (
+          <Cell
+            value={String(s.activeStudents)}
+            unit={school?.studentCount ? `of ${school.studentCount}` : null}
+            name="Active this month"
+            note={school?.studentCount ? null : "Nobody has recorded your enrolment"}
+          />
+        ) : (
+          <Cell
+            value="Not read"
+            word
+            name="Active this month"
+            note="This one needs a login to the app"
+          />
+        )}
 
         {/* Null is the app saying it cannot answer; 0 is the app saying none.
             They are different facts and are never shown the same way. */}
@@ -92,6 +106,16 @@ export async function SchoolAppPanel({ schoolId }: { schoolId: string }) {
           />
         )}
       </div>
+
+      {/* The last thing anybody there did, and never who did it. */}
+      {s.lastActivityText && (
+        <p style={{
+          fontFamily: F.read, fontSize: "16px", lineHeight: 1.55, color: C.muted,
+          margin: "0 0 16px", maxWidth: "58ch",
+        }}>
+          The most recent one was &ldquo;{s.lastActivityText}&rdquo;.
+        </p>
+      )}
 
       {s.unapprovedMinutes > 0 && (
         <BandRow
