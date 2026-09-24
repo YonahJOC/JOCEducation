@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { setSchoolPlan, setSchoolStatus, revokeSchoolAccess } from "@/app/actions/admin";
 
 const PLANS = [
@@ -33,9 +33,6 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
-};
 
 export function PlanPanel({
   schoolId, plan, planStatus, seats, grantedManually, renewsOn, status, disabled,
@@ -103,7 +100,7 @@ export function PlanPanel({
   return (
     <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
           Plan &amp; access
         </p>
         {!editing && (
@@ -127,7 +124,7 @@ export function PlanPanel({
               <Row k="Renews" v={renewsOn ? new Date(renewsOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : "No renewal date"} />
               {grantedManually && (
                 <div style={{ backgroundColor: "rgba(27,127,75,.07)", border: "1px solid rgba(27,127,75,.25)", padding: "11px 13px", borderRadius: "10px", marginTop: "6px" }}>
-                  <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1D6B37", margin: "0 0 5px" }}>
+                  <p style={{ ...label, color: "#1D6B37", margin: "0 0 5px" }}>
                     {(grantKind ?? "granted").toLowerCase()} · free access
                   </p>
                   {grantNote && (

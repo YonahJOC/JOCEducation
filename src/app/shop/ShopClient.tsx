@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { OrderForm } from "./OrderForm";
-import { C, ROW_SHADOW, R } from "@/lib/joc-tokens";
+import { label, C, ROW_SHADOW, R } from "@/lib/joc-tokens";
 
 export type ShopProduct = {
   id: string;
@@ -47,7 +47,7 @@ export function ShopClient({
       {/* Page header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px", marginBottom: "36px" }}>
         <div>
-          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>SCHOOL SHOP</p>
+          <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>SCHOOL SHOP</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
             {headline}
           </h1>
@@ -86,7 +86,7 @@ export function ShopClient({
         {displayed.map((p) => (
           <div key={p.id} style={{ backgroundColor: "#fff", borderRadius: "22px", border: `1px solid ${C.hairline}`, overflow: "hidden", position: "relative" }}>
             {p.badge && (
-              <span style={{ position: "absolute", top: "14px", right: "14px", zIndex: 1, backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 10px" }}>{p.badge}</span>
+              <span style={{ position: "absolute", top: "14px", right: "14px", zIndex: 1, backgroundColor: "#FA912D", color: "#10233F", ...label, borderRadius: R.chip, padding: "4px 10px" }}>{p.badge}</span>
             )}
             {/* Photo, when there is one */}
             <div style={{ aspectRatio: "4/3", backgroundColor: "#F4F7FD", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
@@ -100,7 +100,7 @@ export function ShopClient({
               )}
             </div>
             <div style={{ padding: "20px" }}>
-              <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 600, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 10px", marginBottom: "10px" }}>{p.category}</span>
+              <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#12306F", ...label, borderRadius: R.chip, padding: "4px 10px", marginBottom: "10px" }}>{p.category}</span>
               <h2 style={{ fontWeight: 700, fontSize: "17.5px", color: "#10233F", lineHeight: 1.25, marginBottom: "6px" }}>{p.name}</h2>
               <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, marginBottom: "18px" }}>{p.detail}</p>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -151,7 +151,7 @@ export function ShopClient({
                     <div key={p.id} style={{ display: "flex", gap: "14px", alignItems: "flex-start", backgroundColor: "#fff", borderRadius: "16px", padding: "16px", border: `1px solid ${C.hairline}` }}>
                       <div style={{ width: "56px", height: "56px", borderRadius: "10px", backgroundColor: "#F4F7FD", flexShrink: 0 }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontWeight: 600, fontSize: "14.5px", color: "#10233F", marginBottom: "4px" }}>{p.name}</p>
+                        <p style={{ fontWeight: 600, fontSize: "15px", color: "#10233F", marginBottom: "4px" }}>{p.name}</p>
                         <p style={{ fontSize: "13px", color: "#4A5A74", marginBottom: "10px" }}>${p.price} each</p>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <button onClick={() => removeFromCart(p.id)} style={{ width: "28px", height: "28px", borderRadius: "50%", border: `1px solid ${C.hairline}`, backgroundColor: "#fff", cursor: "pointer", fontWeight: 700, fontSize: "15px" }}>−</button>

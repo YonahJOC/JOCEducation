@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { PageIntro } from "@/components/admin/PageIntro";
@@ -98,7 +98,7 @@ async function Inner() {
                         {c.num}. {c.theme}
                       </span>
                       {state === "current" && (
-                        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
+                        <span style={{ ...label, color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>
                           Now
                         </span>
                       )}
@@ -157,8 +157,7 @@ async function Inner() {
 }
 
 const th: React.CSSProperties = {
-  padding: "11px 16px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase",
-  fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`,
+  padding: "11px 16px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`,
   backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 

@@ -130,7 +130,7 @@ export function AuthCard({
           gap: "10px",
           fontFamily: "var(--font-outfit)",
           fontWeight: 600,
-          fontSize: "14.5px",
+          fontSize: "15px",
           color: C.ink,
           backgroundColor: "#fff",
           border: `1.5px solid ${C.hairline}`,

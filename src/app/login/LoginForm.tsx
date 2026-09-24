@@ -37,7 +37,7 @@ export function LoginForm({
             {next && <input type="hidden" name="next" value={next} />}
             <button
               type="submit"
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "14.5px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "13px 20px", minHeight: "48px", borderRadius: "12px", border: `1px solid ${C.hairline}`, backgroundColor: "#fff", cursor: "pointer", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "20px", fontFamily: "var(--font-outfit)" }}
             >
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
                 <path d="M17.64 9.2a10.34 10.34 0 0 0-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z" fill="#4285F4" />
@@ -97,7 +97,7 @@ export function LoginForm({
           </button>
         </form>
       ) : (
-        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
           Sign-in is not switched on yet. Write to{" "}
           <a href="mailto:education@justonechesed.org" style={{ color: C.blue, fontWeight: 600 }}>
             education@justonechesed.org

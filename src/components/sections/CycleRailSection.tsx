@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getCycleState, getCurrentWeek, type Cycle } from "@/lib/cycles";
 import { CurrentCycleSection } from "./CurrentCycleSection";
-import { ROW_SHADOW, C, R } from "@/lib/joc-tokens";
+import { label, ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 
 const CARD_WIDTH = 300;
 const CARD_GAP = 12;
@@ -110,10 +110,7 @@ function RailCard({
       {/* Hebrew month */}
       <p
         style={{
-          fontSize: "11px",
-          fontWeight: 700,
-          letterSpacing: "0.04em",
-          textTransform: "uppercase",
+          ...label,
           color: active ? cycle.color : "#4A5A74",
           marginBottom: "4px",
         }}
@@ -283,10 +280,7 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
       {/* Page heading */}
       <p
         style={{
-          fontWeight: 700,
-          fontSize: "12px",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
+          ...label,
           color: "#C96C00",
           marginBottom: "10px",
         }}

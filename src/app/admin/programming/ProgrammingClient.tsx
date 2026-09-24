@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { label, R, C, pageTitle } from "@/lib/joc-tokens";
 import { saveEvent, deleteEvent, cancelEvent } from "@/app/actions/events";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -51,10 +51,6 @@ const field: React.CSSProperties = {
   fontSize: "14px", color: C.ink, backgroundColor: "#fff",
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
@@ -157,13 +153,13 @@ function Group({
 }) {
   return (
     <div>
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
+      <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
         {title}
       </p>
       {events.length === 0 ? (
         empty ? (
           <div style={{ backgroundColor: "#fff", border: `1px dashed ${C.hairline}`, borderRadius: "16px", padding: "32px 22px", textAlign: "center" }}>
-            <p style={{ fontSize: "14.5px", color: "#4A5A74", margin: 0 }}>{empty}</p>
+            <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>{empty}</p>
           </div>
         ) : null
       ) : (
@@ -180,7 +176,7 @@ function Group({
                 {e.startsAt}
               </span>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
+                <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {e.title}
                   {!e.published && (
                     <span style={{ fontSize: "11px", fontWeight: 700, color: "#C96C00", backgroundColor: "rgba(250,145,45,.14)", borderRadius: R.chip, padding: "2px 8px", marginLeft: "8px" }}>

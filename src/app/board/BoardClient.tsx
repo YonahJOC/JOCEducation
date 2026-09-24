@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useMemo, useTransition } from "react";
 import { submitBoardPost, toggleBoardLike } from "@/app/actions/board";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 export type BoardIdea = {
   id: string;
@@ -115,7 +115,7 @@ export function BoardClient({
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px", marginBottom: "36px" }}>
         <div>
-          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
+          <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "10px" }}>
             {headline}
           </h1>
@@ -126,14 +126,14 @@ export function BoardClient({
         {signedIn ? (
           <button
             onClick={() => { setShowForm(!showForm); setNotice(null); setError(null); }}
-            style={{ fontFamily: "var(--font-outfit)", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0, minHeight: "46px" }}
+            style={{ fontFamily: "var(--font-outfit)", backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0, minHeight: "46px" }}
           >
             {showForm ? "Close" : "+ Share an idea"}
           </button>
         ) : (
           <Link
             href="/login"
-            style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}
+            style={{ backgroundColor: "#FA912D", color: "#10233F", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}
           >
             Sign in to share an idea
           </Link>
@@ -142,12 +142,12 @@ export function BoardClient({
 
       {notice && (
         <div style={{ backgroundColor: "rgba(27,127,75,.08)", border: "1px solid rgba(27,127,75,.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px" }}>
-          <p style={{ fontSize: "14.5px", color: "#1D6B37", margin: 0, lineHeight: 1.5 }}>{notice}</p>
+          <p style={{ fontSize: "15px", color: "#1D6B37", margin: 0, lineHeight: 1.5 }}>{notice}</p>
         </div>
       )}
       {error && (
         <div style={{ backgroundColor: "rgba(184,50,30,.07)", border: "1px solid rgba(184,50,30,.25)", borderRadius: "14px", padding: "14px 18px", marginBottom: "20px" }}>
-          <p style={{ fontSize: "14.5px", color: "#A3261A", margin: 0, lineHeight: 1.5 }}>{error}</p>
+          <p style={{ fontSize: "15px", color: "#A3261A", margin: 0, lineHeight: 1.5 }}>{error}</p>
         </div>
       )}
 
@@ -258,7 +258,7 @@ export function BoardClient({
                   <span style={{ fontSize: "12px", color: "#4A5A74" }}>{idea.ts}</span>
                 </div>
                 <h2 style={{ fontWeight: 700, fontSize: "18.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: "#10233F", marginBottom: "8px" }}>{idea.title}</h2>
-                <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px", whiteSpace: "pre-wrap" }}>{idea.body}</p>
+                <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px", whiteSpace: "pre-wrap" }}>{idea.body}</p>
                 <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                   <span style={{ fontSize: "13px", color: "#4A5A74", fontWeight: 500 }}>{idea.school}</span>
                   <button
@@ -290,6 +290,6 @@ export function BoardClient({
 
 const inputStyle: React.CSSProperties = {
   backgroundColor: "#F8FAFE", border: `1px solid ${C.hairline}`, borderRadius: "12px",
-  padding: "12px 16px", fontSize: "14.5px", color: "#10233F", fontFamily: "var(--font-outfit)",
+  padding: "12px 16px", fontSize: "15px", color: "#10233F", fontFamily: "var(--font-outfit)",
   width: "100%", boxSizing: "border-box", outline: "none", minHeight: "46px",
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label as uiLabel, R, C } from "@/lib/joc-tokens";
 import { setBoardPostApproved, deleteBoardPost } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -72,7 +72,7 @@ export function BoardClient({ posts, disabled }: { posts: BoardRow[]; disabled?:
 function SectionHead({ label, accent }: { label: string; accent?: boolean }) {
   return (
     <p style={{
-      fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700,
+      ...uiLabel,
       color: accent ? "#C96C00" : "#4A5A74", margin: "0 0 10px",
     }}>
       {label}

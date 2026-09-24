@@ -37,7 +37,7 @@ export default async function FormsPage() {
                   )}
                 </p>
                 {f.description && (
-                  <p style={{ fontSize: "14.5px", lineHeight: 1.55, color: "#4A5A74", margin: 0, maxWidth: "62ch" }}>
+                  <p style={{ fontSize: "15px", lineHeight: 1.55, color: "#4A5A74", margin: 0, maxWidth: "62ch" }}>
                     {f.description.split("\n")[0]}
                   </p>
                 )}

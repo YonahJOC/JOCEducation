@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { savePlanPrices, saveProgramPrices, importCurrentPricing } from "@/app/actions/pricing";
 import {
@@ -116,7 +116,7 @@ export function PricingClient({
 
       {/* Plans */}
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
           Plans — price per month
         </p>
         <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 16px" }}>
@@ -172,7 +172,7 @@ export function PricingClient({
 
       {/* Programs */}
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
           Programs — what each one costs
         </p>
         <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 16px" }}>
@@ -251,8 +251,7 @@ export function PricingClient({
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", fontSize: "12px", fontWeight: 700, letterSpacing: "0.08em",
-  textTransform: "uppercase", color: "#4A5A74", padding: "0 6px 8px", whiteSpace: "nowrap",
+  textAlign: "left", ...label, color: "#4A5A74", padding: "0 6px 8px", whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = { padding: "4px 6px", verticalAlign: "middle" };
 

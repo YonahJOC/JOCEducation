@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { redirect } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
@@ -82,7 +82,7 @@ export default async function RoomsPage() {
 
   return (
     <div style={{ maxWidth: "980px", margin: "0 auto", padding: "48px 26px 72px" }}>
-      <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
+      <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>
         STAFF ROOM
       </p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: C.ink, marginBottom: "12px" }}>
@@ -103,7 +103,7 @@ export default async function RoomsPage() {
             The JOC education team opens the rooms. Tell them what you would want to talk about and
             they can start one.
           </p>
-          <Link href="/contact" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none" }}>
+          <Link href="/contact" style={{ display: "inline-block", backgroundColor: "#2D46AF", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none" }}>
             Suggest a room
           </Link>
         </div>

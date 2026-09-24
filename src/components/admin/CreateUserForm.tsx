@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { createUserAccount } from "@/app/actions/admin";
 import { ASSIGNABLE_ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS, type Role } from "@/lib/access";
 
@@ -9,9 +9,6 @@ const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "44px",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 /**
@@ -60,10 +57,10 @@ export function CreateUserForm({
   if (created) {
     return (
       <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.greenText}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.greenText, margin: "0 0 12px" }}>
+        <p style={{ ...label, color: C.greenText, margin: "0 0 12px" }}>
           Account created
         </p>
-        <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 14px" }}>
           Give these to <strong style={{ color: C.ink }}>{created.email}</strong>. The password is not stored
           in readable form, so this is the only time it can be shown — they will be asked to change it when
           they first sign in.
@@ -126,7 +123,7 @@ export function CreateUserForm({
       onSubmit={submit}
       style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px", width: "100%" }}
     >
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
         Create an account
       </p>
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { siteContent, type RepeatItem } from "@/lib/site-content";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 export const metadata: Metadata = {
   title: { absolute: "About — JOC Education" },
@@ -57,7 +57,7 @@ export default async function AboutPage() {
       {/* Hero */}
       <div style={{ backgroundColor: "#10233F", padding: "68px 26px 60px" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginBottom: "14px" }}>ABOUT JOC EDUCATION</p>
+          <p style={{ ...label, color: "#FA912D", marginBottom: "14px" }}>ABOUT JOC EDUCATION</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(34px, 4.5vw, 56px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#fff", maxWidth: "18ch", marginBottom: "20px" }}>
             {headline}
           </h1>
@@ -79,7 +79,7 @@ export default async function AboutPage() {
           }}
         >
           <div style={{ maxWidth: stats.length > 0 ? undefined : "70ch" }}>
-            <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>OUR MISSION</p>
+            <p style={{ ...label, color: "#C96C00", marginBottom: "12px" }}>OUR MISSION</p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(26px, 3vw, 38px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: "#10233F", marginBottom: "20px" }}>
               {missionHeading}
             </h2>
@@ -106,7 +106,7 @@ export default async function AboutPage() {
         {/* History */}
         {milestones.length > 0 && (
           <div style={{ marginBottom: "72px" }}>
-            <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>OUR HISTORY</p>
+            <p style={{ ...label, color: "#C96C00", marginBottom: "12px" }}>OUR HISTORY</p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(24px, 2.8vw, 34px)", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "32px" }}>
               How JOC got here.
             </h2>
@@ -125,7 +125,7 @@ export default async function AboutPage() {
         {/* Team */}
         {team.length > 0 && (
           <div style={{ marginBottom: "72px" }}>
-            <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>THE TEAM</p>
+            <p style={{ ...label, color: "#C96C00", marginBottom: "12px" }}>THE TEAM</p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(24px, 2.8vw, 34px)", letterSpacing: "-0.03em", color: "#10233F", marginBottom: "32px" }}>
               Built by educators, for educators.
             </h2>
@@ -136,8 +136,8 @@ export default async function AboutPage() {
                     <span style={{ fontSize: "22px" }}>👤</span>
                   </div>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "4px" }}>{person.title}</h3>
-                  <p style={{ fontWeight: 600, fontSize: "13px", color: "#2D46AF", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>{person.value}</p>
-                  <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6 }}>{person.body}</p>
+                  <p style={{ ...label, color: C.blue, marginBottom: "12px" }}>{person.value}</p>
+                  <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6 }}>{person.body}</p>
                 </div>
               ))}
             </div>

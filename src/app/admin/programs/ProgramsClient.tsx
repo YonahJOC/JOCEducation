@@ -165,7 +165,7 @@ export function ProgramsClient({
                     the coordinators was behind a word that named neither. */}
                 <Link
                   href={`/admin/programs/${p.slug}`}
-                  style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, textDecoration: "none", display: "inline-block", minHeight: "26px" }}
+                  style={{ fontSize: "15px", fontWeight: 600, color: C.ink, textDecoration: "none", display: "inline-block", minHeight: "26px" }}
                 >
                   {p.name}
                 </Link>

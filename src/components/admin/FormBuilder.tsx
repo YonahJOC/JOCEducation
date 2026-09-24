@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import {
   FIELD_TYPES, FIELD_TYPE_LABELS, NEEDS_OPTIONS, type FieldType,
 } from "@/lib/forms";
@@ -11,10 +11,6 @@ const field: React.CSSProperties = {
   fontSize: "14px", color: C.ink, backgroundColor: "#fff",
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
@@ -144,7 +140,7 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 6px" }}>
           Questions
         </p>
         <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
@@ -228,7 +224,7 @@ export function FormBuilder({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 12px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 12px" }}>
           Payment
         </p>
         {!paymentsOn && (

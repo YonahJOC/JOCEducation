@@ -5,7 +5,7 @@ import { siteContent } from "@/lib/site-content";
 import { safeAuth } from "@/auth";
 import { hasSiteAccess } from "@/lib/access";
 import { ResourceLibrary } from "./ResourceLibrary";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Resources" };
 
@@ -22,7 +22,7 @@ export default async function ResourcesPage() {
 
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 26px 72px" }}>
-      <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>
+      <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>
         {c.text("hero.eyebrow", "RESOURCE LIBRARY")}
       </p>
       <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px" }}>
@@ -37,7 +37,7 @@ export default async function ResourcesPage() {
 
       {!canDownload && (
         <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "14px 20px", marginBottom: "32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
-          <p style={{ fontSize: "14.5px", color: "#10233F", margin: 0 }}>
+          <p style={{ fontSize: "15px", color: "#10233F", margin: 0 }}>
             <strong>Full access</strong> is included with any JOC Education subscription.
           </p>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>

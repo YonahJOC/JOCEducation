@@ -6,7 +6,7 @@ import { STRIPE_COLORS } from "@/lib/lessons";
 import { toggleSavedLesson } from "@/app/actions/saved";
 import { RichText } from "@/components/ui/RichText";
 import type { PublicLesson } from "@/lib/content";
-import { ROW_SHADOW, C, R } from "@/lib/joc-tokens";
+import { label, ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 
 const GRADE_LABELS: Record<string, string> = { es: "Elementary school", ms: "Middle school", hs: "High school" };
 
@@ -91,7 +91,7 @@ export function LessonDetail({
         {/* Main content */}
         <div>
           {/* Theme pill */}
-          <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: R.chip, padding: "6px 14px", marginBottom: "14px" }}>
+          <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", ...label, borderRadius: R.chip, padding: "6px 14px", marginBottom: "14px" }}>
             {lesson.theme}
           </span>
 
@@ -319,7 +319,7 @@ export function LessonDetail({
               >
                 <div style={{ height: "6px", backgroundColor: STRIPE_COLORS[(rel.id - 1) % STRIPE_COLORS.length] }} />
                 <div style={{ padding: "18px" }}>
-                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "10px", letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
+                  <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", ...label, borderRadius: R.chip, padding: "4px 10px", marginBottom: "8px" }}>{rel.theme}</span>
                   <h3 style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", lineHeight: 1.25, marginBottom: "6px" }}>{rel.title}</h3>
                   <p style={{ fontSize: "15px", color: "#4A5A74", margin: 0 }}>{rel.time} min · {rel.prep} prep</p>
                 </div>

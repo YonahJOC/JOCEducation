@@ -97,7 +97,7 @@ export function RoomList({ rooms }: { rooms: RoomCard[] }) {
                     )}
                   </div>
 
-                  <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 10px" }}>
+                  <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "0 0 10px" }}>
                     {r.description}
                   </p>
 

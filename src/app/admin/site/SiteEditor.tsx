@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { saveDraft, discardDraft, publishDrafts, setPreview } from "@/app/actions/site";
 import { PageIntro } from "@/components/admin/PageIntro";
 
@@ -110,7 +110,7 @@ export function SiteEditor({
 
           {/* Pane 1 — pages */}
           <nav style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "10px", position: "sticky", top: "16px" }}>
-            <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "6px 10px 10px" }}>
+            <p style={{ ...label, color: "#4A5A74", margin: "6px 10px 10px" }}>
               Pages
             </p>
             {pages.map((p) => {
@@ -144,7 +144,7 @@ export function SiteEditor({
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
             {sections.map(([section, sectionLabel]) => (
               <div key={section} style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-                <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
+                <p style={{ ...label, color: "#4A5A74", margin: "0 0 16px" }}>
                   {sectionLabel}
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -167,7 +167,7 @@ export function SiteEditor({
           {/* Pane 3 — publish */}
           <aside style={{ position: "sticky", top: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ backgroundColor: DEEP, borderRadius: "16px", padding: "20px", color: "rgba(255,255,255,.8)" }}>
-              <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.5)", margin: "0 0 12px" }}>
+              <p style={{ ...label, color: "rgba(255,255,255,.5)", margin: "0 0 12px" }}>
                 Unpublished
               </p>
               <p style={{ fontWeight: 800, fontSize: "34px", lineHeight: 1, color: allDirty.length ? C.orange : "#fff", margin: "0 0 4px", fontVariantNumeric: "tabular-nums" }}>
@@ -267,13 +267,13 @@ function FieldRow({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
         <label style={{ fontSize: "13px", fontWeight: 600, color: C.ink }}>
           {field.label}
-          <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#4A5A74", marginLeft: "9px" }}>
+          <span style={{ ...label, color: "#4A5A74", marginLeft: "9px" }}>
             {TYPE_LABEL[field.type] ?? field.type}
           </span>
         </label>
         {dirty && (
           <span style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: C.orange, borderRadius: R.chip, padding: "2px 8px" }}>
+            <span style={{ ...label, color: "#fff", backgroundColor: C.orange, borderRadius: R.chip, padding: "2px 8px" }}>
               Draft
             </span>
             <button

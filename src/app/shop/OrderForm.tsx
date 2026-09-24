@@ -6,7 +6,7 @@ import { placeOrder } from "@/app/actions/orders";
 
 const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
-  fontSize: "14.5px", color: C.ink, backgroundColor: "#fff",
+  fontSize: "15px", color: C.ink, backgroundColor: "#fff",
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "11px 13px", minHeight: "44px", outline: "none",
 };
@@ -61,7 +61,7 @@ export function OrderForm({
       <div style={{ textAlign: "center", padding: "12px 0" }}>
         <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "rgba(27,127,75,.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: "22px" }}>✓</div>
         <h3 style={{ fontWeight: 800, fontSize: "19px", color: C.ink, margin: "0 0 8px" }}>Order received</h3>
-        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>
           Nothing has been charged. JOC will confirm the total{needsAddress ? ", including shipping," : ""}{" "}
           and arrange the invoice.
           {done.emailed

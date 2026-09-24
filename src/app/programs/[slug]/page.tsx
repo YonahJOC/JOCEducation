@@ -286,7 +286,7 @@ function SectionLabel({ children, deep }: { children: React.ReactNode; deep: str
   return (
     <p style={{ display: "flex", alignItems: "center", gap: "12px", margin: "0 0 14px" }}>
       <span aria-hidden="true" style={{ width: "24px", height: "3px", backgroundColor: deep, flexShrink: 0, borderRadius: "2px" }} />
-      <span style={{ fontSize: "13px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.muted }}>
+      <span style={{ ...label, color: C.muted }}>
         {children}
       </span>
     </p>

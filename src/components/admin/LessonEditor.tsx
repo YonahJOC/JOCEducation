@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { saveLesson } from "@/app/actions/content";
 import { FilePicker } from "@/components/admin/FilePicker";
 import { RICH_TEXT_HINT } from "@/components/ui/RichText";
@@ -47,8 +47,7 @@ const field: React.CSSProperties = {
   padding: "10px 12px", outline: "none", minHeight: "42px",
 };
 const legend: React.CSSProperties = {
-  fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase",
-  fontWeight: 700, color: "#4A5A74", margin: "0 0 14px",
+  ...label, color: "#4A5A74", margin: "0 0 14px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
@@ -229,7 +228,7 @@ export function LessonEditor({
                         padding: "8px 4px", outline: "none",
                       }}
                     />
-                    <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4A5A74", fontWeight: 700 }}>
+                    <span style={{ ...label, color: "#4A5A74", fontWeight: 700 }}>
                       min
                     </span>
                   </div>
@@ -310,7 +309,7 @@ export function LessonEditor({
           <div style={{ backgroundColor: DEEP, borderRadius: "16px", padding: "20px", color: "#fff" }}>
             {cycle ? (
               <>
-                <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.orange, margin: "0 0 10px" }}>
+                <p style={{ ...label, color: C.orange, margin: "0 0 10px" }}>
                   Cycle {cycle.num} · {cycle.theme}
                 </p>
                 <p
@@ -328,7 +327,7 @@ export function LessonEditor({
               </>
             ) : (
               <>
-                <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.orange, margin: "0 0 10px" }}>
+                <p style={{ ...label, color: C.orange, margin: "0 0 10px" }}>
                   No Cycle chosen
                 </p>
                 <p style={{ fontSize: "15px", lineHeight: 1.6, color: "rgba(255,255,255,.72)", margin: 0 }}>
@@ -372,7 +371,7 @@ export function LessonEditor({
               disabled={disabled || pending || !d.title.trim()}
               style={{
                 width: "100%", marginTop: "16px", fontFamily: "var(--font-outfit)",
-                fontWeight: 700, fontSize: "14.5px", color: "#fff", backgroundColor: C.blue,
+                fontWeight: 700, fontSize: "15px", color: "#fff", backgroundColor: C.blue,
                 border: "none", borderRadius: R.chip, padding: "13px 20px", minHeight: "44px",
                 cursor: disabled || !d.title.trim() ? "not-allowed" : "pointer",
                 opacity: disabled || pending || !d.title.trim() ? 0.5 : 1,

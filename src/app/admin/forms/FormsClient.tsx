@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { chip, R, C, pageTitle } from "@/lib/joc-tokens";
+import { label, chip, R, C, pageTitle } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useState } from "react";
 import { saveForm, deleteForm } from "@/app/actions/forms";
@@ -15,10 +15,6 @@ const field: React.CSSProperties = {
   fontSize: "14px", color: C.ink, backgroundColor: "#fff",
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
@@ -201,7 +197,7 @@ function Responses({ form, rows }: { form: AdminFormRow; rows: ResponseRow[] }) 
           <thead>
             <tr>
               {["When", "Name", "Email", ...(form.feeCents ? ["Paid"] : []), ...columns].map((h) => (
-                <th key={h} style={{ textAlign: "left", padding: "11px 16px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
+                <th key={h} style={{ textAlign: "left", padding: "11px 16px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                   {h}
                 </th>
               ))}

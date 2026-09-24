@@ -1,6 +1,6 @@
 import { UsersGuard } from "@/components/admin/Guard";
 import { SectionLinks } from "@/components/admin/SectionLinks";
-import { C } from "@/lib/joc-tokens";
+import { label, C } from "@/lib/joc-tokens";
 import { PeopleTable, type PersonRow, type SchoolRef, type ProgramRef } from "@/components/admin/PeopleTable";
 import { CreateUserForm } from "@/components/admin/CreateUserForm";
 import { usingSampleData } from "@/lib/admin-data";
@@ -94,7 +94,7 @@ async function Inner() {
       </p>
 
       <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", marginBottom: "20px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
           What the roles mean
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px 20px" }}>

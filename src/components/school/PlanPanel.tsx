@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label as uiLabel, R, C } from "@/lib/joc-tokens";
 import { requestPlanChange } from "@/app/actions/school";
 
 const PLAN_LABELS: Record<string, string> = {
@@ -105,10 +105,10 @@ export function SchoolPlanPanel({
         onSubmit={submit}
         style={{ backgroundColor: "#FFFBF3", border: `1px solid ${C.orange}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}
       >
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: C.orangeText, margin: "0 0 12px" }}>
+        <p style={{ ...uiLabel, color: C.orangeText, margin: "0 0 12px" }}>
           Ask for a change
         </p>
-        <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 16px" }}>
           This goes to <strong style={{ color: C.ink }}>{contact}</strong>. Nothing changes and nothing is
           charged until you have spoken to them.
         </p>
@@ -160,7 +160,7 @@ export function SchoolPlanPanel({
       {/* Past requests */}
       {requests.length > 0 && (
         <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
+          <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 16px" }}>
             Requests you have sent
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -169,7 +169,7 @@ export function SchoolPlanPanel({
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "5px" }}>
                   <span style={{ fontSize: "13px", color: "#4A5A74" }}>{fmt(r.createdAt)}</span>
                   <span style={{
-                    fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
+                    ...uiLabel,
                     color: r.status === "OPEN" ? C.orangeText : C.greenText,
                   }}>
                     {r.status === "OPEN" ? "Waiting for JOC" : r.status.toLowerCase()}
@@ -196,7 +196,7 @@ export function SchoolPlanPanel({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 5px" }}>
+      <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 5px" }}>
         {label}
       </p>
       <p style={{ fontSize: "16px", fontWeight: 600, color: C.ink, margin: 0, letterSpacing: "-0.02em" }}>{value}</p>

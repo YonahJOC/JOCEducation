@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C } from "@/lib/joc-tokens";
+import { label, C } from "@/lib/joc-tokens";
 import Image from "next/image";
 
 /** Shared shell for the privacy and terms pages, which sit outside the login gate. */
@@ -17,7 +17,7 @@ export function LegalPage({
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={150} height={18} priority style={{ height: "18px", width: "auto" }} />
             <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: C.hairline }} />
-            <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
+            <span style={{ ...label, color: C.orangeText }}>
               Education
             </span>
           </Link>

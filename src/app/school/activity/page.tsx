@@ -1,5 +1,5 @@
 import { requireSchoolPanel } from "../account-only";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { label as uiLabel, R, C, pageTitle } from "@/lib/joc-tokens";
 import { mySchool, myActivity } from "@/lib/school-data";
 import { getCycles } from "@/lib/cycle-data";
 
@@ -48,11 +48,11 @@ export default async function SchoolActivityPage() {
 
       {/* Grades */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 14px" }}>
           By grade band
         </p>
         {activity.recent.length === 0 ? (
-          <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
             Nothing yet. Once teachers start saving lessons, you will see which grades are moving and
             which have not begun.
           </p>
@@ -86,7 +86,7 @@ export default async function SchoolActivityPage() {
 
       {/* Feed */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 14px" }}>
           Recently
         </p>
         {activity.recent.length === 0 ? (
@@ -120,7 +120,7 @@ export default async function SchoolActivityPage() {
 function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "16px 18px" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 8px" }}>
+      <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 8px" }}>
         {label}
       </p>
       <p style={{ fontWeight: 800, fontSize: "27px", letterSpacing: "-0.03em", color: C.ink, margin: 0, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>

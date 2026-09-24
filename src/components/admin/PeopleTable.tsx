@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { setUserAdminRole } from "@/app/actions/admin-roles";
 import { setUserRole, setUserActive, assignUserToSchool, resetUserPassword } from "@/app/actions/admin";
 import { setProgramLead } from "@/app/actions/forms";
@@ -42,8 +42,7 @@ function ago(d: Date | string | null) {
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "10px 20px", fontSize: "11px", letterSpacing: "0.04em",
-  textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
+  textAlign: "left", padding: "10px 20px", ...label, color: "#4A5A74",
   borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {
@@ -67,7 +66,7 @@ export function PeopleTable({
 }) {
   return (
     <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
+      <p style={{ ...label, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
         {title}
       </p>
       {people.length === 0 ? (

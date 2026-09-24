@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { label, R, C, pageTitle } from "@/lib/joc-tokens";
 import { saveAdminRole, deleteAdminRole } from "@/app/actions/admin-roles";
 import { PageIntro } from "@/components/admin/PageIntro";
 import {
@@ -15,10 +15,6 @@ const field: React.CSSProperties = {
   fontSize: "14px", color: C.ink, backgroundColor: "#fff",
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
 };
 
 const BLANK: AdminRoleRow = {
@@ -70,13 +66,13 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "15px", minWidth: "760px" }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "12px 20px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel }}>
+              <th style={{ textAlign: "left", padding: "12px 20px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel }}>
                 Admin type
               </th>
               {CAPABILITY_GROUPS.map((g) => (
                 <th
                   key={g.label}
-                  style={{ textAlign: "center", padding: "12px 14px", fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}
+                  style={{ textAlign: "center", padding: "12px 14px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}
                 >
                   {g.label}
                 </th>
@@ -150,13 +146,13 @@ export function RolesClient({ roles, disabled }: { roles: AdminRoleRow[]; disabl
       </div>
 
       <div style={{ backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "16px 18px", marginTop: "18px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
           What each permission covers
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px 24px" }}>
           {CAPABILITY_GROUPS.map((g) => (
             <div key={g.label}>
-              <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+              <p style={{ ...label, color: "#4A5A74", margin: "0 0 6px" }}>
                 {g.label}
               </p>
               {g.capabilities.map((c) => (
@@ -265,7 +261,7 @@ function RoleForm({
       </div>
 
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "14px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 4px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 4px" }}>
           What this type can do
         </p>
         <p style={{ fontSize: "15px", color: "#4A5A74", margin: "0 0 14px", lineHeight: 1.55 }}>
@@ -280,7 +276,7 @@ function RoleForm({
           return (
             <div key={g.label} style={{ marginBottom: "18px" }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px", marginBottom: "8px" }}>
-                <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+                <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
                   {g.label}
                 </p>
                 {!locked && (
@@ -324,7 +320,7 @@ function RoleForm({
                   style={{ width: "17px", height: "17px", marginTop: "2px", flexShrink: 0 }}
                 />
                 <span>
-                  <span style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: C.ink }}>
+                  <span style={{ display: "block", fontSize: "15px", fontWeight: 600, color: C.ink }}>
                     {CAPABILITY_LABELS[c]}
                   </span>
                   <span style={{ display: "block", fontSize: "13px", color: "#4A5A74", lineHeight: 1.5, marginTop: "2px" }}>

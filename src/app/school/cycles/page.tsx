@@ -1,5 +1,5 @@
 import { requireSchoolPanel } from "../account-only";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { label, R, C, pageTitle } from "@/lib/joc-tokens";
 import { mySchool, myCycleProgress } from "@/lib/school-data";
 
 export const metadata = { title: "Cycle progress" };
@@ -48,7 +48,7 @@ export default async function SchoolCyclesPage() {
                   <span style={{ fontSize: "14px", color: C.ink, fontWeight: isCurrent ? 700 : 500 }}>
                     <span style={{ color: c.color, fontWeight: 700 }}>{c.num}.</span> {c.theme}
                     {isCurrent && (
-                      <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "9px" }}>
+                      <span style={{ ...label, color: "#fff", backgroundColor: c.color, borderRadius: R.chip, padding: "2px 8px", marginLeft: "9px" }}>
                         Now
                       </span>
                     )}
@@ -71,7 +71,7 @@ export default async function SchoolCyclesPage() {
 
       {/* What would move this */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "22px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
           What would move this
         </p>
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -114,7 +114,7 @@ function Nudge({ children }: { children: React.ReactNode }) {
   return (
     <li style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
       <span style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: C.orangeText, flexShrink: 0, marginTop: "7px" }} />
-      <span style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74" }}>{children}</span>
+      <span style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74" }}>{children}</span>
     </li>
   );
 }

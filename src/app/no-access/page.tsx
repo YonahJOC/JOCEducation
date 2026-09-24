@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import Image from "next/image";
 import { safeAuth } from "@/auth";
@@ -28,7 +28,7 @@ export default async function NoAccessPage() {
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "11px", textDecoration: "none" }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={150} height={18} priority style={{ height: "18px", width: "auto" }} />
             <span aria-hidden="true" style={{ width: "1px", height: "18px", backgroundColor: C.hairline }} />
-            <span style={{ fontWeight: 700, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
+            <span style={{ ...label, color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -36,7 +36,7 @@ export default async function NoAccessPage() {
       </header>
 
       <main style={{ maxWidth: "620px", margin: "0 auto", padding: "64px 26px 80px" }}>
-        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
+        <p style={{ ...label, color: C.orangeText, margin: "0 0 12px" }}>
           You&rsquo;re signed in
         </p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.06, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 16px" }}>
@@ -107,7 +107,7 @@ export default async function NoAccessPage() {
               href="/#demo"
               style={{
                 display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700,
-                fontSize: "14.5px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none",
+                fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none",
               }}
             >
               Book a walkthrough
@@ -116,7 +116,7 @@ export default async function NoAccessPage() {
               href="mailto:education@justonechesed.org"
               style={{
                 display: "inline-block", border: `1.5px solid ${C.hairline}`, color: C.ink, fontWeight: 600,
-                fontSize: "14.5px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none",
+                fontSize: "15px", borderRadius: R.chip, padding: "13px 22px", textDecoration: "none",
               }}
             >
               Email the team

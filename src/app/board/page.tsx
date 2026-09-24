@@ -4,7 +4,7 @@ import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { BoardClient, type BoardIdea } from "./BoardClient";
 import { siteContent } from "@/lib/site-content";
-import { R } from "@/lib/joc-tokens";
+import { label, R } from "@/lib/joc-tokens";
 
 export const metadata = { title: "Teachers' Board" };
 
@@ -63,7 +63,7 @@ export default async function BoardPage() {
   if (ideas.length === 0 && !session?.user) {
     return (
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "72px 26px 96px", textAlign: "center" }}>
-        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
+        <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>TEACHERS&rsquo; BOARD</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.05, letterSpacing: "-0.035em", color: "#10233F", marginBottom: "14px" }}>
           Nobody has posted yet.
         </h1>

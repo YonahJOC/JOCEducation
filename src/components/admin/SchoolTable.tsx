@@ -31,7 +31,7 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
         <thead>
           <tr>
             {["School", "Status", "Plan", "Seats", "Staff", "Last contact"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "10px 20px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
+              <th key={h} style={{ textAlign: "left", padding: "10px 20px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                 {h}
               </th>
             ))}

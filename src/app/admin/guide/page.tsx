@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, pageTitle } from "@/lib/joc-tokens";
+import { label, C, pageTitle } from "@/lib/joc-tokens";
 import { safeAuth } from "@/auth";
 import { canManageAccounts } from "@/lib/access";
 
@@ -208,12 +208,12 @@ export default async function GuidePage() {
           Two things that are not working yet
         </h2>
         <ul style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <li style={{ fontSize: "14.5px", color: "rgba(255,255,255,.78)", lineHeight: 1.6 }}>
+          <li style={{ fontSize: "15px", color: "rgba(255,255,255,.78)", lineHeight: 1.6 }}>
             <strong style={{ color: "#fff" }}>Email.</strong> Invitations, password resets and order
             confirmations are all written and waiting, but nothing is sent until JOC connects a mail
             service. Where that matters, the console tells you so rather than letting you assume.
           </li>
-          <li style={{ fontSize: "14.5px", color: "rgba(255,255,255,.78)", lineHeight: 1.6 }}>
+          <li style={{ fontSize: "15px", color: "rgba(255,255,255,.78)", lineHeight: 1.6 }}>
             <strong style={{ color: "#fff" }}>Card payment.</strong> A school can order, and the order
             reaches you — but it is invoiced by hand.
           </li>
@@ -226,7 +226,7 @@ export default async function GuidePage() {
 function Group({ title, sections }: { title: string; sections: Section[] }) {
   return (
     <div style={{ marginBottom: "36px" }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
         {title}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -238,7 +238,7 @@ function Group({ title, sections }: { title: string; sections: Section[] }) {
             >
               {s.title} <span style={{ color: C.blue, fontSize: "15px" }}>→</span>
             </Link>
-            <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 12px" }}>
+            <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: "6px 0 12px" }}>
               {s.what}
             </p>
             <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "7px" }}>

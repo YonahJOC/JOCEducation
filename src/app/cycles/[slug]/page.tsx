@@ -5,7 +5,7 @@ import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 import { getCycleContent, type PublicLesson, type PublicResource } from "@/lib/content";
 import { siteContent } from "@/lib/site-content";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -101,10 +101,7 @@ export default async function CycleDetailPage({ params }: Props) {
           {/* Hebrew + theme */}
           <p
             style={{
-              fontSize: "13px",
-              fontWeight: 700,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
+              ...label,
               opacity: 0.75,
               marginBottom: "8px",
             }}
@@ -172,10 +169,7 @@ export default async function CycleDetailPage({ params }: Props) {
           <div>
             <h2
               style={{
-                fontWeight: 700,
-                fontSize: "11px",
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
+                ...label,
                 color: cycle.color,
                 marginBottom: "18px",
               }}
@@ -238,7 +232,7 @@ export default async function CycleDetailPage({ params }: Props) {
                     >
                       {w.title}
                     </p>
-                    <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6 }}>{w.body}</p>
+                    <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6 }}>{w.body}</p>
                     <WeekLessons lessons={lessons.filter((l) => l.cycleWeek === i + 1)} color={cycle.color} />
                   </div>
                 </li>
@@ -264,10 +258,7 @@ export default async function CycleDetailPage({ params }: Props) {
             >
               <p
                 style={{
-                  fontWeight: 700,
-                  fontSize: "11px",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
+                  ...label,
                   color: "#10233F",
                   marginBottom: "12px",
                 }}
@@ -288,10 +279,7 @@ export default async function CycleDetailPage({ params }: Props) {
             >
               <p
                 style={{
-                  fontWeight: 700,
-                  fontSize: "11px",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
+                  ...label,
                   color: "#10233F",
                   marginBottom: "14px",
                 }}
@@ -320,7 +308,7 @@ export default async function CycleDetailPage({ params }: Props) {
                         marginTop: "6px",
                       }}
                     />
-                    <span style={{ fontSize: "14.5px", color: "#10233F", lineHeight: 1.5 }}>{f}</span>
+                    <span style={{ fontSize: "15px", color: "#10233F", lineHeight: 1.5 }}>{f}</span>
                   </li>
                 ))}
               </ul>
@@ -337,10 +325,7 @@ export default async function CycleDetailPage({ params }: Props) {
             >
               <p
                 style={{
-                  fontWeight: 700,
-                  fontSize: "11px",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
+                  ...label,
                   color: "#10233F",
                   marginBottom: "14px",
                 }}
@@ -373,10 +358,7 @@ export default async function CycleDetailPage({ params }: Props) {
               >
                 <p
                   style={{
-                    fontWeight: 700,
-                    fontSize: "11px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
+                    ...label,
                     color: "#4A5A74",
                     marginBottom: "10px",
                   }}
@@ -460,8 +442,7 @@ function CycleMaterials({
     <div style={{ marginTop: "12px", paddingTop: "28px", borderTop: `1px solid ${C.hairline}` }}>
       <h2
         style={{
-          fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em",
-          textTransform: "uppercase", color, marginBottom: "18px",
+          ...label, color, marginBottom: "18px",
         }}
       >
         MATERIALS FOR THIS CYCLE

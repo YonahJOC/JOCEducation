@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { label, R, C, pageTitle } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { LessonEditor, EMPTY_LESSON, type LessonDraft, type CycleRef } from "@/components/admin/LessonEditor";
 import { BulkImport } from "@/components/admin/BulkImport";
@@ -84,7 +84,7 @@ export function LessonsClient({
               <thead>
                 <tr>
                   {["Title", "Grade", "Time", "Cycle", "Status", ""].map((h, i) => (
-                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
+                    <th key={i} style={{ textAlign: "left", padding: "11px 20px", ...label, color: "#4A5A74", borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap" }}>
                       {h}
                     </th>
                   ))}

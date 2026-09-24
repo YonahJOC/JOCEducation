@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Program } from "@/lib/programs";
 import { siteContent } from "@/lib/site-content";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 
 export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Program[] }) {
@@ -13,7 +13,7 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
       {/* Hero */}
       <div style={{ backgroundColor: "#10233F", padding: "64px 26px 56px" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#FA912D", marginBottom: "12px" }}>CHESED PROGRAMS</p>
+          <p style={{ ...label, color: "#FA912D", marginBottom: "12px" }}>CHESED PROGRAMS</p>
           <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 54px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#fff", maxWidth: "16ch", marginBottom: "18px" }}>
             {c.text("hero.headline", "Chesed your school can actually run.")}
           </h1>
@@ -29,7 +29,7 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "52px 26px 0" }}>
         {/* JOC Programs */}
         <div style={{ marginBottom: "64px" }}>
-          <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>JOC-ORGANIZED PROGRAMS</p>
+          <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>JOC-ORGANIZED PROGRAMS</p>
           <h2 style={{ fontWeight: 800, fontSize: "clamp(26px, 3.5vw, 38px)", lineHeight: 1.06, letterSpacing: "-0.03em", color: "#10233F", marginBottom: "8px" }}>
             Programs JOC runs for your school.
           </h2>
@@ -43,13 +43,13 @@ export async function ProgramsBrowser({ programs: PROGRAMS }: { programs: Progra
             {PROGRAMS.map((p) => (
               <div key={p.slug} style={{ backgroundColor: "#fff", borderRadius: "22px", border: `1px solid ${C.hairline}`, padding: "26px", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                  <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 12px" }}>{p.tag}</span>
+                  <span style={{ backgroundColor: "#F4F7FD", color: "#12306F", ...label, borderRadius: R.chip, padding: "4px 12px" }}>{p.tag}</span>
                   {p.comingSoon && (
-                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#C96C00", fontWeight: 700, fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: R.chip, padding: "4px 12px" }}>Coming soon</span>
+                    <span style={{ backgroundColor: "rgba(250,145,45,.16)", color: "#C96C00", ...label, borderRadius: R.chip, padding: "4px 12px" }}>Coming soon</span>
                   )}
                 </div>
                 <h3 style={{ fontWeight: 700, fontSize: "21px", color: "#10233F", marginBottom: "10px" }}>{p.name}</h3>
-                <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "12px", flex: 1 }}>{p.description}</p>
+                <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "12px", flex: 1 }}>{p.description}</p>
                 <p style={{ fontSize: "13px", color: "#C96C00", fontWeight: 600, marginBottom: "20px" }}>{p.meta}</p>
                 <div style={{ fontSize: "13px", color: "#4A5A74", marginBottom: "20px" }}>
                   <span style={{ fontWeight: 600 }}>Included with: </span>{p.available.join(", ")}

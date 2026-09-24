@@ -120,7 +120,7 @@ export function ResourceLibrary({
                   <span style={{ fontSize: "12px", fontWeight: 600, color: "#4A5A74" }}>{r.tag}</span>
                 </div>
                 <h2 style={{ fontWeight: 700, fontSize: "17.5px", lineHeight: 1.25, letterSpacing: "-0.02em", color: "#10233F", margin: 0 }}>{r.title}</h2>
-                <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.55, margin: 0, flex: 1 }}>{r.description}</p>
+                <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: 0, flex: 1 }}>{r.description}</p>
                 {cn && (
                   <span style={{ fontSize: "12px", fontWeight: 600, color: "#C96C00" }}>{cn}</span>
                 )}

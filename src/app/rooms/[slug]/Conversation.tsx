@@ -68,7 +68,7 @@ export function Conversation({
               onClick={send}
               disabled={pending || !body.trim()}
               style={{
-                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "14.5px",
+                fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "15px",
                 color: "#fff", backgroundColor: C.blue, border: "none",
                 borderRadius: R.chip, padding: "12px 24px", minHeight: "46px",
                 cursor: pending || !body.trim() ? "default" : "pointer",
@@ -86,7 +86,7 @@ export function Conversation({
       )}
 
       {closed && (
-        <p style={{ fontSize: "14.5px", color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "14px 18px", marginBottom: "28px" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", backgroundColor: "#F4F7FD", borderRadius: "14px", padding: "14px 18px", marginBottom: "28px" }}>
           This room is closed to new messages. Everything in it stays readable.
         </p>
       )}
@@ -151,7 +151,7 @@ function Message({ message: m, roomId, canPost }: { message: Msg; roomId: string
                 rows={2}
                 placeholder={`Reply to ${m.author}…`}
                 autoFocus
-                style={{ ...box, fontSize: "14.5px" }}
+                style={{ ...box, fontSize: "15px" }}
               />
               <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
                 <button
@@ -200,7 +200,7 @@ function Bubble({
       <Avatar initial={m.initial} />
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", gap: "10px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "3px" }}>
-          <span style={{ fontWeight: 700, fontSize: "14.5px", color: C.ink }}>{m.author}</span>
+          <span style={{ fontWeight: 700, fontSize: "15px", color: C.ink }}>{m.author}</span>
           {m.authorSchool && (
             <span style={{ fontSize: "13px", color: "#4A5A74" }}>{m.authorSchool}</span>
           )}
@@ -215,7 +215,7 @@ function Bubble({
           )}
         </div>
         {removed ? (
-          <p style={{ fontSize: "14.5px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>
+          <p style={{ fontSize: "15px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>
             {m.removedBy === "moderator" ? "Removed by the JOC team." : "Removed."}
           </p>
         ) : (
@@ -240,7 +240,7 @@ function ReplyBubble({ message: m }: { message: Msg }) {
         {m.removed ? (
           <p style={{ fontSize: "14px", color: "#4A5A74", fontStyle: "italic", margin: 0 }}>Removed.</p>
         ) : (
-          <p style={{ fontSize: "14.5px", color: C.ink, lineHeight: 1.6, margin: 0, whiteSpace: "pre-wrap" }}>
+          <p style={{ fontSize: "15px", color: C.ink, lineHeight: 1.6, margin: 0, whiteSpace: "pre-wrap" }}>
             {m.body}
           </p>
         )}

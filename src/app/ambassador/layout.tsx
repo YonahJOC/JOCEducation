@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
-import { C } from "@/lib/joc-tokens";
+import { label, C } from "@/lib/joc-tokens";
 
 /**
  * The ambassador's corner of the portal.
@@ -39,8 +39,7 @@ export default async function AmbassadorLayout({ children }: { children: React.R
             />
           </Link>
           <span style={{
-            fontFamily: "var(--font-outfit)", fontSize: "11px", fontWeight: 700,
-            letterSpacing: ".16em", textTransform: "uppercase", color: C.orange,
+            fontFamily: "var(--font-outfit)", ...label, color: C.orange,
           }}>
             Ambassador
           </span>

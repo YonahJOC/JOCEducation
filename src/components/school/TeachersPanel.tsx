@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { addTeacher, cancelInvitation, removeTeacher, setTeacherRole } from "@/app/actions/school";
 
 type Member = {
@@ -101,7 +101,7 @@ export function TeachersPanel({
         onSubmit={add}
         style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}
       >
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
           Add a teacher
         </p>
         <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, margin: "-6px 0 14px", maxWidth: "56ch" }}>
@@ -149,7 +149,7 @@ export function TeachersPanel({
       {/* Pending invitations */}
       {invitations.length > 0 && (
         <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
-          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+          <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
             Invited, not yet joined
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -173,7 +173,7 @@ export function TeachersPanel({
 
       {/* Team */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", overflow: "hidden", marginBottom: "16px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
+        <p style={{ ...label, color: "#4A5A74", margin: 0, padding: "16px 20px", borderBottom: `1px solid ${C.hairline}` }}>
           On your team ({members.length})
         </p>
         {members.length === 0 ? (
@@ -185,7 +185,7 @@ export function TeachersPanel({
             {members.map((m) => (
               <div key={m.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "14px", padding: "14px 20px", borderBottom: `1px solid ${C.hairline}`, flexWrap: "wrap" }}>
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
+                  <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0 }}>
                     {m.name ?? m.email}
                     {m.id === meId && <span style={{ fontSize: "12px", color: "#4A5A74", fontWeight: 500 }}> · you</span>}
                   </p>
@@ -195,7 +195,7 @@ export function TeachersPanel({
                 </div>
                 <div style={{ display: "flex", gap: "12px", alignItems: "center", flexShrink: 0 }}>
                   <span style={{
-                    fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
+                    ...label,
                     color: m.role === "SCHOOL_ADMIN" ? C.blue : "#4A5A74",
                     backgroundColor: m.role === "SCHOOL_ADMIN" ? "#F4F7FD" : "transparent",
                     padding: m.role === "SCHOOL_ADMIN" ? "3px 9px" : 0, borderRadius: R.chip,
@@ -220,7 +220,7 @@ export function TeachersPanel({
 
       {/* Who can administer */}
       <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 10px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 10px" }}>
           Who can administer this school
         </p>
         <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#4A5A74", margin: "0 0 10px" }}>

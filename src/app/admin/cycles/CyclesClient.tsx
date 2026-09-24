@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { label, R, C, pageTitle } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveCycle, deleteCycle, importStaticCycles } from "@/app/actions/cycles";
 import { formatCycleRange, relinkCycles } from "@/lib/cycles";
@@ -40,10 +40,6 @@ const field: React.CSSProperties = {
   fontSize: "14px", color: C.ink, backgroundColor: "#fff",
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", minHeight: "42px", outline: "none",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600,
-  color: "#4A5A74", marginBottom: "5px",
 };
 const card: React.CSSProperties = {
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`,
@@ -321,7 +317,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
           When it runs
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px", marginBottom: "12px" }}>
@@ -421,7 +417,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
           About this cycle
         </p>
         <textarea value={d.desc} onChange={(e) => set("desc", e.target.value)} rows={3} placeholder="A paragraph a teacher reads to understand what these weeks are for." disabled={disabled} style={{ ...field, resize: "vertical" }} />
@@ -431,7 +427,7 @@ function CycleForm({
       </div>
 
       <div style={card}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+        <p style={{ ...label, color: "#4A5A74", margin: "0 0 6px" }}>
           Lesson plan breakdown
         </p>
         {/* This used to read "The dates give 8 weeks. You have written 4.",

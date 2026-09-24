@@ -101,7 +101,7 @@ export function FilesClient({ files, disabled }: { files: FileRow[]; disabled?: 
               }}
             >
               <div style={{ minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0, wordBreak: "break-word" }}>{f.name}</p>
+                <p style={{ fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0, wordBreak: "break-word" }}>{f.name}</p>
                 <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0" }}>
                   {f.size} · {f.when}
                   {f.uploadedBy ? ` · ${f.uploadedBy}` : ""}

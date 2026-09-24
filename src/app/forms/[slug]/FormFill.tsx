@@ -113,7 +113,7 @@ export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {
                     onClick={() => set(f.id, o)}
                     disabled={pending}
                     style={{
-                      fontFamily: "var(--font-outfit)", fontSize: "14.5px", fontWeight: 600,
+                      fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
                       padding: "11px 24px", borderRadius: R.chip, minHeight: "46px", cursor: "pointer",
                       border: values[f.id] === o ? `1.5px solid ${C.blue}` : `1px solid ${C.hairline}`,
                       backgroundColor: values[f.id] === o ? "rgba(45,70,175,.07)" : "#fff",
@@ -167,7 +167,7 @@ function Labelled({
 }) {
   return (
     <div>
-      <label style={{ display: "block", fontSize: "14.5px", fontWeight: 600, color: C.ink, marginBottom: "6px" }}>
+      <label style={{ display: "block", fontSize: "15px", fontWeight: 600, color: C.ink, marginBottom: "6px" }}>
         {label}
         {required && <span style={{ color: "#C96C00", marginLeft: "5px" }} aria-label="required">*</span>}
       </label>

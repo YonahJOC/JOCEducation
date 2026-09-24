@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import { GRADE_LABELS, TIME_LABELS, STRIPE_COLORS } from "@/lib/lessons";
 import type { PublicLesson } from "@/lib/content";
-import { ROW_SHADOW, C, R } from "@/lib/joc-tokens";
+import { label as uiLabel, ROW_SHADOW, C, R } from "@/lib/joc-tokens";
 
 const PREP_LABELS: Record<string, string> = { all: "Any prep", Minimal: "Minimal", Moderate: "Moderate", Substantial: "Substantial" };
 
@@ -100,7 +100,7 @@ export function LessonsBrowser({ lessons }: { lessons: PublicLesson[] }) {
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-      <span style={{ fontWeight: 600, fontSize: "12px", color: "#4A5A74", letterSpacing: "0.08em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{label}</span>
+      <span style={{ ...uiLabel, color: C.muted, whiteSpace: "nowrap" }}>{label}</span>
       {children}
     </div>
   );
@@ -145,11 +145,11 @@ function LessonCard({ lesson, colorIndex }: { lesson: PublicLesson; colorIndex: 
     >
       <div style={{ height: "8px", backgroundColor: STRIPE_COLORS[colorIndex] }} />
       <div style={{ padding: "20px" }}>
-        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", fontWeight: 700, fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: R.chip, padding: "5px 12px", marginBottom: "10px" }}>
+        <span style={{ display: "inline-block", backgroundColor: "#F4F7FD", color: "#2D46AF", ...uiLabel, borderRadius: R.chip, padding: "5px 12px", marginBottom: "10px" }}>
           {lesson.theme}
         </span>
         <h2 style={{ fontWeight: 700, fontSize: "19.5px", lineHeight: 1.22, letterSpacing: "-0.025em", color: "#10233F", marginBottom: "8px" }}>{lesson.title}</h2>
-        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.55, marginBottom: "16px" }}>{lesson.description}</p>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.55, marginBottom: "16px" }}>{lesson.description}</p>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" }}>
           <MetaChip label={GRADE_LABELS_FULL[lesson.grade]} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />
           <MetaChip label={`${lesson.time} min`} style={{ backgroundColor: "#F4F7FD", color: "#12306F" }} />

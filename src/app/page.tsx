@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import Image from "next/image";
 import Link from "next/link";
 import { getCycleState, getCurrentWeek } from "@/lib/cycles";
@@ -118,7 +118,7 @@ export default async function EducatorLanding({
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "11px", textDecoration: "none", flexShrink: 0 }}>
             <Image src="/brand/joc-wordmark.png" alt="JustOneChesed" width={168} height={20} priority className="joc-wordmark" style={{ height: "20px", width: "auto" }} />
             <span aria-hidden="true" className="joc-brand-sub" style={{ width: "1px", height: "20px", backgroundColor: C.hairline }} />
-            <span className="joc-brand-sub" style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText }}>
+            <span className="joc-brand-sub" style={{ ...label, color: C.orangeText }}>
               Education
             </span>
           </Link>
@@ -221,10 +221,10 @@ export default async function EducatorLanding({
                 padding: "16px 18px", marginBottom: "26px", maxWidth: "46ch",
               }}
             >
-              <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 7px" }}>
+              <p style={{ ...label, color: C.orangeText, margin: "0 0 7px" }}>
                 In development
               </p>
-              <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
+              <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#4A5A74", margin: 0 }}>
                 The teaching platform is still being built and accounts are not open to schools yet. In the
                 meantime, JOC runs 10 chesed programs your school can start this year —{" "}
                 <a href="#demo" style={{ color: C.blue, fontWeight: 600, textDecoration: "none" }}>
@@ -277,7 +277,7 @@ export default async function EducatorLanding({
         <div style={{ maxWidth: WIDTH, margin: "0 auto", padding: "56px 26px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "44px", alignItems: "start" }}>
             <div>
-              <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orange, margin: "0 0 14px" }}>
+              <p style={{ ...label, color: C.orange, margin: "0 0 14px" }}>
                 This Chesed Cycle · {cycle.hebrew}
               </p>
               <h2 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.05, letterSpacing: "-0.04em", margin: "0 0 8px" }}>
@@ -340,7 +340,7 @@ export default async function EducatorLanding({
 
       {/* 5 — What's inside */}
       <section id="inside" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 20px" }}>
-        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
+        <p style={{ ...label, color: C.orangeText, margin: "0 0 12px" }}>
           What&rsquo;s inside
         </p>
         <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 34px" }}>
@@ -376,7 +376,7 @@ export default async function EducatorLanding({
       <section id="demo" style={{ maxWidth: WIDTH, margin: "0 auto", padding: "62px 26px 72px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "48px", alignItems: "start" }}>
           <div>
-            <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: C.orangeText, margin: "0 0 12px" }}>
+            <p style={{ ...label, color: C.orangeText, margin: "0 0 12px" }}>
               Book a walkthrough
             </p>
             <h2 style={{ fontWeight: 800, fontSize: "clamp(27px, 3.4vw, 40px)", lineHeight: 1.07, letterSpacing: "-0.035em", color: C.ink, margin: "0 0 18px" }}>
@@ -443,7 +443,7 @@ export default async function EducatorLanding({
                 height={21}
                 style={{ height: "20px", width: "auto", display: "block", marginBottom: "6px" }}
               />
-              <p style={{ fontWeight: 700, fontSize: "12px", color: C.orange, margin: 0, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+              <p style={{ ...label, color: C.orange, margin: 0 }}>
                 Education
               </p>
               <p style={{ fontSize: "13px", margin: "3px 0 0" }}>

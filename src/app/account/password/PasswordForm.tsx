@@ -56,7 +56,7 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
           href="/home"
           style={{
             display: "inline-block", backgroundColor: C.blue, color: "#fff", fontWeight: 700,
-            fontSize: "14.5px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none",
+            fontSize: "15px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none",
           }}
         >
           Continue

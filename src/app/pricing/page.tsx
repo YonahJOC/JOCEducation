@@ -2,7 +2,7 @@ import { PricingSection } from "@/components/sections/PricingSection";
 import { getPlanPricing, getProgramPricing } from "@/lib/pricing";
 import { siteContent, type RepeatItem } from "@/lib/site-content";
 import Link from "next/link";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 export const metadata = {
   title: { absolute: "Pricing — JOC Education" },
@@ -21,7 +21,7 @@ export default async function PricingPage() {
     <div>
       {/* Page hero */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "56px 26px 0" }}>
-        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
+        <p style={{ ...label, color: "#C96C00", marginBottom: "10px" }}>BRING JOC TO YOUR SCHOOL</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.04, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "14px", maxWidth: "16ch" }}>
           {c.text("hero.headline", "Simple, transparent pricing.")}
         </h1>
@@ -67,9 +67,9 @@ export default async function PricingPage() {
         <div style={{ marginTop: "48px", backgroundColor: "#F4F7FD", borderRadius: "20px", padding: "28px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
           <div>
             <p style={{ fontWeight: 700, fontSize: "17px", color: "#10233F", marginBottom: "5px" }}>Still have questions?</p>
-            <p style={{ fontSize: "14.5px", color: "#4A5A74" }}>Our team is happy to walk through the options for your school.</p>
+            <p style={{ fontSize: "15px", color: "#4A5A74" }}>Our team is happy to walk through the options for your school.</p>
           </div>
-          <a href="mailto:education@justonechesed.org" style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "14.5px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
+          <a href="mailto:education@justonechesed.org" style={{ backgroundColor: "#10233F", color: "#fff", fontWeight: 700, fontSize: "15px", borderRadius: R.chip, padding: "13px 24px", textDecoration: "none", whiteSpace: "nowrap" }}>
             Contact us
           </a>
         </div>
@@ -82,7 +82,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <div style={{ padding: "24px 28px", border: `1px solid ${C.hairline}`, borderRadius: "0" }}>
       <p style={{ fontWeight: 700, fontSize: "16px", color: "#10233F", marginBottom: "8px" }}>{q}</p>
-      <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>{a}</p>
+      <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, margin: 0 }}>{a}</p>
     </div>
   );
 }

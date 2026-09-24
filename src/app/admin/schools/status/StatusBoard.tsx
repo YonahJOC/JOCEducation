@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { R, C } from "@/lib/joc-tokens";
+import { label as uiLabel, R, C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { setSchoolMark, setUnapprovedHours, logSchoolTouch, type Mark } from "@/app/actions/school-status";
 import type { SchoolStatusRow } from "@/lib/school-status";
@@ -173,7 +173,7 @@ function SchoolCard({ school: s, canEdit }: { school: SchoolStatusRow; canEdit: 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ padding: "13px 18px", minWidth: 0 }}>
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 6px" }}>
+      <p style={{ ...uiLabel, color: "#4A5A74", margin: "0 0 6px" }}>
         {label}
       </p>
       <div style={{ fontSize: "15px", color: C.ink, lineHeight: 1.5 }}>{children}</div>

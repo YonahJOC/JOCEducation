@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { label as uiLabel } from "@/lib/joc-tokens";
 
 export type NavItem = { label: string; href: string; hint?: string };
 
@@ -17,7 +18,7 @@ export function SideNav({ label, items }: { label: string; items: NavItem[] }) {
 
   return (
     <div style={{ marginBottom: "18px" }}>
-      <p style={{ fontSize: "10px", letterSpacing: "0.04em", textTransform: "uppercase", color: "rgba(255,255,255,.35)", fontWeight: 700, padding: "0 20px", margin: "0 0 6px" }}>
+      <p style={{ ...uiLabel, color: "rgba(255,255,255,.35)", fontWeight: 700, padding: "0 20px", margin: "0 0 6px" }}>
         {label}
       </p>
       <nav style={{ display: "flex", flexDirection: "column" }}>

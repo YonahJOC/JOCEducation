@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
@@ -204,8 +204,7 @@ const h1: React.CSSProperties = {
   fontWeight: 800, fontSize: "26px", letterSpacing: "-0.03em", color: C.ink, margin: "0 0 6px",
 };
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "10px 18px", fontSize: "11px", letterSpacing: "0.04em",
-  textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
+  textAlign: "left", padding: "10px 18px", ...label, color: "#4A5A74",
   borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {

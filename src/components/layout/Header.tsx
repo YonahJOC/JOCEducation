@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { BrandLockup } from "@/components/ui/Brand";
 import { signOutAction } from "@/app/actions/auth";
-import { C, ROW_SHADOW, R } from "@/lib/joc-tokens";
+import { label, C, ROW_SHADOW, R } from "@/lib/joc-tokens";
 
 const NAV = [
   { label: "Programs",        href: "/programs" },
@@ -223,7 +223,7 @@ export function Header({ account = null }: { account?: HeaderAccount }) {
 
               {account && (account.console || account.school) && (
                 <>
-                  <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "14px 24px 4px" }}>
+                  <p style={{ ...label, color: "#4A5A74", margin: "14px 24px 4px" }}>
                     {account.roleLabel}
                   </p>
                   {account.console && (
@@ -329,7 +329,7 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
           <p style={{ fontSize: "13px", color: "#4A5A74", margin: "2px 0 0", wordBreak: "break-all" }}>
             {account.email}
           </p>
-          <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#C96C00", margin: "6px 0 0" }}>
+          <p style={{ ...label, color: "#C96C00", margin: "6px 0 0" }}>
             {account.roleLabel}
           </p>
 

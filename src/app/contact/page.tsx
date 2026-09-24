@@ -52,7 +52,7 @@ export default function ContactPage() {
 
       {/* Left — context */}
       <div>
-        <p style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "12px" }}>GET IN TOUCH</p>
+        <p style={{ ...label, color: "#C96C00", marginBottom: "12px" }}>GET IN TOUCH</p>
         <h1 style={{ fontWeight: 800, fontSize: "clamp(30px, 4vw, 46px)", lineHeight: 1.06, letterSpacing: "-0.04em", color: "#10233F", marginBottom: "18px" }}>
           Talk to the<br />JOC Education team.
         </h1>
@@ -172,7 +172,7 @@ const inputStyle: React.CSSProperties = {
   border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "12px 16px",
-  fontSize: "14.5px",
+  fontSize: "15px",
   color: "#10233F",
   fontFamily: "var(--font-outfit)",
   boxSizing: "border-box",

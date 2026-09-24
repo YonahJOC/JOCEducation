@@ -1,16 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { updateSchoolDetails } from "@/app/actions/admin";
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
   backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "10px",
   padding: "10px 12px", outline: "none", minHeight: "42px",
-};
-const label: React.CSSProperties = {
-  display: "block", fontSize: "12px", fontWeight: 600, color: "#4A5A74", marginBottom: "5px",
 };
 
 export function SchoolDetailsPanel({
@@ -64,7 +61,7 @@ export function SchoolDetailsPanel({
   return (
     <div style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
           School details
         </p>
         {!editing && (

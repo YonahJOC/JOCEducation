@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { respondToPlanRequest } from "@/app/actions/admin";
 
 export type PlanRequestRow = {
@@ -38,7 +38,7 @@ export function PlanRequestsPanel({
         borderRadius: "16px", padding: "20px",
       }}
     >
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: open.length > 0 ? C.orangeText : "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: open.length > 0 ? C.orangeText : "#4A5A74", margin: "0 0 14px" }}>
         {open.length > 0 ? `${open.length} request${open.length === 1 ? "" : "s"} waiting` : "Plan requests"}
       </p>
 
@@ -74,14 +74,14 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
           {request.from} · {fmt(request.createdAt)}
         </span>
         <span style={{
-          fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
+          ...label,
           color: done ? C.greenText : C.orangeText,
         }}>
           {done ? "Answered" : "Waiting"}
         </span>
       </div>
 
-      <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: C.ink, margin: "0 0 10px" }}>{request.message}</p>
+      <p style={{ fontSize: "15px", lineHeight: 1.6, color: C.ink, margin: "0 0 10px" }}>{request.message}</p>
 
       {saved && (
         <div style={{ paddingLeft: "13px", borderLeft: `3px solid ${C.blue}`, marginBottom: "10px" }}>

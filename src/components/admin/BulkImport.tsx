@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { saveLesson } from "@/app/actions/content";
 import type { CycleRef } from "@/components/admin/LessonEditor";
 
@@ -161,7 +161,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
   return (
     <div style={{ backgroundColor: "#fff", border: `1.5px solid ${C.blue}`, borderRadius: "16px", padding: "22px", marginBottom: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+        <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
           Import from the workbook
         </p>
         <button

@@ -136,7 +136,7 @@ export function RoomsClient({
       )}
       renderRow={(r) => (
         <>
-          <p style={{ fontWeight: 600, color: C.ink, margin: 0, fontSize: "14.5px" }}>
+          <p style={{ fontWeight: 600, color: C.ink, margin: 0, fontSize: "15px" }}>
             <span style={{ marginRight: "7px" }} aria-hidden="true">{r.icon}</span>
             {r.name}
           </p>

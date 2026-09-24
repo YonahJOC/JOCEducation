@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { type Cycle, getCycleState, getCurrentWeek } from "@/lib/cycles";
-import { C, R } from "@/lib/joc-tokens";
+import { label, C, R } from "@/lib/joc-tokens";
 
 function anchorStyle(tagged?: boolean): React.CSSProperties {
   return tagged
@@ -108,10 +108,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         {/* Cycle number + theme */}
         <p
           style={{
-            fontWeight: 700,
-            fontSize: "12px",
-            letterSpacing: "0.22em",
-            textTransform: "uppercase",
+            ...label,
             color: cycle.color,
             marginBottom: "6px",
           }}
@@ -206,7 +203,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               backgroundColor: cycle.color,
               color: "#fff",
               fontWeight: 700,
-              fontSize: "14.5px",
+              fontSize: "15px",
               borderRadius: R.chip,
               padding: "13px 24px",
               textDecoration: "none",
@@ -221,7 +218,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
               display: "inline-block",
               color: cycle.color,
               fontWeight: 600,
-              fontSize: "14.5px",
+              fontSize: "15px",
               textDecoration: "none",
               whiteSpace: "nowrap",
             }}
@@ -243,10 +240,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         >
           <p
             style={{
-              fontWeight: 700,
-              fontSize: "11px",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
+              ...label,
               color: "#10233F",
               marginBottom: "12px",
             }}
@@ -267,10 +261,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
         >
           <p
             style={{
-              fontWeight: 700,
-              fontSize: "11px",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
+              ...label,
               color: "#10233F",
               marginBottom: "14px",
             }}
@@ -290,7 +281,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
                     marginTop: "6px",
                   }}
                 />
-                <span style={{ fontSize: "14.5px", color: "#10233F", lineHeight: 1.5 }}>{f}</span>
+                <span style={{ fontSize: "15px", color: "#10233F", lineHeight: 1.5 }}>{f}</span>
               </li>
             ))}
           </ul>
@@ -354,10 +345,7 @@ export function CurrentCycleSection({ cycle, nextCycle }: { cycle: Cycle; nextCy
           >
             <p
               style={{
-                fontWeight: 700,
-                fontSize: "11px",
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
+                ...label,
                 color: "#4A5A74",
                 marginBottom: "8px",
               }}

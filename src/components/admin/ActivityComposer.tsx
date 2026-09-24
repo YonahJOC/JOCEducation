@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { addSchoolNote } from "@/app/actions/admin";
 
 /** Kind, label, and a prompt that suits that kind of interaction. */
@@ -46,7 +46,7 @@ export function ActivityComposer({ schoolId, disabled }: { schoolId: string; dis
       onSubmit={submit}
       style={{ backgroundColor: "#fff", border: `1px solid ${C.hairline}`, borderRadius: "16px", padding: "20px" }}
     >
-      <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 14px" }}>
+      <p style={{ ...label, color: "#4A5A74", margin: "0 0 14px" }}>
         Log an interaction
       </p>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ROW_SHADOW, R, C } from "@/lib/joc-tokens";
+import { label, ROW_SHADOW, R, C } from "@/lib/joc-tokens";
 
 export type DemoDay = { key: string; weekday: string; day: string; month: string };
 
@@ -103,7 +103,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         <p style={{ fontWeight: 700, fontSize: "19px", color: C.ink, marginBottom: "8px", letterSpacing: "-0.02em" }}>
           Request sent
         </p>
-        <p style={{ fontSize: "14.5px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px" }}>
+        <p style={{ fontSize: "15px", color: "#4A5A74", lineHeight: 1.6, marginBottom: "18px" }}>
           You asked for <strong style={{ color: C.ink }}>{day.weekday} {day.month} {day.day} at {slot}</strong>.
           Someone from the JOC Education team will confirm by email.
         </p>
@@ -131,7 +131,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
         padding: "26px",
       }}
     >
-      <p style={{ fontWeight: 700, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00", marginBottom: "14px" }}>
+      <p style={{ ...label, color: "#C96C00", marginBottom: "14px" }}>
         PICK A TIME
       </p>
 
@@ -156,7 +156,7 @@ export function DemoScheduler({ days }: { days: DemoDay[] }) {
                 transition: "background .15s",
               }}
             >
-              <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", opacity: on ? 0.85 : 0.5 }}>
+              <span style={{ ...label, opacity: on ? 0.85 : 0.5 }}>
                 {d.weekday}
               </span>
               <span style={{ fontSize: "17px", fontWeight: 700, lineHeight: 1 }}>{d.day}</span>

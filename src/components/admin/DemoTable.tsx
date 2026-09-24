@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { R, C } from "@/lib/joc-tokens";
+import { label, R, C } from "@/lib/joc-tokens";
 import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { setDemoStatus, convertDemoToSchool } from "@/app/actions/admin";
@@ -33,8 +33,7 @@ function fmt(d: Date | string | null, withTime = false) {
 }
 
 const th: React.CSSProperties = {
-  textAlign: "left", padding: "11px 20px", fontSize: "11px", letterSpacing: "0.04em",
-  textTransform: "uppercase", fontWeight: 700, color: "#4A5A74",
+  textAlign: "left", padding: "11px 20px", ...label, color: "#4A5A74",
   borderBottom: `1px solid ${C.hairline}`, backgroundColor: C.panel, whiteSpace: "nowrap",
 };
 const td: React.CSSProperties = {

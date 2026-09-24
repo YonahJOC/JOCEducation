@@ -119,7 +119,7 @@ async function Inner({ slug }: { slug: string }) {
           {/* People with logins */}
           <div style={CARD}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
-              <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: 0 }}>
+              <p style={{ ...label, color: "#4A5A74", margin: 0 }}>
                 Logins ({members.length}{s.seats ? ` of ${s.seats} seats` : ""})
               </p>
             </div>
@@ -136,7 +136,7 @@ async function Inner({ slug }: { slug: string }) {
                       <p style={{ fontSize: "13px", color: "#4A5A74", margin: "1px 0 0", wordBreak: "break-all" }}>{m.email}</p>
                     </div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                      <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", color: "#4A5A74", textTransform: "uppercase" }}>
+                      <span style={{ ...label, color: C.muted }}>
                         {String(m.role).replace("_", " ")}
                       </span>
                       {!m.active && (
@@ -188,7 +188,7 @@ async function Inner({ slug }: { slug: string }) {
           <ActivityComposer schoolId={s.id} disabled={usingSampleData} />
 
           <div style={CARD}>
-            <p style={{ fontSize: "11px", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: "#4A5A74", margin: "0 0 16px" }}>
+            <p style={{ ...label, color: "#4A5A74", margin: "0 0 16px" }}>
               History
             </p>
             {activities.length === 0 ? (
@@ -207,7 +207,7 @@ async function Inner({ slug }: { slug: string }) {
                         {ACTIVITY_ICON[a.type] ?? "OTHER"}
                     </span>
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <p style={{ fontSize: "14.5px", color: C.ink, margin: 0, fontWeight: 500, lineHeight: 1.4 }}>{a.summary}</p>
+                      <p style={{ fontSize: "15px", color: C.ink, margin: 0, fontWeight: 500, lineHeight: 1.4 }}>{a.summary}</p>
                       {a.detail && (
                         <p style={{ fontSize: "15px", color: "#4A5A74", margin: "4px 0 0", lineHeight: 1.55 }}>{a.detail}</p>
                       )}

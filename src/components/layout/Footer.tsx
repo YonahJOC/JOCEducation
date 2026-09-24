@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getPublishedPrograms } from "@/lib/content";
+import { label } from "@/lib/joc-tokens";
 
 const EDUCATION = [
   { label: "Chesed Programs",  href: "/programs" },
@@ -114,7 +115,7 @@ function FooterCol({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <h3 style={{ fontWeight: 700, fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C96C00" }}>
+      <h3 style={{ ...label, color: "#C96C00" }}>
         {title}
       </h3>
       <ul className="flex flex-col gap-2">
