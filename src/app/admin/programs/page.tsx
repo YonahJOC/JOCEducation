@@ -11,6 +11,7 @@ async function getPrograms(): Promise<ProgramRow[]> {
       orderBy: [{ sort: "asc" }, { id: "asc" }],
       include: {
         steps: { orderBy: { order: "asc" } },
+        activities: { orderBy: { order: "asc" } },
         // Surfaced on the row so coordinators are visible from the list rather
         // than only inside a page nobody knew to open.
         _count: { select: { leads: true } },
@@ -28,6 +29,10 @@ async function getPrograms(): Promise<ProgramRow[]> {
       meta: p.meta,
       available: p.available,
       whatsIncluded: p.whatsIncluded,
+      schoolProvides: p.schoolProvides,
+      activitiesTitle: p.activitiesTitle,
+      activitiesNote: p.activitiesNote,
+      activities: p.activities.map((a) => ({ title: a.title, description: a.description })),
       howItWorks: p.steps.map((s) => ({ step: s.step, title: s.title, description: s.description, linkLabel: s.linkLabel, linkUrl: s.linkUrl })),
       externalHref: p.externalHref,
       videoUrl: p.videoUrl,

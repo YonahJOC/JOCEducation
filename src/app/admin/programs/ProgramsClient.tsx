@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { R, C, pageTitle } from "@/lib/joc-tokens";
+import { R, C, F, pageTitle, quietButton, textButton } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { saveProgram, deleteProgram, seedProgramsFromStatic } from "@/app/actions/content";
 import { PageIntro } from "@/components/admin/PageIntro";
@@ -17,6 +17,10 @@ export type ProgramRow = {
   meta: string;
   available: string[];
   whatsIncluded: string[];
+  schoolProvides: string[];
+  activitiesTitle: string | null;
+  activitiesNote: string | null;
+  activities: { title: string; description: string }[];
   howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref: string | null;
   videoUrl: string | null;
@@ -39,6 +43,7 @@ const PLANS = [
 const BLANK: ProgramRow = {
   id: 0, slug: "", name: "", tag: "Ongoing", tagline: "", description: "",
   heroColor: C.blue, meta: "", available: [], whatsIncluded: [""],
+  schoolProvides: [], activitiesTitle: null, activitiesNote: null, activities: [],
   howItWorks: [{ step: "01", title: "", description: "", linkLabel: "", linkUrl: "" }],
   externalHref: null, videoUrl: null, leadCount: 0, responseCount: 0, cta: "Register your school", published: false, comingSoon: false, sort: 0,
 };
@@ -233,6 +238,10 @@ function ProgramForm({
         meta: d.meta,
         available: d.available,
         whatsIncluded: d.whatsIncluded,
+        schoolProvides: d.schoolProvides,
+        activitiesTitle: d.activitiesTitle,
+        activitiesNote: d.activitiesNote,
+        activities: d.activities,
         howItWorks: d.howItWorks,
         externalHref: d.externalHref,
         videoUrl: d.videoUrl,
@@ -358,7 +367,92 @@ function ProgramForm({
 
       <div style={card}>
         <p style={{ ...label, marginBottom: "10px" }}>What the school gets</p>
-        <Lines items={d.whatsIncluded} onChange={(v) => set("whatsIncluded", v)} placeholder="Branded booth display and signage" disabled={disabled} />
+        <Lines items={d.whatsIncluded} onChange={(v) => set("whatsIncluded", v)} placeholder="“Spread Kindness” table cover" disabled={disabled} />
+      </div>
+
+      {/* What the school brings on the day. It lived in an email until the
+          Kindness Booth's own page turned out to list three of them. */}
+      <div style={card}>
+        <p style={{ ...label, marginBottom: "4px" }}>What the school provides</p>
+        <p style={{ fontFamily: F.read, fontSize: "14px", color: C.muted, lineHeight: 1.45, margin: "0 0 10px", maxWidth: "62ch" }}>
+          What they have to bring themselves — a folding table, a speaker, the candies. Leave it
+          empty if JOC sends everything.
+        </p>
+        <Lines items={d.schoolProvides} onChange={(v) => set("schoolProvides", v)} placeholder="A folding table" disabled={disabled} />
+      </div>
+
+      {/* What a person can actually do in this program. For the Kindness
+          Booth these four are the programme, not a detail of it. */}
+      <div style={card}>
+        <p style={{ ...label, marginBottom: "4px" }}>What people can do</p>
+        <p style={{ fontFamily: F.read, fontSize: "14px", color: C.muted, lineHeight: 1.45, margin: "0 0 10px", maxWidth: "62ch" }}>
+          The choices in front of a student or a teacher on the day. A school deciding whether to
+          run this is deciding about these.
+        </p>
+
+        <div style={{ display: "grid", gap: "10px", marginBottom: "12px" }}>
+          <div>
+            <label style={label}>Heading over them</label>
+            <input
+              value={d.activitiesTitle ?? ""}
+              onChange={(e) => set("activitiesTitle", e.target.value)}
+              placeholder="What people can do at the booth"
+              disabled={disabled}
+              style={field}
+            />
+          </div>
+          <div>
+            <label style={label}>One line under them</label>
+            <input
+              value={d.activitiesNote ?? ""}
+              onChange={(e) => set("activitiesNote", e.target.value)}
+              placeholder="A new act is added each month, often tied to an upcoming yom tov."
+              disabled={disabled}
+              style={field}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {d.activities.map((a, i) => (
+            <div key={i} style={{ border: `1px solid ${C.hairline}`, borderRadius: R.form, padding: "12px" }}>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <input
+                  value={a.title}
+                  onChange={(e) => set("activities", d.activities.map((x, n) => n === i ? { ...x, title: e.target.value } : x))}
+                  placeholder="Write a note"
+                  disabled={disabled}
+                  style={{ ...field, flex: "1 1 160px", minWidth: 0 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => set("activities", d.activities.filter((_, n) => n !== i))}
+                  disabled={disabled}
+                  style={{ ...quietButton, flexShrink: 0 }}
+                >
+                  Remove
+                </button>
+              </div>
+              <textarea
+                value={a.description}
+                onChange={(e) => set("activities", d.activities.map((x, n) => n === i ? { ...x, description: e.target.value } : x))}
+                placeholder="A kind note to a fellow student, to a teacher, or to a soldier."
+                rows={2}
+                disabled={disabled}
+                style={{ ...field, marginTop: "10px", minHeight: "62px", resize: "vertical" }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => set("activities", [...d.activities, { title: "", description: "" }])}
+          disabled={disabled}
+          style={{ ...textButton, marginTop: "12px" }}
+        >
+          Add one
+        </button>
       </div>
 
       <div style={card}>

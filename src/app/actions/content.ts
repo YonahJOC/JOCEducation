@@ -305,6 +305,10 @@ export async function saveProgram(input: {
   meta: string;
   available: string[];
   whatsIncluded: string[];
+  schoolProvides: string[];
+  activitiesTitle?: string | null;
+  activitiesNote?: string | null;
+  activities: { title: string; description: string }[];
   howItWorks: { step: string; title: string; description: string; linkLabel?: string | null; linkUrl?: string | null }[];
   externalHref?: string | null;
   videoUrl?: string | null;
@@ -334,6 +338,9 @@ export async function saveProgram(input: {
       meta: input.meta.trim(),
       available: input.available.map((a) => a.trim()).filter(Boolean),
       whatsIncluded: input.whatsIncluded.map((a) => a.trim()).filter(Boolean),
+      schoolProvides: input.schoolProvides.map((a) => a.trim()).filter(Boolean),
+      activitiesTitle: input.activitiesTitle?.trim() || null,
+      activitiesNote: input.activitiesNote?.trim() || null,
       externalHref: input.externalHref?.trim() || null,
       videoUrl: input.videoUrl?.trim() || null,
       cta: input.cta.trim() || "Register your school",
@@ -354,15 +361,28 @@ export async function saveProgram(input: {
         })),
     };
 
+    // What a person can actually do in this program. Same shape as the
+    // steps: written fresh each save, so an emptied list empties.
+    const activities = {
+      create: input.activities
+        .filter((a) => a.title.trim())
+        .map((a, order) => ({
+          title: a.title.trim(),
+          description: a.description.trim(),
+          order,
+        })),
+    };
+
     let id: number;
     if (input.id) {
       await prisma.$transaction([
         prisma.programStep.deleteMany({ where: { programId: input.id } }),
-        prisma.programPage.update({ where: { id: input.id }, data: { ...data, steps } }),
+        prisma.programActivity.deleteMany({ where: { programId: input.id } }),
+        prisma.programPage.update({ where: { id: input.id }, data: { ...data, steps, activities } }),
       ]);
       id = input.id;
     } else {
-      const created = await prisma.programPage.create({ data: { ...data, steps } });
+      const created = await prisma.programPage.create({ data: { ...data, steps, activities } });
       id = created.id;
     }
 

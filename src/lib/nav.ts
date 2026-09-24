@@ -84,6 +84,23 @@ export function jocNav(
   if (can(user, "orders") || can(user, "pricing")) items.push({ label: "Money", href: "/admin/orders", hint: "Orders and pricing" });
   if (can(user, "users")) items.push({ label: "People & access", href: "/admin/users", hint: "Accounts, roles and passwords" });
 
+  // At most seven — but the one that goes is never the keys to everything.
+  //
+  // A super admin holds every capability, which builds eight: Calendar is
+  // there for the programming team, and a plain slice(0, 7) dropped whatever
+  // happened to be pushed last. That was People & access, so the only person
+  // who can grant permissions had no way to the page that grants them — and
+  // that page is where the link to admin types lives, so it took that with it.
+  //
+  // Anything dropped here is listed on its section's hub, so it stays
+  // reachable. See SectionLinks.
+  const DROPPABLE = ["Calendar", "Chesed Cycles"];
+  while (items.length > 7) {
+    const i = items.findIndex((x) => DROPPABLE.includes(x.label));
+    if (i < 0) break;
+    items.splice(i, 1);
+  }
+
   return items.slice(0, 7);
 }
 

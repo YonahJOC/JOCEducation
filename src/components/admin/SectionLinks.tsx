@@ -43,6 +43,9 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need: Capabili
   programs: [
     { href: "/admin/programs", label: "The public write-ups", need: "programs" },
     { href: "/admin/forms", label: "Forms", need: "forms" },
+    // The rail drops Calendar for somebody who holds every capability, so
+    // this is their way in. The programming team keeps it in the rail.
+    { href: "/admin/programming", label: "Calendar", need: "programming" },
   ],
 };
 
