@@ -87,20 +87,27 @@ export const prose: React.CSSProperties = {
   color: C.ink,
 };
 
-/** A figure, a date, a code — anything read as data rather than as language. */
+/**
+ * A figure, a date, a code — anything read as data rather than as language.
+ *
+ * Twelve, tracked, and never upper-cased by the token: a status line is
+ * already written in the case it should be read in. It was set through the
+ * label token, which shouted a whole sentence in 11px capitals.
+ */
 export const datum: React.CSSProperties = {
   fontFamily: F.data,
-  fontSize: "13px",
+  fontSize: "12px",
   fontWeight: 500,
+  letterSpacing: ".04em",
   color: C.muted,
 };
 
 /** A filled blue button. Everything primary looks like this and nothing else does. */
 export const primaryButton: React.CSSProperties = {
   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px",
-  fontFamily: font, fontSize: "15px", fontWeight: 600,
+  fontFamily: font, fontSize: "15px", fontWeight: 700,
   color: C.white, backgroundColor: C.blue, border: `2px solid ${C.blue}`,
-  borderRadius: R.button, padding: "12px 20px", minHeight: "46px",
+  borderRadius: R.button, padding: "11px 18px", minHeight: "46px",
   textDecoration: "none", cursor: "pointer", boxSizing: "border-box",
   whiteSpace: "nowrap",
 };
@@ -166,20 +173,27 @@ export const rowInner: React.CSSProperties = {
 
 /** The coloured left-hand block: a label and one big figure. */
 export const rowBand: React.CSSProperties = {
-  flex: "1 1 170px", minWidth: 0, padding: "14px 18px",
-  display: "flex", flexDirection: "column", justifyContent: "center", gap: "3px",
+  flex: "1 1 140px", minWidth: 0, padding: "14px 18px",
+  display: "flex", flexDirection: "column", justifyContent: "center", gap: "2px",
 };
 
 /** The name, the sentence, the chips. Grows far faster than the other two. */
 export const rowBody: React.CSSProperties = {
-  flex: "100 1 280px", minWidth: 0, padding: "16px 18px",
+  flex: "100 1 220px", minWidth: 0, padding: "14px 18px",
+  display: "flex", flexDirection: "column", justifyContent: "center", gap: "4px",
 };
 
-/** The button and whatever sits under it. */
+/**
+ * The button and whatever sits under it.
+ *
+ * A column of its own that grows, with the button filling it — not a button
+ * shrink-wrapped to its text and pushed to the right, which is what this was
+ * and which left every row ending in a ragged edge.
+ */
 export const rowAction: React.CSSProperties = {
-  flex: "0 0 auto", minWidth: 0, padding: "16px 18px",
-  display: "flex", flexDirection: "column", gap: "8px",
-  justifyContent: "center", alignItems: "flex-end",
+  flex: "1 1 170px", minWidth: 0, padding: "14px 18px",
+  display: "flex", flexDirection: "column", justifyContent: "center",
+  alignItems: "stretch", gap: "2px",
 };
 
 /** What opens underneath a row. */
@@ -187,10 +201,10 @@ export const rowDetail: React.CSSProperties = {
   borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "18px",
 };
 
-/** The name at the top of a row. */
+/** The name at the top of a row. The body's gap does the spacing. */
 export const rowTitle: React.CSSProperties = {
   fontFamily: font, fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em",
-  color: C.ink, margin: "0 0 4px",
+  color: C.ink, margin: 0,
 };
 
 /** A section's heading, and the paragraph under it that says what it is for. */

@@ -35,7 +35,10 @@ export function ProgramTodayPanel({
   return (
     <div className="joc-today">
       <div style={{ minWidth: 0 }}>
-        <h2 style={{ ...sectionHeading, margin: "0 0 14px" }}>Needs you</h2>
+        <h2 style={{ ...sectionHeading, margin: "0 0 2px" }}>Needs you</h2>
+        <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.45, margin: "0 0 14px" }}>
+          Worst first. Every action is recorded; nothing is sent.
+        </p>
 
         {data.rows.length === 0 ? (
           <div style={{ ...rowCard, padding: "24px" }}>

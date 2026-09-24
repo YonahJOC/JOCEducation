@@ -124,12 +124,11 @@ export default async function ProgramAdminPage({
 
   const lead = view.leads[0] ? view.leads[0].name ?? view.leads[0].email : null;
   const counts = [
-    `${enrolled.length} in`,
-    `${traffic.counts.all} not yet`,
-    today.rows.length > 0 ? `${today.rows.length} need you` : "nothing needs you",
+    `${enrolled.length} SCHOOLS IN`,
+    `${traffic.counts.all} NOT YET`,
     today.comingUp[0]
-      ? `next ${today.comingUp[0].startsAt.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" })}`
-      : "nothing booked",
+      ? `NEXT RUN ${today.comingUp[0].startsAt.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" }).toUpperCase()}`
+      : "NOTHING BOOKED",
   ].join(" · ");
 
   return (

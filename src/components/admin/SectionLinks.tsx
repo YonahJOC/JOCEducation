@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { safeAuth, openForReview } from "@/auth";
 import { can, type Capability } from "@/lib/access";
-import { C, R, label } from "@/lib/joc-tokens";
+import { C, R, F } from "@/lib/joc-tokens";
 
 /**
  * The rest of a section, as links across the top of its main page.
@@ -62,10 +62,10 @@ export async function SectionLinks({ section }: { section: SectionKey }) {
           key={i.href}
           href={i.href}
           style={{
-            ...label,
             display: "inline-flex", alignItems: "center",
+            fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
             color: C.blue, backgroundColor: C.blueTint,
-            borderRadius: R.chip, padding: "8px 13px", minHeight: "44px",
+            borderRadius: R.chip, padding: "10px 15px", minHeight: "44px",
             textDecoration: "none",
           }}
         >

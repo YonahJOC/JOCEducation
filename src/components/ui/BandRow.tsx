@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   C, TONE, rowCard, rowInner, rowBand, rowBody, rowAction, rowTitle,
-  label, bandFigure, F, primaryButton, textButton, type Tone,
+  label, bandFigure, F, primaryButton, textButton, fullWidth, type Tone,
 } from "@/lib/joc-tokens";
 
 /**
@@ -66,7 +66,7 @@ export function BandRow({
           ...(bandLead ? { flexDirection: "row", alignItems: "center", gap: "12px" } : null),
         }}>
           {bandLead}
-          <div style={{ display: "flex", flexDirection: "column", gap: "3px", minWidth: 0 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 }}>
           <span style={{ ...label, color: t.fg }}>{bandText}</span>
           {figure && (
             <span style={{ ...bandFigure, color: t.fg, fontSize: word ? "22px" : bandFigure.fontSize }}>
@@ -89,16 +89,22 @@ export function BandRow({
         {(action || done || actionNode) && (
           <div style={rowAction}>
             {actionNode ? actionNode : done ? (
-              <span style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.greenText, textAlign: "right" }}>
+              <span style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.greenText, textAlign: "center", lineHeight: 1.45 }}>
                 {done}
               </span>
             ) : (
               <>
-                <Link href={action!.href} style={{ ...primaryButton, textDecoration: "none" }}>
+                <Link href={action!.href} style={{ ...primaryButton, ...fullWidth, textDecoration: "none" }}>
                   {action!.label}
                 </Link>
                 {secondary && (
-                  <Link href={secondary.href} style={{ ...textButton, textDecoration: "underline" }}>
+                  <Link
+                    href={secondary.href}
+                    style={{
+                      ...textButton, ...fullWidth, minHeight: "36px",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
                     {secondary.label}
                   </Link>
                 )}

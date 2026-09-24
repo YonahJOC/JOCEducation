@@ -6,7 +6,7 @@ import { can } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getProgramToday } from "@/lib/program-today";
 import { schoolsInProgram } from "@/lib/program-enrollment";
-import { C, R, ROW_SHADOW, label, bandFigure, F, pageTitle } from "@/lib/joc-tokens";
+import { C, rowCard, label, bandFigure, datum, F, pageTitle } from "@/lib/joc-tokens";
 
 /**
  * Every program console, as cards.
@@ -72,7 +72,7 @@ export default async function MyProgramsPage() {
       </p>
 
       {cards.length === 0 ? (
-        <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "32px 24px" }}>
+        <div style={{ ...rowCard, padding: "24px" }}>
           <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.5, maxWidth: "58ch" }}>
             You are not down as running any program yet. Whoever holds the Coordinators permission
             can add you on the program&rsquo;s own page.
@@ -82,11 +82,11 @@ export default async function MyProgramsPage() {
         <div className="joc-program-cards">
           {cards.map((p) => {
             const status = [
-              `${p.inCount} in`,
-              `${p.notYet} not yet`,
+              `${p.inCount} IN`,
+              `${p.notYet} NOT YET`,
               p.nextRun
-                ? `next ${p.nextRun.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" })}`
-                : "nothing booked",
+                ? `NEXT ${p.nextRun.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" }).toUpperCase()}`
+                : "NOTHING BOOKED",
             ].join(" · ");
 
             return (
@@ -94,54 +94,51 @@ export default async function MyProgramsPage() {
                 key={p.id}
                 className="joc-card"
                 style={{
-                  backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW,
-                  overflow: "hidden", display: "flex", flexDirection: "column",
+                  ...rowCard, display: "flex", flexDirection: "column",
                 }}
               >
                 <span aria-hidden="true" style={{ display: "block", height: "8px", backgroundColor: p.heroColor }} />
 
-                <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                  <div>
-                    <span style={{ ...label, color: C.muted, display: "block", marginBottom: "4px" }}>
-                      {p.tag}
-                      {!p.published && " · draft"}
-                    </span>
-                    {/* The name is the link, and it covers the card — so the
-                        whole card is clickable without nesting a link in a
-                        link, which is what stopped the coordinator's view
-                        being reachable from here. */}
+                <div style={{ padding: "18px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {/* The name and the kind share a line, as in 2a. The kind
+                      was stacked above it as a label, which made every card
+                      open with the same small grey word. */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                     <Link
                       href={`/admin/programs/${p.slug}`}
                       className="joc-card-link"
-                      style={{ fontFamily: F.ui, fontSize: "20px", fontWeight: 700, letterSpacing: "-0.025em", color: C.ink, display: "block", lineHeight: 1.2, textDecoration: "none" }}
+                      style={{ fontFamily: F.ui, fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink, textDecoration: "none", minWidth: 0 }}
                     >
                       {p.name}
                     </Link>
-                  </div>
-
-                  {/* A label over a figure, the same anatomy as every row.
-                      It was a 26px sentence, which outweighed the program's
-                      own name — the thing somebody is here to click. */}
-                  <div>
-                    <span style={{ ...label, color: C.muted, display: "block", marginBottom: "2px" }}>
-                      Needs you today
-                    </span>
-                    <span style={{
-                      ...bandFigure, fontSize: "26px",
-                      color: p.need > 0 ? C.orangeText : C.greenText,
-                    }}>
-                      {p.need > 0 ? p.need : "None"}
+                    <span style={{ ...label, color: C.muted, whiteSpace: "nowrap" }}>
+                      {p.tag}
+                      {!p.published && " · draft"}
                     </span>
                   </div>
 
-                  <span style={{ ...label, color: C.muted, display: "block" }}>{status}</span>
+                  <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.45, color: p.lead ? C.muted : C.orangeText, margin: 0 }}>
+                    {p.lead ? `Run by ${p.lead}` : "Nobody is down as running it"}
+                  </p>
 
-                  <div style={{ marginTop: "auto", paddingTop: "6px" }}>
-                    <p style={{ fontFamily: F.read, fontSize: "15px", color: p.lead ? C.muted : C.orangeText, lineHeight: 1.5, margin: 0 }}>
-                      {p.lead ? `Run by ${p.lead}` : "Nobody is down as running it"}
+                  {/* The figure and its words on one baseline, as in 2a. The
+                      big figure is for a real count: eight cards all reading
+                      "None" at thirty pixels is a wall that says nothing, so
+                      a nought drops to the size of the line it sits on. */}
+                  {p.need > 0 ? (
+                    <p style={{ display: "flex", alignItems: "baseline", gap: "8px", margin: 0, flexWrap: "wrap" }}>
+                      <span style={{ ...bandFigure, color: C.orangeText }}>{p.need}</span>
+                      <span style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.ink }}>
+                        {p.need === 1 ? "needs you today" : "need you today"}
+                      </span>
                     </p>
+                  ) : (
+                    <p style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.greenText, margin: 0 }}>
+                      Nothing needs you today
+                    </p>
+                  )}
 
-                  </div>
+                  <p style={{ ...datum, color: C.muted, margin: 0 }}>{status}</p>
                 </div>
               </div>
             );

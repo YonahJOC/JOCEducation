@@ -50,7 +50,7 @@ const days = (from: Date, now: number) => Math.floor((now - from.getTime()) / 86
 export async function getToday(
   who?: Parameters<typeof can>[0] & { name?: string | null },
 ): Promise<Today> {
-  const empty: Today = { title: "Today", rows: [], figures: [] };
+  const empty: Today = { title: "Nothing needs you today", rows: [], figures: [] };
   if (!isDatabaseConfigured()) return empty;
 
   try {
@@ -297,11 +297,26 @@ export async function getToday(
 
     const name = me?.name?.trim().split(/\s+/)[0];
     return {
-      title: name ? `Today, ${name}` : "Today",
+      title: headline(rows.length, name),
       rows,
       figures: figures.slice(0, 4),
     };
   } catch {
     return empty;
   }
+}
+
+/**
+ * The heading, which is the answer rather than the word "Today".
+ *
+ * Somebody opening this page is asking one question. A heading that repeats
+ * the nav item they just clicked does not answer it; a count does. 3a reads
+ * "Three things need you".
+ */
+const WORD = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+
+function headline(n: number, name?: string): string {
+  if (n === 0) return name ? `Nothing needs you, ${name}` : "Nothing needs you today";
+  const count = n <= 10 ? WORD[n] : String(n);
+  return `${count} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} you`;
 }

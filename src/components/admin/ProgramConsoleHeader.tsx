@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { C, R, CONTENT_MAX, label, F } from "@/lib/joc-tokens";
+import { C, R, CONTENT_MAX, label, datum, F } from "@/lib/joc-tokens";
 
 /**
  * The band at the top of every program console, and its tabs.
@@ -39,6 +39,10 @@ export function ProgramConsoleHeader({
   /** Shown after a tab's name, where there is something to count. */
   tabCounts?: Partial<Record<TabKey, number>>;
 }) {
+  // A light hero needs ink for its eyebrow; a dark one takes the warm tint 2b
+  // uses, which is the same orange the rest of the site flags things in.
+  const dark = fg !== C.ink;
+
   return (
     <div style={{ position: "relative", overflow: "hidden", backgroundColor: heroColor, color: fg }}>
       <span
@@ -51,21 +55,21 @@ export function ProgramConsoleHeader({
       />
 
       <div style={{ position: "relative", maxWidth: CONTENT_MAX, margin: "0 auto", padding: "28px 40px 0" }}>
-        <p style={{ ...label, color: fg, opacity: 0.9, margin: "0 0 10px" }}>
+        <p style={{ ...label, color: dark ? "#FFD8AE" : C.orangeText, margin: "0 0 10px" }}>
           Program console · {tag} · {lead ? `Run by ${lead}` : "Nobody is down as running it"}
         </p>
 
         <h1 style={{
-          fontFamily: F.ui, fontSize: "clamp(30px, 4vw, 44px)", fontWeight: 700,
-          letterSpacing: "-0.035em", lineHeight: 1.04, margin: "0 0 8px",
+          fontFamily: F.ui, fontSize: "clamp(28px, 3.4vw, 40px)", fontWeight: 700,
+          letterSpacing: "-0.03em", lineHeight: 1.05, margin: "0 0 8px",
         }}>
           {name}
         </h1>
 
-        <p style={{ ...label, color: fg, opacity: 0.85, margin: "0 0 20px" }}>{counts}</p>
+        <p style={{ ...datum, color: fg, opacity: 0.78, margin: 0 }}>{counts}</p>
 
         {/* Tabs are addresses, not state, so a link opens the right one. */}
-        <nav aria-label="Console sections" style={{ display: "flex", gap: "2px", flexWrap: "wrap", overflowX: "auto" }}>
+        <nav aria-label="Console sections" style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginTop: "20px" }}>
           {tabs.map((t) => {
             const on = t === active;
             const n = tabCounts?.[t];
@@ -74,20 +78,17 @@ export function ProgramConsoleHeader({
                 key={t}
                 href={`/admin/programs/${slug}?tab=${t}`}
                 style={{
-                  display: "flex", alignItems: "center", gap: "7px", whiteSpace: "nowrap",
-                  fontFamily: F.ui, fontSize: "15px", fontWeight: 600,
+                  display: "flex", alignItems: "center", whiteSpace: "nowrap",
+                  fontFamily: F.ui, fontSize: "14px", fontWeight: on ? 700 : 600,
                   minHeight: "44px", padding: "12px 16px",
                   borderRadius: `${R.form} ${R.form} 0 0`,
                   backgroundColor: on ? C.paper : "transparent",
                   color: on ? C.ink : fg,
-                  borderBottom: `2px solid ${on ? C.paper : "transparent"}`,
                   textDecoration: "none",
                 }}
               >
                 {TAB_LABEL[t]}
-                {n != null && n > 0 && (
-                  <span style={{ ...label, fontSize: "12px", opacity: on ? 0.6 : 0.85 }}>{n}</span>
-                )}
+                {n != null && n > 0 && ` · ${n}`}
               </Link>
             );
           })}
