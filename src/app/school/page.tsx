@@ -7,6 +7,7 @@ import { STAGE_LABEL, STAGE_MEANING, STAGE_TONE, type Stage } from "@/lib/progra
 import { stepFor, STEPS, STEP_NEXT } from "@/lib/program-step";
 import { C, rowCard, F, pageTitle, sectionHeading, type Tone } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
+import { currentSchoolId } from "@/lib/school-scope";
 
 /**
  * Today, for a school.
@@ -28,7 +29,7 @@ export default async function SchoolToday() {
   await requireSchoolPanel();
 
   const session = await safeAuth();
-  const schoolId = session?.user?.schoolId ?? null;
+  const schoolId = await currentSchoolId();
   const runsAccount = openForReview || canRunOwnSchool(session?.user);
 
   if (!isDatabaseConfigured() || !schoolId) {

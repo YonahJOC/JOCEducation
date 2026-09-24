@@ -3,6 +3,7 @@ import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { whoISupervise } from "@/lib/ambassadors";
 import { AmbassadorsPanel } from "@/components/school/AmbassadorsPanel";
+import { currentSchoolId } from "@/lib/school-scope";
 
 /**
  * Your ambassadors.
@@ -22,7 +23,7 @@ export default async function SchoolAmbassadorsPage() {
   await requireSchoolPanel();
 
   const session = await safeAuth();
-  const schoolId = session?.user?.schoolId ?? null;
+  const schoolId = await currentSchoolId();
 
   const supervised = await whoISupervise();
 

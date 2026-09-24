@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
 import { canRunSchoolApp } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { currentSchoolId } from "@/lib/school-scope";
 
 /**
  * A school's own sign-ups.
@@ -58,7 +59,7 @@ export default async function SchoolProgramsPage() {
   const session = await safeAuth();
   if (!openForReview && !canRunSchoolApp(session?.user)) redirect("/home");
 
-  const schoolId = session?.user?.schoolId ?? null;
+  const schoolId = await currentSchoolId();
   if (!schoolId || !isDatabaseConfigured()) {
     return (
       <div>
