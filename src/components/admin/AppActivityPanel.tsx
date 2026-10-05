@@ -7,6 +7,8 @@ import { syncAppNow } from "@/app/actions/app-sync";
 import { hours, schoolYear, compareRows } from "@/lib/app-flags";
 import { sectionHeading, C, R, ROW_SHADOW, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel, rowDetail, field, note, type Tone } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
+import { SchoolThread } from "@/components/admin/SchoolThread";
+import { money } from "@/lib/money";
 import type { AppRow, AppActivity } from "@/lib/app-activity";
 
 /**
@@ -284,6 +286,23 @@ function Detail({ row }: { row: AppRow }) {
               </Cell>
             )}
 
+            {/* The figure the coordinators actually want. It lives behind the
+                app's login, so it says which one rather than showing a
+                nought that would read as "nothing is waiting". */}
+            <Cell label="Waiting for approval">
+              {st.unapprovedEntries > 0 ? (
+                <>
+                  {st.unapprovedEntries} opportunit{st.unapprovedEntries === 1 ? "y" : "ies"}
+                  <Sub>Logged by a student and not yet verified by a teacher.</Sub>
+                </>
+              ) : (
+                <>
+                  <Absent>Needs a login to the app</Absent>
+                  <Sub>The one figure the public endpoints will not give us.</Sub>
+                </>
+              )}
+            </Cell>
+
             <Cell label="Last activity">
               {st.lastActivityText ? (
                 <>
@@ -301,6 +320,15 @@ function Detail({ row }: { row: AppRow }) {
             Hours waiting on a teacher, active students, opportunities open and
             the prize store all need one.
           </p>
+          <Paid rows={row.paidByYear} />
+          <Admins rows={row.admins} />
+          <SchoolThread
+            schoolId={row.schoolId}
+            programId={null}
+            schoolName={row.name}
+            messages={row.thread}
+            admins={row.admins.length}
+          />
         </>
       ) : (
         <div className="joc-app-detail">
@@ -408,7 +436,118 @@ function Detail({ row }: { row: AppRow }) {
           </Cell>
         </div>
       )}
+
+      {st && !st.publicOnly && (
+        <>
+          <Paid rows={row.paidByYear} />
+          <Admins rows={row.admins} />
+          <SchoolThread
+            schoolId={row.schoolId}
+            programId={null}
+            schoolName={row.name}
+            messages={row.thread}
+            admins={row.admins.length}
+          />
+        </>
+      )}
     </div>
+  );
+}
+
+/**
+ * What the school paid, year by year.
+ *
+ * A grant is counted and never valued, and a refund keeps its own figure
+ * rather than being netted off — the same two rules the Money tab follows,
+ * so a school's history cannot read one way here and another way there.
+ */
+function Paid({ rows }: { rows: AppRow["paidByYear"] }) {
+  return (
+    <section style={{ marginTop: "16px" }}>
+      <p style={{ ...bandLabel, fontSize: "11px", color: C.muted, margin: "0 0 8px" }}>
+        Paid, by school year
+      </p>
+
+      {rows.length === 0 ? (
+        <p style={{ fontSize: "15px", color: C.orangeText, fontWeight: 600, margin: 0 }}>
+          Nothing is recorded against this school in any year.
+        </p>
+      ) : (
+        <div style={{ display: "grid", gap: "6px" }}>
+          {rows.map((y) => (
+            <div
+              key={y.schoolYear}
+              style={{
+                display: "flex", justifyContent: "space-between", alignItems: "baseline",
+                gap: "14px", flexWrap: "wrap",
+                backgroundColor: C.white, border: `1px solid ${C.hairline}`,
+                borderRadius: R.form, padding: "10px 14px",
+              }}
+            >
+              <span style={{ ...bandLabel, fontSize: "11px", color: C.muted }}>{y.schoolYear}</span>
+              <span style={{ fontSize: "15px", color: C.ink, textAlign: "right" }}>
+                {y.cents > 0 ? <strong>{money(y.cents)}</strong> : <Absent>Nothing paid</Absent>}
+                {y.granted > 0 && (
+                  <span style={{ color: C.muted }}>
+                    {" · "}granted {y.granted === 1 ? "once" : `${y.granted} times`}
+                  </span>
+                )}
+                {y.refundedCents > 0 && (
+                  <span style={{ color: C.redText, fontWeight: 600 }}>
+                    {" · "}−{money(y.refundedCents)} refunded
+                  </span>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** Who at the school has a login. Staff only — never a student. */
+function Admins({ rows }: { rows: AppRow["admins"] }) {
+  return (
+    <section style={{ marginTop: "16px" }}>
+      <p style={{ ...bandLabel, fontSize: "11px", color: C.muted, margin: "0 0 8px" }}>
+        Who runs the account
+      </p>
+
+      {rows.length === 0 ? (
+        <p style={{ fontSize: "15px", color: C.orangeText, fontWeight: 600, margin: 0 }}>
+          Nobody at this school has a login yet.
+        </p>
+      ) : (
+        <div style={{ display: "grid", gap: "6px" }}>
+          {rows.map((a) => (
+            <div
+              key={a.id}
+              style={{
+                display: "flex", justifyContent: "space-between", alignItems: "baseline",
+                gap: "14px", flexWrap: "wrap",
+                backgroundColor: C.white, border: `1px solid ${C.hairline}`,
+                borderRadius: R.form, padding: "10px 14px",
+              }}
+            >
+              <span style={{ minWidth: 0 }}>
+                <span style={{ display: "block", fontSize: "15px", color: C.ink, fontWeight: 600 }}>
+                  {a.name ?? a.email}
+                </span>
+                {a.name && (
+                  <span style={{ display: "block", fontSize: "13px", color: C.muted, wordBreak: "break-all" }}>
+                    {a.email}
+                  </span>
+                )}
+              </span>
+              <span style={{ fontSize: "13px", color: a.lastSeenAt ? C.muted : C.orangeText }}>
+                {a.lastSeenAt ? `Last in ${when(a.lastSeenAt)}` : "Never signed in"}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 

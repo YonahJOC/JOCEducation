@@ -48,7 +48,9 @@ const days = (from: Date, now: number) => Math.floor((now - from.getTime()) / 86
  *   function of their capabilities and that is the part worth checking.
  */
 export async function getToday(
-  who?: Parameters<typeof can>[0] & { name?: string | null },
+  // id as well as the capabilities, so the page can show somebody the items
+  // they themselves raised rather than only what their permissions allow.
+  who?: Parameters<typeof can>[0] & { name?: string | null; id?: string | null },
 ): Promise<Today> {
   const empty: Today = { title: "Nothing needs you today", rows: [], figures: [] };
   if (!isDatabaseConfigured()) return empty;
@@ -58,6 +60,106 @@ export async function getToday(
     const now = Date.now();
     const rows: TodayRow[] = [];
     const figures: TodayFigure[] = [];
+
+    // ── Anything a school sent in ─────────────────────────────────────────
+    //
+    // A school can now reach us three ways from inside the portal: ask a
+    // coordinator something, press "I'd like lessons" on a page that is not
+    // theirs yet, or write in the message thread. All three landed somewhere
+    // a coordinator had to go looking — the program console, an inquiry
+    // table, the school's own panel — so the one page they open every
+    // morning said nothing about any of it.
+    //
+    // Nothing here is scoped by program on purpose: a question from a school
+    // waiting a week is worse than a tidy page, and whoever sees it first can
+    // pass it on.
+    {
+      const [asks, inquiries, unread] = await Promise.all([
+        prisma.schoolActivity.findMany({
+          where: { inbound: true, answeredAt: null },
+          orderBy: { createdAt: "asc" },
+          select: {
+            id: true, topic: true, detail: true, createdAt: true,
+            school: { select: { name: true } },
+            program: { select: { slug: true, name: true } },
+          },
+        }),
+        prisma.inquiry.findMany({
+          where: { status: "OPEN" },
+          orderBy: { createdAt: "asc" },
+          select: {
+            id: true, kind: true, createdAt: true,
+            school: { select: { name: true } },
+          },
+        }),
+        prisma.schoolMessage.findMany({
+          where: { inbound: true, seenAt: null },
+          orderBy: { sentAt: "asc" },
+          select: {
+            id: true, body: true, sentAt: true,
+            school: { select: { name: true } },
+          },
+        }),
+      ]);
+
+      const days = (d: Date) => Math.floor((now - d.getTime()) / 86_400_000);
+      const old = (d: Date) => {
+        const n = days(d);
+        return n === 0 ? "today" : `${n} day${n === 1 ? "" : "s"}`;
+      };
+
+      for (const a of asks) {
+        rows.push({
+          id: `ask:${a.id}`,
+          label: `Asked · ${a.topic ?? "something"}`,
+          figure: old(a.createdAt),
+          title: a.school.name,
+          line: (a.detail ?? "").slice(0, 150) || "They left no detail.",
+          tone: "info",
+          weight: 5200 + days(a.createdAt),
+          action: a.program
+            ? { label: `Open ${a.program.name}`, href: `/admin/programs/${a.program.slug}` }
+            : { label: "Open schools", href: "/admin/schools" },
+        });
+      }
+
+      for (const m of unread) {
+        rows.push({
+          id: `msg:${m.id}`,
+          label: "Wrote in",
+          figure: old(m.sentAt),
+          title: m.school.name,
+          line: m.body.slice(0, 150),
+          tone: "info",
+          weight: 5100 + days(m.sentAt),
+          action: { label: "Open schools", href: "/admin/schools" },
+        });
+      }
+
+      // Grouped: ten schools asking for the lesson library is one fact about
+      // the library, not ten things to read.
+      const byKind = new Map<string, { n: number; names: string[]; oldest: Date }>();
+      for (const i of inquiries) {
+        const k = byKind.get(i.kind) ?? { n: 0, names: [], oldest: i.createdAt };
+        k.n++;
+        if (k.names.length < 4) k.names.push(i.school.name);
+        if (i.createdAt < k.oldest) k.oldest = i.createdAt;
+        byKind.set(i.kind, k);
+      }
+
+      for (const [kind, k] of byKind) {
+        rows.push({
+          id: `inquiry:${kind}`,
+          label: "Asked for",
+          figure: String(k.n),
+          title: `${k.n} school${k.n === 1 ? "" : "s"} asked about ${kind.replace(/-/g, " ")}`,
+          line: `${k.names.join(", ")}${k.n > k.names.length ? ` and ${k.n - k.names.length} more` : ""}. Waiting ${old(k.oldest)}.`,
+          tone: "info",
+          weight: 5000 + days(k.oldest),
+          action: { label: "Open schools", href: "/admin/schools" },
+        });
+      }
+    }
 
     // ── Whoever keeps the lights on ───────────────────────────────────────
     // A feature switched off by a missing variable is invisible otherwise: it
@@ -149,6 +251,62 @@ export async function getToday(
           tone: "info",
           weight: 4000,
           action: { label: "Open requests", href: "/admin/demos" },
+        });
+      }
+    }
+
+    // ── A coordinator's own items at the meeting ──────────────────────────
+    //
+    // The block below belongs to whoever runs the meeting. A coordinator who
+    // sent a school for a decision is not that person, so their own item —
+    // the thing they are waiting on — appeared nowhere on the page they open
+    // every morning. They had to remember they had raised it, and go looking.
+    //
+    // Two things matter to them and nothing else does: has it been decided,
+    // and when is it being discussed.
+    if (me?.id && !can(me, "run_admin_agenda")) {
+      const mine = await prisma.adminMeetingItem.findMany({
+        where: { createdById: me.id },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        select: {
+          id: true, outcome: true, outcomeNote: true, outcomeAt: true,
+          school: { select: { name: true } },
+          program: { select: { slug: true, name: true } },
+          meeting: { select: { meetsAt: true, closedAt: true } },
+        },
+      });
+
+      // Decided, and they have not been told. One row each — a decision about
+      // a named school is not something to bundle into a count.
+      for (const i of mine.filter((x) => x.outcome && x.outcomeAt)) {
+        rows.push({
+          id: `decided:${i.id}`,
+          label: `Decided · ${String(i.outcome).toLowerCase().replace(/_/g, " ")}`,
+          figure: i.outcomeAt!.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+          title: `${i.school.name} — ${i.program.name}`,
+          line: i.outcomeNote?.slice(0, 150) || "No note was left with the decision.",
+          tone: "good",
+          weight: 4000,
+          action: { label: "Open the program", href: `/admin/programs/${i.program.slug}` },
+        });
+      }
+
+      const waiting = mine.filter((x) => !x.outcome && !x.meeting.closedAt);
+      if (waiting.length > 0) {
+        const next = waiting
+          .map((w) => w.meeting.meetsAt)
+          .sort((a, b) => a.getTime() - b.getTime())[0];
+
+        rows.push({
+          id: "my-agenda",
+          label: "At the meeting",
+          figure: next.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+          title: `${waiting.length} of your school${waiting.length === 1 ? "" : "s"} ${waiting.length === 1 ? "is" : "are"} on the agenda`,
+          line: waiting.map((w) => w.school.name).slice(0, 4).join(", "),
+          tone: "info",
+          weight: 2600,
+          action: { label: "See your items", href: "/admin/meetings" },
         });
       }
     }

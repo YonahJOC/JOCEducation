@@ -53,6 +53,41 @@ export type AppRow = {
   /** The oldest unanswered message, where there is one. */
   message: { id: string; fromName: string | null; body: string; sentAt: Date } | null;
 
+  /**
+   * Who at the school has a login and runs the account.
+   *
+   * Staff, never students. These are the people a coordinator would ring or
+   * write to, which is why a name and an email are allowed here and nowhere
+   * near the figures above.
+   */
+  admins: { id: string; name: string | null; email: string; lastSeenAt: Date | null }[];
+
+  /**
+   * What the school paid, by school year, newest first.
+   *
+   * A grant is counted rather than valued and a refund is its own line — the
+   * same rules the Money tab follows, because a school's history should not
+   * read one way here and another way there.
+   */
+  paidByYear: {
+    schoolYear: string;
+    cents: number;
+    granted: number;
+    refundedCents: number;
+  }[];
+
+  /** The conversation with the school, oldest first. */
+  thread: {
+    id: string;
+    body: string;
+    inbound: boolean;
+    author: string | null;
+    sentAt: Date;
+    seenAt: Date | null;
+  }[];
+  /** How many of theirs nobody here has read. */
+  unreadFromSchool: number;
+
   challenges: { title: string; joined: number; finished: number; running: boolean }[];
 
   /** Enrolment, for "X of Y". Null when the school record does not say. */
@@ -141,6 +176,23 @@ export async function getAppActivity(): Promise<AppActivity> {
           take: 1,
           select: { occurredAt: true, summary: true },
         },
+        members: {
+          where: { role: "SCHOOL_ADMIN" },
+          orderBy: { name: "asc" },
+          select: { id: true, name: true, email: true, lastSeenAt: true },
+        },
+        payments: {
+          orderBy: { paidAt: "desc" },
+          select: { schoolYear: true, kind: true, amountCents: true },
+        },
+        messages: {
+          orderBy: { sentAt: "asc" },
+          take: 50,
+          select: {
+            id: true, body: true, inbound: true, sentAt: true, seenAt: true,
+            author: { select: { name: true, email: true } },
+          },
+        },
       },
     });
 
@@ -169,6 +221,17 @@ export async function getAppActivity(): Promise<AppActivity> {
         appSchoolId: s.appSchoolId,
         flag,
         stats: st,
+        admins: s.members,
+        paidByYear: byYear(s.payments),
+        thread: s.messages.map((m) => ({
+          id: m.id,
+          body: m.body,
+          inbound: m.inbound,
+          author: m.author?.name ?? m.author?.email ?? null,
+          sentAt: m.sentAt,
+          seenAt: m.seenAt,
+        })),
+        unreadFromSchool: s.messages.filter((m) => m.inbound && m.seenAt == null).length,
         message: msg,
         challenges: s.appChallenges,
         enrolment: s.studentCount,
@@ -195,4 +258,30 @@ export async function getAppActivity(): Promise<AppActivity> {
   } catch {
     return { rows: [], sync, unmatchedSchools: 0, flagged: 0 };
   }
+}
+
+/**
+ * A school's payments, gathered by school year.
+ *
+ * Fees and plan money add together — both are money that came in for that
+ * year. A grant is counted, never valued, because a grant is a decision and
+ * not nought dollars. A refund keeps its own figure rather than being netted
+ * off, so a year that took a thousand and gave two hundred back says both.
+ */
+function byYear(
+  payments: { schoolYear: string; kind: string; amountCents: number }[],
+): { schoolYear: string; cents: number; granted: number; refundedCents: number }[] {
+  const years = new Map<string, { cents: number; granted: number; refundedCents: number }>();
+
+  for (const p of payments) {
+    const y = years.get(p.schoolYear) ?? { cents: 0, granted: 0, refundedCents: 0 };
+    if (p.kind === "GRANT") y.granted++;
+    else if (p.kind === "REFUND") y.refundedCents += Math.abs(p.amountCents);
+    else y.cents += p.amountCents;
+    years.set(p.schoolYear, y);
+  }
+
+  return [...years.entries()]
+    .map(([schoolYear, v]) => ({ schoolYear, ...v }))
+    .sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
 }

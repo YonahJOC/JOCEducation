@@ -90,6 +90,7 @@ model School {
   appStats      AppSchoolStats?
   appChallenges AppChallengeStat[]
   appMessages   AppSchoolMessage[]
+  messages      SchoolMessage[]
 
   programLights SchoolProgramLight[]
   inquiries     Inquiry[]
@@ -439,6 +440,7 @@ model User {
   managedSchools   School[]            @relation("AccountManager")
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
+  sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   sentInvitations  Invitation[]        @relation("Inviter")
   editedFields     SiteField[]         @relation("FieldEditor")
   publishedFields  SiteFieldHistory[]  @relation("FieldPublisher")
@@ -1030,6 +1032,7 @@ model ProgramPage {
   inquiries Inquiry[]
   payments  Payment[]
   asks      SchoolActivity[] @relation("ActivityProgram")
+  threadMessages SchoolMessage[] @relation("MessageProgram")
   events ProgramEvent[]
 
   createdAt DateTime @default(now())
@@ -2025,4 +2028,42 @@ model EventReport {
   @@index([ambassadorId, occurredOn])
   @@index([eventId])
   @@index([occurredOn])
+}
+
+/// A conversation between JOC and the people who run a school's account.
+///
+/// Deliberately not email. Nothing here leaves the system: a coordinator
+/// writes, and the school reads it the next time somebody signs in to their
+/// own panel. That keeps the standing rule — no school hears from us until
+/// JOC launches — while still letting the two sides talk, because a school
+/// opening its own portal is not us reaching out to them.
+///
+/// Separate from SchoolActivity, which is the record of what JOC did, and
+/// from the one-reply ask. Those answer "what happened"; this is a thread.
+model SchoolMessage {
+  id       String @id @default(cuid())
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  /// Which program it is about, where it is about one.
+  programId Int?
+  program   ProgramPage? @relation("MessageProgram", fields: [programId], references: [id], onDelete: SetNull)
+
+  body String @db.Text
+
+  /// True when somebody at the school wrote it. The console shows inbound
+  /// messages as waiting; the school's panel shows the others as replies.
+  inbound Boolean @default(false)
+
+  /// Who wrote it, on either side. Null once an account is deleted, which is
+  /// why the thread does not depend on it to render.
+  authorId String?
+  author   User?   @relation("MessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  sentAt DateTime  @default(now())
+  /// When the other side read it. Null means it is still waiting.
+  seenAt DateTime?
+
+  @@index([schoolId, sentAt])
+  @@index([schoolId, inbound, seenAt])
 }

@@ -13,6 +13,7 @@ import { heroFg } from "@/lib/hero-color";
 import { BandRow } from "@/components/ui/BandRow";
 import { AskCoordinator } from "@/components/school/AskCoordinator";
 import { SchoolAppPanel } from "@/components/school/SchoolAppPanel";
+import { MessagesFromJOC } from "@/components/school/MessagesFromJOC";
 import { C, F, R, label, datum, rowCard, sectionHeading, primaryButton } from "@/lib/joc-tokens";
 
 /**
@@ -92,7 +93,7 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
   const coordinator = program.leads[0]?.name ?? program.leads[0]?.email ?? null;
   const firstName = coordinator?.split(/\s+/)[0] ?? null;
 
-  const [events, reports, ambassadors, teachers, payment] = await Promise.all([
+  const [events, reports, ambassadors, teachers, payment, thread] = await Promise.all([
     prisma.programEvent.findMany({
       where: { schoolId, programId: program.id, status: { not: "CANCELLED" } },
       orderBy: { startsAt: "asc" },
@@ -119,6 +120,18 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
       select: { id: true, name: true, email: true },
     }).catch(() => []),
     runsAccount ? schoolPaymentFor(schoolId, program.id) : Promise.resolve(null),
+    // The whole thread, not only this program's: a school talks to JOC, not
+    // to eight separate inboxes, and splitting it would hide an answer behind
+    // whichever page somebody happened to open.
+    prisma.schoolMessage.findMany({
+      where: { schoolId },
+      orderBy: { sentAt: "asc" },
+      take: 50,
+      select: {
+        id: true, body: true, inbound: true, sentAt: true,
+        author: { select: { name: true, email: true } },
+      },
+    }).catch(() => []),
   ]);
 
   const now = Date.now();
@@ -217,6 +230,17 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
             )}
 
             {program.slug === "joc-app" && <SchoolAppPanel schoolId={schoolId} />}
+
+            <MessagesFromJOC
+              programId={program.id}
+              messages={thread.map((m) => ({
+                id: m.id,
+                body: m.body,
+                inbound: m.inbound,
+                author: m.author?.name ?? m.author?.email ?? null,
+                sentAt: m.sentAt,
+              }))}
+            />
           </div>
 
           <aside style={{ minWidth: 0, display: "grid", gap: "10px", alignContent: "start" }}>
