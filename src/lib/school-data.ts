@@ -1,15 +1,21 @@
-import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canRunOwnSchool, scopedSchoolId } from "@/lib/access";
+import { currentSchoolId } from "@/lib/school-scope";
 import { getCycleState } from "@/lib/cycles";
 import { getCycles } from "@/lib/cycle-data";
 
 /**
  * Reads for the school administrator's area.
  *
- * Every query here derives the school from the signed-in user. None of them
- * takes a school id from the caller, so there is no way to read another
- * school's data through this module.
+ * Every query here derives the school from the signed-in user, or — for
+ * somebody from JOC who has deliberately opened a school — from the
+ * looking-in cookie. None of them takes a school id from the caller, so
+ * there is no way to read another school's data through this module.
+ *
+ * `whichSchool` is that decision, in one place. Before it existed each of
+ * these functions asked `canRunOwnSchool` and read `scopedSchoolId` off the
+ * session, which is correct for the two people who have a school and wrong
+ * for the one who does not: a coordinator looking in got null from all four
+ * and the pages told them their own school could not be loaded.
  */
 
 export type SchoolMember = {
@@ -46,13 +52,24 @@ export type SchoolOverview = {
   invitations: SchoolInvite[];
 };
 
+/**
+ * Whose school these reads are about.
+ *
+ * `currentSchoolId` already answers this for the whole school side: the
+ * account holder's own school, or the one somebody from JOC has opened, or
+ * — with no auth configured — the review school. These four functions each
+ * had their own version of the question that knew about the first case only,
+ * which is why /school worked while /school/cycles and /school/activity sat
+ * there saying the school could not be loaded.
+ */
+async function whichSchool(): Promise<string | null> {
+  if (!isDatabaseConfigured()) return null;
+  return currentSchoolId();
+}
+
 /** The signed-in school admin's own school, or null. */
 export async function mySchool(): Promise<SchoolOverview | null> {
-  const session = await safeAuth();
-  if (!session?.user || !canRunOwnSchool(session.user)) return null;
-  if (!isDatabaseConfigured()) return null;
-
-  const schoolId = scopedSchoolId(session.user);
+  const schoolId = await whichSchool();
   if (!schoolId) return null;
 
   const s = await prisma.school.findUnique({
@@ -102,10 +119,7 @@ export type PlanRequest = {
 };
 
 export async function myPlanRequests(): Promise<PlanRequest[]> {
-  const session = await safeAuth();
-  if (!session?.user || !canRunOwnSchool(session.user)) return [];
-  if (!isDatabaseConfigured()) return [];
-  const schoolId = scopedSchoolId(session.user);
+  const schoolId = await whichSchool();
   if (!schoolId) return [];
 
   const rows = await prisma.planChangeRequest.findMany({
@@ -145,10 +159,7 @@ export type CycleProgress = {
 };
 
 export async function myCycleProgress(): Promise<CycleProgress[] | null> {
-  const session = await safeAuth();
-  if (!session?.user || !canRunOwnSchool(session.user)) return null;
-  if (!isDatabaseConfigured()) return null;
-  const schoolId = scopedSchoolId(session.user);
+  const schoolId = await whichSchool();
   if (!schoolId) return null;
 
   const [staffCount, lessonsByCycle, saves] = await Promise.all([
@@ -236,10 +247,7 @@ async function networkCycleShares(): Promise<Map<string, number>> {
 
 /** Recent chesed activity at this school, for the activity screen. */
 export async function myActivity() {
-  const session = await safeAuth();
-  if (!session?.user || !canRunOwnSchool(session.user)) return null;
-  if (!isDatabaseConfigured()) return null;
-  const schoolId = scopedSchoolId(session.user);
+  const schoolId = await whichSchool();
   if (!schoolId) return null;
 
   const [savedTotal, posts, recentSaves] = await Promise.all([
