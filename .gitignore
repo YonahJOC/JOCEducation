@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...except the template, which is the setup documentation and carries no
+# values. It was ignored along with the real ones, so the only copy of it
+# lived on one laptop.
+!.env.example
 
 # vercel
 .vercel
