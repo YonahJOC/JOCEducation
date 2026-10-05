@@ -19,9 +19,11 @@ const when = (d: Date) =>
   });
 
 export function MessagesFromJOC({
-  programId, messages,
+  programId, messages, coordinator,
 }: {
   programId: number | null;
+  /** Who it reaches, which is the only thing a school wants to know. */
+  coordinator?: string | null;
   messages: {
     id: string; body: string; inbound: boolean;
     author: string | null; sentAt: Date;
@@ -32,11 +34,14 @@ export function MessagesFromJOC({
 
   return (
     <section style={{ marginTop: "24px" }}>
-      <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>Messages with JOC</p>
+      <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>
+        {coordinator ? `Messages with ${coordinator}` : "Messages with JOC"}
+      </p>
 
       {messages.length === 0 ? (
         <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, margin: "0 0 12px", lineHeight: 1.5, maxWidth: "58ch" }}>
-          Nothing yet. Anything you write here reaches whoever looks after your programs.
+          Nothing yet. Anything you write here goes straight to{" "}
+          {coordinator ?? "whoever looks after your programs"}.
         </p>
       ) : (
         <div style={{ display: "grid", gap: "8px", marginBottom: "12px" }}>
@@ -65,7 +70,7 @@ export function MessagesFromJOC({
 
       {state?.ok ? (
         <p style={{ fontFamily: F.read, fontSize: "15px", color: C.greenText, margin: 0, lineHeight: 1.5 }}>
-          Sent. Whoever looks after your programs sees it on their console.
+          Sent. {coordinator ?? "Whoever looks after your programs"} sees it on their console.
         </p>
       ) : (
         <form action={action}>
@@ -73,7 +78,7 @@ export function MessagesFromJOC({
             name="body"
             rows={3}
             required
-            placeholder="Write to JOC"
+            placeholder={coordinator ? `Write to ${coordinator}` : "Write to JOC"}
             style={{
               width: "100%", boxSizing: "border-box", fontFamily: F.read, fontSize: "16px",
               lineHeight: 1.55, color: C.ink, backgroundColor: C.white,

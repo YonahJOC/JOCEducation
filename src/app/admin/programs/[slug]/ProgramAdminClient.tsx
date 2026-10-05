@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ProgramPostsEditor } from "@/components/admin/ProgramPostsEditor";
 import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -43,9 +44,13 @@ const body: React.CSSProperties = {
 
 export function ProgramAdminClient({
   view, forms, team, feeLabel, paymentsOn, traffic = null,
-  enrolled = [], tab = "today", today = null, money = null,
+  enrolled = [], tab = "today", today = null, money = null, posts = [],
 }: {
   view: ProgramAdminView;
+  posts?: {
+    id: string; kind: string; title: string; body: string;
+    url: string | null; published: boolean; publishedAt: Date | null;
+  }[];
   forms: { id: string; title: string; responseCount: number }[];
   team: { id: string; name: string | null; email: string }[];
   feeLabel: string | null;
@@ -185,6 +190,11 @@ export function ProgramAdminClient({
             </>
           )}
         </div>
+      )}
+
+      {/* ── What every school on this program reads ────────────────────── */}
+      {tab === "setup" && (
+        <ProgramPostsEditor programId={view.id} posts={posts} />
       )}
 
       {/* ── The sign-up form ───────────────────────────────────────────── */}

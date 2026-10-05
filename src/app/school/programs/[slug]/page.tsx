@@ -14,6 +14,7 @@ import { BandRow } from "@/components/ui/BandRow";
 import { AskCoordinator } from "@/components/school/AskCoordinator";
 import { SchoolAppPanel } from "@/components/school/SchoolAppPanel";
 import { MessagesFromJOC } from "@/components/school/MessagesFromJOC";
+import { ProgramPosts } from "@/components/school/ProgramPosts";
 import { C, F, R, label, datum, rowCard, sectionHeading, primaryButton } from "@/lib/joc-tokens";
 
 /**
@@ -229,10 +230,19 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
               />
             )}
 
-            {program.slug === "joc-app" && <SchoolAppPanel schoolId={schoolId} />}
+            {program.slug === "joc-app" && (
+              <SchoolAppPanel
+                schoolId={schoolId}
+                programId={program.id}
+                canSeeMoney={runsAccount}
+              />
+            )}
+
+            <ProgramPosts programId={program.id} />
 
             <MessagesFromJOC
               programId={program.id}
+              coordinator={firstName}
               messages={thread.map((m) => ({
                 id: m.id,
                 body: m.body,
@@ -263,7 +273,7 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
                   ? `${coordinator} looks after ${program.name}.`
                   : "Nobody is down as running this program yet."}
               </p>
-              <AskCoordinator programId={program.id} coordinator={firstName} />
+              <AskCoordinator programId={program.id} programSlug={program.slug} coordinator={firstName} />
             </Card>
 
             {/* What the school pays is for whoever runs the account. A teacher

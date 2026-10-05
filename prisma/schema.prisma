@@ -60,6 +60,12 @@ model School {
   studentListAt DateTime?
   /// When the JOC live screen went up in the building.
   liveScreenAt  DateTime?
+  /// Where that screen lives, so the school can open their own.
+  ///
+  /// liveScreenAt recorded that a screen existed and never said where, which
+  /// is a date nobody can act on. Null here means JOC has not been given the
+  /// link yet, and every screen says exactly that rather than hiding the row.
+  liveScreenUrl String?
   /// When their school store opened.
   storeOpenAt   DateTime?
 
@@ -153,8 +159,18 @@ model SchoolActivity {
   programId Int?
   program   ProgramPage? @relation("ActivityProgram", fields: [programId], references: [id], onDelete: SetNull)
 
-  /// The chip they picked: "A date", "The kit", "Something else".
+  /// The chip they picked. The set depends on the program — the JOC App
+  /// offers tech issues, payment, coins and adding admins; everything else
+  /// gets the general set. See lib/ask-topics.ts.
   topic String?
+
+  /// When the school would like to meet, where the ask is a request for one.
+  ///
+  /// A meeting request is an ask with a date on it rather than its own table:
+  /// it wants the same console row, the same answer, and the same record
+  /// afterwards. DemoRequest is a different thing — a stranger on the public
+  /// site who has no school yet.
+  requestedFor DateTime?
 
   /// Set when a coordinator marks it answered. The answer happened on the
   /// phone; this only records that it did.
@@ -441,6 +457,7 @@ model User {
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
+  programPosts       ProgramPost[]     @relation("PostAuthor")
   sentInvitations  Invitation[]        @relation("Inviter")
   editedFields     SiteField[]         @relation("FieldEditor")
   publishedFields  SiteFieldHistory[]  @relation("FieldPublisher")
@@ -1033,6 +1050,7 @@ model ProgramPage {
   payments  Payment[]
   asks      SchoolActivity[] @relation("ActivityProgram")
   threadMessages SchoolMessage[] @relation("MessageProgram")
+  posts          ProgramPost[]   @relation("ProgramPosts")
   events ProgramEvent[]
 
   createdAt DateTime @default(now())
@@ -2066,4 +2084,58 @@ model SchoolMessage {
 
   @@index([schoolId, sentAt])
   @@index([schoolId, inbound, seenAt])
+}
+
+enum ProgramPostKind {
+  /// Something new in the program, newest first. Release notes for the app.
+  UPDATE
+  /// A question schools keep asking, and its answer.
+  QA
+  /// Something to open or download: the student handbook, the onboarding
+  /// video, whatever the program hands its schools next. One kind rather
+  /// than a column per artefact, so the next one needs no migration.
+  RESOURCE
+}
+
+/// Something JOC writes once and every school on the program reads.
+///
+/// Distinct from SchoolMessage, which is a conversation with one school. A
+/// school asking the same question as eleven others should find the answer
+/// already there rather than waiting for a coordinator to type it a twelfth
+/// time — and an app release note is not a conversation at all.
+model ProgramPost {
+  id        String      @id @default(cuid())
+  programId Int
+  program   ProgramPage @relation("ProgramPosts", fields: [programId], references: [id], onDelete: Cascade)
+
+  kind ProgramPostKind
+
+  /// The headline, or the question.
+  title String
+  /// The note, the answer, or one line about what the resource is.
+  body String @db.Text
+
+  /// Where a RESOURCE points. Null on an update or a question.
+  ///
+  /// A link rather than an upload: the handbook and the onboarding video
+  /// already live somewhere JOC keeps them, and a second copy here is a
+  /// second thing to keep current.
+  url String?
+
+  /// Drafts are invisible to schools. Nothing a coordinator is still writing
+  /// should appear on thirty-nine portals.
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+
+  /// Q&A is ordered by hand — the question everybody asks goes first.
+  /// Updates ignore this and sort by date.
+  order Int @default(0)
+
+  authorId String?
+  author   User?   @relation("PostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([programId, kind, published])
 }

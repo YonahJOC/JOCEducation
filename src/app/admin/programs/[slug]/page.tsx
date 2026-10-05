@@ -98,6 +98,19 @@ export default async function ProgramAdminPage({
 
   // Only offered to somebody who may actually rewire the program.
   const forms = view.canEditProgram ? await listForms() : [];
+
+  // Everything this program has written for its schools, drafts included —
+  // the editor is the only place a draft is visible.
+  const posts = isDatabaseConfigured()
+    ? await prisma.programPost.findMany({
+        where: { programId: view.id },
+        orderBy: [{ kind: "asc" }, { order: "asc" }, { createdAt: "desc" }],
+        select: {
+          id: true, kind: true, title: true, body: true, url: true,
+          published: true, publishedAt: true,
+        },
+      }).catch(() => [])
+    : [];
   const team = view.canSetCoordinators && isDatabaseConfigured()
     ? await prisma.user.findMany({
         where: { email: { endsWith: "@justonechesed.org" } },
@@ -159,6 +172,7 @@ export default async function ProgramAdminPage({
 
       <ProgramAdminClient
         view={view}
+        posts={posts}
         forms={forms.map((f) => ({ id: f.id, title: f.title, responseCount: f.responseCount }))}
         team={team}
         feeLabel={view.form?.feeCents ? money(view.form.feeCents) : null}

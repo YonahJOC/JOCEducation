@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { askCoordinator, type AskResult } from "@/app/actions/ask";
-import { TOPICS } from "@/lib/ask-topics";
+import { topicsFor, DATED_TOPICS } from "@/lib/ask-topics";
 import { C, R, F, label, primaryButton, secondaryButton } from "@/lib/joc-tokens";
 
 /**
@@ -16,14 +16,17 @@ import { C, R, F, label, primaryButton, secondaryButton } from "@/lib/joc-tokens
  */
 
 export function AskCoordinator({
-  programId, coordinator,
+  programId, programSlug, coordinator,
 }: {
   programId: number | null;
+  /** Which program, so the chips are the ones its schools actually ask about. */
+  programSlug?: string | null;
   /** First name, or null when nobody is down as running it. */
   coordinator: string | null;
 }) {
   const [open, setOpen] = useState(false);
-  const [topic, setTopic] = useState<string>(TOPICS[0]);
+  const topics = topicsFor(programSlug);
+  const [topic, setTopic] = useState<string>(topics[0]);
   const box = useRef<HTMLTextAreaElement>(null);
   const first = useRef<HTMLButtonElement>(null);
 
@@ -110,7 +113,7 @@ export function AskCoordinator({
             <input type="hidden" name="topic" value={topic} />
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "14px" }}>
-              {TOPICS.map((t) => {
+              {topics.map((t) => {
                 const on = t === topic;
                 return (
                   <button
@@ -133,12 +136,36 @@ export function AskCoordinator({
               })}
             </div>
 
+            {/* A meeting is the one ask with a date attached. The field
+                appears only when it is relevant rather than sitting empty on
+                every other question. */}
+            {DATED_TOPICS.includes(topic) && (
+              <label style={{ display: "block", marginBottom: "14px" }}>
+                <span style={{ ...label, color: C.muted, display: "block", marginBottom: "6px" }}>
+                  When suits you
+                </span>
+                <input
+                  type="date"
+                  name="requestedFor"
+                  style={{
+                    fontFamily: F.ui, fontSize: "16px", color: C.ink, backgroundColor: C.white,
+                    border: `1px solid ${C.hairline}`, borderRadius: R.form,
+                    padding: "10px 12px", minHeight: "44px", width: "100%", boxSizing: "border-box",
+                  }}
+                />
+              </label>
+            )}
+
             <textarea
               ref={box}
               name="body"
               rows={5}
               required
-              placeholder="What would you like to know?"
+              placeholder={
+                DATED_TOPICS.includes(topic)
+                  ? "What would you like to go through, and who will be there?"
+                  : "What would you like to know?"
+              }
               style={{
                 width: "100%", boxSizing: "border-box", fontFamily: F.read, fontSize: "16px",
                 lineHeight: 1.55, color: C.ink, backgroundColor: C.white,

@@ -5,7 +5,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { currentSchoolId } from "@/lib/school-scope";
-import { TOPICS } from "@/lib/ask-topics";
+import { ALL_TOPICS } from "@/lib/ask-topics";
 
 /**
  * A school asking its coordinator something (5e).
@@ -34,8 +34,13 @@ export async function askCoordinator(
   }
 
   const topicRaw = String(form.get("topic") ?? "").trim();
-  const topic = (TOPICS as readonly string[]).includes(topicRaw) ? topicRaw : "Something else";
+  const topic = ALL_TOPICS.includes(topicRaw) ? topicRaw : "Something else";
   const body = String(form.get("body") ?? "").trim();
+
+  // Only meaningful on a meeting request, and only when it parses. A date we
+  // cannot read is better dropped than stored wrong.
+  const wanted = String(form.get("requestedFor") ?? "").trim();
+  const requestedFor = wanted && !Number.isNaN(Date.parse(wanted)) ? new Date(wanted) : null;
 
   if (body.length < 3) {
     return { ok: false, error: "Write a line or two and we'll pass it on." };
@@ -52,6 +57,7 @@ export async function askCoordinator(
         type: "ASK",
         inbound: true,
         topic,
+        requestedFor: requestedFor ?? undefined,
         // The summary is what the console row reads, so it says who and what
         // rather than repeating the message back.
         summary: `${who} asked about ${topic.toLowerCase()}`,
