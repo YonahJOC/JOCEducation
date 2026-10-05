@@ -58,10 +58,15 @@ export function missingEnv(): { name: string; costs: string }[] {
       costs: "no school can pay, and a paid form refuses to publish",
     });
   }
-  if (!process.env.JOC_APP_API_URL || !process.env.JOC_APP_API_KEY) {
+  // JOC_APP_API_URL and JOC_APP_API_KEY belonged to a sync that assumed the
+  // app team would build us a /schools/summary endpoint. They never did, and
+  // they do not need to: the app's own API answers, and scripts/app-sync.mjs
+  // reads it. What it wants is a token.
+  if (!process.env.JOC_APP_TOKEN) {
     out.push({
-      name: "JOC_APP_API_URL",
-      costs: "the JOC App is never read, so its console has no figures",
+      name: "JOC_APP_TOKEN",
+      costs:
+        "the app answers only its public figures, so no console can say how many acts are waiting on a teacher",
     });
   }
   if (!process.env.AUTH_GOOGLE_ID) {

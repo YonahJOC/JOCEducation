@@ -87,7 +87,11 @@ export async function getToday(
         }),
         prisma.school.count({ where: { status: "LAPSED" } }),
         prisma.school.count(),
-        prisma.schoolContact.count(),
+        // Schools that have somebody to ring, not contact rows. Counting
+        // rows meant two contacts at one school made the figure better while
+        // nothing had improved, and it read 34 of 39 when the true answer
+        // was 36.
+        prisma.school.count({ where: { contacts: { some: {} } } }),
       ]);
 
       for (const p of pastDue.slice(0, 3)) {
@@ -232,23 +236,13 @@ export async function getToday(
       figures.push({ label: "Resources", value: String(resources) });
     }
 
-    // Unverified cycle dates are a row, not a figure. "Unverified" is a word,
-    // and a word in the figures strip reads as a number that failed to load.
-    if (can(me, "cycles")) {
-      const cycles = await prisma.cycle.count();
-      if (cycles > 0) {
-        rows.push({
-          id: "cycle-dates",
-          label: "Unchecked",
-          figure: String(cycles),
-          title: `${cycles} cycle dates unchecked`,
-          line: "Nobody has verified them against a 5787 luach.",
-          tone: "warn",
-          weight: 1200,
-          action: { label: "Open the cycles", href: "/admin/cycles" },
-        });
-      }
-    }
+    // There was a row here telling whoever opened this page that all eight
+    // cycle dates were unchecked. It counted the cycles and called every one
+    // of them unverified, because nothing on Cycle records whether anybody
+    // has checked it. It would have said "8 cycle dates unchecked" forever,
+    // however many times somebody went and checked them — a job that can
+    // never be finished and a number that never moves. Removed rather than
+    // given a column, because the console should not invent a workflow.
 
     if (can(me, "board")) {
       const waiting = await prisma.boardPost.count({ where: { approved: false } });
