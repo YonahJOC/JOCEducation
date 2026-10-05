@@ -8,6 +8,7 @@ import { getProgramToday } from "@/lib/program-today";
 import { schoolsInProgram } from "@/lib/program-enrollment";
 import { C, rowCard, label, datum, F, pageTitle } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
+import { ProgramCard } from "@/components/admin/ProgramCard";
 import { programStatus } from "@/lib/program-status";
 import { getCycleToday } from "@/lib/cycle-today";
 import { can as canDo } from "@/lib/access";
@@ -160,95 +161,37 @@ export default async function MyProgramsPage() {
       ) : (
         <div className="joc-program-cards">
           {cycleCard && (
-            <Link
+            <ProgramCard
               href="/admin/cycles"
-              className="joc-card"
-              style={{ ...rowCard, display: "flex", flexDirection: "column", textDecoration: "none" }}
-            >
-              <span aria-hidden="true" style={{ display: "block", height: "6px", backgroundColor: C.blue }} />
-
-              <span style={{ padding: "20px 22px", display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px" }}>
-                  <span style={{ fontFamily: F.ui, fontSize: "22px", fontWeight: 700, letterSpacing: "-0.025em", color: C.ink, lineHeight: 1.15, minWidth: 0 }}>
-                    Chesed Cycles
-                  </span>
-                  <span style={{ ...label, color: C.muted, whiteSpace: "nowrap" }}>year-round</span>
-                </span>
-
-                {cycleCard.need > 0 ? (
-                  <span style={{ display: "flex", alignItems: "baseline", gap: "9px", flexWrap: "wrap" }}>
-                    <span style={{ fontFamily: F.ui, fontSize: "36px", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1, color: C.orangeText }}>
-                      {cycleCard.need}
-                    </span>
-                    <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.ink }}>need you</span>
-                  </span>
-                ) : (
-                  <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.greenText }}>
-                    Nothing needs anyone
-                  </span>
-                )}
-
-                {/* Its own status line, so it never reads like a program's. */}
-                <span style={{ ...datum, color: cycleCard.running ? C.muted : C.orangeText }}>
-                  {cycleCard.running
-                    ? `CYCLE ${cycleCard.running.num} RUNNING · ${cycleCard.withLessons} OF ${cycleCard.total} WITH LESSONS`
-                    : "NO CYCLE IS RUNNING TODAY"}
-                </span>
-
-                <span style={{ marginTop: "auto", paddingTop: "4px", fontFamily: F.ui, fontSize: "14px", color: C.muted }}>
-                  Every school is on it
-                </span>
-              </span>
-            </Link>
+              name="Chesed Cycles"
+              tag="year-round"
+              stripColor={C.blue}
+              need={cycleCard.need}
+              status={
+                cycleCard.running
+                  ? `CYCLE ${cycleCard.running.num} RUNNING · ${cycleCard.withLessons} OF ${cycleCard.total} WITH LESSONS`
+                  : "NO CYCLE IS RUNNING TODAY"
+              }
+              statusWarn={!cycleCard.running}
+              footer="Every school is on it"
+            />
           )}
 
           {cards.map((p) => (
-            <Link
+            <ProgramCard
               key={p.id}
               href={`/admin/programs/${p.slug}`}
-              className="joc-card"
-              style={{ ...rowCard, display: "flex", flexDirection: "column", textDecoration: "none" }}
-            >
-              <span aria-hidden="true" style={{ display: "block", height: "6px", backgroundColor: strip(p.heroColor) }} />
-
-              <span style={{ padding: "20px 22px", display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "10px" }}>
-                  <span style={{ fontFamily: F.ui, fontSize: "22px", fontWeight: 700, letterSpacing: "-0.025em", color: C.ink, lineHeight: 1.15, minWidth: 0 }}>
-                    {p.name}
-                  </span>
-                  <span style={{ ...label, color: C.muted, whiteSpace: "nowrap" }}>
-                    {p.tag}
-                    {!p.published && " · draft"}
-                  </span>
-                </span>
-
-                {/* The figure is the point of the page. */}
-                {p.need > 0 ? (
-                  <span style={{ display: "flex", alignItems: "baseline", gap: "9px", flexWrap: "wrap" }}>
-                    <span style={{ fontFamily: F.ui, fontSize: "36px", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1, color: C.orangeText }}>
-                      {p.need}
-                    </span>
-                    <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.ink }}>need you</span>
-                  </span>
-                ) : p.needKnown ? (
-                  <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.greenText }}>
-                    Nothing needs anyone
-                  </span>
-                ) : (
-                  <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.orangeText }}>
-                    Sign-ups not recorded yet
-                  </span>
-                )}
-
-                <span style={{ ...datum, color: p.status.warn ? C.orangeText : C.muted }}>
-                  {p.status.text}
-                </span>
-
-                <span style={{ marginTop: "auto", paddingTop: "4px", fontFamily: F.ui, fontSize: "14px", color: C.muted }}>
-                  {p.lead ? `Run by ${p.lead}` : "No coordinator yet"}
-                </span>
-              </span>
-            </Link>
+              name={p.name}
+              tag={p.tag}
+              draft={!p.published}
+              stripColor={strip(p.heroColor)}
+              need={p.need}
+              needKnown={p.needKnown}
+              unknownLabel="Sign-ups not recorded yet"
+              status={p.status.text}
+              statusWarn={p.status.warn}
+              footer={p.lead ? `Run by ${p.lead}` : "No coordinator yet"}
+            />
           ))}
         </div>
       )}
