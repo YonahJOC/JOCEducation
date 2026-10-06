@@ -67,7 +67,7 @@ export default async function LogPage() {
             authorId: me.id,
             type: { in: ["VISIT", "MEETING", "CALL", "WHATSAPP", "EMAIL", "EVENT_PLANNED"] },
           },
-          orderBy: { occurredAt: "desc" },
+          orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
           take: 5,
           select: {
             id: true, summary: true, occurredAt: true,

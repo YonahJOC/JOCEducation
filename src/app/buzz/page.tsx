@@ -150,10 +150,10 @@ export default async function BuzzPage() {
       // Removed items are hidden here and nowhere else: the row is still the
       // school's history, it is just off the feed.
       where: { type: { in: [...UPDATE_TYPES] }, removedAt: null },
-      orderBy: { occurredAt: "desc" },
+      orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
       take: 200,
       select: {
-        id: true, type: true, detail: true, occurredAt: true,
+        id: true, type: true, detail: true, occurredAt: true, createdAt: true,
         author: { select: { name: true, email: true } },
         takenById: true,
         takenBy: { select: { name: true, email: true } },
@@ -199,14 +199,32 @@ export default async function BuzzPage() {
    * A real update always outranks a lift, because it carries today's date and
    * the lift carries the date the thread started.
    */
-  const standing = (r: { occurredAt: Date; notes: { createdAt: Date }[] }) =>
+  /**
+   * Ordered by when a thing entered the feed, not by the date written on it.
+   *
+   * "Today" on the form is a date, not a moment, so it is stored as midnight.
+   * Ordering on that put everything filed today at the same instant, and left
+   * a brand new update below any item somebody had commented on — a comment
+   * carries a real time and midnight loses to all of them. The date on the
+   * row is for reading; this is for sorting.
+   *
+   * The first comment still lifts an old item once. It cannot lift it above
+   * something filed since, because that was filed later.
+   */
+  const standing = (r: { createdAt: Date; notes: { createdAt: Date }[] }) =>
     r.notes.length > 0
-      ? Math.max(r.occurredAt.getTime(), r.notes[0].createdAt.getTime())
-      : r.occurredAt.getTime();
+      ? Math.max(r.createdAt.getTime(), r.notes[0].createdAt.getTime())
+      : r.createdAt.getTime();
 
   const behind = rows
     .filter((r) => !aheadIds.has(r.id))
-    .sort((a, b) => standing(b) - standing(a))
+    .sort((a, b) =>
+      // Everything written today carries the same date — "Today" on the form
+      // is a date, not a moment, so it is stored as midnight. Without this
+      // second term the five things logged today come back in whatever order
+      // the database felt like, and the one just written lands fifth.
+      (standing(b) - standing(a)) || (b.createdAt.getTime() - a.createdAt.getTime()),
+    )
     .slice(0, FEED);
 
   /**

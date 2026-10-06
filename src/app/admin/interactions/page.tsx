@@ -84,7 +84,7 @@ export default async function InteractionsPage({
           }
         : {}),
     },
-    orderBy: { occurredAt: "desc" },
+    orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
     take: 300,
     select: {
       id: true, type: true, summary: true, detail: true, occurredAt: true,
@@ -106,7 +106,7 @@ export default async function InteractionsPage({
         { summary: { contains: "Added from a visit log" } },
       ],
     },
-    orderBy: { occurredAt: "desc" },
+    orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
     select: {
       id: true,
       school: { select: { id: true, name: true, status: true } },
