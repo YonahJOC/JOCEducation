@@ -2,7 +2,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
 import { isStaffEmail } from "@/lib/access";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
-import { LogVisitForm } from "@/components/LogVisitForm";
+import { SchoolUpdateForm } from "@/components/SchoolUpdateForm";
 import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
 
 /**
@@ -23,7 +23,7 @@ import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
  */
 
 export const metadata = {
-  title: "Log a school visit — JOC",
+  title: "School Update Form — JOC",
   robots: { index: false, follow: false },
 };
 export const dynamic = "force-dynamic";
@@ -36,7 +36,7 @@ export default async function LogPage() {
   if (!isDatabaseConfigured()) {
     return (
       <Shell>
-        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>Log a school visit</h1>
+        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>School Update Form</h1>
         <p style={{ ...body, color: C.orangeText, margin: 0 }}>
           The database isn&rsquo;t connected, so nothing can be saved right now.
         </p>
@@ -62,7 +62,7 @@ export default async function LogPage() {
     // Their own last few, so nobody logs the same visit twice.
     allowed && me?.id
       ? prisma.schoolActivity.findMany({
-          where: { authorId: me.id, type: "VISIT" },
+          where: { authorId: me.id, type: { in: ["VISIT", "MEETING", "EVENT_PLANNED"] } },
           orderBy: { occurredAt: "desc" },
           take: 5,
           select: {
@@ -77,13 +77,14 @@ export default async function LogPage() {
 
   return (
     <Shell>
-      <h1 style={{ ...pageTitle, margin: "0 0 8px" }}>What did you do at a school?</h1>
+      <h1 style={{ ...pageTitle, margin: "0 0 8px" }}>School Update Form</h1>
       <p style={{ ...body, margin: "0 0 22px", maxWidth: "48ch" }}>
-        Write it down while it&rsquo;s fresh. It goes on the school&rsquo;s record and the office
-        picks it up — you don&rsquo;t need to tell anybody separately.
+        A meeting you had, or an event you ran or booked. Write it down while it&rsquo;s
+        fresh — it goes on the school&rsquo;s record and the office picks it up, so you
+        don&rsquo;t need to tell anybody separately.
       </p>
 
-      <LogVisitForm
+      <SchoolUpdateForm
         schools={schools}
         programs={programs}
         myName={myName}
@@ -93,7 +94,7 @@ export default async function LogPage() {
 
       {mine.length > 0 && (
         <section style={{ marginTop: "26px" }}>
-          <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>What you&rsquo;ve logged</p>
+          <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>What you&rsquo;ve sent in</p>
           <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "7px" }}>
             {mine.map((a) => (
               <li key={a.id} style={{ ...body, fontSize: "15px", margin: 0 }}>

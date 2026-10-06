@@ -4,15 +4,25 @@ import { revalidatePath } from "next/cache";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview } from "@/auth";
 import { isStaffEmail } from "@/lib/access";
+import { NEW_CONTACT } from "@/lib/school-update";
 
 /**
- * Somebody from JOC writing down what they did at a school.
+ * Somebody from JOC writing down what happened with a school.
  *
  * Anybody with a justonechesed.org address, and nothing else to grant. The
  * alternative was a capability per person, which means somebody has to
  * remember to switch it on the week a new person starts — and the thing that
  * actually loses these records is friction, not permissions. Every entry
  * carries the name of whoever wrote it.
+ *
+ * Three shapes, because they are three different facts:
+ *
+ *   MEETING        we sat down with somebody and this is what was said
+ *   EVENT_PLANNED  a date is in the diary and nobody has been yet
+ *   VISIT          we ran it, and this is how it went
+ *
+ * The third used to be the only one, which meant a booked event had to be
+ * written as though it had already happened.
  *
  * It writes a SchoolActivity, which is the row the school's history, the
  * board's Last update column and the school's own Today already read. One
@@ -22,7 +32,7 @@ import { isStaffEmail } from "@/lib/access";
  */
 
 export type LogResult =
-  | { ok: true; schoolName: string; newSchool: boolean }
+  | { ok: true; schoolName: string; newSchool: boolean; booked: boolean }
   | { ok: false; error: string };
 
 /** A slug that will not collide with one of the thirty-nine. */
@@ -35,7 +45,7 @@ function slugify(name: string): string {
     .slice(0, 60);
 }
 
-export async function logVisit(
+export async function logSchoolUpdate(
   _prev: LogResult | null,
   form: FormData,
 ): Promise<LogResult> {
@@ -48,21 +58,37 @@ export async function logVisit(
     return { ok: false, error: "Sign in with your justonechesed.org address first." };
   }
 
+  const kind = form.get("kind") === "EVENT" ? "EVENT" : "MEETING";
+  const booked = kind === "EVENT" && form.get("stage") === "BOOKED";
+
   const schoolId = String(form.get("schoolId") ?? "").trim();
   const newSchoolName = String(form.get("newSchoolName") ?? "").trim();
   const programId = Number(form.get("programId") ?? 0) || null;
   const what = String(form.get("what") ?? "").trim();
   const when = String(form.get("when") ?? "").trim();
-  const contactId = String(form.get("contactId") ?? "").trim();
+  // "Someone new" is an option in the list rather than a button beside it,
+  // so the value that comes back for it is not an id.
+  const picked = String(form.get("contactId") ?? "").trim();
+  const contactId = picked === NEW_CONTACT ? "" : picked;
   const contactName = String(form.get("contactName") ?? "").trim();
   const contactReach = String(form.get("contactReach") ?? "").trim();
   const studentsRaw = String(form.get("students") ?? "").trim();
 
   if (!schoolId && !newSchoolName) return { ok: false, error: "Which school was it?" };
-  if (!what) return { ok: false, error: "Write a line about what you did." };
 
-  const occurredAt = when && !Number.isNaN(Date.parse(when)) ? new Date(when) : new Date();
-  const students = studentsRaw && /^\d+$/.test(studentsRaw) ? Number(studentsRaw) : null;
+  const dated = when && !Number.isNaN(Date.parse(when));
+  if (booked) {
+    if (!dated) return { ok: false, error: "When is the event?" };
+  } else if (!what) {
+    return {
+      ok: false,
+      error: kind === "MEETING" ? "Write a line about what was discussed." : "Write a line about what you did.",
+    };
+  }
+
+  const occurredAt = dated ? new Date(when) : new Date();
+  // Only an event that has happened has a number of students in front of it.
+  const students = !booked && studentsRaw && /^\d+$/.test(studentsRaw) ? Number(studentsRaw) : null;
 
   try {
     const result = await prisma.$transaction(async (tx) => {
@@ -91,11 +117,17 @@ export async function logVisit(
         madeSchool = true;
       }
 
-      // The person they dealt with, where they named a new one.
-      let contact = contactId || null;
-      if (!contact && contactName) {
+      // The person they dealt with. Either one we already hold, or one they
+      // named, which goes on the school's contacts so the next person has it.
+      let person: string | null = null;
+      if (contactId) {
+        const c = await tx.schoolContact.findUnique({
+          where: { id: contactId }, select: { name: true },
+        });
+        person = c?.name ?? null;
+      } else if (contactName) {
         const existing = await tx.schoolContact.count({ where: { schoolId: id } });
-        const made = await tx.schoolContact.create({
+        await tx.schoolContact.create({
           data: {
             schoolId: id,
             name: contactName.slice(0, 120),
@@ -104,9 +136,8 @@ export async function logVisit(
             // The first person anybody names is the one to ring.
             isPrimary: existing === 0,
           },
-          select: { id: true },
         });
-        contact = made.id;
+        person = contactName;
       }
 
       const who = me?.name ?? me?.email ?? "Somebody at JOC";
@@ -114,8 +145,18 @@ export async function logVisit(
         ? await tx.programPage.findUnique({ where: { id: programId }, select: { name: true } })
         : null;
 
+      const type = kind === "MEETING" ? "MEETING" : booked ? "EVENT_PLANNED" : "VISIT";
+
+      const summary =
+        kind === "MEETING"
+          ? program ? `${program.name} meeting at ${name}` : `Meeting at ${name}`
+          : booked
+            ? program ? `${program.name} booked at ${name}` : `Event booked at ${name}`
+            : program ? `${program.name} at ${name}` : `Visit to ${name}`;
+
       const detail = [
-        what,
+        what || null,
+        person ? `With ${person}.` : null,
         // Always labelled as an estimate. Nobody counted them.
         students != null ? `About ${students} students, ${who.split(/\s+/)[0]}'s estimate.` : null,
       ].filter(Boolean).join("\n\n");
@@ -123,9 +164,9 @@ export async function logVisit(
       await tx.schoolActivity.create({
         data: {
           schoolId: id,
-          type: "VISIT",
-          summary: program ? `${program.name} at ${name}` : `Visit to ${name}`,
-          detail,
+          type,
+          summary,
+          detail: detail || null,
           occurredAt,
           authorId: me?.id ?? undefined,
           programId: programId ?? undefined,
@@ -137,7 +178,7 @@ export async function logVisit(
           data: {
             schoolId: id,
             type: "NOTE",
-            summary: `Added from a visit log by ${who} — needs checking`,
+            summary: `Added from a school update by ${who} — needs checking`,
             detail: "Nobody has confirmed this school's details. Check before it is used.",
             occurredAt,
             authorId: me?.id ?? undefined,
@@ -145,13 +186,12 @@ export async function logVisit(
         });
       }
 
-      void contact;
       return { name, madeSchool };
     });
 
     revalidatePath("/admin/interactions");
     revalidatePath("/admin/schools/board");
-    return { ok: true, schoolName: result.name, newSchool: result.madeSchool };
+    return { ok: true, schoolName: result.name, newSchool: result.madeSchool, booked };
   } catch {
     return { ok: false, error: "That didn't save. Try again in a moment." };
   }

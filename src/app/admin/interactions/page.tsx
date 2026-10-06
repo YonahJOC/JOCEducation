@@ -19,7 +19,7 @@ import { C, F, datum, rowCard, pageTitle, sectionHeading } from "@/lib/joc-token
  * school with nobody to ring.
  */
 
-export const metadata = { title: "School visits — JOC Console" };
+export const metadata = { title: "School updates — JOC Console" };
 export const dynamic = "force-dynamic";
 
 const day = (d: Date) =>
@@ -38,7 +38,7 @@ export default async function InteractionsPage({
   if (!isDatabaseConfigured()) {
     return (
       <div>
-        <h1 style={pageTitle}>School visits</h1>
+        <h1 style={pageTitle}>School updates</h1>
         <p style={{ fontFamily: F.read, fontSize: "17px", color: C.orangeText, margin: 0 }}>
           No database, so there is nothing to show.
         </p>
@@ -48,14 +48,17 @@ export default async function InteractionsPage({
 
   const visits = await prisma.schoolActivity.findMany({
     where: {
-      type: "VISIT",
+      // Everything the School Update Form writes. A meeting and a booked
+      // event are not visits, and leaving them out of this query is how they
+      // would have landed on nobody's screen.
+      type: { in: ["VISIT", "MEETING", "EVENT_PLANNED"] },
       ...(program ? { programId: Number(program) || undefined } : {}),
       ...(who ? { authorId: who } : {}),
     },
     orderBy: { occurredAt: "desc" },
     take: 200,
     select: {
-      id: true, summary: true, detail: true, occurredAt: true,
+      id: true, type: true, summary: true, detail: true, occurredAt: true,
       author: { select: { id: true, name: true, email: true } },
       program: { select: { id: true, name: true } },
       school: {
@@ -69,7 +72,14 @@ export default async function InteractionsPage({
 
   // Schools somebody added from the form and nobody has checked.
   const unchecked = await prisma.schoolActivity.findMany({
-    where: { type: "NOTE", summary: { contains: "Added from a visit log" } },
+    where: {
+      type: "NOTE",
+      // The form used to call itself a visit log. Rows written then still say so.
+      OR: [
+        { summary: { contains: "Added from a school update" } },
+        { summary: { contains: "Added from a visit log" } },
+      ],
+    },
     orderBy: { occurredAt: "desc" },
     select: {
       id: true, occurredAt: true,
@@ -79,6 +89,13 @@ export default async function InteractionsPage({
 
   const stillProspect = unchecked.filter((u) => u.school.status === "PROSPECT");
   const noContact = visits.filter((v) => v.school._count.contacts === 0);
+
+  // An event in the diary is the one row here that is about the future, so it
+  // is the one row that can still be acted on.
+  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
+  const upcoming = visits
+    .filter((v) => v.type === "EVENT_PLANNED" && v.occurredAt >= midnight)
+    .sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime());
 
   const people = [...new Map(
     visits.filter((v) => v.author).map((v) => [v.author!.id, v.author!]),
@@ -91,17 +108,27 @@ export default async function InteractionsPage({
     <div>
       <div className="joc-page-head">
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>School visits</h1>
+          <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>School updates</h1>
           <p style={{ ...datum, color: C.muted, margin: 0 }}>
-            {visits.length} LOGGED · ANYONE AT JOC CAN ADD ONE AT /LOG
+            {visits.length} SENT IN · ANYONE AT JOC CAN ADD ONE AT /LOG
           </p>
         </div>
         <SectionLinks section="schools" />
       </div>
 
       {/* The only two things here that need somebody. */}
-      {(stillProspect.length > 0 || noContact.length > 0) && (
+      {(upcoming.length > 0 || stillProspect.length > 0 || noContact.length > 0) && (
         <div style={{ display: "grid", gap: "10px", marginBottom: "24px" }}>
+          {upcoming.length > 0 && (
+            <BandRow
+              tone="good"
+              label="In the diary"
+              figure={String(upcoming.length)}
+              title={`${upcoming.length} event${upcoming.length === 1 ? "" : "s"} booked and not run yet`}
+              line={`Next: ${upcoming[0].school.name}, ${day(upcoming[0].occurredAt)}`}
+              action={{ label: "Open schools", href: "/admin/schools" }}
+            />
+          )}
           {stillProspect.length > 0 && (
             <BandRow
               tone="warn"
@@ -165,6 +192,10 @@ export default async function InteractionsPage({
               </div>
 
               <p style={{ ...datum, color: C.muted, margin: "4px 0 8px" }}>
+                <span style={{ color: v.type === "EVENT_PLANNED" ? C.greenText : C.ink }}>
+                  {v.type === "MEETING" ? "MEETING" : v.type === "EVENT_PLANNED" ? "BOOKED" : "EVENT"}
+                </span>
+                {" · "}
                 {v.program?.name ?? "No program recorded"}
                 {" · "}
                 {v.author?.name ?? v.author?.email ?? "somebody at JOC"}

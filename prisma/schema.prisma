@@ -911,6 +911,9 @@ enum ActivityType {
   MEETING
   /// Somebody from JOC physically went to the school.
   VISIT
+  /// An event with a date in the diary that has not happened yet. Distinct
+  /// from VISIT, which is somebody saying they were there.
+  EVENT_PLANNED
   DEMO
   /// Somebody at the school asked their coordinator something, from the portal.
   ASK
