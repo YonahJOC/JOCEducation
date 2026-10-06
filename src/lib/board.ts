@@ -46,7 +46,6 @@ export type Board = {
   statuses: { id: string; label: string; tone: string; sort: number; used: number }[];
   fields: { id: string; label: string; sort: number }[];
   checks: { id: string; label: string; sort: number }[];
-  owners: { id: string; name: string }[];
   /** Counts for the figures across the top. */
   totals: {
     active: number;
@@ -61,7 +60,7 @@ export type Board = {
 };
 
 const EMPTY: Board = {
-  rows: [], statuses: [], fields: [], checks: [], owners: [],
+  rows: [], statuses: [], fields: [], checks: [],
   totals: {
     active: 0, students: 0, studentsUnknown: 0, listsUploaded: 0,
     listsNeeded: 0, withAccount: 0, unowned: 0, schools: 0,
@@ -72,7 +71,7 @@ export async function getBoard(): Promise<Board> {
   if (!isDatabaseConfigured()) return EMPTY;
 
   try {
-    const [schools, statuses, fields, checks, owners] = await Promise.all([
+    const [schools, statuses, fields, checks] = await Promise.all([
       prisma.school.findMany({
         // The board is the JOC App clients, not every school in the portal.
         where: { onBoard: true },
@@ -101,11 +100,6 @@ export async function getBoard(): Promise<Board> {
       prisma.boardStatus.findMany({ orderBy: { sort: "asc" } }),
       prisma.boardField.findMany({ orderBy: { sort: "asc" } }),
       prisma.boardCheck.findMany({ orderBy: { sort: "asc" } }),
-      prisma.user.findMany({
-        where: { email: { endsWith: "@justonechesed.org" } },
-        orderBy: { name: "asc" },
-        select: { id: true, name: true, email: true },
-      }),
     ]);
 
     const ids = schools.map((s) => s.id);
@@ -156,7 +150,6 @@ export async function getBoard(): Promise<Board> {
       })),
       fields,
       checks,
-      owners: owners.map((o) => ({ id: o.id, name: o.name ?? o.email })),
       totals: {
         schools: rows.length,
         active: activeId ? rows.filter((r) => r.statusId === activeId).length : 0,

@@ -51,7 +51,7 @@ export default async function BoardPage() {
           </p>
           <p style={{ fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.muted, margin: "0 0 18px", maxWidth: "58ch" }}>
             The board holds JOC App clients. Bring the Monday export across and they land here
-            with their status, owner, contacts and student lists.
+            with their status, contacts and student lists.
           </p>
           <a
             href="/admin/schools/board/import"
@@ -82,11 +82,6 @@ export default async function BoardPage() {
               tone={t.listsNeeded > 0 ? C.orangeText : undefined}
             />
             <Figure value={`${t.withAccount} of ${t.schools}`} name="Have an account" />
-            <Figure
-              value={String(t.unowned)}
-              name="With nobody owning them"
-              tone={t.unowned > 0 ? C.orangeText : undefined}
-            />
           </div>
 
           <ClientsBoard board={board} />

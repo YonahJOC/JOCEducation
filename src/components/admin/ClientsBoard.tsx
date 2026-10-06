@@ -3,12 +3,12 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import {
-  setSchoolStatus, setSchoolOwner, setSchoolNetwork,
+  setSchoolStatus, setSchoolNetwork,
   setFieldValue, renameField, setCheck,
 } from "@/app/actions/app-board";
 import { NETWORK_LABEL, TYPE_LABEL, TONE, type Board, type BoardRow } from "@/lib/board";
 import { SchoolDrawer } from "@/components/admin/SchoolDrawer";
-import { C, F, label, datum } from "@/lib/joc-tokens";
+import { C, F, datum } from "@/lib/joc-tokens";
 
 /**
  * The board, the way the Monday board worked.
@@ -23,7 +23,7 @@ import { C, F, label, datum } from "@/lib/joc-tokens";
  * beside the tool.
  */
 
-type Group = "none" | "status" | "account" | "network" | "list" | "owner";
+type Group = "none" | "status" | "account" | "network" | "list";
 
 const LIST_LABEL: Record<string, string> = {
   UPLOADED: "Uploaded",
@@ -44,7 +44,6 @@ const ago = (d: Date | null): string => {
 
 export function ClientsBoard({ board }: { board: Board }) {
   const [group, setGroup] = useState<Group>("none");
-  const [owner, setOwner] = useState("all");
   const [acc, setAcc] = useState("all");
   const [net, setNet] = useState("all");
   const [q, setQ] = useState("");
@@ -82,8 +81,6 @@ export function ClientsBoard({ board }: { board: Board }) {
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return rowsWithEdits.filter((r) => {
-      if (owner === "mine" && !r.ownerId) return false;
-      if (owner === "nobody" && r.ownerId) return false;
       if (acc === "with" && r.account.state === "none") return false;
       if (acc === "without" && r.account.state !== "none") return false;
       if (net !== "all" && r.network !== net) return false;
@@ -94,7 +91,7 @@ export function ClientsBoard({ board }: { board: Board }) {
         (r.contact?.email ?? "").toLowerCase().includes(needle)
       );
     });
-  }, [rowsWithEdits, owner, acc, net, q]);
+  }, [rowsWithEdits, acc, net, q]);
 
   const groups = useMemo(() => groupRows(shown, group, board), [shown, group, board]);
 
@@ -121,16 +118,13 @@ export function ClientsBoard({ board }: { board: Board }) {
           }}
         />
 
-        <Picker value={owner} onChange={setOwner} options={[
-          ["all", "Everyone"], ["mine", "Owned"], ["nobody", "Nobody's"],
-        ]} />
         <Picker value={acc} onChange={setAcc} options={[
           ["all", "Any account"], ["with", "With an account"], ["without", "Without"],
         ]} />
         <Picker value={group} onChange={(v) => setGroup(v as Group)} options={[
           ["none", "No grouping"],
           ["status", "By status"], ["account", "By account"], ["network", "By network"],
-          ["list", "By student list"], ["owner", "By owner"],
+          ["list", "By student list"],
         ]} />
 
         <Link href="/admin/schools/board/statuses" style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.blue }}>
@@ -156,7 +150,6 @@ export function ClientsBoard({ board }: { board: Board }) {
               <th className="joc-board-sticky">School</th>
               <th>Account</th>
               <th>Status</th>
-              <th>Owner</th>
               <th>Network</th>
               <th>Type</th>
               <th style={{ textAlign: "right" }}>Students</th>
@@ -338,26 +331,6 @@ function Row({
           >
             <option value="">Not set</option>
             {board.statuses.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-          </select>
-        </td>
-
-        <td onClick={stop}>
-          <select
-            value={r.ownerId ?? ""}
-            onChange={(e) => {
-              const v = e.target.value || null;
-              const name = board.owners.find((o) => o.id === v)?.name ?? null;
-              act(r.schoolId, { ownerId: v, ownerName: name }, () => setSchoolOwner(r.schoolId, v));
-            }}
-            style={{
-              font: "inherit", fontSize: "13px",
-              color: r.ownerId ? C.ink : C.orangeText,
-              background: "transparent", border: "none", minHeight: "34px",
-              cursor: "pointer", maxWidth: "150px",
-            }}
-          >
-            <option value="">Nobody</option>
-            {board.owners.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
           </select>
         </td>
 
@@ -643,16 +616,9 @@ function groupRows(
       tone: r.network ? "ink" : "orange",
     }));
   }
-  if (group === "list") {
-    return by((r) => ({
-      key: r.listState,
-      label: LIST_LABEL[r.listState],
-      tone: LIST_TONE[r.listState],
-    }));
-  }
   return by((r) => ({
-    key: r.ownerId ?? "none",
-    label: r.ownerName ?? "Nobody",
-    tone: r.ownerId ? "ink" : "orange",
+    key: r.listState,
+    label: LIST_LABEL[r.listState],
+    tone: LIST_TONE[r.listState],
   }));
 }

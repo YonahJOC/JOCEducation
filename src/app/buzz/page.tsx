@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
@@ -24,7 +25,7 @@ import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
  */
 
 export const metadata = {
-  title: "The Buzz — JOC",
+  title: "The JOC School Buzz",
   robots: { index: false, follow: false },
 };
 export const dynamic = "force-dynamic";
@@ -48,7 +49,8 @@ export default async function BuzzPage() {
   if (!allowed) {
     return (
       <Shell>
-        <h1 style={{ ...pageTitle, margin: "0 0 18px" }}>The Buzz</h1>
+        <Wordmark />
+        <h1 style={{ ...pageTitle, margin: "0 0 18px" }}>The JOC School Buzz</h1>
         <div style={card}>
           {me ? (
             <>
@@ -93,7 +95,8 @@ export default async function BuzzPage() {
   if (!isDatabaseConfigured()) {
     return (
       <Shell>
-        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>The Buzz</h1>
+        <Wordmark />
+        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>The JOC School Buzz</h1>
         <p style={{ ...body, color: C.orangeText, margin: 0 }}>
           The database isn&rsquo;t connected, so there&rsquo;s nothing to show.
         </p>
@@ -135,11 +138,18 @@ export default async function BuzzPage() {
 
   return (
     <Shell>
+      <Wordmark />
+
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "baseline",
         gap: "12px", flexWrap: "wrap", marginBottom: "6px",
       }}>
-        <h1 style={{ ...pageTitle, margin: 0 }}>The Buzz</h1>
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{ ...pageTitle, margin: 0 }}>The JOC School Buzz</h1>
+          <p style={{ ...label, color: C.orangeText, margin: "6px 0 0" }}>
+            JOC staff view only
+          </p>
+        </div>
         <Link
           href="/log"
           style={{
@@ -153,7 +163,7 @@ export default async function BuzzPage() {
         </Link>
       </div>
 
-      <p style={{ ...label, color: C.muted, margin: "0 0 20px" }}>
+      <p style={{ ...label, color: C.muted, margin: "10px 0 20px" }}>
         {lastMonth} {lastMonth === 1 ? "UPDATE" : "UPDATES"} IN THE LAST 30 DAYS
         {schoolsTouched.length > 0 &&
           ` · ${schoolsTouched.length} ${schoolsTouched.length === 1 ? "SCHOOL" : "SCHOOLS"}`}
@@ -266,6 +276,31 @@ function H2({ children }: { children: React.ReactNode }) {
     }}>
       {children}
     </h2>
+  );
+}
+
+/**
+ * The mark, on a light ground, so the blue wordmark rather than the white.
+ * Without a site header this page has nothing else saying whose it is.
+ */
+function Wordmark() {
+  return (
+    <div style={{ marginBottom: "22px" }}>
+      <Image
+        src="/brand/joc-wordmark.png"
+        alt="JustOneChesed"
+        width={170}
+        height={21}
+        priority
+        style={{ height: "20px", width: "auto", display: "block" }}
+      />
+      <div style={{
+        fontFamily: F.data, fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em",
+        textTransform: "uppercase", color: C.orange, marginTop: "7px",
+      }}>
+        Education
+      </div>
+    </div>
   );
 }
 
