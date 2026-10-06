@@ -50,6 +50,12 @@ const PUBLIC_PATHS = new Set([
   "/privacy",
   "/terms",
   "/no-access",
+  // The one link sent to somebody at JOC who ran a program at a school. It
+  // has to open as itself and ask for a sign-in in place — bouncing them to
+  // the educator landing page shows a stranger a marketing page and loses
+  // the only thing they came to do. The page checks the address itself and
+  // shows nothing until it matches.
+  "/log",
 ]);
 
 // Reachable by anyone signed in, including someone who still has to change

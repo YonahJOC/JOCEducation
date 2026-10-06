@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { safeAuth, openForReview } from "@/auth";
+import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
 import { isStaffEmail } from "@/lib/access";
+import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import { LogVisitForm } from "@/components/LogVisitForm";
-import { C, F, label, pageTitle } from "@/lib/joc-tokens";
+import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
 
 /**
  * One link, for anybody at JOC who was at a school.
@@ -27,26 +27,84 @@ export default async function LogPage() {
   const me = session?.user;
 
   // Signed out, or signed in with something that is not a JOC address.
+  //
+  // This is the form's own page with the sign-in standing in front of it, not
+  // a detour to the landing page: somebody who was handed this link came to
+  // write down one visit, and a marketing page with a login box reads as the
+  // wrong link. They should see what they are about to fill in.
   if (!openForReview && !isStaffEmail(me?.email)) {
+    const wrongAccount = Boolean(me);
     return (
       <Shell>
-        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>Log a school visit</h1>
-        <p style={{ ...body, margin: "0 0 20px" }}>
-          {me
-            ? `You're signed in as ${me.email}, which isn't a justonechesed.org address. This form is for JOC staff.`
-            : "Sign in with your justonechesed.org address and the form opens. There's nothing else to set up."}
+        <h1 style={{ ...pageTitle, margin: "0 0 8px" }}>What did you do at a school?</h1>
+        <p style={{ ...body, margin: "0 0 22px", maxWidth: "48ch" }}>
+          Write it down while it&rsquo;s fresh. It goes on the school&rsquo;s record and the office
+          picks it up — you don&rsquo;t need to tell anybody separately.
         </p>
-        <Link
-          href="/?next=%2Flog"
-          style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            fontFamily: F.ui, fontSize: "17px", fontWeight: 700, color: C.white,
-            backgroundColor: C.blue, borderRadius: "12px", padding: "0 24px",
-            minHeight: "52px", textDecoration: "none",
-          }}
-        >
-          Sign in with Google
-        </Link>
+
+        <div style={card}>
+          {wrongAccount ? (
+            <>
+              <p style={{ ...body, fontSize: "16px", margin: "0 0 4px", color: C.ink }}>
+                <strong>Wrong account.</strong>
+              </p>
+              <p style={{ ...body, fontSize: "16px", margin: "0 0 18px" }}>
+                You&rsquo;re signed in as {me!.email}. This form needs your
+                justonechesed.org address.
+              </p>
+              <form action={signOutAction}>
+                <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
+                  Sign out
+                </button>
+              </form>
+              <p style={{ ...hint, textAlign: "center" }}>
+                Then open this link again and sign in with your JOC address.
+              </p>
+            </>
+          ) : (
+            <>
+              <p style={{ ...body, fontSize: "16px", margin: "0 0 18px" }}>
+                Sign in with your <strong style={{ color: C.ink }}>justonechesed.org</strong>{" "}
+                address and the form opens. There&rsquo;s nothing else to set up.
+              </p>
+
+              {isGoogleConfigured ? (
+                <form action={signInWithGoogle}>
+                  <input type="hidden" name="next" value="/log" />
+                  <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
+                    <GoogleMark />
+                    Continue with Google
+                  </button>
+                </form>
+              ) : (
+                <p style={{ ...body, fontSize: "16px", color: C.orangeText, margin: 0 }}>
+                  Google sign-in isn&rsquo;t switched on yet, so the form can&rsquo;t open.
+                </p>
+              )}
+            </>
+          )}
+
+          {/* What they are signing in to reach. */}
+          <div style={{ borderTop: `1px solid ${C.hairline}`, marginTop: "22px", paddingTop: "18px" }}>
+            <p style={{ ...label, color: C.muted, margin: "0 0 12px" }}>What it asks</p>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "9px" }}>
+              {[
+                "Which school",
+                "Which program",
+                "Who you dealt with there",
+                "What you did",
+                "When, and roughly how many students",
+              ].map((q) => (
+                <li key={q} style={{ ...body, fontSize: "16px", margin: 0, color: C.ink, opacity: 0.55 }}>
+                  {q}
+                </li>
+              ))}
+            </ul>
+            <p style={{ ...hint, marginTop: "14px" }}>
+              Two minutes. Nothing is emailed to the school.
+            </p>
+          </div>
+        </div>
       </Shell>
     );
   }
@@ -135,3 +193,32 @@ function Shell({ children }: { children: React.ReactNode }) {
 const body: React.CSSProperties = {
   fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: C.muted,
 };
+
+const hint: React.CSSProperties = {
+  fontFamily: F.read, fontSize: "14px", lineHeight: 1.5, color: C.muted, margin: "10px 0 0",
+};
+
+/** The same card the form itself sits in, so the sign-in reads as its cover. */
+const card: React.CSSProperties = {
+  backgroundColor: C.white, borderRadius: "18px", padding: "22px 20px",
+  boxShadow: "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)",
+};
+
+const googleButton: React.CSSProperties = {
+  width: "100%", boxSizing: "border-box",
+  display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
+  fontFamily: F.ui, fontSize: "16px", fontWeight: 600, color: C.ink,
+  backgroundColor: C.white, border: `1.5px solid ${C.hairline}`,
+  borderRadius: R.form, padding: "0 18px", minHeight: "52px",
+};
+
+function GoogleMark() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62Z" />
+      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.94v2.33A9 9 0 0 0 9 18Z" />
+      <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.94a9 9 0 0 0 0 8.1l3.03-2.33Z" />
+      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .94 4.95l3.03 2.33C4.68 5.16 6.66 3.58 9 3.58Z" />
+    </svg>
+  );
+}
