@@ -23,7 +23,17 @@ export const metadata = { title: "School updates — JOC Console" };
 export const dynamic = "force-dynamic";
 
 const day = (d: Date) =>
-  d.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  d.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+/**
+ * The time, where one was given. A booked event is stored with its wall-clock
+ * time pinned to UTC — see actions/school-update.ts — so it is read back the
+ * same way. Midnight means nobody gave a time.
+ */
+const clock = (d: Date) =>
+  d.getUTCHours() === 0 && d.getUTCMinutes() === 0
+    ? null
+    : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
 
 export default async function InteractionsPage({
   searchParams,
@@ -92,7 +102,7 @@ export default async function InteractionsPage({
 
   // An event in the diary is the one row here that is about the future, so it
   // is the one row that can still be acted on.
-  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
+  const midnight = new Date(); midnight.setUTCHours(0, 0, 0, 0);
   const upcoming = visits
     .filter((v) => v.type === "EVENT_PLANNED" && v.occurredAt >= midnight)
     .sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime());
@@ -125,7 +135,9 @@ export default async function InteractionsPage({
               label="In the diary"
               figure={String(upcoming.length)}
               title={`${upcoming.length} event${upcoming.length === 1 ? "" : "s"} booked and not run yet`}
-              line={`Next: ${upcoming[0].school.name}, ${day(upcoming[0].occurredAt)}`}
+              line={`Next: ${upcoming[0].school.name}, ${day(upcoming[0].occurredAt)}${
+                clock(upcoming[0].occurredAt) ? ` at ${clock(upcoming[0].occurredAt)}` : ""
+              }`}
               action={{ label: "Open schools", href: "/admin/schools" }}
             />
           )}
@@ -188,7 +200,10 @@ export default async function InteractionsPage({
                 >
                   {v.school.name}
                 </Link>
-                <span style={{ ...datum, color: C.muted }}>{day(v.occurredAt).toUpperCase()}</span>
+                <span style={{ ...datum, color: C.muted }}>
+                  {day(v.occurredAt).toUpperCase()}
+                  {clock(v.occurredAt) ? ` · ${clock(v.occurredAt)}` : ""}
+                </span>
               </div>
 
               <p style={{ ...datum, color: C.muted, margin: "4px 0 8px" }}>

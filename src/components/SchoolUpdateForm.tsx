@@ -182,17 +182,12 @@ export function SchoolUpdateForm({
         <>
           {/* ── Booked, or already run ────────────────────────────────── */}
           {kind === "EVENT" && (
-            <div>
-              <Label>Has it happened?</Label>
-              <Choice
-                options={[
-                  { value: "BOOKED", label: "It's in the diary" },
-                  { value: "DONE", label: "It already happened" },
-                ]}
-                value={stage}
-                onPick={(v) => setStage(v as EventStage)}
-              />
-            </div>
+            <Check
+              checked={booked}
+              onChange={(on) => setStage(on ? "BOOKED" : "DONE")}
+              title="This event is scheduled"
+              hint="Tick it if the event hasn't happened yet."
+            />
           )}
 
           {/* ── Which school ──────────────────────────────────────────── */}
@@ -278,9 +273,16 @@ export function SchoolUpdateForm({
           {/* ── The body of it ────────────────────────────────────────── */}
           {booked ? (
             <>
-              <div>
-                <Label>When is it?</Label>
-                <input type="date" name="when" defaultValue={today} style={input} />
+              <div style={{ display: "grid", gap: "18px", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
+                <div>
+                  <Label>What date?</Label>
+                  <input type="date" name="when" defaultValue={today} style={input} />
+                </div>
+                <div>
+                  <Label>What time?</Label>
+                  <input type="time" name="time" style={input} />
+                  <p style={hint}>Leave it blank if nobody has settled on one.</p>
+                </div>
               </div>
               <div>
                 <Label>Anything we should know? (optional)</Label>
@@ -394,6 +396,51 @@ export function SchoolUpdateForm({
         </div>
       )}
     </form>
+  );
+}
+
+/**
+ * One box to tick, where the answer is yes or nothing.
+ *
+ * No name of its own: the hidden `stage` field beside it is what gets sent
+ * and what gets held while they sign in, so the two cannot disagree.
+ */
+function Check({
+  checked, onChange, title, hint: note,
+}: {
+  checked: boolean;
+  onChange: (on: boolean) => void;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <label style={{
+      display: "flex", gap: "12px", alignItems: "flex-start", cursor: "pointer",
+      border: `1.5px solid ${checked ? C.ink : C.hairline}`,
+      borderRadius: R.form, padding: "14px 16px",
+      backgroundColor: checked ? C.blueTint : C.white,
+    }}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        style={{ width: "22px", height: "22px", margin: "1px 0 0", flex: "0 0 auto", cursor: "pointer" }}
+      />
+      <span style={{ minWidth: 0 }}>
+        <span style={{
+          display: "block", fontFamily: F.ui, fontSize: "16px", fontWeight: 600,
+          color: C.ink, lineHeight: 1.35,
+        }}>
+          {title}
+        </span>
+        <span style={{
+          display: "block", fontFamily: F.read, fontSize: "14px",
+          color: C.muted, lineHeight: 1.5, marginTop: "2px",
+        }}>
+          {note}
+        </span>
+      </span>
+    </label>
   );
 }
 

@@ -66,6 +66,7 @@ export async function logSchoolUpdate(
   const programId = Number(form.get("programId") ?? 0) || null;
   const what = String(form.get("what") ?? "").trim();
   const when = String(form.get("when") ?? "").trim();
+  const time = String(form.get("time") ?? "").trim();
   // "Someone new" is an option in the list rather than a button beside it,
   // so the value that comes back for it is not an id.
   const picked = String(form.get("contactId") ?? "").trim();
@@ -86,7 +87,16 @@ export async function logSchoolUpdate(
     };
   }
 
-  const occurredAt = dated ? new Date(when) : new Date();
+  // The clock on the wall at the school, kept as it was typed.
+  //
+  // Vercel runs in UTC and the person is in New York or Montreal, so parsing
+  // "2:30 PM" as the server's local time would file a 2:30 event at 9:30. The
+  // components are pinned to UTC instead and read back the same way, which is
+  // what everybody means by "the assembly is at two".
+  const atTime = /^\d{2}:\d{2}$/.test(time);
+  const occurredAt = dated
+    ? new Date(atTime ? `${when}T${time}:00.000Z` : when)
+    : new Date();
   // Only an event that has happened has a number of students in front of it.
   const students = !booked && studentsRaw && /^\d+$/.test(studentsRaw) ? Number(studentsRaw) : null;
 
