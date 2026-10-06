@@ -75,15 +75,15 @@ export async function logSchoolUpdate(
   const contactReach = String(form.get("contactReach") ?? "").trim();
   const studentsRaw = String(form.get("students") ?? "").trim();
 
-  if (!schoolId && !newSchoolName) return { ok: false, error: "Which school was it?" };
+  if (!schoolId && !newSchoolName) return { ok: false, error: "Pick a school." };
 
   const dated = when && !Number.isNaN(Date.parse(when));
   if (booked) {
-    if (!dated) return { ok: false, error: "When is the event?" };
+    if (!dated) return { ok: false, error: "Pick a date." };
   } else if (!what) {
     return {
       ok: false,
-      error: kind === "MEETING" ? "Write a line about what was discussed." : "Write a line about what you did.",
+      error: kind === "MEETING" ? "Conversation notes are empty." : "Post event notes are empty.",
     };
   }
 

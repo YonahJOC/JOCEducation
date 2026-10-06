@@ -23,7 +23,7 @@ import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
  */
 
 export const metadata = {
-  title: "School Update Form — JOC",
+  title: "JOC School Update Form",
   robots: { index: false, follow: false },
 };
 export const dynamic = "force-dynamic";
@@ -36,7 +36,7 @@ export default async function LogPage() {
   if (!isDatabaseConfigured()) {
     return (
       <Shell>
-        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>School Update Form</h1>
+        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>JOC School Update Form</h1>
         <p style={{ ...body, color: C.orangeText, margin: 0 }}>
           The database isn&rsquo;t connected, so nothing can be saved right now.
         </p>
@@ -77,12 +77,7 @@ export default async function LogPage() {
 
   return (
     <Shell>
-      <h1 style={{ ...pageTitle, margin: "0 0 8px" }}>School Update Form</h1>
-      <p style={{ ...body, margin: "0 0 22px", maxWidth: "48ch" }}>
-        A meeting you had, or an event you ran or booked. Write it down while it&rsquo;s
-        fresh — it goes on the school&rsquo;s record and the office picks it up, so you
-        don&rsquo;t need to tell anybody separately.
-      </p>
+      <h1 style={{ ...pageTitle, margin: "0 0 22px" }}>JOC School Update Form</h1>
 
       <SchoolUpdateForm
         schools={schools}
@@ -129,8 +124,7 @@ function SignIn() {
         </button>
       </form>
       <p style={{ ...hint, textAlign: "center" }}>
-        Your justonechesed.org address. What you&rsquo;ve written stays here — we bring you
-        back to it. Nothing is emailed to the school.
+        Your justonechesed.org address. What you&rsquo;ve written stays here.
       </p>
     </>
   );

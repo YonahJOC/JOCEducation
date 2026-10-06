@@ -6,19 +6,19 @@ import { NEW_CONTACT, type UpdateKind, type EventStage } from "@/lib/school-upda
 import { C, R, F, label, primaryButton } from "@/lib/joc-tokens";
 
 /**
- * The School Update Form.
+ * The JOC School Update Form.
  *
- * Built for somebody standing in a car park on a phone after an event, not
- * for a desk: one column, big targets, nothing to navigate, and a date that
- * is already today. Everything except the school and the one line about what
- * happened is optional, because a half-filled record beats the one nobody
- * wrote.
+ * Built for somebody standing in a car park on a phone, not for a desk: one
+ * column, big targets, and labels rather than instructions. Nothing here
+ * explains itself in a sentence — a field that needs a paragraph is the wrong
+ * field.
  *
  * A meeting and an event are not the same fact, so they are not the same
- * form. A meeting asks who and what was said. An event asks whether it is in
- * the diary or already behind us, and only then what to fill in. Asking all
- * of it every time is how a form gets abandoned.
+ * form. A meeting asks who and what was said. An event asks whether the date
+ * is set or it is already behind us, and only then what to fill in.
  */
+
+type WhenChoice = "TODAY" | "OTHER";
 
 export function SchoolUpdateForm({
   schools, programs, myName, locked = false, signIn = null,
@@ -29,8 +29,7 @@ export function SchoolUpdateForm({
   /**
    * Nobody has signed in yet. The form still works — they fill it in and the
    * sign-in sits where the send button goes. What they type is kept in their
-   * own browser and put back when they come back from Google, so signing in
-   * costs them nothing they have already written.
+   * own browser and put back when they come back from Google.
    */
   locked?: boolean;
   /** The sign-in, which is its own form and so cannot be nested in this one. */
@@ -43,12 +42,12 @@ export function SchoolUpdateForm({
   const [schoolId, setSchoolId] = useState("");
   const [adding, setAdding] = useState(false);
   const [contactId, setContactId] = useState("");
+  const [whenChoice, setWhenChoice] = useState<WhenChoice>("TODAY");
   const [again, setAgain] = useState(0);
 
   const school = schools.find((s) => s.id === schoolId) ?? null;
   const contacts = school?.contacts ?? [];
-  // Either they picked the new-person option, or there is nobody to pick.
-  const naming = contactId === NEW_CONTACT || contacts.length === 0;
+  const naming = contactId === NEW_CONTACT;
   const today = new Date().toISOString().slice(0, 10);
 
   const meeting = kind === "MEETING";
@@ -73,7 +72,7 @@ export function SchoolUpdateForm({
   };
 
   // Back from Google. Read it once, clear it, and open whichever branches it
-  // needs — which kind, which stage, "it's not listed" — before filling in.
+  // needs before filling in.
   //
   // setState in an effect, deliberately: sessionStorage exists only in the
   // browser, so reading it during render would make this markup disagree with
@@ -93,6 +92,7 @@ export function SchoolUpdateForm({
 
     if (d.kind === "MEETING" || d.kind === "EVENT") setKind(d.kind);
     if (d.stage === "BOOKED" || d.stage === "DONE") setStage(d.stage);
+    if (d.whenChoice === "TODAY" || d.whenChoice === "OTHER") setWhenChoice(d.whenChoice);
     if (d.schoolId) setSchoolId(d.schoolId);
     if (d.newSchoolName) setAdding(true);
     if (d.contactId) setContactId(d.contactId);
@@ -119,80 +119,86 @@ export function SchoolUpdateForm({
         <p style={{ fontSize: "34px", margin: "0 0 8px" }} aria-hidden="true">✓</p>
         <h2 style={{
           fontFamily: F.ui, fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em",
-          color: C.ink, margin: "0 0 10px", lineHeight: 1.2,
+          color: C.ink, margin: "0 0 8px", lineHeight: 1.2,
         }}>
-          Thank you — that&rsquo;s written down
+          Thank you
         </h2>
         <p style={{
           fontFamily: F.read, fontSize: "17px", lineHeight: 1.6, color: C.muted,
-          margin: "0 auto 8px", maxWidth: "44ch",
+          margin: "0 auto 8px", maxWidth: "40ch",
         }}>
           {result.booked
-            ? `${result.schoolName} is in the diary, and the office can see it.`
-            : `${result.schoolName} now has it on their record, and the office can see it.`}
+            ? `In the diary for ${result.schoolName}.`
+            : `Saved to ${result.schoolName}.`}
         </p>
 
         {result.newSchool && (
           <p style={{
             fontFamily: F.read, fontSize: "15px", lineHeight: 1.55, color: C.orangeText,
-            margin: "0 auto 18px", maxWidth: "46ch",
+            margin: "0 auto 18px", maxWidth: "42ch",
           }}>
-            {result.schoolName} wasn&rsquo;t on our list, so it has been added for somebody to
-            check. Nothing else is needed from you.
+            {result.schoolName} wasn&rsquo;t on our list. It&rsquo;s been added for the office
+            to check.
           </p>
         )}
 
         <button
           type="button"
           onClick={() => {
-            setKind(""); setStage("DONE"); setSchoolId("");
-            setAdding(false); setContactId(""); setAgain((n) => n + 1);
+            setKind(""); setStage("DONE"); setSchoolId(""); setAdding(false);
+            setContactId(""); setWhenChoice("TODAY"); setAgain((n) => n + 1);
             // useActionState has no reset, so the form is remounted by key.
             window.location.reload();
           }}
           style={{ ...primaryButton, cursor: "pointer", marginTop: "8px" }}
         >
-          Add another one
+          Add another
         </button>
       </div>
     );
   }
 
+  /** Today, or a date they pick. Shared by a conversation and a run event. */
+  const dateBlock = (title: string) => (
+    <div>
+      <Label>{title}</Label>
+      <div style={{ display: "grid", gap: "8px", gridTemplateColumns: "1fr 1fr" }}>
+        <Radio on={whenChoice === "TODAY"} onPick={() => setWhenChoice("TODAY")}>Today</Radio>
+        <Radio on={whenChoice === "OTHER"} onPick={() => setWhenChoice("OTHER")}>Another date</Radio>
+      </div>
+      {/* Distinct keys: without them React reuses the one <input> and swaps
+          defaultValue for value, which is the controlled-to-uncontrolled
+          warning and, eventually, a date that will not change. */}
+      {whenChoice === "OTHER" ? (
+        <input key="when-picked" type="date" name="when" defaultValue={today} style={{ ...input, marginTop: "8px" }} />
+      ) : (
+        <input key="when-today" type="hidden" name="when" value={today} readOnly />
+      )}
+    </div>
+  );
+
   const fields = (
     <>
       <input type="hidden" name="kind" value={kind} />
       <input type="hidden" name="stage" value={stage} />
+      <input type="hidden" name="whenChoice" value={whenChoice} />
 
-      {/* ── Meeting or event ──────────────────────────────────────────── */}
       <div>
-        <Label>What are you telling us about?</Label>
+        <Label>Meeting or event</Label>
         <Choice
           options={[
-            { value: "MEETING", label: "A meeting" },
-            { value: "EVENT", label: "An event" },
+            { value: "MEETING", label: "Meeting" },
+            { value: "EVENT", label: "Event" },
           ]}
           value={kind}
           onPick={(v) => setKind(v as UpdateKind)}
         />
       </div>
 
-      {/* Nothing else until they say which. Asking a meeting about how many
-          students turned up is how a form gets abandoned. */}
       {kind && (
         <>
-          {/* ── Booked, or already run ────────────────────────────────── */}
-          {kind === "EVENT" && (
-            <Check
-              checked={booked}
-              onChange={(on) => setStage(on ? "BOOKED" : "DONE")}
-              title="This event is scheduled"
-              hint="Tick it if the event hasn't happened yet."
-            />
-          )}
-
-          {/* ── Which school ──────────────────────────────────────────── */}
           <div>
-            <Label>Which school?</Label>
+            <Label>School</Label>
             {!adding ? (
               <>
                 <select
@@ -214,133 +220,111 @@ export function SchoolUpdateForm({
               </>
             ) : (
               <>
-                <input name="newSchoolName" placeholder="The school's name" style={input} autoFocus />
+                <input name="newSchoolName" placeholder="School name" style={input} autoFocus />
                 <button type="button" onClick={() => setAdding(false)} style={quiet}>
                   Pick from the list instead
                 </button>
-                <p style={hint}>
-                  Somebody at the office will check the details. You don&rsquo;t need to.
-                </p>
               </>
             )}
           </div>
 
-          {/* ── Which program ─────────────────────────────────────────── */}
           <div>
-            <Label>{meeting ? "About which program?" : "Which program?"}</Label>
+            <Label>Program</Label>
             <select name="programId" style={input} defaultValue="">
-              <option value="">Not one of ours / something else</option>
+              <option value="">None / something else</option>
               {programs.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           </div>
 
-          {/* ── Who ───────────────────────────────────────────────────── */}
+          {/* Always a list, even at a school we hold nobody for — the way to
+              add somebody is the last line of it. */}
           <div>
-            <Label>{meeting ? "Who did you meet with?" : "Who did you deal with there?"}</Label>
-            {contacts.length > 0 && (
-              <select
-                name="contactId"
-                value={contactId}
-                onChange={(e) => setContactId(e.target.value)}
-                style={input}
-              >
-                <option value="">Pick a person</option>
-                {contacts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                {/* In the list rather than a button beside it — somebody
-                    looking for a name they cannot find looks in the list. */}
-                <option value={NEW_CONTACT}>Someone new…</option>
-              </select>
-            )}
+            <Label>Who at the school</Label>
+            <select
+              name="contactId"
+              value={contactId}
+              onChange={(e) => setContactId(e.target.value)}
+              style={input}
+            >
+              <option value="">Pick a person</option>
+              {contacts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <option value={NEW_CONTACT}>Add someone…</option>
+            </select>
             {naming && (
               <>
-                <input
-                  name="contactName"
-                  placeholder="Their name"
-                  style={{ ...input, marginTop: contacts.length > 0 ? "8px" : 0 }}
-                />
-                <input
-                  name="contactReach"
-                  placeholder="Their email or phone, if you have it"
-                  style={{ ...input, marginTop: "8px" }}
-                />
-                {contacts.length > 0 && (
-                  <p style={hint}>They&rsquo;ll be added to this school&rsquo;s contacts.</p>
-                )}
+                <input name="contactName" placeholder="Name" style={{ ...input, marginTop: "8px" }} />
+                <input name="contactReach" placeholder="Email or phone" style={{ ...input, marginTop: "8px" }} />
               </>
             )}
           </div>
 
-          {/* ── The body of it ────────────────────────────────────────── */}
-          {booked ? (
-            <>
-              <div style={{ display: "grid", gap: "18px", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
-                <div>
-                  <Label>What date?</Label>
-                  <input type="date" name="when" defaultValue={today} style={input} />
-                </div>
-                <div>
-                  <Label>What time?</Label>
-                  <input type="time" name="time" style={input} />
-                  <p style={hint}>Leave it blank if nobody has settled on one.</p>
-                </div>
-              </div>
-              <div>
-                <Label>Anything we should know? (optional)</Label>
-                <textarea
-                  name="what"
-                  rows={3}
-                  placeholder="Grades 6 to 8, in the gym, they're providing the tables"
-                  style={{ ...input, resize: "vertical", fontFamily: F.read }}
-                />
-              </div>
-            </>
-          ) : meeting ? (
+          {meeting ? (
             <>
               <div>
-                <Label>What was discussed?</Label>
+                <Label>Conversation notes</Label>
                 <textarea
                   name="what"
-                  rows={4}
+                  rows={5}
                   required
-                  placeholder="They want to start with one grade in the spring and see how it goes"
                   style={{ ...input, resize: "vertical", fontFamily: F.read }}
                 />
               </div>
-              <div>
-                <Label>When?</Label>
-                <input type="date" name="when" defaultValue={today} style={input} />
-              </div>
+              {dateBlock("Date of conversation")}
             </>
           ) : (
             <>
-              <div>
-                <Label>What did you do there?</Label>
-                <textarea
-                  name="what"
-                  rows={4}
-                  required
-                  placeholder="Ran the boots assembly for grades 6 to 8"
-                  style={{ ...input, resize: "vertical", fontFamily: F.read }}
-                />
-              </div>
-              <div style={{ display: "grid", gap: "18px", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
-                <div>
-                  <Label>When?</Label>
-                  <input type="date" name="when" defaultValue={today} style={input} />
-                </div>
-                <div>
-                  <Label>Roughly how many students?</Label>
-                  <input
-                    type="number"
-                    name="students"
-                    min="0"
-                    inputMode="numeric"
-                    placeholder="Optional"
-                    style={input}
-                  />
-                  <p style={hint}>A guess is fine — it&rsquo;s recorded as your estimate.</p>
-                </div>
-              </div>
+              <Check
+                checked={booked}
+                onChange={(on) => setStage(on ? "BOOKED" : "DONE")}
+                title="Event date set"
+              />
+
+              {booked ? (
+                <>
+                  <div style={{ display: "grid", gap: "18px", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
+                    <div>
+                      <Label>Date</Label>
+                      <input type="date" name="when" defaultValue={today} style={input} />
+                    </div>
+                    <div>
+                      <Label>Time</Label>
+                      <input type="time" name="time" style={input} />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Event notes</Label>
+                    <textarea
+                      name="what"
+                      rows={4}
+                      style={{ ...input, resize: "vertical", fontFamily: F.read }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <Label>Post event notes</Label>
+                    <textarea
+                      name="what"
+                      rows={5}
+                      required
+                      style={{ ...input, resize: "vertical", fontFamily: F.read }}
+                    />
+                  </div>
+                  {dateBlock("Date of event")}
+                  <div>
+                    <Label>Students</Label>
+                    <input
+                      type="number"
+                      name="students"
+                      min="0"
+                      inputMode="numeric"
+                      placeholder="Roughly"
+                      style={input}
+                    />
+                  </div>
+                </>
+              )}
             </>
           )}
         </>
@@ -388,57 +372,68 @@ export function SchoolUpdateForm({
               cursor: pending ? "default" : "pointer", opacity: pending ? 0.7 : 1,
             }}
           >
-            {pending ? "Saving…" : booked ? "Put it in the diary" : "Send it in"}
+            {pending ? "Saving…" : "Send"}
           </button>
-          <p style={{ ...hint, textAlign: "center", marginTop: "10px" }}>
-            Signed in as {myName}. Nothing is emailed to the school.
-          </p>
+          <p style={{ ...hint, textAlign: "center", marginTop: "10px" }}>{myName}</p>
         </div>
       )}
     </form>
   );
 }
 
-/**
- * One box to tick, where the answer is yes or nothing.
- *
- * No name of its own: the hidden `stage` field beside it is what gets sent
- * and what gets held while they sign in, so the two cannot disagree.
- */
+/** One box to tick, where the answer is yes or nothing. */
 function Check({
-  checked, onChange, title, hint: note,
+  checked, onChange, title,
 }: {
   checked: boolean;
   onChange: (on: boolean) => void;
   title: string;
-  hint: string;
 }) {
   return (
     <label style={{
-      display: "flex", gap: "12px", alignItems: "flex-start", cursor: "pointer",
+      display: "flex", gap: "12px", alignItems: "center", cursor: "pointer",
       border: `1.5px solid ${checked ? C.ink : C.hairline}`,
-      borderRadius: R.form, padding: "14px 16px",
+      borderRadius: R.form, padding: "14px 16px", minHeight: "50px",
       backgroundColor: checked ? C.blueTint : C.white,
     }}>
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        style={{ width: "22px", height: "22px", margin: "1px 0 0", flex: "0 0 auto", cursor: "pointer" }}
+        style={{ width: "22px", height: "22px", margin: 0, flex: "0 0 auto", cursor: "pointer" }}
       />
-      <span style={{ minWidth: 0 }}>
-        <span style={{
-          display: "block", fontFamily: F.ui, fontSize: "16px", fontWeight: 600,
-          color: C.ink, lineHeight: 1.35,
-        }}>
-          {title}
-        </span>
-        <span style={{
-          display: "block", fontFamily: F.read, fontSize: "14px",
-          color: C.muted, lineHeight: 1.5, marginTop: "2px",
-        }}>
-          {note}
-        </span>
+      <span style={{
+        fontFamily: F.ui, fontSize: "16px", fontWeight: 600, color: C.ink, lineHeight: 1.35,
+      }}>
+        {title}
+      </span>
+    </label>
+  );
+}
+
+/** One of two, drawn as a radio because that is what it is. */
+function Radio({
+  on, onPick, children,
+}: {
+  on: boolean;
+  onPick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <label style={{
+      display: "flex", gap: "9px", alignItems: "center", cursor: "pointer",
+      border: `1.5px solid ${on ? C.ink : C.hairline}`,
+      borderRadius: R.form, padding: "0 12px", minHeight: "50px",
+      backgroundColor: on ? C.blueTint : C.white,
+    }}>
+      <input
+        type="radio"
+        checked={on}
+        onChange={onPick}
+        style={{ width: "19px", height: "19px", margin: 0, flex: "0 0 auto", cursor: "pointer" }}
+      />
+      <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.ink }}>
+        {children}
       </span>
     </label>
   );
@@ -463,7 +458,7 @@ function Choice({
             aria-pressed={on}
             onClick={() => onPick(o.value)}
             style={{
-              fontFamily: F.ui, fontSize: "15px", fontWeight: 600,
+              fontFamily: F.ui, fontSize: "16px", fontWeight: 600,
               color: on ? C.white : C.ink,
               backgroundColor: on ? C.ink : C.white,
               border: on ? `1.5px solid ${C.ink}` : `1.5px solid ${C.hairline}`,
