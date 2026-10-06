@@ -713,3 +713,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .joc-board-group span { transition: none !important; }
 }
+
+/* The super admin's own controls on the Buzz — edit, tag, remove.
+   Hidden by default so the feed reads as a feed; the switch in the masthead
+   turns them on. Cosmetic only: every one of them is refused server-side for
+   anybody who is not a super admin, whatever the page is showing. */
+[data-admin-tools="off"] .joc-admin-tools {
+  display: none !important;
+}

@@ -5,6 +5,7 @@ import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
 import { can, isSuperAdminEmail } from "@/lib/access";
 import { leadsAnyProgram } from "@/lib/program-admin";
 import { ItemTools } from "@/components/buzz/ItemTools";
+import { AdminToggle } from "@/components/buzz/AdminToggle";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import {
   UPDATE_TYPES, TAG, day, shortDay, clock, away, ago,
@@ -162,6 +163,7 @@ export default async function BuzzPage() {
           orderBy: { createdAt: "asc" },
           select: {
             id: true, body: true, createdAt: true,
+            authorId: true,
             author: { select: { name: true, email: true } },
           },
         },
@@ -182,7 +184,22 @@ export default async function BuzzPage() {
     .filter((r) => r.type === "EVENT_PLANNED" && r.occurredAt >= midnight)
     .sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime());
   const aheadIds = new Set(ahead.map((a) => a.id));
-  const behind = rows.filter((r) => !aheadIds.has(r.id)).slice(0, FEED);
+
+  /**
+   * The feed is ordered by the last thing that happened to an item, not by
+   * the date on it. A comment is a thing that happened: an update from three
+   * weeks ago that somebody answered this morning is live, and leaving it
+   * three weeks down the page is how the answer goes unread.
+   */
+  const lastMove = (r: { occurredAt: Date; notes: { createdAt: Date }[] }) =>
+    r.notes.length > 0
+      ? Math.max(r.occurredAt.getTime(), r.notes[r.notes.length - 1].createdAt.getTime())
+      : r.occurredAt.getTime();
+
+  const behind = rows
+    .filter((r) => !aheadIds.has(r.id))
+    .sort((a, b) => lastMove(b) - lastMove(a))
+    .slice(0, FEED);
 
   return (
     <Shell>
@@ -190,6 +207,7 @@ export default async function BuzzPage() {
           ground is the brand's, carries the white wordmark, and separates
           the page's own furniture from the feed underneath it. */}
       <Masthead
+        tools={superAdmin}
         line={[
           `${lastMonth} ${lastMonth === 1 ? "update" : "updates"} in the last 30 days`,
           schoolsTouched.length > 0
@@ -280,6 +298,7 @@ export default async function BuzzPage() {
                   body: n.body,
                   who: first(n.author?.name ?? n.author?.email),
                   when: ago(n.createdAt, midnight),
+                  mine: Boolean(me?.id && n.authorId === me.id),
                 }))}
                 takenBy={r.takenById ? first(r.takenBy?.name ?? r.takenBy?.email) : null}
                 mine={Boolean(me?.id && r.takenById === me.id)}
@@ -308,7 +327,7 @@ export default async function BuzzPage() {
  * numbers and the one thing to do. The figures used to be three columns under
  * a rule, which is more furniture than a feed needs above it.
  */
-function Masthead({ line }: { line?: string }) {
+function Masthead({ line, tools = false }: { line?: string; tools?: boolean }) {
   return (
     <header style={{ backgroundColor: C.ink, color: C.white, padding: "24px 20px 22px" }}>
       <div style={{
@@ -323,12 +342,15 @@ function Masthead({ line }: { line?: string }) {
           priority
           style={{ height: "18px", width: "auto", display: "block" }}
         />
-        <span style={{
-          fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
-          textTransform: "uppercase", color: C.orange, whiteSpace: "nowrap",
-        }}>
-          JOC staff view only
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          {tools && <AdminToggle />}
+          <span style={{
+            fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
+            textTransform: "uppercase", color: C.orange, whiteSpace: "nowrap",
+          }}>
+            JOC staff view only
+          </span>
+        </div>
       </div>
 
       {/* Title and the one thing to do, side by side — the button was under

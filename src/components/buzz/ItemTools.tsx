@@ -18,6 +18,8 @@ export type Note = {
   body: string;
   who: string;
   when: string;
+  /** Yours sit on the right, as they do in every chat anybody already uses. */
+  mine: boolean;
 };
 
 export function ItemTools({
@@ -35,7 +37,10 @@ export function ItemTools({
   people: { id: string; name: string }[];
 }) {
   const [thread, setThread] = useState<Note[]>(notes);
-  const [open, setOpen] = useState(notes.length > 0);
+  // Closed to start, however many there are. The count on the button says
+  // there is something to read, and a feed where every thread is open is a
+  // feed you have to scroll past rather than scan.
+  const [open, setOpen] = useState(false);
   const [body, setBody] = useState("");
   const [held, setHeld] = useState<{ by: string | null; mine: boolean }>({ by: takenBy, mine });
   const [editing, setEditing] = useState(false);
@@ -146,15 +151,34 @@ export function ItemTools({
         )}
 
         {canComment && (
-          <button type="button" style={quiet} onClick={() => setOpen((o) => !o)}>
-            {thread.length > 0
-              ? `${thread.length} ${thread.length === 1 ? "comment" : "comments"}`
-              : "Comment"}
+          <button
+            type="button"
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+            style={{
+              ...quiet,
+              display: "inline-flex", alignItems: "center", gap: "6px",
+              color: thread.length > 0 && !open ? C.blue : C.muted,
+            }}
+          >
+            <span aria-hidden="true" style={{
+              display: "inline-block", fontSize: "10px", lineHeight: 1,
+              transform: open ? "rotate(90deg)" : "none", transition: "transform .12s",
+            }}>
+              ▶
+            </span>
+            {thread.length === 0
+              ? "Comment"
+              : open
+                ? "Hide"
+                : `${thread.length} ${thread.length === 1 ? "comment" : "comments"}`}
           </button>
         )}
 
         {superAdmin && (
-          <>
+          /* Hidden until the switch in the masthead turns them on — see
+             AdminToggle. Cosmetic: each action is refused server-side too. */
+          <span className="joc-admin-tools" style={{ display: "contents" }}>
             <button type="button" style={quiet} onClick={() => { setText(shown ?? ""); setEditing((e) => !e); }}>
               Edit
             </button>
@@ -190,7 +214,7 @@ export function ItemTools({
             >
               Remove
             </button>
-          </>
+          </span>
         )}
 
         {error && <span style={{ ...label, color: C.orangeText }}>{error}</span>}
@@ -199,30 +223,58 @@ export function ItemTools({
       {/* ── The thread ──────────────────────────────────────────────── */}
       {open && canComment && (
         <div style={{
-          marginTop: "12px", paddingTop: "12px",
+          marginTop: "12px", paddingTop: "14px",
           borderTop: `1px solid ${C.hairline}`,
-          display: "grid", gap: "10px",
+          display: "grid", gap: "8px",
         }}>
-          {thread.map((n) => (
-            <div key={n.id}>
-              <p style={{ ...label, color: C.muted, margin: "0 0 2px" }}>
-                {n.who} · {n.when}
-              </p>
-              <p style={{
-                fontFamily: F.read, fontSize: "15px", lineHeight: 1.55, color: C.ink,
-                margin: 0, whiteSpace: "pre-wrap",
-              }}>
-                {n.body}
-              </p>
-            </div>
-          ))}
+          {thread.map((n, i) => {
+            // One name per run, the way a chat does it — six bubbles from
+            // Gilad do not need his name six times.
+            const sameAsLast = i > 0 && thread[i - 1].who === n.who && thread[i - 1].mine === n.mine;
+            return (
+              <div
+                key={n.id}
+                style={{
+                  display: "flex", flexDirection: "column",
+                  alignItems: n.mine ? "flex-end" : "flex-start",
+                  marginTop: sameAsLast ? "-4px" : 0,
+                }}
+              >
+                {!sameAsLast && (
+                  <p style={{
+                    ...label, color: C.muted, margin: "0 0 3px",
+                    padding: n.mine ? "0 4px 0 0" : "0 0 0 4px",
+                  }}>
+                    {n.mine ? "You" : n.who} · {n.when}
+                  </p>
+                )}
+                <div style={{
+                  maxWidth: "min(84%, 46ch)",
+                  backgroundColor: n.mine ? C.blueTint : C.panel,
+                  border: `1px solid ${n.mine ? "#CBD5F2" : C.hairline}`,
+                  borderRadius: "16px",
+                  // The flat corner on the side it came from, as a tail.
+                  borderTopRightRadius: n.mine && !sameAsLast ? "5px" : "16px",
+                  borderTopLeftRadius: !n.mine && !sameAsLast ? "5px" : "16px",
+                  padding: "9px 13px",
+                }}>
+                  <p style={{
+                    fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.ink,
+                    margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word",
+                  }}>
+                    {n.body}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
 
           <form
             action={() => {
               const text = body.trim();
               if (!text) return;
               const optimistic: Note = {
-                id: `pending-${Date.now()}`, body: text, who: "You", when: "just now",
+                id: `pending-${Date.now()}`, body: text, who: "You", when: "just now", mine: true,
               };
               setThread((t) => [...t, optimistic]);
               setBody("");
