@@ -542,33 +542,85 @@ body {
   }
 }
 
-/* A conversation. Scrolls on its own so the composer stays put, the way a
-   messaging app behaves — a thread that pushes the box off the bottom of a
-   long page is a thread nobody answers. */
+/* ── Messaging ────────────────────────────────────────────────────────────
+   The card fills the viewport and scrolls inside itself, so the composer is
+   never pushed below the fold. A thread that scrolls the page away from its
+   own box is a thread nobody answers. */
+.joc-msg-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 0 #E3E6EF, 0 6px 18px rgba(16, 35, 63, .05);
+  overflow: hidden;
+  min-height: 0;
+  height: min(74vh, 760px);
+}
+
+@media (min-width: 760px) {
+  .joc-msg-card { grid-template-columns: 310px minmax(0, 1fr); }
+}
+@media (min-width: 760px) and (max-width: 1100px) {
+  .joc-msg-card { grid-template-columns: 270px minmax(0, 1fr); }
+}
+
+.joc-msg-list {
+  border-right: 1px solid #E3E6EF;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.joc-msg-thread {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 16px 18px 18px;
+}
+
+/* The history scrolls; everything else in the thread stays put. */
 .joc-conversation {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  flex: 1;
   overflow-y: auto;
-  min-height: 220px;
-  max-height: min(58vh, 560px);
+  min-height: 0;
+  gap: 2px;
   padding: 4px 2px;
-  background: var(--joc-paper, #FBF9F4);
+  background: #FBF9F4;
+  border-radius: 12px;
+}
+
+.joc-composer {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: #fff;
+  border: 2px solid #B9C3DD;
   border-radius: 16px;
+  padding: 6px 6px 6px 14px;
+  transition: border-color .15s ease;
+}
+.joc-composer:focus-within { border-color: #2D46AF; }
+
+/* Below 760 the list and the thread are each full-screen, so only one shows. */
+@media (max-width: 759px) {
+  .joc-msg-card { height: auto; min-height: min(72vh, 640px); }
+  .joc-msg-list { border-right: none; }
+  .joc-enter-hint { display: none; }
 }
 
-@media (max-width: 560px) {
-  .joc-conversation { max-height: 52vh; }
+@media (prefers-reduced-motion: reduce) {
+  .joc-composer { transition: none; }
 }
 
-/* The console inbox: the list of schools beside the conversation, stacking
-   to one column where there is no room for two. */
-.joc-inbox {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
+/* One pane at a time on a phone. */
+@media (max-width: 759px) {
+  .joc-hide-sm { display: none !important; }
 }
-
-@media (min-width: 900px) {
-  .joc-inbox { grid-template-columns: 290px minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (min-width: 760px) {
+  .joc-only-sm { display: none !important; }
 }

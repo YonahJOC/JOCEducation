@@ -2,6 +2,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { stepFor, STEP_TITLE } from "@/lib/program-step";
 import { STAGE_LABEL, type Stage } from "@/lib/program-enrollment";
 import type { Tone } from "@/lib/joc-tokens";
+import { JOC_APP_URL } from "@/lib/joc-app";
 
 /**
  * What a school has to do this week (5a).
@@ -122,16 +123,15 @@ export async function getSchoolToday(
         : Promise.resolve(0),
       // Only an ask a coordinator actually wrote words on. "Answered" with no
       // words is a status change, and a school has no use for one.
-      prisma.schoolActivity.findMany({
-        where: {
-          schoolId, inbound: true,
-          answeredAt: { not: null }, reply: { not: null }, seenBySchoolAt: null,
-        },
-        orderBy: { answeredAt: "desc" },
+      // Replies nobody at the school has opened. The conversation is the
+      // record now, so this reads messages rather than answered asks.
+      prisma.schoolMessage.findMany({
+        where: { schoolId, inbound: false, seenAt: null },
+        orderBy: { sentAt: "desc" },
         take: 3,
         select: {
-          id: true, reply: true, answeredAt: true, topic: true,
-          answeredBy: { select: { name: true, email: true } },
+          id: true, body: true, sentAt: true,
+          author: { select: { name: true, email: true } },
           program: { select: { slug: true, name: true } },
         },
       }),
@@ -171,7 +171,7 @@ export async function getSchoolToday(
           : hours.at
           ? `Read from the JOC App on ${dateOnly(hours.at)}. Teachers approve them in the app.`
           : "Nobody has recorded when this was last read from the app.",
-        action: { label: "Open the app", href: "/school/activity" },
+        action: { label: "Open the app", href: JOC_APP_URL },
       });
     }
 
@@ -238,7 +238,7 @@ export async function getSchoolToday(
     for (const r of replies) {
       // The band carries a name because a reply comes from a person. Where we
       // have not got one, "JOC" is honest; "Somebody" reads as evasive.
-      const named = r.answeredBy?.name ?? r.answeredBy?.email ?? null;
+      const named = r.author?.name ?? r.author?.email ?? null;
       rows.push({
         id: `reply-${r.id}`,
         kind: "REPLY",
@@ -247,11 +247,9 @@ export async function getSchoolToday(
         word: true,
         tone: "good",
         weight: 50,
-        title: r.program ? `About ${r.program.name}` : "About what you asked",
-        line: r.reply ?? "",
-        action: r.program
-          ? { label: `Open ${r.program.name}`, href: `/school/programs/${r.program.slug}` }
-          : undefined,
+        title: r.program ? `About ${r.program.name}` : "A message from JOC",
+        line: r.body.slice(0, 160),
+        action: { label: "Read it", href: "/school/messages" },
       });
     }
 

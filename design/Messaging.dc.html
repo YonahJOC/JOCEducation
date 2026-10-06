@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF9F4}
+a{color:#2D46AF} a:hover{color:#223892}
+textarea::placeholder,input::placeholder{color:#4A5A74;opacity:.8}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #10233F;outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="display:flex; flex-direction:{{ shellDir }}; height:{{ rootH }}; background:#FBF9F4; font-family:Outfit,sans-serif; color:#10233F; overflow:hidden; box-sizing:border-box">
+
+  <sc-if value="{{ showRail }}" hint-placeholder-val="{{ true }}">
+    <aside style="width:236px; flex-shrink:0; background:{{ railBg }}; color:{{ railFg }}; display:flex; flex-direction:column; padding:22px 0; box-sizing:border-box">
+      <div style="padding:0 20px 18px; border-bottom:1px solid {{ railHair }}; margin-bottom:16px">
+        <img src="{{ wordmark }}" alt="JustOneChesed" style="height:19px; width:auto; display:block">
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:{{ railAccent }}; margin:8px 0 0">{{ roleLabel }}</p>
+      </div>
+      <nav aria-label="Sections" style="display:flex; flex-direction:column">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+          <div role="link" style="display:flex; align-items:center; gap:9px; padding:10px 20px; min-height:44px; box-sizing:border-box; font-size:15px; font-weight:{{ n.weight }}; color:{{ n.fg }}; background:{{ n.bg }}; border-left:3px solid {{ n.bar }}; border-radius:0 12px 12px 0; margin-right:10px; cursor:pointer">
+            <span style="flex:1; min-width:0">{{ n.label }}</span>
+            <sc-if value="{{ n.hasBadge }}"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; color:{{ n.badgeFg }}; background:{{ n.badgeBg }}; border-radius:9999px; padding:2px 7px">{{ n.badge }}</span></sc-if>
+          </div>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto; padding:16px 20px 0; border-top:1px solid {{ railHair }}">
+        <p style="font-size:13px; line-height:1.5; margin:0; color:{{ railMuted }}; word-break:break-word">{{ who }}</p>
+      </div>
+    </aside>
+  </sc-if>
+
+  <sc-if value="{{ showTopbar }}" hint-placeholder-val="{{ false }}">
+    <header style="flex-shrink:0; background:{{ railBg }}; color:{{ railFg }}; padding:10px 0 0; border-bottom:1px solid {{ railHair }}">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:0 16px 8px">
+        <img src="{{ wordmark }}" alt="JustOneChesed" style="height:16px; width:auto; display:block">
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:{{ railAccent }}; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ roleLabel }}</p>
+      </div>
+      <nav aria-label="Sections" style="display:flex; overflow-x:auto; scrollbar-width:none; padding:0 8px">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+          <div role="link" style="display:flex; align-items:center; gap:7px; padding:0 12px; min-height:44px; white-space:nowrap; font-size:15px; font-weight:{{ n.weight }}; color:{{ n.fg }}; border-bottom:3px solid {{ n.bar }}; box-sizing:border-box; cursor:pointer">
+            <span>{{ n.label }}</span>
+            <sc-if value="{{ n.hasBadge }}"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; color:{{ n.badgeFg }}; background:{{ n.badgeBg }}; border-radius:9999px; padding:2px 7px">{{ n.badge }}</span></sc-if>
+          </div>
+        </sc-for>
+      </nav>
+    </header>
+  </sc-if>
+
+  <main style="flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; gap:{{ mainGap }}; padding:{{ mainPad }}; box-sizing:border-box">
+
+    <sc-if value="{{ showHead }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px 20px; flex-wrap:wrap; flex-shrink:0">
+        <div style="min-width:0; flex:1 1 320px">
+          <h1 style="font-size:{{ titleSize }}; font-weight:600; letter-spacing:-0.03em; margin:0 0 4px">Messages</h1>
+          <p style="font-size:15px; color:#4A5A74; line-height:1.55; margin:0; max-width:64ch; text-wrap:pretty">{{ intro }}</p>
+        </div>
+        <sc-if value="{{ isJoc }}">
+          <div style="background:{{ waitBg }}; border-radius:16px; padding:10px 18px; display:flex; flex-direction:column; gap:1px; flex:0 1 220px; box-sizing:border-box">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:{{ waitFg }}">Waiting on you</span>
+            <span style="font-size:28px; font-weight:800; letter-spacing:-0.02em; line-height:1.1; color:#10233F">{{ waitFigure }}</span>
+            <span style="font-size:13px; color:#4A5A74">{{ waitSub }}</span>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <div style="flex:1; min-height:0; display:grid; grid-template-columns:{{ gridCols }}; grid-template-rows:minmax(0,1fr); background:#FFFFFF; border-radius:{{ cardRadius }}; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+
+      <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; min-height:0; min-width:0; border-right:{{ listBorder }}">
+          <div style="padding:14px 14px 12px; display:flex; flex-direction:column; gap:10px; border-bottom:1px solid #E3E6EF">
+            <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0">{{ listLabel }}</p>
+            <sc-if value="{{ showNewBtn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ newMsg }}" style="display:flex; align-items:center; justify-content:center; font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; cursor:pointer" style-hover="background:#223892">New message</button></sc-if>
+            <sc-if value="{{ isJoc }}">
+              <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Find a school, or start with one" aria-label="Find a school" style="font-family:Outfit,sans-serif; font-size:15px; color:#10233F; background:#F4F7FD; border:1px solid #E3E6EF; border-radius:12px; padding:11px 13px; min-height:44px; width:100%; box-sizing:border-box; outline:none" style-focus="border-color:#2D46AF; background:#FFFFFF">
+            </sc-if>
+            <sc-if value="{{ isSuper }}">
+              <div style="display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin:0 -14px; padding:0 14px">
+                <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5">
+                  <button onClick="{{ c.pick }}" style="flex-shrink:0; font-family:Outfit,sans-serif; font-size:13px; font-weight:700; border:none; border-radius:9999px; padding:0 14px; min-height:44px; cursor:pointer; background:{{ c.bg }}; color:{{ c.fg }}">{{ c.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:8px; display:flex; flex-direction:column; gap:4px">
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+              <button onClick="{{ r.open }}" aria-current="{{ r.current }}" style="display:flex; gap:12px; align-items:flex-start; text-align:left; width:100%; border:none; border-radius:12px; padding:12px; min-height:44px; cursor:pointer; font-family:Outfit,sans-serif; background:{{ r.bg }}; color:{{ r.fg }}" style-hover="box-shadow:inset 0 0 0 2px #E4E9F8">
+                <span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; background:{{ r.avBg }}; color:{{ r.avFg }}; position:relative">{{ r.ini }}<span style="position:absolute; right:-2px; bottom:-2px; width:10px; height:10px; border-radius:50%; border:2px solid {{ r.dotRing }}; background:{{ r.dot }}"></span></span>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                  <span style="display:flex; justify-content:space-between; align-items:baseline; gap:8px">
+                    <span style="font-size:15px; font-weight:{{ r.weight }}; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ r.title }}</span>
+                    <sc-if value="{{ r.hasBadge }}"><span style="flex-shrink:0; background:#FA912D; color:#10233F; border-radius:9999px; padding:1px 8px; font-size:12px; font-weight:700">{{ r.unread }}</span></sc-if>
+                    <sc-if value="{{ r.noBadge }}"><span style="flex-shrink:0; font-size:12px; font-weight:{{ r.metaWeight }}; color:{{ r.metaFg }}">{{ r.meta }}</span></sc-if>
+                  </span>
+                  <span style="font-size:13px; color:{{ r.line2Fg }}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ r.line2 }}</span>
+                  <sc-if value="{{ r.hasLine3 }}"><span style="font-family:Newsreader,serif; font-size:14px; line-height:1.4; color:{{ r.line3Fg }}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ r.line3 }}</span></sc-if>
+                </span>
+              </button>
+            </sc-for>
+            <sc-if value="{{ hasFooter }}"><p style="font-family:Newsreader,serif; font-size:14px; color:#4A5A74; line-height:1.5; margin:10px 8px 6px; text-wrap:pretty">{{ listFooter }}</p></sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showThread }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; min-height:0; min-width:0">
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid #E3E6EF; background:#FFFFFF; flex-shrink:0">
+            <sc-if value="{{ showBack }}"><button onClick="{{ back }}" aria-label="All conversations" style="flex-shrink:0; width:44px; height:44px; margin-left:-10px; border:none; background:none; border-radius:12px; font-size:22px; color:#2D46AF; cursor:pointer" style-hover="background:#F4F7FD">←</button></sc-if>
+            <span style="flex-shrink:0; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; background:{{ th.avBg }}; color:{{ th.avFg }}">{{ th.ini }}</span>
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:1px">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74">{{ th.kicker }}</span>
+              <span style="font-size:17px; font-weight:700; letter-spacing:-0.01em">{{ th.title }}</span>
+              <span style="font-size:13px; line-height:1.45; color:{{ th.subFg }}; text-wrap:pretty">{{ th.sub }}</span>
+            </div>
+            <sc-if value="{{ th.hasRecord }}"><a href="#" onClick="{{ noop }}" style="flex-shrink:0; font-size:14px; font-weight:700; color:#2D46AF; min-height:44px; display:flex; align-items:center; text-decoration:underline">{{ th.recordLabel }}</a></sc-if>
+          </div>
+
+          <div ref="{{ histRef }}" style="flex:1; min-height:0; overflow-y:auto; background:#FBF9F4; padding:8px {{ histPadX }} 14px; display:flex; flex-direction:column">
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:auto; max-width:440px; width:100%; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:20px 0">
+                <span style="width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; background:{{ th.avBg }}; color:{{ th.avFg }}">{{ th.ini }}</span>
+                <h2 style="font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:6px 0 0">{{ empty.title }}</h2>
+                <p style="font-family:Newsreader,serif; font-size:17px; line-height:1.55; color:#4A5A74; margin:0; max-width:40ch; text-wrap:pretty">{{ empty.body }}</p>
+                <sc-if value="{{ hasStarters }}">
+                  <div style="display:flex; flex-direction:column; gap:8px; width:100%; margin-top:14px">
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0">A few ways to start</p>
+                    <sc-for list="{{ starters }}" as="s" hint-placeholder-count="3">
+                      <button onClick="{{ s.pick }}" style="font-family:Newsreader,serif; font-size:16px; line-height:1.4; text-align:left; color:#10233F; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; padding:11px 14px; min-height:44px; cursor:pointer" style-hover="border-color:#2D46AF; color:#2D46AF">{{ s.text }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="0">
+              <div style="display:flex; flex-direction:column">
+                <sc-if value="{{ d.hasLabel }}"><p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; text-align:center; margin:16px 0 4px">{{ d.label }}</p></sc-if>
+                <sc-for list="{{ d.items }}" as="m">
+                  <sc-if value="{{ m.divider }}">
+                    <div style="display:flex; align-items:center; gap:10px; margin:14px 0 2px">
+                      <span style="flex:1; height:2px; background:#FA912D"></span>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#C96C00">New since you last looked</span>
+                      <span style="flex:1; height:2px; background:#FA912D"></span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ m.theirs }}">
+                    <div style="display:flex; justify-content:flex-start; margin-top:{{ m.mt }}">
+                      <div style="max-width:min(80%, 52ch); min-width:0">
+                        <sc-if value="{{ m.showAuthor }}"><p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0 0 4px 4px">{{ m.author }}</p></sc-if>
+                        <sc-if value="{{ m.hasTopic }}"><div style="display:flex; margin:0 0 4px 2px"><span style="font-size:12px; font-weight:700; background:#E4E9F8; color:#2D46AF; border-radius:9999px; padding:3px 9px">{{ m.topic }}</span></div></sc-if>
+                        <div style="background:#FFFFFF; color:#10233F; border:1px solid #E3E6EF; border-radius:16px 16px 16px 5px; padding:10px 14px">
+                          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0; white-space:pre-wrap; word-break:break-word">{{ m.body }}</p>
+                        </div>
+                        <p style="font-size:11px; color:#4A5A74; margin:3px 4px 0">{{ m.meta }}</p>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ m.own }}">
+                    <div style="display:flex; justify-content:flex-end; margin-top:{{ m.mt }}">
+                      <div style="max-width:min(80%, 52ch); min-width:0">
+                        <sc-if value="{{ m.hasTopic }}"><div style="display:flex; justify-content:flex-end; margin:0 2px 4px 0"><span style="font-size:12px; font-weight:700; background:#E4E9F8; color:#2D46AF; border-radius:9999px; padding:3px 9px">{{ m.topic }}</span></div></sc-if>
+                        <div style="background:#2D46AF; color:#FFFFFF; border-radius:16px 16px 5px 16px; padding:10px 14px">
+                          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0; white-space:pre-wrap; word-break:break-word">{{ m.body }}</p>
+                        </div>
+                        <p style="font-size:11px; color:#4A5A74; margin:3px 4px 0; text-align:right">{{ m.meta }}</p>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ m.card }}">
+                    <div style="margin-top:12px; background:{{ m.cardBg }}; border:1px solid #E3E6EF; border-radius:14px; padding:14px 18px; display:flex; flex-direction:column; gap:8px">
+                      <div style="display:flex; justify-content:space-between; gap:4px 12px; flex-wrap:wrap; align-items:baseline">
+                        <span style="font-size:15px; font-weight:700">{{ m.author }} <span style="font-weight:400; color:#4A5A74">· {{ m.org }}</span></span>
+                        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:.04em; color:#4A5A74">{{ m.when }}</span>
+                      </div>
+                      <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; margin:0; white-space:pre-wrap; word-break:break-word">{{ m.body }}</p>
+                      <sc-if value="{{ m.hasRead }}"><span style="font-size:12px; color:#4A5A74">{{ m.readLine }}</span></sc-if>
+                    </div>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </sc-for>
+
+            <sc-if value="{{ hasStatus }}" hint-placeholder-val="{{ false }}">
+              <p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#4A5A74; margin:10px 4px 0; text-align:right; align-self:flex-end; max-width:44ch; text-wrap:pretty">{{ status }}</p>
+            </sc-if>
+          </div>
+
+          <div style="background:#FFFFFF; border-top:1px solid #E3E6EF; padding:12px 16px 14px; display:flex; flex-direction:column; gap:8px; flex-shrink:0">
+            <sc-if value="{{ noLogins }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#FFF0E0; border-radius:12px; padding:11px 14px">
+                <p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#C96C00; margin:0; text-wrap:pretty">{{ noLoginsText }}</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showTopics }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none">
+                <span style="flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin-right:4px">Topic, if you like</span>
+                <sc-for list="{{ topicChips }}" as="c" hint-placeholder-count="4">
+                  <button onClick="{{ c.pick }}" aria-pressed="{{ c.pressed }}" style="flex-shrink:0; font-family:Outfit,sans-serif; font-size:13px; font-weight:700; border:none; border-radius:9999px; padding:0 13px; min-height:44px; cursor:pointer; background:{{ c.bg }}; color:{{ c.fg }}">{{ c.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="display:flex; align-items:flex-end; gap:8px; background:#FFFFFF; border:2px solid {{ compBorder }}; border-radius:14px; padding:4px 4px 4px 14px">
+              <textarea ref="{{ taRef }}" rows="1" value="{{ draft }}" placeholder="{{ placeholder }}" aria-label="{{ placeholder }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" onFocus="{{ onFocus }}" onBlur="{{ onBlur }}" style="flex:1; min-width:0; resize:none; border:none; outline:none; background:transparent; font-family:Newsreader,serif; font-size:17px; line-height:1.5; color:#10233F; padding:9px 0; max-height:160px; min-height:44px; box-sizing:border-box"></textarea>
+              <button onClick="{{ send }}" style="flex-shrink:0; min-height:44px; padding:0 18px; border-radius:11px; border:2px solid #2D46AF; background:{{ sendBg }}; color:{{ sendFg }}; font-family:Outfit,sans-serif; font-size:15px; font-weight:700; cursor:pointer">Send</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; gap:4px 16px; flex-wrap:wrap; align-items:baseline">
+              <p style="font-size:14px; line-height:1.45; color:#4A5A74; margin:0; flex:1 1 240px; text-wrap:pretty"><strong style="color:#10233F; font-weight:700">No email is sent.</strong> {{ delivery }}</p>
+              <sc-if value="{{ showKeys }}"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:.04em; color:#4A5A74">Enter sends · Shift+Enter, new line</span></sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showCompose }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; min-height:0; min-width:0">
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid #E3E6EF; background:#FFFFFF; flex-shrink:0; min-height:70px; box-sizing:border-box">
+            <sc-if value="{{ showBack }}"><button onClick="{{ back }}" aria-label="All conversations" style="flex-shrink:0; width:44px; height:44px; margin-left:-10px; border:none; background:none; border-radius:12px; font-size:22px; color:#2D46AF; cursor:pointer" style-hover="background:#F4F7FD">←</button></sc-if>
+            <span style="flex:1; font-size:17px; font-weight:700">New message</span>
+            <sc-if value="{{ hasCancel }}"><button onClick="{{ cancelCompose }}" style="font-family:Outfit,sans-serif; font-size:15px; color:#4A5A74; background:none; border:none; cursor:pointer; min-height:44px">Cancel</button></sc-if>
+          </div>
+          <div style="flex:1; min-height:0; overflow-y:auto; background:#FBF9F4; padding:20px {{ histPadX }}">
+            <div style="max-width:640px; display:flex; flex-direction:column; gap:18px">
+              <div style="display:flex; flex-direction:column; gap:8px">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74">What is it about?</span>
+                <div style="display:flex; flex-wrap:wrap; gap:8px">
+                  <sc-for list="{{ cChips }}" as="c" hint-placeholder-count="4">
+                    <button onClick="{{ c.pick }}" style="display:flex; align-items:center; gap:8px; font-family:Outfit,sans-serif; font-size:14px; font-weight:700; border:none; border-radius:9999px; padding:0 15px; min-height:44px; cursor:pointer; background:{{ c.bg }}; color:{{ c.fg }}"><span style="width:9px; height:9px; border-radius:50%; background:{{ c.dot }}"></span>{{ c.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex; gap:12px; align-items:center; background:#FFFFFF; border-radius:14px; padding:12px 14px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)">
+                <span style="flex-shrink:0; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; background:{{ cAvBg }}; color:{{ cAvFg }}">{{ cIni }}</span>
+                <div style="display:flex; flex-direction:column; gap:2px; min-width:0">
+                  <span style="font-size:16px; font-weight:700">{{ cWho }}</span>
+                  <span style="font-size:14px; line-height:1.45; color:{{ cWhoFg }}; text-wrap:pretty">{{ cWhoSub }}</span>
+                </div>
+              </div>
+              <label style="display:flex; flex-direction:column; gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74">Subject</span>
+                <input value="{{ cSubject }}" onChange="{{ onCSubject }}" placeholder="A few words, so you can find it later" style="font-family:Outfit,sans-serif; font-size:16px; color:#10233F; background:#FFFFFF; border:2px solid #B9C3DD; border-radius:12px; padding:10px 13px; min-height:46px; width:100%; box-sizing:border-box; outline:none" style-focus="border-color:#2D46AF">
+              </label>
+              <label style="display:flex; flex-direction:column; gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74">Message</span>
+                <textarea value="{{ cBody }}" onChange="{{ onCBody }}" rows="7" placeholder="What would you like to ask?" style="font-family:Newsreader,serif; font-size:17px; line-height:1.5; color:#10233F; background:#FFFFFF; border:2px solid #B9C3DD; border-radius:12px; padding:10px 13px; width:100%; box-sizing:border-box; outline:none; resize:vertical" style-focus="border-color:#2D46AF"></textarea>
+              </label>
+            </div>
+          </div>
+          <div style="background:#FFFFFF; border-top:1px solid #E3E6EF; padding:12px 16px 14px; display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; flex-shrink:0">
+            <button onClick="{{ cSend }}" style="flex-shrink:0; min-height:46px; padding:0 20px; border-radius:12px; border:2px solid #2D46AF; background:{{ cSendBg }}; color:{{ cSendFg }}; font-family:Outfit,sans-serif; font-size:15px; font-weight:700; cursor:pointer">Send to {{ cFirst }}</button>
+            <p style="font-size:14px; line-height:1.45; color:#4A5A74; margin:0; flex:1 1 220px; text-wrap:pretty"><strong style="color:#10233F; font-weight:700">No email is sent.</strong> {{ cDelivery }}</p>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;scenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;school-short&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;school-empty-one&quot;,&quot;school-empty-several&quot;,&quot;school-short&quot;,&quot;school-long&quot;,&quot;school-waiting&quot;,&quot;school-reply&quot;,&quot;school-uncovered&quot;,&quot;joc-inbox&quot;,&quot;joc-super&quot;,&quot;joc-caughtup&quot;,&quot;joc-nologins&quot;,&quot;mail-school&quot;,&quot;mail-school-empty&quot;,&quot;mail-joc&quot;,&quot;mail-program&quot;],&quot;section&quot;:&quot;State&quot;},&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;&quot;,&quot;list&quot;,&quot;thread&quot;],&quot;section&quot;:&quot;State&quot;},&quot;frame&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;embed&quot;,&quot;panel&quot;],&quot;section&quot;:&quot;State&quot;},&quot;askTopic&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;},&quot;starters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;height&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;}}">
+const PEOPLE = {
+  yudi: { name: 'Yudi Abraham', first: 'Yudi', ini: 'YA', bg: '#E4E9F8', fg: '#2D46AF' },
+  gilad: { name: 'Gilad Fishberger', first: 'Gilad', ini: 'GF', bg: '#E3F4E8', fg: '#1D6B37' },
+  shira: { name: 'Shira Katz', first: 'Shira', ini: 'SK', bg: '#FFF0E0', fg: '#C96C00' },
+};
+const PROG = {
+  kb: { name: 'Kindness Booth', dot: '#2D46AF' },
+  app: { name: 'JOC App', dot: '#2C7AC9' },
+  bake: { name: 'Bake for Chesed', dot: '#FA912D' },
+  gen: { name: 'General', dot: '#4A5A74' },
+};
+const STARTERS = {
+  kb: ['Which dates could we book this year?', "What's in the kit, and when does it arrive?", 'Can two grades run the booth together?'],
+  app: ['How do our teachers get logins?', 'Can we see totals by class?', 'What can parents see?'],
+  bake: ['Which baking cycle can we still join?', 'Do you have nut-free recipes?', 'Who collects the boxes?'],
+  gen: ['Can you add another admin for our school?', 'Who do I talk to about an invoice?', 'Which program suits our middle school?'],
+};
+const TOPICS = {
+  kb: ['Booking', 'Kit', 'Training', 'On the day'],
+  app: ['Logins', 'Setup', 'Totals', 'Training call'],
+  bake: ['Cycles', 'Recipes', 'Delivery'],
+  gen: ['Logins', 'Invoices', 'Programs'],
+};
+const SCHOOL = 'Beth Torah Academy';
+const TOTAL_SCHOOLS = 39;
+const APP_SCHOOLS = 36;
+const OTHERS = ['Kehilla Academy', 'Bnos Leah High School', 'Elmwood Torah Academy', 'Darchei Noam Yeshiva', 'Maayan Girls School', 'Ner Shalom Day School'];
+
+const DEC17 = "Hi Yudi — we'd like to run the Kindness Booth at our Chanukah fair on Thursday, December 17. Is that date possible?";
+const KB_SHORT = [
+  { id: 'k1', topic: 'Booking', day: 'Today', time: '9:02 am', inbound: true, author: 'Leah Gold', body: DEC17, seen: 'today 9:30 am' },
+  { id: 'k2', day: 'Today', time: '9:40 am', inbound: false, author: 'Yudi Abraham', body: 'Hi Leah, December 17 works. How many students will staff the booth?', seen: 'today 9:44 am' },
+  { id: 'k3', day: 'Today', time: '9:52 am', inbound: true, author: 'Leah Gold', body: 'About twelve, all from 6th grade.', seen: 'today 10:01 am' },
+  { id: 'k4', day: 'Today', time: '10:05 am', inbound: false, author: 'Yudi Abraham', body: "Twelve is the right size. I've put the date down and the kit leaves two weeks before.\n\nThe 20-minute training is on your Kindness Booth page whenever you're ready.", seen: 'today 10:12 am' },
+];
+const APP_LONG = [
+  { id: 'a1', topic: 'Setup', day: 'Tuesday 12 May', short: '12 May', time: '9:14 am', inbound: true, author: 'Leah Gold', body: "Hi Gilad — we're hoping to start the JOC App with our 7th and 8th grades in September. What do we need to do before then?", seen: '12 May' },
+  { id: 'a2', day: 'Tuesday 12 May', short: '12 May', time: '2:02 pm', inbound: false, author: 'Gilad Fishberger', body: "Two things: send me the names of the teachers who'll run it, and pick a start week. I'll set the teachers up and walk them through it on a 20-minute call.", seen: '12 May' },
+  { id: 'a3', day: 'Wednesday 13 May', short: '13 May', time: '8:40 am', inbound: true, author: 'Leah Gold', body: 'Rabbi Feld and Mrs. Adler. The week of September 8 works for us.', seen: '13 May' },
+  { id: 'a4', day: 'Wednesday 13 May', short: '13 May', time: '11:15 am', inbound: false, author: 'Gilad Fishberger', body: 'Done — both are on my list for that week.', seen: '13 May' },
+  { id: 'a5', topic: 'Training call', day: 'Thursday 3 September', short: '3 Sep', time: '4:30 pm', inbound: true, author: 'Ari Feld', body: "Rabbi Feld here. Is Monday's call still on? I'd like Mrs. Adler on it too.", seen: '3 Sep' },
+  { id: 'a6', day: 'Thursday 3 September', short: '3 Sep', time: '5:02 pm', inbound: false, author: 'Gilad Fishberger', body: 'Yes, Monday at 10. Both of you, twenty minutes, nothing to prepare.', seen: '3 Sep' },
+  { id: 'a7', topic: 'Totals', day: 'Monday 28 September', short: '28 Sep', time: '10:12 am', inbound: true, author: 'Leah Gold', body: "The 8th grade has logged far more than we expected.\n\nIs there a way to see totals by class rather than one long list? Our principal wants one number per grade for the newsletter.", seen: '28 Sep' },
+  { id: 'a8', day: 'Monday 28 September', short: '28 Sep', time: '3:48 pm', inbound: false, author: 'Gilad Fishberger', body: "There is — on your JOC App page, open Totals and choose 'By class'. It's new this month, so tell me if anything looks off.", seen: 'Monday 28 September, 4:20 pm' },
+];
+const APP_TODAY = [
+  { id: 'a9', day: 'Today', time: '10:38 am', inbound: true, author: 'Leah Gold', body: 'Found it — the class totals look right.', seen: null },
+  { id: 'a10', topic: 'Logins', day: 'Today', time: '10:41 am', inbound: true, author: 'Leah Gold', body: 'One more thing about teacher logins: Mrs. Adler is on leave until November. Can Rabbi Gross use hers until then?', seen: null },
+];
+const T = (o) => Object.assign({ unread: 0, logins: true, messages: [] }, o);
+const seenAll = (list) => list.map((x) => Object.assign({}, x, { seen: x.seen || 'today' }));
+
+function build(sc) {
+  const kb = T({ id: 'kb', prog: 'kb', reader: 'yudi' });
+  const app = T({ id: 'app', prog: 'app', reader: 'gilad' });
+  const bake = T({ id: 'bake', prog: 'bake', reader: 'shira', uncovered: true });
+  const gen = T({ id: 'gen', prog: 'gen', reader: 'shira', general: true });
+  const S = (threads, open, view) => ({ side: 'school', role: 'school', threads, open, view });
+  switch (sc) {
+    case 'school-empty-one': return S([kb, gen], 'kb', 'thread');
+    case 'school-empty-several': return S([kb, app, bake, gen], 'kb', 'list');
+    case 'school-short': kb.messages = KB_SHORT; return S([kb, app, gen], 'kb', 'thread');
+    case 'school-long': app.messages = APP_LONG; kb.messages = KB_SHORT; return S([kb, app, gen], 'app', 'thread');
+    case 'school-waiting':
+      kb.messages = [{ id: 'w1', topic: 'Booking', day: 'Yesterday', short: 'Yesterday', time: '4:15 pm', inbound: true, author: 'Leah Gold', body: DEC17, seen: null }];
+      app.messages = [{ id: 'w2', topic: 'Logins', day: 'Friday 2 October', short: 'Fri', time: '11:20 am', inbound: true, author: 'Leah Gold', body: "Could Rabbi Gross have a teacher login? He's taking Mrs. Adler's class until November.", seen: 'Friday 4:02 pm' }];
+      return S([kb, app, gen], 'kb', 'thread');
+    case 'school-reply':
+      kb.messages = [
+        { id: 'r1', topic: 'Booking', day: 'Monday 5 October', short: 'Mon', time: '4:15 pm', inbound: true, author: 'Leah Gold', body: DEC17, seen: 'Monday 5:30 pm' },
+        { id: 'r2', day: 'Today', time: '9:40 am', inbound: false, author: 'Yudi Abraham', body: 'Hi Leah — yes, December 17 works, and the date is yours.', seen: null },
+        { id: 'r3', day: 'Today', time: '9:41 am', inbound: false, author: 'Yudi Abraham', body: 'How many students will staff the booth? About twelve is right for a fair that size.', seen: null },
+      ];
+      kb.unread = 2; app.messages = APP_LONG;
+      return S([kb, app, gen], 'kb', 'thread');
+    case 'school-uncovered': kb.messages = KB_SHORT; app.messages = APP_LONG; return S([kb, app, bake, gen], 'bake', 'thread');
+  }
+  const J = (id, school, ini, runs, writers, prog, messages, unread, extra) => T(Object.assign({ id, school, ini, runs, writers, prog, messages, unread }, extra || {}));
+  const nr = [{ id: 'n1', topic: 'Logins', day: 'Today', time: '9:05 am', inbound: true, author: 'Mendel Stein', body: 'Our tablets keep signing teachers out after a few minutes. Is that a setting on our side or yours?', seen: null }];
+  const mw = [
+    { id: 'm1', day: 'Wednesday 30 September', short: '30 Sep', time: '1:10 pm', inbound: false, author: 'Gilad Fishberger', body: 'Your 6th and 7th grades are set up. Anything else before you start?', seen: '30 Sep' },
+    { id: 'm2', topic: 'Setup', day: 'Yesterday', short: 'Yesterday', time: '3:22 pm', inbound: true, author: 'Dena Rosen', body: "We'd like to add the 5th grade mid-year. Is that possible, and is anything different for younger classes?", seen: null },
+  ];
+  const st = [
+    { id: 's1', day: 'Thursday 1 October', short: '1 Oct', time: '2:00 pm', inbound: true, author: 'Miriam Halpern', body: "Are last year's totals still visible somewhere?", seen: '1 Oct' },
+    { id: 's2', day: 'Friday 2 October', short: 'Fri', time: '9:30 am', inbound: false, author: 'Gilad Fishberger', body: 'They are — on your JOC App page, choose 2025–26 at the top of Totals.', seen: 'Friday 2 October, 12:15 pm' },
+  ];
+  const oh = [
+    { id: 'o1', day: 'Thursday 24 September', short: '24 Sep', time: '3:05 pm', inbound: true, author: 'Yossi Brenner', body: 'Thanks for the call today.', seen: '24 Sep' },
+    { id: 'o2', day: 'Thursday 24 September', short: '24 Sep', time: '3:40 pm', inbound: false, author: 'Gilad Fishberger', body: 'Glad it helped. The teacher guide is on your program page whenever you need it.', seen: null },
+  ];
+  const BT = ['Beth Torah Academy', 'BT', ['JOC App', 'Kindness Booth'], 'Leah Gold, Ari Feld'];
+  const NR = ['Yeshiva of North Ridge', 'NR', ['JOC App'], 'Mendel Stein'];
+  const MW = ['Midwood Day School', 'MD', ['JOC App', 'Bake for Chesed'], 'Dena Rosen'];
+  const ST = ["Shaarei Tzion Girls' School", 'ST', ['JOC App'], 'Miriam Halpern'];
+  const OH = ['Ohr Hamidrash', 'OH', ['JOC App'], 'Yossi Brenner'];
+  const coord = () => [
+    J('bt', ...BT, 'app', APP_LONG.concat(APP_TODAY), 2),
+    J('nr', ...NR, 'app', nr, 1),
+    J('mw', ...MW, 'app', mw, 1),
+    J('st', ...ST, 'app', st, 0),
+    J('oh', ...OH, 'app', oh, 0),
+  ];
+  const C = (threads, open, view, role) => ({ side: 'joc', role: role || 'coord', threads, open, view });
+  switch (sc) {
+    case 'joc-super':
+      return C([
+        J('bt', ...BT, 'app', APP_LONG.concat(APP_TODAY), 2),
+        J('nr', ...NR, 'app', nr, 1),
+        J('nrg', ...NR, 'gen', [{ id: 'g1', day: 'Yesterday', short: 'Yesterday', time: '5:10 pm', inbound: true, author: 'Mendel Stein', body: 'Can you add a second admin for our school? Our principal would like his own login.', seen: null }], 1),
+        J('mw', ...MW, 'app', mw, 1),
+        J('mwb', ...MW, 'bake', [{ id: 'b1', day: 'Today', time: '8:30 am', inbound: true, author: 'Dena Rosen', body: 'Which baking cycle can we still join this year?', seen: null }], 1, { uncovered: true }),
+        J('btk', ...BT, 'kb', KB_SHORT, 0),
+        J('st', ...ST, 'app', st, 0),
+        J('oh', ...OH, 'app', oh, 0),
+      ], 'bt', 'list', 'super');
+    case 'joc-caughtup': {
+      const t = coord().map((x) => Object.assign(x, { unread: 0, messages: seenAll(x.messages) }));
+      t[0].messages = t[0].messages.concat([{ id: 'c1', day: 'Today', time: '11:02 am', inbound: false, author: 'Gilad Fishberger', body: "Yes — Mrs. Adler's class is under Rabbi Gross until November. He'll see it next time he signs in.", seen: null }]);
+      t[1].messages = t[1].messages.concat([{ id: 'c2', day: 'Today', time: '9:30 am', inbound: false, author: 'Gilad Fishberger', body: "That was ours — it's an hour now. Tell me if they're still signed out tomorrow.", seen: 'today 9:51 am' }]);
+      t[2].messages = t[2].messages.concat([{ id: 'c3', day: 'Today', time: '8:50 am', inbound: false, author: 'Gilad Fishberger', body: "Mid-year is fine. Send me the teacher's name and I'll set the class up.", seen: null }]);
+      return C(t, 'bt', 'list');
+    }
+    case 'joc-nologins': {
+      const t = coord();
+      t.unshift(J('kh', 'Kehilla Academy', 'KA', ['JOC App'], null, 'app', [], 0, { logins: false }));
+      return C(t, 'kh', 'thread');
+    }
+    case 'mail-school-empty': return { side: 'school', role: 'school', mail: true, composing: true, open: null, view: 'thread', threads: [] };
+    case 'mail-school': return { side: 'school', role: 'school', mail: true, open: 'i1', view: 'thread', threads: [
+      T({ id: 'i1', prog: 'kb', reader: 'yudi', subject: 'Chanukah fair, December 17', unread: 1, messages: [
+        { id: 'i1a', day: 'Monday 5 October', short: 'Mon', time: '4:15 pm', inbound: true, author: 'Leah Gold', body: "Hi Yudi,\n\nWe'd like to run the Kindness Booth at our Chanukah fair on Thursday, December 17. Is that date possible?\n\nLeah", seen: 'Monday 5:30 pm' },
+        { id: 'i1b', day: 'Today', time: '9:40 am', inbound: false, author: 'Yudi Abraham', body: 'Hi Leah,\n\nYes — December 17 works, and the date is yours.\n\nHow many students will staff the booth? About twelve is right for a fair that size.\n\nYudi', seen: null },
+      ] }),
+      T({ id: 'i2', prog: 'app', reader: 'gilad', subject: 'Teacher login for Rabbi Gross', messages: [{ id: 'i2a', day: 'Friday 2 October', short: 'Fri', time: '11:20 am', inbound: true, author: 'Leah Gold', body: "Could Rabbi Gross have a teacher login? He's taking Mrs. Adler's class until November.", seen: 'Friday 4:02 pm' }] }),
+      T({ id: 'i3', prog: 'app', reader: 'gilad', subject: 'Totals by class for the newsletter', messages: APP_LONG.slice(6, 8) }),
+      T({ id: 'i4', prog: 'gen', reader: 'shira', general: true, subject: 'Adding a second admin', messages: [
+        { id: 'i4a', day: 'Monday 21 September', short: '21 Sep', time: '10:02 am', inbound: true, author: 'Leah Gold', body: 'Can you add Rabbi Stern as a second admin for our school?', seen: '21 Sep' },
+        { id: 'i4b', day: 'Monday 21 September', short: '21 Sep', time: '1:30 pm', inbound: false, author: 'Shira Katz', body: 'Done — he can sign in with his school email now.', seen: 'Monday 21 September, 2:05 pm' },
+      ] }),
+      T({ id: 'i5', prog: 'app', reader: 'gilad', subject: 'Getting started in September', messages: APP_LONG.slice(0, 6) }),
+    ] };
+    case 'mail-program': return { side: 'school', role: 'school', mail: true, lockProg: 'kb', open: 'i1', view: 'thread', threads: [
+      T({ id: 'i1', prog: 'kb', reader: 'yudi', subject: 'Chanukah fair, December 17', unread: 1, messages: [
+        { id: 'i1a', day: 'Monday 5 October', short: 'Mon', time: '4:15 pm', inbound: true, author: 'Leah Gold', body: "Hi Yudi,\n\nWe'd like to run the Kindness Booth at our Chanukah fair on Thursday, December 17. Is that date possible?\n\nLeah", seen: 'Monday 5:30 pm' },
+        { id: 'i1b', day: 'Today', time: '9:40 am', inbound: false, author: 'Yudi Abraham', body: 'Hi Leah,\n\nYes — December 17 works, and the date is yours.\n\nHow many students will staff the booth? About twelve is right for a fair that size.\n\nYudi', seen: null },
+      ] }),
+      T({ id: 'i6', prog: 'kb', reader: 'yudi', subject: 'Where should the kit be delivered?', messages: [
+        { id: 'i6a', day: 'Tuesday 29 September', short: '29 Sep', time: '9:10 am', inbound: true, author: 'Leah Gold', body: 'Should the kit come to the main office or the gym entrance? The office closes at 3.', seen: '29 Sep' },
+        { id: 'i6b', day: 'Tuesday 29 September', short: '29 Sep', time: '11:45 am', inbound: false, author: 'Yudi Abraham', body: "The gym entrance is fine — I'll put 'deliver before 3' on the label either way.", seen: 'Tuesday 29 September, 12:30 pm' },
+      ] }),
+    ] };
+    case 'mail-joc': return { side: 'joc', role: 'coord', mail: true, open: 'j1', view: 'list', threads: [
+      J('j1', ...BT, 'app', [{ id: 'j1a', day: 'Today', time: '10:41 am', inbound: true, author: 'Leah Gold', body: "Could Rabbi Gross have a teacher login? He's taking Mrs. Adler's class until November.", seen: null }], 1, { subject: 'Teacher login for Rabbi Gross' }),
+      J('j2', ...NR, 'app', nr, 1, { subject: 'Tablets signing teachers out' }),
+      J('j3', ...MW, 'app', mw.slice(1), 1, { subject: 'Adding the 5th grade mid-year' }),
+      J('j4', ...BT, 'app', APP_LONG.slice(6, 8), 0, { subject: 'Totals by class for the newsletter' }),
+      J('j5', ...ST, 'app', st, 0, { subject: "Last year's totals" }),
+      J('j6', ...OH, 'app', oh, 0, { subject: 'Thanks for the call' }),
+    ] };
+    default: return C(coord(), 'bt', 'list');
+  }
+}
+
+class Component extends DCLogic {
+  state = this.init(this.props.scenario);
+
+  init(sc) {
+    const b = build(sc || 'school-short');
+    const t = b.threads.find((x) => x.id === b.open);
+    let divider = null;
+    if (t && t.unread && (this.props.startView || b.view) !== 'list') { divider = { id: t.id, n: t.unread }; t.unread = 0; }
+    return Object.assign(b, { topics: this.props.askTopic && b.open ? { [b.open]: this.props.askTopic } : {}, mail: !!b.mail, composing: !!b.composing, cProg: b.lockProg || 'kb', cSubject: '', cBody: '', view: this.props.startView || b.view, divider, drafts: {}, focused: false, query: '', filter: 'all', w: typeof window !== 'undefined' ? window.innerWidth : 1280 });
+  }
+
+  componentDidUpdate(prev) {
+    if (prev.scenario !== this.props.scenario || prev.startView !== this.props.startView) { this.setState(this.init(this.props.scenario)); return; }
+    this.stick();
+  }
+  componentDidMount() { this.stick(); }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+
+  stick() {
+    const t = this.state.threads.find((x) => x.id === this.state.open);
+    const key = this.state.open + ':' + (t ? t.messages.length : 0) + ':' + this.state.view + ':' + (this.state.w < 760);
+    if (this.hist && key !== this.lastKey) { this.lastKey = key; this.hist.scrollTop = this.hist.scrollHeight; }
+  }
+
+  own(x) { return this.state.side === 'school' ? x.inbound : !x.inbound; }
+
+  openThread(id) {
+    this.setState((s) => {
+      const threads = s.threads.map((t) => t.id === id ? Object.assign({}, t, { unread: 0 }) : t);
+      const t = s.threads.find((x) => x.id === id);
+      return { threads, open: id, view: 'thread', divider: t && t.unread ? { id, n: t.unread } : null };
+    });
+  }
+
+  startWith(name) {
+    this.setState((s) => {
+      const t = T({ id: 'x' + name, school: name, ini: name.split(' ').map((w) => w[0]).slice(0, 2).join(''), runs: ['JOC App'], writers: null, prog: 'app', logins: false });
+      return { threads: [t].concat(s.threads), open: t.id, view: 'thread', query: '', divider: null };
+    });
+  }
+
+  nowTime() {
+    return new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+  }
+
+  sendCompose() {
+    const s = this.state;
+    const body = s.cBody.trim();
+    if (!body) return;
+    const READER = { kb: 'yudi', app: 'gilad', bake: 'shira', gen: 'shira' };
+    const subject = s.cSubject.trim() || body.split('\n')[0].slice(0, 60);
+    const t = T({ id: 'q' + Date.now(), prog: s.cProg, reader: READER[s.cProg], uncovered: s.cProg === 'bake', general: s.cProg === 'gen', subject,
+      messages: [{ id: 'qm' + Date.now(), day: 'Today', time: this.nowTime(), inbound: true, author: 'Leah Gold', body, seen: null }] });
+    this.setState({ threads: [t].concat(s.threads), open: t.id, composing: false, view: 'thread', cSubject: '', cBody: '', divider: null });
+  }
+
+  send() {
+    const s = this.state;
+    const body = (s.drafts[s.open] || '').trim();
+    if (!body) { if (this.ta) this.ta.focus(); return; }
+    const me = s.side === 'school' ? 'Leah Gold' : s.role === 'super' ? 'Shira Katz' : 'Gilad Fishberger';
+    const msg = { id: 'n' + Date.now(), day: 'Today', time: this.nowTime(), inbound: s.side === 'school', author: me, body, seen: null, topic: s.topics[s.open] || null };
+    this.setState({
+      topics: Object.assign({}, s.topics, { [s.open]: null }),
+      threads: s.threads.map((t) => t.id === s.open ? Object.assign({}, t, { messages: t.messages.concat([msg]) }) : t),
+      drafts: Object.assign({}, s.drafts, { [s.open]: '' }),
+      divider: null,
+    });
+    if (this.ta) this.ta.style.height = 'auto';
+  }
+
+  renderVals() {
+    const S = this.state;
+    const isJoc = S.side === 'joc', isSuper = S.role === 'super';
+    const embed = this.props.frame === 'embed';
+    const panel = this.props.frame === 'panel';
+    const narrow = S.w < 760;
+    const open = S.threads.find((t) => t.id === S.open) || null;
+    const view = embed ? 'thread' : narrow ? ((open || S.composing) ? S.view : 'list') : 'both';
+    const totalUnread = S.threads.reduce((a, t) => a + t.unread, 0);
+    const lastOf = (t) => t.messages[t.messages.length - 1];
+    const waitingSchools = new Set(S.threads.filter((t) => { const l = lastOf(t); return l && l.inbound; }).map((t) => t.school));
+    const nWait = waitingSchools.size;
+
+    let list = S.threads;
+    if (isSuper && S.filter !== 'all') list = list.filter((t) => t.prog === S.filter);
+    const q = S.query.trim().toLowerCase();
+    if (isJoc && q) list = list.filter((t) => t.school.toLowerCase().includes(q));
+
+    const rows = list.map((t) => {
+      const on = t.id === S.open && view !== 'list' && !S.composing;
+      const l = lastOf(t);
+      const mine = l && this.own(l);
+      const p = PEOPLE[t.reader];
+      const meta = l ? (l.day === 'Today' ? l.time : (l.short || l.day)) : '';
+      const waiting = isJoc && l && l.inbound && !t.unread;
+      let title, line2, line2Fg = on ? '#C6CFF0' : '#4A5A74', line3 = '', ini, avBg, avFg, dot, dotRing;
+      if (!isJoc) {
+        title = S.mail ? t.subject : PROG[t.prog].name;
+        line2 = S.mail ? `${PROG[t.prog].name} · ${p.name}` + (t.uncovered ? ' · no coordinator yet' : '') : t.uncovered ? `${p.name} · no coordinator yet` : t.general ? `${p.name} · anything else` : p.name;
+        if (t.uncovered && !on) line2Fg = '#C96C00';
+        if (l) line3 = !mine ? l.body : l.seen ? `Read by ${p.first} · no reply yet` : `Not opened by ${p.first} yet`;
+        ini = p.ini; avBg = p.bg; avFg = p.fg; dot = PROG[t.prog].dot;
+      } else {
+        title = S.mail ? t.subject : t.school;
+        line2 = S.mail ? t.school : isSuper ? PROG[t.prog].name + (t.uncovered ? ' · no coordinator, yours' : '') : (t.logins ? (t.writers || '') : 'No logins yet');
+        if ((!t.logins || t.uncovered) && !on) line2Fg = '#C96C00';
+        if (!line2) line2 = PROG[t.prog].name;
+        line3 = l ? (mine ? 'You: ' + l.body : l.body) : 'Nothing written yet';
+        ini = t.ini; avBg = on ? '#FFFFFF' : '#F4F7FD'; avFg = '#10233F'; dot = isSuper ? PROG[t.prog].dot : 'transparent';
+      }
+      dotRing = dot === 'transparent' ? 'transparent' : on ? '#10233F' : '#FFFFFF';
+      return {
+        key: t.id, title, line2, line2Fg, line3, hasLine3: !!line3,
+        line3Fg: on ? '#FFFFFF' : t.unread ? '#10233F' : '#4A5A74',
+        ini, avBg, avFg, dot, dotRing,
+        bg: on ? '#10233F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#10233F',
+        weight: t.unread ? 800 : 600, current: on ? 'true' : 'false',
+        unread: t.unread, hasBadge: t.unread > 0, noBadge: !t.unread,
+        meta: waiting ? 'Waiting' : meta, metaFg: waiting ? (on ? '#FFD8AE' : '#C96C00') : on ? '#C6CFF0' : '#4A5A74', metaWeight: waiting ? 700 : 400,
+        open: () => this.openThread(t.id),
+      };
+    });
+    if (isJoc && q) {
+      OTHERS.filter((n) => n.toLowerCase().includes(q) && !S.threads.some((t) => t.school === n)).forEach((n) => rows.push({
+        key: n, title: n, line2: 'Hasn’t written · no logins yet', line2Fg: '#C96C00', line3: 'Start a conversation', hasLine3: true, line3Fg: '#2D46AF',
+        ini: n.split(' ').map((w) => w[0]).slice(0, 2).join(''), avBg: '#F4F7FD', avFg: '#10233F', dot: 'transparent', dotRing: 'transparent',
+        bg: '#FFFFFF', fg: '#10233F', weight: 600, current: 'false', unread: 0, hasBadge: false, noBadge: true, meta: '', metaFg: '#4A5A74', metaWeight: 400,
+        open: () => this.startWith(n),
+      }));
+    }
+    const written = new Set(S.threads.filter((t) => t.messages.length).map((t) => t.school)).size;
+    let listFooter = '';
+    if (isJoc && !q) listFooter = isSuper
+      ? `${TOTAL_SCHOOLS - written} of ${TOTAL_SCHOOLS} schools haven't written. Search to start a conversation with one.`
+      : `${APP_SCHOOLS - written} more schools run the JOC App and haven't written. Search to start a conversation with one.`;
+    if (isJoc && q && !rows.length) listFooter = `No school called “${S.query}”.`;
+    if (!isJoc && S.mail && !S.threads.length) listFooter = 'Nothing sent yet. Each question you send becomes its own conversation here, with its own subject.';
+    if (!isJoc && !S.mail && S.threads.length <= 2) listFooter = 'You run one program, so there are two conversations: one about it, and General for everything else.';
+
+    // thread
+    let th = {}, days = [], status = '', empty = {}, isEmpty = false, delivery = '', noLogins = false, noLoginsText = '', placeholder = '';
+    if (open) {
+      const p = PEOPLE[open.reader];
+      const prog = PROG[open.prog];
+      if (!isJoc) {
+        th = {
+          kicker: open.general ? 'General' : prog.name, title: p.name, ini: p.ini, avBg: p.bg, avFg: p.fg,
+          sub: open.uncovered ? `Nobody at JOC runs ${prog.name} yet, so ${p.first} reads this. She looks after your school's account.`
+            : open.general ? `Looks after your school's account. For logins, invoices and anything that isn't one program.`
+            : `Runs ${prog.name} at JOC. ${p.first} reads this on the console.`,
+          subFg: open.uncovered ? '#C96C00' : '#4A5A74', hasRecord: false,
+        };
+        empty = {
+          title: `Write to ${p.first}`,
+          body: open.uncovered ? `${p.first} looks after your account and will answer about ${prog.name} until it has a coordinator.`
+            : open.general ? `Anything that isn't about one program. ${p.first} looks after your school's account.`
+            : `${p.first} runs ${prog.name} at JOC and is the person who reads what you write here.`,
+        };
+        delivery = `${p.first} sees it next time they open the JOC console.`;
+        placeholder = `Write to ${p.first} about ${open.general ? 'anything' : prog.name}`;
+      } else {
+        th = {
+          kicker: prog.name, title: open.school, ini: open.ini, avBg: '#F4F7FD', avFg: '#10233F',
+          sub: !open.logins ? `Runs ${open.runs.join(', ')} · nobody there has a login yet` : `Runs ${open.runs.join(', ')} · ${open.writers} write here`,
+          subFg: open.logins ? '#4A5A74' : '#C96C00', hasRecord: true, recordLabel: narrow ? 'Record' : 'Open school record',
+        };
+        empty = { title: `Write to ${open.school}`, body: open.logins ? 'Nothing written yet on either side.' : 'Nobody there can read this yet — see the note below before you write.' };
+        noLogins = !open.logins;
+        noLoginsText = `Nobody at ${open.school} has a login yet. Whatever you write waits here, unread, until someone there gets an account.`;
+        delivery = open.logins ? `${open.school} sees it next time someone there opens their portal.` : `It stays here until ${open.school} has a login.`;
+        placeholder = `Write to ${open.school}`;
+      }
+      if (S.mail) {
+        if (!isJoc) {
+          th.kicker = open.general ? 'General' : prog.name; th.title = open.subject;
+          th.sub = open.uncovered ? `Nobody runs ${prog.name} yet, so ${p.name} reads this.` : `${p.name} reads this. ${open.general ? "Looks after your school's account." : `Runs ${prog.name} at JOC.`}`;
+          placeholder = `Reply to ${p.first}`;
+        } else { th.kicker = `${open.school} · ${prog.name}`; th.title = open.subject; placeholder = `Reply to ${open.school}`; }
+      }
+      const msgs = open.messages;
+      isEmpty = msgs.length === 0;
+      const div = S.divider && S.divider.id === open.id ? S.divider.n : 0;
+      msgs.forEach((x, i) => {
+        let d = days[days.length - 1];
+        if (S.mail) { if (!d) { d = { key: 'all', label: '', hasLabel: false, items: [] }; days.push(d); } }
+        else if (!d || d.label !== x.day) { d = { key: x.day + i, label: x.day, hasLabel: true, items: [] }; days.push(d); }
+        const atDiv = div && i === msgs.length - div;
+        if (atDiv) d.items.push({ key: 'div', divider: true, own: false, theirs: false, card: false });
+        const own = this.own(x);
+        const prev = msgs[i - 1];
+        const starts = !prev || prev.inbound !== x.inbound || prev.day !== x.day || atDiv || !!x.topic;
+        if (S.mail) { d.items.push({ key: x.id, divider: false, own: false, theirs: false, card: true, body: x.body, author: x.author, org: x.inbound ? (isJoc ? open.school : SCHOOL) : 'JOC', when: (x.day === 'Today' ? 'Today' : x.day) + ', ' + x.time, cardBg: own ? '#F4F7FD' : '#FFFFFF', readLine: own ? (x.seen ? `Read ${x.seen}` : 'Not opened yet') : '', hasRead: own }); return; }
+        d.items.push({ key: x.id, divider: false, card: false, topic: x.topic || '', hasTopic: !!x.topic, own, theirs: !own, body: x.body, author: x.author, showAuthor: starts && !own, mt: starts ? '12px' : '3px', meta: x.time + (own && x.seen ? ' · Read' : '') });
+      });
+      const l = msgs[msgs.length - 1];
+      if (l && this.own(l)) {
+        if (!isJoc) status = l.seen ? `Read by ${p.first}, ${l.seen}. No reply yet.` : `Not opened yet. ${p.first} sees it next time they open the console.`;
+        else status = !open.logins ? `Nobody at ${open.school} has a login, so this waits unread.` : l.seen ? `Read by ${open.school}, ${l.seen}.` : `Not opened yet. ${open.school} sees it next time someone there opens their portal.`;
+      }
+    }
+    const draft = open ? (S.drafts[open.id] || '') : '';
+    const starters = open && !isJoc && this.props.starters !== false ? STARTERS[open.prog].map((text) => ({ text, pick: () => { this.setState((s) => ({ drafts: Object.assign({}, s.drafts, { [s.open]: text }) })); if (this.ta) setTimeout(() => this.ta.focus(), 0); } })) : [];
+
+    const school = !isJoc;
+    const nav = (school
+      ? ['Today', 'Your programs', 'Messages', 'People', 'Account']
+      : isSuper ? ['Today', 'Schools', 'Programs', 'Messages', 'Content', 'People'] : ['Today', 'JOC App', 'Schools', 'Messages']
+    ).map((label) => {
+      const active = label === 'Messages';
+      const badge = active && totalUnread ? totalUnread : 0;
+      return {
+        key: label, label, weight: active ? 700 : 400,
+        fg: school ? (active ? '#10233F' : '#4A5A74') : (active ? '#FFFFFF' : 'rgba(255,255,255,.8)'),
+        bg: active ? (school ? '#FFFFFF' : 'rgba(255,255,255,.1)') : 'transparent',
+        bar: active ? '#FA912D' : 'transparent',
+        hasBadge: !!badge, badge, badgeFg: school ? '#FFFFFF' : '#10233F', badgeBg: school ? '#C96C00' : '#FA912D',
+      };
+    });
+
+    const chips = [['all', 'All'], ['kb', 'Kindness Booth'], ['app', 'JOC App'], ['bake', 'Bake for Chesed'], ['gen', 'General']].map(([k, label]) => ({
+      key: k, label, bg: S.filter === k ? '#10233F' : '#F4F7FD', fg: S.filter === k ? '#FFFFFF' : '#10233F',
+      pick: () => this.setState({ filter: k }),
+    }));
+
+    const intro = S.mail ? (school ? 'Each question is its own conversation, with a subject, read by the person at JOC who runs that program.' : 'Every question schools have sent about the JOC App, one conversation each. Unread first.') : school
+      ? (S.threads.length <= 2
+        ? `Write to the person at JOC who runs your program. Anything else goes in General.`
+        : `One conversation for each program you run, read by the person at JOC who runs it. Anything else goes in General.`)
+      : isSuper ? 'Every conversation with every school. Programs without a coordinator fall to you.'
+      : 'Schools that have written about the JOC App. Unread first; the ones waiting on a reply say so.';
+
+    const listLeft = view === 'both';
+    const READER = { kb: 'yudi', app: 'gilad', bake: 'shira', gen: 'shira' };
+    const cp = PEOPLE[READER[S.cProg]], cName = PROG[S.cProg].name, cUnc = S.cProg === 'bake';
+    return {
+      rootRef: (el) => {
+        if (el && !this.ro && typeof ResizeObserver !== 'undefined') {
+          this.ro = new ResizeObserver((e) => { const w = Math.round(e[0].contentRect.width); if (Math.abs(w - this.state.w) > 2) this.setState({ w }); });
+          this.ro.observe(el);
+        }
+      },
+      histRef: (el) => { this.hist = el; if (el) this.stick(); },
+      taRef: (el) => { this.ta = el; },
+      rootH: this.props.height || '100vh',
+      shellDir: narrow ? 'column' : 'row',
+      showRail: !embed && !panel && !narrow, showTopbar: !embed && !panel && narrow,
+      railBg: school ? '#F4F7FD' : '#10233F', railFg: school ? '#10233F' : '#FFFFFF',
+      railHair: school ? '#E3E6EF' : 'rgba(255,255,255,.12)', railMuted: school ? '#4A5A74' : 'rgba(255,255,255,.7)',
+      railAccent: school ? '#C96C00' : '#FFD8AE',
+      wordmark: school ? 'public/brand/joc-wordmark.png' : 'public/brand/joc-wordmark-white.png',
+      roleLabel: school ? SCHOOL : isSuper ? 'Super admin' : 'Coordinator · JOC App',
+      who: school ? 'leah.gold@bethtorah.org' : isSuper ? 'shira@justonechesed.org' : 'gilad@justonechesed.org',
+      nav,
+      mainPad: embed || panel ? '0' : narrow ? (view === 'thread' ? '0' : '16px 12px 12px') : '26px 32px 24px',
+      mainGap: narrow ? '12px' : '18px',
+      showHead: !embed && !panel && !(narrow && view === 'thread'),
+      titleSize: narrow ? '24px' : '30px',
+      intro, isJoc, isSuper,
+      waitBg: nWait ? '#FFF0E0' : '#F4F7FD', waitFg: nWait ? '#C96C00' : '#4A5A74',
+      waitFigure: nWait ? `${nWait} school${nWait > 1 ? 's' : ''}` : 'Nobody',
+      waitSub: nWait ? `${totalUnread} unread message${totalUnread === 1 ? '' : 's'}` : 'Every school has had a reply',
+      gridCols: listLeft ? `${S.w >= 1100 ? 310 : 270}px minmax(0,1fr)` : 'minmax(0,1fr)',
+      cardRadius: (narrow && view === 'thread' && !panel) ? '0' : '16px',
+      showList: view === 'list' || view === 'both', listBorder: listLeft ? '1px solid #E3E6EF' : 'none',
+      listLabel: school ? (S.lockProg ? `Your questions about ${PROG[S.lockProg].name}` : S.mail ? 'Your questions' : 'Who you can write to') : isSuper ? 'All schools' : 'Schools',
+      query: S.query, onQuery: (e) => this.setState({ query: e.target.value }), chips, rows,
+      hasFooter: !!listFooter, listFooter,
+      showThread: !!open && !S.composing && (view === 'thread' || view === 'both'),
+      showBack: narrow && !embed, back: () => this.setState({ view: 'list', divider: null, composing: false }),
+      newMsg: () => this.setState({ composing: true, view: 'thread', cSubject: '', cBody: '' }),
+      showCompose: S.composing && (view === 'thread' || view === 'both'),
+      hasCancel: S.threads.length > 0,
+      cancelCompose: () => this.setState({ composing: false, view: narrow ? 'list' : 'thread' }),
+      showTopics: !!open && !S.mail,
+      topicChips: open && !S.mail ? TOPICS[open.prog].map((label) => { const on = S.topics[open.id] === label; return { key: label, label, pressed: on ? 'true' : 'false', bg: on ? '#10233F' : '#F4F7FD', fg: on ? '#FFFFFF' : '#10233F', pick: () => this.setState((s) => ({ topics: Object.assign({}, s.topics, { [s.open]: on ? null : label }) })) }; }) : [],
+      showNewBtn: S.mail && !isJoc,
+      cChips: (S.lockProg ? [S.lockProg] : ['kb', 'app', 'bake', 'gen']).map((k) => ({ key: k, label: PROG[k].name, dot: PROG[k].dot, bg: S.cProg === k ? '#10233F' : '#F4F7FD', fg: S.cProg === k ? '#FFFFFF' : '#10233F', pick: () => this.setState({ cProg: k }) })),
+      cIni: cp.ini, cAvBg: cp.bg, cAvFg: cp.fg, cFirst: cp.first,
+      cWho: `${cp.name} will read this`,
+      cWhoSub: cUnc ? `Nobody at JOC runs ${cName} yet, so it goes to ${cp.first}, who looks after your school's account.` : S.cProg === 'gen' ? `${cp.first} looks after your school's account. For anything that isn't one program.` : `${cp.first} runs ${cName} at JOC.`,
+      cWhoFg: cUnc ? '#C96C00' : '#4A5A74',
+      cSubject: S.cSubject, cBody: S.cBody,
+      onCSubject: (e) => this.setState({ cSubject: e.target.value }),
+      onCBody: (e) => this.setState({ cBody: e.target.value }),
+      cSendBg: S.cBody.trim() ? '#2D46AF' : '#FFFFFF', cSendFg: S.cBody.trim() ? '#FFFFFF' : '#2D46AF',
+      cDelivery: `${cp.first} sees it next time they open the JOC console.`,
+      cSend: () => this.sendCompose(),
+      noop: (e) => e.preventDefault(),
+      th, isEmpty, empty, starters, hasStarters: isEmpty && starters.length > 0,
+      days, status, hasStatus: !!status,
+      histPadX: narrow ? '14px' : '24px',
+      noLogins, noLoginsText, delivery, placeholder, draft,
+      onDraft: (e) => { const v = e.target.value; e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 160) + 'px'; this.setState((s) => ({ drafts: Object.assign({}, s.drafts, { [s.open]: v }) })); },
+      onKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } },
+      onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
+      compBorder: S.focused ? '#2D46AF' : '#B9C3DD',
+      sendBg: draft.trim() ? '#2D46AF' : '#FFFFFF', sendFg: draft.trim() ? '#FFFFFF' : '#2D46AF',
+      send: () => this.send(),
+      showKeys: !narrow,
+    };
+  }
+}
+</script>
+</body>
+</html>

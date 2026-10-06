@@ -34,6 +34,8 @@ export type ProgramAdminView = {
   /** Its own colour. The console band wears it, so a coordinator who runs
    *  two of them knows which console they are on before reading a word. */
   heroColor: string;
+  /** Where a school books time about this program, where one is set. */
+  bookingUrl: string | null;
   /** The form attached to this program, if any. */
   form: {
     id: string;
@@ -155,6 +157,7 @@ export async function getProgramAdmin(
       comingSoon: p.comingSoon,
       tag: p.tag,
       heroColor: p.heroColor,
+      bookingUrl: p.bookingUrl ?? null,
       form: p.form
         ? {
             id: p.form.id,

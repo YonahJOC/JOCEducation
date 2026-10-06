@@ -1,38 +1,35 @@
 "use client";
 
 import { writeToJOC } from "@/app/actions/school-messages";
-import { Conversation, type Message } from "@/components/ui/Conversation";
-import { C, F, label } from "@/lib/joc-tokens";
+import { Conversation, type ThreadMessage } from "@/components/ui/Conversation";
 
 /**
- * The school's half of the conversation with JOC.
+ * One program's conversation, embedded on that program's page.
  *
- * The same thread the coordinator sees on their console, from the other end.
- * Nothing was emailed to get here — the school is reading it because they
- * opened their own portal, which is the only way anything reaches them
- * before JOC launches.
+ * The same thread as /school/messages, without the list — somebody already
+ * looking at Kindness Booth has chosen which conversation they want. The Ask
+ * button on the page scrolls here and sets a topic.
  */
 export function MessagesFromJOC({
-  programId, messages, coordinator,
+  programId, programName, messages, readerName, starters,
 }: {
   programId: number | null;
-  /** Who it reaches, which is the only thing a school wants to know. */
-  coordinator?: string | null;
-  messages: Message[];
+  programName: string;
+  messages: ThreadMessage[];
+  readerName: string;
+  starters?: string[];
 }) {
-  const who = coordinator ?? "JOC";
+  const first = readerName.split(/\s+/)[0];
 
   return (
-    <section style={{ marginTop: "24px" }}>
-      <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>
-        {coordinator ? `Messages with ${coordinator}` : "Messages with JOC"}
-      </p>
-
+    <section id="messages" style={{ marginTop: "28px", display: "flex", flexDirection: "column", minHeight: "440px" }}>
       <Conversation
         mine="school"
         messages={messages}
-        placeholder={`Write to ${who}`}
-        note={`${who} reads it on their console. Nothing is emailed either way.`}
+        readerName={readerName}
+        starters={messages.length === 0 ? starters : undefined}
+        placeholder={`Write to ${first} about ${programName}`}
+        noteAfter={`${first} sees it next time they open the JOC console.`}
         send={async (body) => {
           const form = new FormData();
           form.set("body", body);
@@ -43,5 +40,3 @@ export function MessagesFromJOC({
     </section>
   );
 }
-
-void F;

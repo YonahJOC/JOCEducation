@@ -1,21 +1,18 @@
 import { requireSchoolPanel } from "../account-only";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { currentSchoolId } from "@/lib/school-scope";
-import { MessagesFromJOC } from "@/components/school/MessagesFromJOC";
-import { C, F, label, pageTitle, rowCard } from "@/lib/joc-tokens";
+import { conversationsForSchool } from "@/lib/messages";
+import { SchoolMessages, type SchoolConversation } from "@/components/school/SchoolMessages";
+import { C, F, pageTitle } from "@/lib/joc-tokens";
 
 /**
  * Talking to JOC.
  *
- * The thread already existed on each program's page, which is one level in
- * from anywhere a school actually starts. Somebody wanting to ask a question
- * had to first decide which program it was about — and "can you add another
- * admin" belongs to no program at all.
- *
- * So it is a page of its own, in the rail, and the conversation is per school
- * rather than per program: a school talks to JOC, not to eight inboxes, and
- * splitting it would hide an answer behind whichever page somebody happened
- * to open.
+ * One conversation per program the school runs, plus General for logins,
+ * invoices and everything that belongs to no one program. The list names the
+ * person who reads each before anything is written — the screen this replaced
+ * listed two coordinators above a single undivided thread whose box said
+ * "Write to JOC", so nobody could tell who they were writing to.
  */
 
 export const metadata = { title: "Messages" };
@@ -36,73 +33,54 @@ export default async function SchoolMessagesPage() {
     );
   }
 
-  const [thread, enrollments] = await Promise.all([
-    prisma.schoolMessage
+  const [conversations, school, programs] = await Promise.all([
+    conversationsForSchool(schoolId),
+    prisma.school.findUnique({ where: { id: schoolId }, select: { name: true } }).catch(() => null),
+    prisma.programPage
       .findMany({
-        where: { schoolId },
-        orderBy: { sentAt: "asc" },
-        take: 100,
-        select: {
-          id: true, body: true, inbound: true, sentAt: true,
-          author: { select: { name: true, email: true } },
-        },
-      })
-      .catch(() => []),
-    prisma.programEnrollment
-      .findMany({
-        where: { schoolId },
-        select: {
-          program: {
-            select: { name: true, leads: { select: { name: true, email: true } } },
-          },
-        },
+        select: { id: true, starterQuestions: true, bookingUrl: true, leads: { select: { bookingUrl: true }, take: 1 } },
       })
       .catch(() => []),
   ]);
 
-  // Who this actually reaches. A school asking "who am I writing to" deserves
-  // an answer, and the honest one is a list of the people who run what they
-  // run — not the word "JOC".
-  const people = new Map<string, string[]>();
-  for (const e of enrollments) {
-    const lead = e.program.leads[0];
-    if (!lead) continue;
-    const who = lead.name ?? lead.email;
-    people.set(who, [...(people.get(who) ?? []), e.program.name]);
-  }
+  const extra = new Map(programs.map((p) => [p.id, p]));
+
+  // General has no program, so it borrows the account manager's own calendar.
+  const managerBooking = await prisma.school
+    .findUnique({
+      where: { id: schoolId },
+      select: { accountManager: { select: { bookingUrl: true } } },
+    })
+    .then((s) => s?.accountManager?.bookingUrl ?? null)
+    .catch(() => null);
+
+  const rows: SchoolConversation[] = conversations.map((c) => {
+    const p = c.programId != null ? extra.get(c.programId) : null;
+    return {
+      programId: c.programId,
+      programName: c.programName,
+      slug: c.slug,
+      dot: c.dot,
+      reader: { name: c.reader.name, fallback: c.reader.fallback, line: c.reader.line },
+      // The program's own booking page wins; otherwise whoever reads it.
+      bookingUrl: p?.bookingUrl ?? p?.leads[0]?.bookingUrl ?? (c.programId == null ? managerBooking : null),
+      starters: p?.starterQuestions ?? [],
+      messages: c.messages,
+      unread: c.unread,
+      waiting: c.waiting,
+      lastAt: c.lastAt ? c.lastAt.toISOString() : null,
+    };
+  });
 
   return (
     <div>
-      <h1 style={pageTitle}>Messages</h1>
-      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 20px", maxWidth: "62ch" }}>
-        Anything here reaches whoever looks after your programs at JOC. They read it on their own
-        console — nothing is emailed either way.
+      <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>Messages</h1>
+      <p style={{ fontFamily: F.read, fontSize: "15px", color: C.muted, lineHeight: 1.5, margin: "0 0 18px", maxWidth: "62ch" }}>
+        One conversation for each program you run, and General for everything else. Nothing here
+        is emailed — whoever you write to reads it on their own console.
       </p>
 
-      {people.size > 0 && (
-        <div style={{ ...rowCard, padding: "16px 18px", marginBottom: "20px" }}>
-          <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>Who you&rsquo;re writing to</p>
-          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "6px" }}>
-            {[...people.entries()].map(([who, programs]) => (
-              <li key={who} style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.ink }}>
-                <strong>{who}</strong>
-                <span style={{ color: C.muted }}> — {programs.join(", ")}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <MessagesFromJOC
-        programId={null}
-        messages={thread.map((m) => ({
-          id: m.id,
-          body: m.body,
-          inbound: m.inbound,
-          author: m.author?.name ?? m.author?.email ?? null,
-          sentAt: m.sentAt,
-        }))}
-      />
+      <SchoolMessages conversations={rows} schoolName={school?.name ?? "Your school"} />
     </div>
   );
 }

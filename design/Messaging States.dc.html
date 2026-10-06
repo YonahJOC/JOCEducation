@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#EEF0F4} a{color:#2D46AF} a:hover{color:#223892}</style>
+</helmet>
+<section data-screen-label="Turn 2" style="font-family:Outfit,sans-serif; color:#10233F; padding:56px; display:flex; flex-direction:column; gap:48px; width:max-content; border-bottom:2px solid #D5DAE6">
+  <header style="display:flex; flex-direction:column; gap:10px; max-width:900px">
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0">Turn 2 · three ways to shape it</p>
+    <h1 style="font-size:44px; font-weight:700; letter-spacing:-0.03em; margin:0">Email, WhatsApp, or both</h1>
+    <p style="font-family:Newsreader,serif; font-size:20px; line-height:1.55; color:#4A5A74; margin:0; text-wrap:pretty"><a href="#2a">2a</a>: every question is its own conversation with a subject. <a href="#2b">2b</a>: one running conversation per program and person. <a href="#2c">2c</a>: both. Messages runs like WhatsApp, and questions asked from a program page run like email. All three are live, so you can click, type and send.</p>
+  </header>
+
+  <div id="2a" style="display:flex; flex-direction:column; gap:20px">
+    <div style="display:flex; gap:12px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:4px 10px">2a</span><h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">Like email: one conversation per question</h2></div>
+    <p style="font-family:Newsreader,serif; font-size:18px; line-height:1.55; color:#10233F; margin:0; max-width:820px">A school picks what it's about, sees who will read it, gives it a subject, and sends. Each question can be answered and closed on its own, and there's a list of everything ever asked. The cost: a school runs into the composer as a form before they've written a word, and a quick follow-up means a new subject or digging out the old one.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">School · a reply arrived · 1280</span>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="mail-school" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">Same, the list · 375</span>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="mail-school" start-view="list" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">School · nothing yet, writing the first one · 1280</span>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="mail-school-empty" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">Same · 375</span>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="mail-school-empty" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">JOC · coordinator's inbox of questions · 1280</span>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="mail-joc" start-view="thread" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="2b" style="display:flex; flex-direction:column; gap:20px">
+    <div style="display:flex; gap:12px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:4px 10px">2b</span><h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">Like WhatsApp: one conversation per program and person</h2></div>
+    <p style="font-family:Newsreader,serif; font-size:18px; line-height:1.55; color:#10233F; margin:0; max-width:820px">The design from turn 1, with every state laid out below. Nothing to fill in but the message, and the whole history with Yudi sits in one place. The cost: unrelated questions run together in one long thread, and nothing marks a question as answered.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">School · a short exchange · 1280</span>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-short" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">School · the list · 375</span>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-reply" start-view="list" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">JOC · coordinator's inbox · 1280</span>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-inbox" start-view="thread" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="2c" style="display:flex; flex-direction:column; gap:20px">
+    <div style="display:flex; gap:12px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:4px 10px">2c</span><h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">Both: chat in Messages, questions on the program page</h2></div>
+    <p style="font-family:Newsreader,serif; font-size:18px; line-height:1.55; color:#10233F; margin:0; max-width:820px">Messages is the running conversation with each person (WhatsApp). A program page has its own Questions section, where each question gets a subject and its own conversation (email), and replaces today's one-shot asks. The cost: two places a reply can land. So both have to show up on Today, and a coordinator's inbox needs a tab for each.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">/school/messages · chat · 1280</span>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-short" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:16px; font-weight:600">/school/programs/kindness-booth · Questions section</span>
+        <div style="width:1080px; padding:28px; box-sizing:border-box; background:#FBF9F4; border-radius:12px; box-shadow:0 10px 30px rgba(16,35,63,.12); display:flex; flex-direction:column; gap:12px">
+          <h3 style="font-size:24px; font-weight:700; letter-spacing:-0.02em; margin:0">Questions about Kindness Booth</h3>
+          <p style="font-size:16px; color:#4A5A74; line-height:1.6; margin:0; max-width:64ch">Ask Yudi anything about this program. Each question keeps its own conversation, so the answer is easy to find later.</p>
+          <div style="height:620px"><dc-import name="Messaging" scenario="mail-program" frame="panel" height="620px" hint-size="1024px,620px"></dc-import></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Turn 1" style="font-family:Outfit,sans-serif; color:#10233F; padding:56px; display:flex; flex-direction:column; gap:48px; width:max-content">
+
+  <header style="display:flex; flex-direction:column; gap:10px; max-width:900px">
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0">Turn 1 · /school/messages · /admin/messages · program page thread</p>
+    <h1 style="font-size:44px; font-weight:700; letter-spacing:-0.03em; margin:0">Messaging between a school and JOC</h1>
+    <p style="font-family:Newsreader,serif; font-size:20px; line-height:1.55; color:#4A5A74; margin:0; text-wrap:pretty"><strong style="color:#10233F">Decision:</strong> one conversation per program, plus General. The list shows who reads each one, by name. A program with no coordinator goes to the person who looks after the school's account, and the thread says so. Nothing is emailed: the composer says it every time, in bold, right under the box.</p>
+    <p style="font-family:Newsreader,serif; font-size:17px; line-height:1.55; color:#4A5A74; margin:0">Every frame is the live prototype (<a href="Messaging.dc.html">Messaging.dc.html</a>). Click rows, type, press Enter.</p>
+  </header>
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+    <h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">School side</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+      <div id="1a" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1a</span><span style="font-size:16px; font-weight:600">Nothing yet, one program · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-empty-one" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1b" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1b</span><span style="font-size:16px; font-weight:600">Same · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-empty-one" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1c" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1c</span><span style="font-size:16px; font-weight:600">Nothing yet, several programs · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-empty-several" start-view="thread" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1d" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1d</span><span style="font-size:16px; font-weight:600">Same, the list · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-empty-several" start-view="list" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1e" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1e</span><span style="font-size:16px; font-weight:600">A short exchange, same day · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-short" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1f" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1f</span><span style="font-size:16px; font-weight:600">Same · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-short" start-view="thread" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1g" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1g</span><span style="font-size:16px; font-weight:600">A long history, opens on the newest · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-long" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1h" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1h</span><span style="font-size:16px; font-weight:600">Waiting on JOC: not opened / read, no reply · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-waiting" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1i" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1i</span><span style="font-size:16px; font-weight:600">A reply arrived · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-reply" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1j" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1j</span><span style="font-size:16px; font-weight:600">Same, before opening · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-reply" start-view="list" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1k" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1k</span><span style="font-size:16px; font-weight:600">Nobody at JOC runs this program · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-uncovered" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1l" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1l</span><span style="font-size:16px; font-weight:600">Same · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="school-uncovered" start-view="thread" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1m" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1m</span><span style="font-size:16px; font-weight:600">Embedded on /school/programs/kindness-booth</span></div>
+        <div style="width:720px; padding:28px; box-sizing:border-box; background:#FBF9F4; border-radius:12px; box-shadow:0 10px 30px rgba(16,35,63,.12); display:flex; flex-direction:column; gap:12px">
+          <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0">Kindness Booth · your conversation with JOC</p>
+          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; color:#4A5A74; margin:0">The same thread as Messages, not a copy. Writing here and writing there land in one place.</p>
+          <div style="height:600px"><dc-import name="Messaging" scenario="school-short" frame="embed" height="600px" hint-size="664px,600px"></dc-import></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+    <h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">JOC side</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+      <div id="1n" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1n</span><span style="font-size:16px; font-weight:600">Coordinator inbox, a conversation open · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-inbox" start-view="thread" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1o" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1o</span><span style="font-size:16px; font-weight:600">Inbox · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-inbox" start-view="list" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1p" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1p</span><span style="font-size:16px; font-weight:600">Conversation open · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-inbox" start-view="thread" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+      <div id="1q" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1q</span><span style="font-size:16px; font-weight:600">Super admin, every program · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-super" start-view="thread" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1r" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1r</span><span style="font-size:16px; font-weight:600">Nothing unread · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-caughtup" start-view="thread" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1s" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1s</span><span style="font-size:16px; font-weight:600">Writing to a school with no logins · 1280</span></div>
+        <div style="width:1280px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-nologins" height="800px" hint-size="1280px,800px"></dc-import></div>
+      </div>
+      <div id="1t" style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1t</span><span style="font-size:16px; font-weight:600">Same · 375</span></div>
+        <div style="width:375px; height:800px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Messaging" scenario="joc-nologins" start-view="thread" height="800px" hint-size="375px,800px"></dc-import></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+    <h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">Asks and messages: two ways</h2>
+    <p style="font-family:Newsreader,serif; font-size:18px; line-height:1.55; color:#4A5A74; margin:0; max-width:820px">An ask is a one-shot question raised from a program page. Messages are now per program too, so the two overlap. My pick is <a href="#1u">1u</a>.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+
+      <div id="1u" style="display:flex; flex-direction:column; gap:10px; width:560px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1u</span><span style="font-size:16px; font-weight:600">Merge: an ask is a message with a topic</span></div>
+        <div style="background:#FBF9F4; border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px; box-shadow:0 10px 30px rgba(16,35,63,.12)">
+          <div style="display:flex; justify-content:flex-end">
+            <div style="max-width:80%; display:flex; flex-direction:column; align-items:flex-end; gap:4px">
+              <span style="font-size:12px; font-weight:700; background:#E4E9F8; color:#2D46AF; border-radius:9999px; padding:4px 9px">Asked from the program page · Booking</span>
+              <div style="background:#2D46AF; color:#FFFFFF; border-radius:16px 16px 5px 16px; padding:10px 14px"><p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0">Can we run the booth at our Chanukah fair on December 17?</p></div>
+            </div>
+          </div>
+          <div style="display:flex">
+            <div style="max-width:80%; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:16px 16px 16px 5px; padding:10px 14px"><p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0">Yes — the date is yours. How many students will staff it?</p></div>
+          </div>
+        </div>
+        <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; color:#10233F; margin:0">The Ask button on a program page opens this program's thread with the topic set. One place to read, one place to answer, and the reply can lead to a conversation. <code style="font-family:'IBM Plex Mono',monospace; font-size:13px">SchoolActivity</code> inbound asks move into <code style="font-family:'IBM Plex Mono',monospace; font-size:13px">SchoolMessage</code> with a nullable <code style="font-family:'IBM Plex Mono',monospace; font-size:13px">topic</code>.</p>
+      </div>
+
+      <div id="1v" style="display:flex; flex-direction:column; gap:10px; width:560px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1v</span><span style="font-size:16px; font-weight:600">Keep separate, linked from the thread</span></div>
+        <div style="background:#FBF9F4; border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px; box-shadow:0 10px 30px rgba(16,35,63,.12)">
+          <div style="background:#F4F7FD; border-radius:12px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; gap:12px">
+            <p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#4A5A74; margin:0">You also asked 2 questions from the Kindness Booth page. One has an answer.</p>
+            <span style="font-size:14px; font-weight:700; color:#2D46AF; text-decoration:underline; white-space:nowrap">See asks</span>
+          </div>
+          <div style="display:flex">
+            <div style="max-width:80%; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:16px 16px 16px 5px; padding:10px 14px"><p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0">Hi Leah, December 17 works. How many students will staff the booth?</p></div>
+          </div>
+        </div>
+        <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; color:#10233F; margin:0">Asks stay one question, one reply, on the program page. Nothing to migrate, but a school has two places to check and a coordinator has two inboxes.</p>
+      </div>
+
+      <div id="1w" style="display:flex; flex-direction:column; gap:10px; width:560px">
+        <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">1w</span><span style="font-size:16px; font-weight:600">One click from Today</span></div>
+        <div style="background:#FBF9F4; border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px; box-shadow:0 10px 30px rgba(16,35,63,.12)">
+          <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden; display:flex; flex-wrap:wrap">
+            <div style="flex:0 0 150px; background:#FFF0E0; padding:14px 18px; display:flex; flex-direction:column; justify-content:center; gap:2px">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#C96C00">Messages</span>
+              <span style="font-size:30px; font-weight:800; letter-spacing:-0.02em; line-height:1.1">2 new</span>
+            </div>
+            <div style="flex:1 1 200px; padding:14px 18px; display:flex; flex-direction:column; justify-content:center; gap:4px">
+              <p style="font-size:19px; font-weight:700; letter-spacing:-0.02em; margin:0">Yudi Abraham replied</p>
+              <p style="font-family:Newsreader,serif; font-size:15px; color:#4A5A74; margin:0">About Kindness Booth, this morning.</p>
+            </div>
+            <div style="flex:1 1 150px; padding:14px 18px; display:flex; align-items:center">
+              <span style="display:flex; align-items:center; justify-content:center; width:100%; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border-radius:12px; min-height:46px">Read it</span>
+            </div>
+          </div>
+          <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); padding:14px 18px; display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center">
+            <div style="flex:1 1 240px; display:flex; flex-direction:column; gap:4px">
+              <p style="font-size:19px; font-weight:700; letter-spacing:-0.02em; margin:0">A question for JOC?</p>
+              <p style="font-family:Newsreader,serif; font-size:15px; color:#4A5A74; margin:0">Write to the person who runs each program.</p>
+            </div>
+            <span style="display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 18px">Write to JOC</span>
+          </div>
+        </div>
+        <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; color:#10233F; margin:0">With replies waiting, Today leads with them. Otherwise one quiet row. Either way it goes straight to Messages.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

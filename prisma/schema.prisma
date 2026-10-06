@@ -454,6 +454,12 @@ model User {
   schoolAppAdmin Boolean @default(false)
 
   managedSchools   School[]            @relation("AccountManager")
+  /// Where somebody books time with this person.
+  ///
+  /// Theirs to keep current, because a stale calendar link wastes a school's
+  /// afternoon and only the person whose calendar it is knows it moved.
+  bookingUrl String?
+
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
@@ -1014,6 +1020,25 @@ model ProgramPage {
   /// a public page hosted elsewhere. Null means nobody has set it yet, and
   /// the school is told that in words rather than shown a dead button.
   portalHref String?
+
+  /// Where a school books time about this program.
+  ///
+  /// Overrides the coordinator's own link where a program keeps a separate
+  /// calendar — Gilad's app booking page is its own address. Null falls back
+  /// to whoever reads the conversation.
+  bookingUrl String?
+
+  /// Three things a school might ask about this program, offered on an empty
+  /// conversation. They fill the box and do not send — a question nobody read
+  /// before it went is not a question they meant.
+  ///
+  /// Content rather than code: the people who run a program know what their
+  /// schools ask, and should not need a deploy to change it.
+  starterQuestions String[] @default([])
+
+  /// The chips on the Ask button, for the same reason. Empty falls back to a
+  /// general set.
+  askTopics String[] @default([])
   cta          String  @default("Register your school")
 
   published Boolean @default(false)
@@ -2063,9 +2088,19 @@ model SchoolMessage {
   schoolId String
   school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
-  /// Which program it is about, where it is about one.
+  /// Which program this conversation is about. Null is the General thread,
+  /// for logins, invoices and anything that belongs to no one program.
+  ///
+  /// A conversation is derived from (schoolId, programId). There is no
+  /// Conversation table, because there is nothing to store about one that
+  /// these two columns do not already say.
   programId Int?
   program   ProgramPage? @relation("MessageProgram", fields: [programId], references: [id], onDelete: SetNull)
+
+  /// Set when the message was raised from a program page's Ask button, and
+  /// shown as a chip above it. The ask used to be its own one-shot thing with
+  /// its own reply; it is a message with a label on it now.
+  topic String?
 
   body String @db.Text
 

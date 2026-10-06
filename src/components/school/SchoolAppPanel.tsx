@@ -2,6 +2,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { BandRow } from "@/components/ui/BandRow";
 import { schoolPaymentFor, money } from "@/lib/money";
 import { isPaymentConfigured } from "@/lib/payments";
+import { JOC_APP_URL } from "@/lib/joc-app";
 import { C, F, label, datum, rowCard, primaryButton, secondaryButton } from "@/lib/joc-tokens";
 
 /**
@@ -32,9 +33,6 @@ import { C, F, label, datum, rowCard, primaryButton, secondaryButton } from "@/l
 
 /** Past this, the numbers below are old enough to say so. Matches the console. */
 const STALE_HOURS = 36;
-
-/** Where a school signs in to the app. */
-const APP_URL = "https://app.justonechesed.org";
 
 const when = (d: Date) =>
   d.toLocaleString("en-US", {
@@ -126,7 +124,7 @@ export async function SchoolAppPanel({
               figure={`${(s.unapprovedMinutes / 60).toFixed(1)} h`}
               title="Chesed hours waiting on a teacher"
               line={`${s.unapprovedEntries} entr${s.unapprovedEntries === 1 ? "y" : "ies"} waiting. Teachers approve them in the app.`}
-              action={{ label: "Open the app", href: APP_URL }}
+              action={{ label: "Open the app", href: JOC_APP_URL }}
             />
           )}
         </>
@@ -143,7 +141,7 @@ export async function SchoolAppPanel({
       {/* ── Opening the app, and the screen in the building ─────────────── */}
       <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center", marginTop: "4px" }}>
         <a
-          href={APP_URL}
+          href={JOC_APP_URL}
           target="_blank"
           rel="noreferrer"
           style={{ ...primaryButton, textDecoration: "none" }}

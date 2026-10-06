@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ProgramPostsEditor } from "@/components/admin/ProgramPostsEditor";
+import { BookingLink } from "@/components/admin/BookingLink";
 import { Absent } from "@/components/Absent";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -194,7 +195,15 @@ export function ProgramAdminClient({
 
       {/* ── What every school on this program reads ────────────────────── */}
       {tab === "setup" && (
-        <ProgramPostsEditor programId={view.id} posts={posts} />
+        <>
+          <ProgramPostsEditor programId={view.id} posts={posts} />
+          <BookingLink
+            programId={view.id}
+            programName={view.name}
+            current={view.bookingUrl ?? null}
+            coordinatorName={view.leads[0]?.name ?? view.leads[0]?.email ?? null}
+          />
+        </>
       )}
 
       {/* ── The sign-up form ───────────────────────────────────────────── */}

@@ -68,7 +68,8 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
       where: { slug },
       select: {
         id: true, slug: true, name: true, tag: true, heroColor: true, portalHref: true,
-        leads: { select: { name: true, email: true } },
+        starterQuestions: true, askTopics: true, bookingUrl: true,
+        leads: { select: { name: true, email: true, bookingUrl: true } },
       },
     })
     .catch(() => null);
@@ -125,11 +126,11 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
     // to eight separate inboxes, and splitting it would hide an answer behind
     // whichever page somebody happened to open.
     prisma.schoolMessage.findMany({
-      where: { schoolId },
+      where: { schoolId, programId: program.id },
       orderBy: { sentAt: "asc" },
       take: 50,
       select: {
-        id: true, body: true, inbound: true, sentAt: true,
+        id: true, body: true, topic: true, inbound: true, sentAt: true, seenAt: true,
         author: { select: { name: true, email: true } },
       },
     }).catch(() => []),
@@ -240,15 +241,22 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
 
             <ProgramPosts programId={program.id} />
 
+            {/* The reader is the coordinator, or whoever holds the school's
+                account when nobody runs this program — which is six of the
+                eight today, so the fallback is the common path. */}
             <MessagesFromJOC
               programId={program.id}
-              coordinator={firstName}
+              programName={program.name}
+              readerName={coordinator ?? "JOC"}
+              starters={program.starterQuestions}
               messages={thread.map((m) => ({
                 id: m.id,
                 body: m.body,
+                topic: m.topic,
                 inbound: m.inbound,
                 author: m.author?.name ?? m.author?.email ?? null,
                 sentAt: m.sentAt,
+                seenAt: m.seenAt,
               }))}
             />
           </div>
@@ -273,7 +281,11 @@ export default async function SchoolProgramPage({ params, searchParams }: Params
                   ? `${coordinator} looks after ${program.name}.`
                   : "Nobody is down as running this program yet."}
               </p>
-              <AskCoordinator programId={program.id} programSlug={program.slug} coordinator={firstName} />
+              <AskCoordinator
+                programId={program.id}
+                topics={program.askTopics}
+                coordinator={firstName}
+              />
             </Card>
 
             {/* What the school pays is for whoever runs the account. A teacher

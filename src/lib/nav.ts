@@ -134,6 +134,8 @@ export function schoolNav(
      * recorded against it should see.
      */
     programs?: { slug: string; name: string; heroColor: string }[];
+    /** Replies the school has not opened. */
+    unreadMessages?: number;
   } = {},
 ): NavItem[] {
   const MAX = 7;
@@ -142,7 +144,12 @@ export function schoolNav(
   // Messaging JOC lived on each program page, one level in from anywhere a
   // school starts — so asking a question meant first deciding which program
   // it was about, and "can you add another admin" belongs to none of them.
-  items.push({ label: "Messages", href: "/school/messages", hint: "Ask JOC anything" });
+  items.push({
+    label: "Messages",
+    href: "/school/messages",
+    hint: "Ask JOC anything",
+    need: opts.unreadMessages || undefined,
+  });
 
   for (const p of opts.programs ?? []) {
     items.push({ label: p.name, href: `/school/programs/${p.slug}`, dot: p.heroColor });

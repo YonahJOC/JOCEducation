@@ -29,7 +29,13 @@ export async function writeToSchool(
   form: FormData,
 ): Promise<MessageResult> {
   const session = await safeAuth();
-  if (!openForReview && !can(session?.user, "schools") && !can(session?.user, "app_activity")) {
+  if (
+    !openForReview &&
+    !can(session?.user, "schools") &&
+    !can(session?.user, "messages") &&
+    !can(session?.user, "app_activity") &&
+    !session?.user?.id
+  ) {
     return { ok: false, error: "You can't write to a school." };
   }
   if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
@@ -91,17 +97,47 @@ export async function writeToJOC(
 /**
  * Mark what the other side wrote as read.
  *
- * `mine` says which side is doing the reading, because the two directions
- * are marked by different people and a console must never clear the school's
- * unread count on their behalf.
+ * The side doing the reading, never the side that wrote: a console must not
+ * clear a school's unread count on their behalf, and the reverse is as wrong.
  */
 export async function markThreadSeen(schoolId: string, side: "joc" | "school"): Promise<void> {
+  await markSeen(schoolId, undefined, side);
+}
+
+/** One conversation, from the school's side. */
+export async function markConversationSeen(programId: number | null): Promise<void> {
+  const schoolId = await currentSchoolId();
+  if (!schoolId) return;
+  await markSeen(schoolId, programId, "school");
+}
+
+/** One conversation, from the console. */
+export async function markSchoolConversationSeen(
+  schoolId: string,
+  programId: number | null,
+): Promise<void> {
+  const session = await safeAuth();
+  if (!openForReview && !can(session?.user, "schools") && !can(session?.user, "messages")) return;
+  await markSeen(schoolId, programId, "joc");
+}
+
+async function markSeen(
+  schoolId: string,
+  programId: number | null | undefined,
+  side: "joc" | "school",
+): Promise<void> {
   if (!isDatabaseConfigured()) return;
   try {
     await prisma.schoolMessage.updateMany({
-      where: { schoolId, inbound: side === "joc", seenAt: null },
+      where: {
+        schoolId,
+        ...(programId === undefined ? {} : { programId: programId ?? null }),
+        inbound: side === "joc",
+        seenAt: null,
+      },
       data: { seenAt: new Date() },
     });
+    revalidatePath(side === "joc" ? "/admin/messages" : "/school/messages");
   } catch {
     // Seen-state is a convenience. Failing to record it changes nothing real.
   }

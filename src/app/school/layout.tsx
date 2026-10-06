@@ -7,6 +7,7 @@ import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { schoolNav } from "@/lib/nav";
 import { viewingAs, currentSchoolId } from "@/lib/school-scope";
 import { stopViewingAsSchool } from "@/app/actions/view-as-school";
+import { unreadForSchool } from "@/lib/messages";
 import { SchoolSwitcher } from "@/components/school/SchoolSwitcher";
 import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
@@ -72,6 +73,7 @@ export default async function SchoolLayout({ children }: { children: React.React
   let planLabel: string | null = null;
   let programs: { slug: string; name: string; heroColor: string }[] = [];
   const schoolId = await currentSchoolId();
+  const unreadMessages = schoolId ? await unreadForSchool(schoolId) : 0;
   if (isDatabaseConfigured() && schoolId) {
     try {
       const [s, enrolled] = await Promise.all([
@@ -104,6 +106,7 @@ export default async function SchoolLayout({ children }: { children: React.React
       items={schoolNav(session?.user, {
         asSchoolAdmin: Boolean(looking) || openForReview,
         programs,
+        unreadMessages,
       })}
       action={
         <div style={{ display: "grid", gap: "8px" }}>
