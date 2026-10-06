@@ -264,7 +264,7 @@ function Masthead({ line }: { line?: string }) {
           fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
           textTransform: "uppercase", color: C.orange, whiteSpace: "nowrap",
         }}>
-          JOC staff only
+          JOC staff view only
         </span>
       </div>
 
