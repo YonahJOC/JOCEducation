@@ -69,6 +69,9 @@ export default async function InteractionsPage({
   const rows = await prisma.schoolActivity.findMany({
     where: {
       type: { in: [...FILTERS[filter]] },
+      // Taken off the Buzz by a super admin. Off this board too — it is the
+      // same decision about the same row.
+      removedAt: null,
       ...(program ? { programId: Number(program) || undefined } : {}),
       ...(who ? { authorId: who } : {}),
       ...(q

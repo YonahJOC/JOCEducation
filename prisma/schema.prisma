@@ -170,6 +170,27 @@ model SchoolActivity {
   authorId String?
   author   User?   @relation("ActivityAuthor", fields: [authorId], references: [id], onDelete: SetNull)
 
+  /// Somebody who took this off the Buzz to deal with.
+  ///
+  /// The row stays where it is — on the school, in the feed — and gains a
+  /// name against it. Re-tagging it to whichever program picked it up would
+  /// rewrite what happened: a JOC App meeting does not become a Boots meeting
+  /// because the Boots coordinator is the one chasing it.
+  takenById   String?
+  takenBy     User?     @relation("ActivityTaken", fields: [takenById], references: [id], onDelete: SetNull)
+  takenAt     DateTime?
+  /// When they marked it dealt with. Still theirs, no longer waiting.
+  takenDoneAt DateTime?
+
+  /// Taken off the Buzz. A date rather than a DELETE: this row is also the
+  /// school's own history and what the board counts, so destroying it to
+  /// tidy the feed would take a visit out of the record of a school.
+  removedAt   DateTime?
+  removedById String?
+
+  /// The thread under it. Anybody who can read the Buzz can add to one.
+  notes BuzzNote[]
+
   /// True when somebody at the school wrote it rather than somebody at JOC.
   /// Every row before this one was JOC recording what it did; an ask runs the
   /// other way, and the console has to show it as something waiting rather
@@ -488,6 +509,9 @@ model User {
   bookingUrl String?
 
   loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
+  /// School updates they took off the Buzz to deal with.
+  takenActivities  SchoolActivity[]    @relation("ActivityTaken")
+  buzzNotes        BuzzNote[]
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2319,4 +2343,22 @@ enum SchoolNetwork {
   YESHIVA_LEAGUE
   ISRAEL
   CANADA
+}
+
+/// A comment under a school update on the Buzz.
+///
+/// Anybody who can read the Buzz can write one, and the first one starts the
+/// thread — it is not a super admin's tool. Somebody who knows the school
+/// often knows the answer, and the place to say so is under the thing itself
+/// rather than in a message nobody else will see.
+model BuzzNote {
+  id         String         @id @default(cuid())
+  activityId String
+  activity   SchoolActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?          @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  body       String         @db.Text
+  createdAt  DateTime       @default(now())
+
+  @@index([activityId, createdAt])
 }

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
 import { can, isSuperAdminEmail } from "@/lib/access";
+import { leadsAnyProgram } from "@/lib/program-admin";
+import { ItemTools } from "@/components/buzz/ItemTools";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import {
   UPDATE_TYPES, TAG, day, shortDay, clock, away, ago,
@@ -124,16 +126,45 @@ export default async function BuzzPage() {
   const midnight = new Date(); midnight.setUTCHours(0, 0, 0, 0);
   const monthBack = new Date(midnight.getTime() - 30 * 86400000);
 
+  // Anybody who runs a program can take an item; so can the schools team. A
+  // coordinator holds no console capability, so the capability alone would
+  // have shut out exactly the people this is for.
+  const canPick = openForReview || can(me, "schools") || (await leadsAnyProgram(me?.id ?? null));
+
+  // Edit, tag, remove. Yonah, Jerry and Avir — nobody else, ever.
+  const superAdmin = openForReview || isSuperAdminEmail(me?.email);
+
+  // Who a super admin can hand an item to. Only fetched for them, so nobody
+  // else's page carries a list of their colleagues.
+  const taggable = superAdmin
+    ? (await prisma.user.findMany({
+        where: { schoolId: null, active: true },
+        orderBy: [{ name: "asc" }, { email: "asc" }],
+        select: { id: true, name: true, email: true },
+      }).catch(() => [])).map((u) => ({ id: u.id, name: u.name ?? u.email ?? "somebody" }))
+    : [];
+
   const [rows, lastMonth, schoolsTouched] = await Promise.all([
     prisma.schoolActivity.findMany({
-      where: { type: { in: [...UPDATE_TYPES] } },
+      // Removed items are hidden here and nowhere else: the row is still the
+      // school's history, it is just off the feed.
+      where: { type: { in: [...UPDATE_TYPES] }, removedAt: null },
       orderBy: { occurredAt: "desc" },
       take: 200,
       select: {
         id: true, type: true, detail: true, occurredAt: true,
         author: { select: { name: true, email: true } },
+        takenById: true,
+        takenBy: { select: { name: true, email: true } },
         program: { select: { name: true } },
         school: { select: { id: true, name: true } },
+        notes: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            id: true, body: true, createdAt: true,
+            author: { select: { name: true, email: true } },
+          },
+        },
       },
     }).catch(() => []),
     prisma.schoolActivity.count({
@@ -240,6 +271,23 @@ export default async function BuzzPage() {
               </p>
 
               {r.detail && <Detail text={r.detail} />}
+
+              <ItemTools
+                activityId={r.id}
+                detail={r.detail}
+                notes={r.notes.map((n) => ({
+                  id: n.id,
+                  body: n.body,
+                  who: first(n.author?.name ?? n.author?.email),
+                  when: ago(n.createdAt, midnight),
+                }))}
+                takenBy={r.takenById ? first(r.takenBy?.name ?? r.takenBy?.email) : null}
+                mine={Boolean(me?.id && r.takenById === me.id)}
+                canPick={canPick}
+                canComment
+                superAdmin={superAdmin}
+                people={taggable}
+              />
             </article>
           ))}
         </div>

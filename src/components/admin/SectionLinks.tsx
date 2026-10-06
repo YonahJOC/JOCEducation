@@ -19,12 +19,15 @@ import { C, R, F } from "@/lib/joc-tokens";
 
 type SectionKey = "schools" | "material" | "money" | "access" | "programs";
 
-const SECTIONS: Record<SectionKey, { href: string; label: string; need: Capability }[]> = {
+const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capability }[]> = {
   schools: [
     { href: "/admin/schools/board", label: "JOC App board", need: "schools" },
     { href: "/admin/interactions", label: "School updates", need: "schools" },
     { href: "/buzz", label: "The Buzz", need: "buzz" },
     { href: "/admin/buzz", label: "Buzz access", need: "users" },
+    // No capability: running a program is the permission, and the page
+    // checks that itself. A coordinator holds nothing from this list.
+    { href: "/admin/my-updates", label: "My Buzz items" },
     { href: "/admin/messages", label: "Messages", need: "schools" },
     { href: "/admin/schools/status", label: "Status board", need: "schools" },
     { href: "/admin/demos", label: "Demo requests", need: "demos" },
@@ -56,7 +59,11 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need: Capabili
 
 export async function SectionLinks({ section }: { section: SectionKey }) {
   const session = await safeAuth();
-  const items = SECTIONS[section].filter((i) => openForReview || can(session?.user, i.need));
+  const items = SECTIONS[section].filter(
+    // No `need` means the page decides for itself — a coordinator holds no
+    // capability from this list, and their own items are still theirs.
+    (i) => !i.need || openForReview || can(session?.user, i.need),
+  );
 
   if (items.length === 0) return null;
 
