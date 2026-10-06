@@ -186,19 +186,26 @@ export default async function BuzzPage() {
   const aheadIds = new Set(ahead.map((a) => a.id));
 
   /**
-   * The feed is ordered by the last thing that happened to an item, not by
-   * the date on it. A comment is a thing that happened: an update from three
-   * weeks ago that somebody answered this morning is live, and leaving it
-   * three weeks down the page is how the answer goes unread.
+   * Where an item sits: its own date, or the date somebody first said
+   * something under it.
+   *
+   * The first comment lifts an old update once, because a three-week-old
+   * visit that somebody answered this morning is live and leaving it three
+   * weeks down the page is how the answer goes unread. Every comment after
+   * that counts for nothing — otherwise a long conversation pins itself to
+   * the top and the feed stops being a feed.
+   *
+   * A real update always outranks a lift, because it carries today's date and
+   * the lift carries the date the thread started.
    */
-  const lastMove = (r: { occurredAt: Date; notes: { createdAt: Date }[] }) =>
+  const standing = (r: { occurredAt: Date; notes: { createdAt: Date }[] }) =>
     r.notes.length > 0
-      ? Math.max(r.occurredAt.getTime(), r.notes[r.notes.length - 1].createdAt.getTime())
+      ? Math.max(r.occurredAt.getTime(), r.notes[0].createdAt.getTime())
       : r.occurredAt.getTime();
 
   const behind = rows
     .filter((r) => !aheadIds.has(r.id))
-    .sort((a, b) => lastMove(b) - lastMove(a))
+    .sort((a, b) => standing(b) - standing(a))
     .slice(0, FEED);
 
   return (
