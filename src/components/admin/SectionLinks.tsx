@@ -24,6 +24,7 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need: Capabili
     { href: "/admin/schools/board", label: "JOC App board", need: "schools" },
     { href: "/admin/interactions", label: "School updates", need: "schools" },
     { href: "/buzz", label: "The Buzz", need: "buzz" },
+    { href: "/admin/buzz", label: "Buzz access", need: "users" },
     { href: "/admin/messages", label: "Messages", need: "schools" },
     { href: "/admin/schools/status", label: "Status board", need: "schools" },
     { href: "/admin/demos", label: "Demo requests", need: "demos" },

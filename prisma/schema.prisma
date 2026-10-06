@@ -475,6 +475,11 @@ model User {
   /// the SCHOOL_ADMIN role — that one is about money and people.
   schoolAppAdmin Boolean @default(false)
 
+  /// May read the Buzz — every school's meetings, calls and events on one
+  /// page. Named one person at a time at /admin/buzz rather than carried by
+  /// an admin type, because it is a list somebody decided on, not a rank.
+  buzzAccess Boolean @default(false)
+
   managedSchools   School[]            @relation("AccountManager")
   /// Where somebody books time with this person.
   ///

@@ -44,7 +44,22 @@ export default async function BuzzPage() {
    * them thirty-eight other schools' notes — a mistake nobody would see.
    */
   const tiedToOneSchool = Boolean(me?.schoolId) && !isSuperAdminEmail(me?.email);
-  const allowed = openForReview || (can(me, "buzz") && !tiedToOneSchool);
+
+  /**
+   * Named on the list at /admin/buzz. Read from the database rather than the
+   * session, so switching somebody on works while they are sat looking at the
+   * page — the session's own claims only refresh every few minutes.
+   */
+  const named = me?.id && isDatabaseConfigured()
+    ? Boolean(
+        (await prisma.user.findUnique({
+          where: { id: me.id },
+          select: { buzzAccess: true },
+        }).catch(() => null))?.buzzAccess,
+      )
+    : false;
+
+  const allowed = openForReview || ((named || can(me, "buzz")) && !tiedToOneSchool);
 
   if (!allowed) {
     return (
@@ -268,34 +283,45 @@ function Masthead({ line }: { line?: string }) {
         </span>
       </div>
 
-      <h1 style={{
-        fontFamily: F.ui, fontSize: "clamp(26px, 6.5vw, 34px)", fontWeight: 700,
-        letterSpacing: "-0.03em", lineHeight: 1.05, color: C.white,
-        margin: "18px 0 0",
+      {/* Title and the one thing to do, side by side — the button was under
+          the whole block, which pushed the first update off a phone screen.
+          It wraps below the title when there is no room for both. */}
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "flex-end",
+        gap: "16px", flexWrap: "wrap", marginTop: "18px",
       }}>
-        The JOC School Buzz
-      </h1>
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{
+            fontFamily: F.ui, fontSize: "clamp(26px, 6.5vw, 34px)", fontWeight: 700,
+            letterSpacing: "-0.03em", lineHeight: 1.05, color: C.white,
+            margin: 0,
+          }}>
+            The JOC School Buzz
+          </h1>
 
-      {line && (
-        <p style={{
-          fontFamily: F.read, fontSize: "15px", lineHeight: 1.5,
-          color: "rgba(255,255,255,.6)", margin: "8px 0 0",
-        }}>
-          {line}
-        </p>
-      )}
+          {line && (
+            <p style={{
+              fontFamily: F.read, fontSize: "15px", lineHeight: 1.5,
+              color: "rgba(255,255,255,.6)", margin: "8px 0 0",
+            }}>
+              {line}
+            </p>
+          )}
+        </div>
 
-      <Link
-        href="/log"
-        style={{
-          fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.white,
-          backgroundColor: C.orange, borderRadius: "12px", padding: "0 20px",
-          minHeight: "46px", display: "inline-flex", alignItems: "center",
-          justifyContent: "center", textDecoration: "none", marginTop: "18px",
-        }}
-      >
-        Add an update
-      </Link>
+        <Link
+          href="/log"
+          style={{
+            flex: "0 0 auto",
+            fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.white,
+            backgroundColor: C.orange, borderRadius: "12px", padding: "0 20px",
+            minHeight: "46px", display: "inline-flex", alignItems: "center",
+            justifyContent: "center", textDecoration: "none", whiteSpace: "nowrap",
+          }}
+        >
+          Add an update
+        </Link>
+      </div>
     </header>
   );
 }
