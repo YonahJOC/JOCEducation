@@ -12,6 +12,12 @@ import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
  * program three times a year should not have to learn a console to say they
  * ran it. A justonechesed.org sign-in is the whole permission.
  *
+ * Signed out, the form is still the page and still works — they fill it in,
+ * and the sign-in sits where the send button goes. What they typed is held in
+ * their own browser across the trip to Google and put back when they land
+ * here again. The alternative, a login in front of the form, is what made
+ * somebody think they had been sent the wrong link.
+ *
  * What they write becomes a SchoolActivity, which is the row the school's
  * history, the board and the school's own Today already read.
  */
@@ -25,68 +31,7 @@ export const dynamic = "force-dynamic";
 export default async function LogPage() {
   const session = await safeAuth();
   const me = session?.user;
-
-  // Signed out, or signed in with something that is not a JOC address.
-  //
-  // This is the form's own page with the sign-in standing in front of it, not
-  // a detour to the landing page: somebody who was handed this link came to
-  // write down one visit, and a marketing page with a login box reads as the
-  // wrong link. They should see what they are about to fill in.
-  if (!openForReview && !isStaffEmail(me?.email)) {
-    const wrongAccount = Boolean(me);
-    return (
-      <Shell>
-        <h1 style={{ ...pageTitle, margin: "0 0 8px" }}>What did you do at a school?</h1>
-        <p style={{ ...body, margin: "0 0 22px", maxWidth: "48ch" }}>
-          Write it down while it&rsquo;s fresh. It goes on the school&rsquo;s record and the office
-          picks it up — you don&rsquo;t need to tell anybody separately.
-        </p>
-
-        <LogVisitForm
-          // Nobody has signed in, so nobody is shown the list of schools.
-          schools={[]}
-          programs={[]}
-          myName=""
-          locked
-          signIn={
-            wrongAccount ? (
-              <>
-                <p style={{ ...body, fontSize: "16px", margin: "0 0 16px" }}>
-                  You&rsquo;re signed in as <strong style={{ color: C.ink }}>{me!.email}</strong>,
-                  which isn&rsquo;t a justonechesed.org address.
-                </p>
-                <form action={signOutAction}>
-                  <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
-                    Sign out
-                  </button>
-                </form>
-                <p style={{ ...hint, textAlign: "center" }}>
-                  Then open this link again with your JOC address.
-                </p>
-              </>
-            ) : isGoogleConfigured ? (
-              <>
-                <form action={signInWithGoogle}>
-                  <input type="hidden" name="next" value="/log" />
-                  <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
-                    <GoogleMark />
-                    Sign in to fill this in
-                  </button>
-                </form>
-                <p style={{ ...hint, textAlign: "center" }}>
-                  Your justonechesed.org address. Nothing is emailed to the school.
-                </p>
-              </>
-            ) : (
-              <p style={{ ...body, fontSize: "16px", color: C.orangeText, margin: 0 }}>
-                Google sign-in isn&rsquo;t switched on yet, so the form can&rsquo;t open.
-              </p>
-            )
-          }
-        />
-      </Shell>
-    );
-  }
+  const allowed = openForReview || isStaffEmail(me?.email);
 
   if (!isDatabaseConfigured()) {
     return (
@@ -115,7 +60,7 @@ export default async function LogPage() {
       select: { id: true, name: true },
     }).catch(() => []),
     // Their own last few, so nobody logs the same visit twice.
-    me?.id
+    allowed && me?.id
       ? prisma.schoolActivity.findMany({
           where: { authorId: me.id, type: "VISIT" },
           orderBy: { occurredAt: "desc" },
@@ -138,7 +83,13 @@ export default async function LogPage() {
         picks it up — you don&rsquo;t need to tell anybody separately.
       </p>
 
-      <LogVisitForm schools={schools} programs={programs} myName={myName} />
+      <LogVisitForm
+        schools={schools}
+        programs={programs}
+        myName={myName}
+        locked={!allowed}
+        signIn={allowed ? null : me ? <WrongAccount email={me.email ?? ""} /> : <SignIn />}
+      />
 
       {mine.length > 0 && (
         <section style={{ marginTop: "26px" }}>
@@ -155,6 +106,51 @@ export default async function LogPage() {
         </section>
       )}
     </Shell>
+  );
+}
+
+/** Where the send button goes until somebody has signed in. */
+function SignIn() {
+  if (!isGoogleConfigured) {
+    return (
+      <p style={{ ...body, fontSize: "16px", color: C.orangeText, margin: 0 }}>
+        Google sign-in isn&rsquo;t switched on yet, so this can&rsquo;t be sent.
+      </p>
+    );
+  }
+  return (
+    <>
+      <form action={signInWithGoogle}>
+        <input type="hidden" name="next" value="/log" />
+        <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
+          <GoogleMark />
+          Sign in to send it in
+        </button>
+      </form>
+      <p style={{ ...hint, textAlign: "center" }}>
+        Your justonechesed.org address. What you&rsquo;ve written stays here — we bring you
+        back to it. Nothing is emailed to the school.
+      </p>
+    </>
+  );
+}
+
+function WrongAccount({ email }: { email: string }) {
+  return (
+    <>
+      <p style={{ ...body, fontSize: "16px", margin: "0 0 14px", textAlign: "center" }}>
+        You&rsquo;re signed in as <strong style={{ color: C.ink }}>{email}</strong>, which
+        isn&rsquo;t a justonechesed.org address.
+      </p>
+      <form action={signOutAction}>
+        <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
+          Sign out
+        </button>
+      </form>
+      <p style={{ ...hint, textAlign: "center" }}>
+        Then open this link again with your JOC address.
+      </p>
+    </>
   );
 }
 
@@ -180,7 +176,7 @@ const hint: React.CSSProperties = {
 const googleButton: React.CSSProperties = {
   width: "100%", boxSizing: "border-box",
   display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-  fontFamily: F.ui, fontSize: "16px", fontWeight: 600, color: C.ink,
+  fontFamily: F.ui, fontSize: "17px", fontWeight: 600, color: C.ink,
   backgroundColor: C.white, border: `1.5px solid ${C.hairline}`,
   borderRadius: R.form, padding: "0 18px", minHeight: "52px",
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { logVisit, type LogResult } from "@/app/actions/log-visit";
 import { C, R, F, label, primaryButton } from "@/lib/joc-tokens";
 
@@ -21,10 +21,10 @@ export function LogVisitForm({
   programs: { id: number; name: string }[];
   myName: string;
   /**
-   * Nobody has signed in yet. The form is shown as it will be — same card,
-   * same fields, same order — with everything switched off and the sign-in
-   * standing where the send button goes. A separate login screen in front of
-   * it told somebody who was handed this link that they had the wrong link.
+   * Nobody has signed in yet. The form still works — they fill it in and the
+   * sign-in sits where the send button goes. What they type is kept in their
+   * own browser and put back when they come back from Google, so signing in
+   * costs them nothing they have already written.
    */
   locked?: boolean;
   /** The sign-in, which is its own form and so cannot be nested in this one. */
@@ -40,6 +40,64 @@ export function LogVisitForm({
 
   const school = schools.find((s) => s.id === schoolId) ?? null;
   const today = new Date().toISOString().slice(0, 10);
+
+  // What they wrote before signing in, carried across the trip to Google.
+  const box = useRef<HTMLDivElement>(null);
+  const live = useRef<HTMLFormElement>(null);
+  const [restoring, setRestoring] = useState<Record<string, string> | null>(null);
+
+  /** Every keystroke, because the trip to Google is a full page load. */
+  const keepDraft = () => {
+    const el = box.current;
+    if (!el) return;
+    const d: Record<string, string> = {};
+    el.querySelectorAll<HTMLInputElement>("[name]").forEach((f) => {
+      // The sign-in sits inside this card and carries fields of its own.
+      if (f.closest("form")) return;
+      if (f.value) d[f.name] = f.value;
+    });
+    try { sessionStorage.setItem(DRAFT, JSON.stringify(d)); } catch { /* private window */ }
+  };
+
+  // Back from Google. Read it once, clear it, and open whichever of the
+  // "it's not listed" / "somebody new" branches it needs before filling in.
+  //
+  // setState in an effect, deliberately: sessionStorage exists only in the
+  // browser, so reading it during render would make this markup disagree with
+  // the server's. It runs once, on the one page load that follows a sign-in.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (locked) return;
+    let raw: string | null = null;
+    try {
+      raw = sessionStorage.getItem(DRAFT);
+      sessionStorage.removeItem(DRAFT);
+    } catch { /* private window */ }
+    if (!raw) return;
+
+    let d: Record<string, string>;
+    try { d = JSON.parse(raw) as Record<string, string>; } catch { return; }
+
+    if (d.schoolId) setSchoolId(d.schoolId);
+    if (d.newSchoolName) setAdding(true);
+    if (d.contactId) setContactId(d.contactId);
+    if (d.contactName || d.contactReach) setNewContact(true);
+    setRestoring(d);
+  }, [locked]);
+
+  // One render later, with those branches on screen, put the values back.
+  useEffect(() => {
+    const el = live.current;
+    if (!restoring || !el) return;
+    for (const [name, value] of Object.entries(restoring)) {
+      // The two selects are controlled; setting them here would fight React.
+      if (name === "schoolId" || name === "contactId") continue;
+      const f = el.querySelector<HTMLInputElement>(`[name="${name}"]`);
+      if (f) f.value = value;
+    }
+    setRestoring(null);
+  }, [restoring]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (result?.ok) {
     return (
@@ -202,36 +260,28 @@ export function LogVisitForm({
     </>
   );
 
-  // Not signed in: the same card, the same fields, switched off, and the
-  // sign-in sitting where the send button goes.
+  // Not signed in: the same card and the same live fields, with the sign-in
+  // standing where the send button goes. Not a <form>, because the sign-in
+  // inside it is one and they cannot nest.
   if (locked) {
     return (
-      <div style={card}>
-        {/* Above the fields, not below them: on a phone the foot of this card
-            is off the screen, and a form you cannot type in with no visible
-            way forward is a dead end. */}
-        <div style={{
-          borderBottom: `1px solid ${C.hairline}`,
-          marginBottom: "20px", paddingBottom: "18px",
-        }}>
+      <div
+        ref={box}
+        onInput={keepDraft}
+        onChange={keepDraft}
+        style={{ ...card, display: "grid", gap: "18px" }}
+      >
+        {fields}
+
+        <div style={{ borderTop: `1px solid ${C.hairline}`, paddingTop: "18px" }}>
           {signIn}
         </div>
-
-        <fieldset
-          disabled
-          style={{
-            border: "none", margin: 0, padding: 0,
-            display: "grid", gap: "18px", opacity: 0.5,
-          }}
-        >
-          {fields}
-        </fieldset>
       </div>
     );
   }
 
   return (
-    <form key={again} action={action} style={{ ...card, display: "grid", gap: "18px" }}>
+    <form ref={live} key={again} action={action} style={{ ...card, display: "grid", gap: "18px" }}>
       {fields}
 
       {result && !result.ok && (
@@ -258,6 +308,9 @@ export function LogVisitForm({
     </form>
   );
 }
+
+/** Their own browser, their own words — never sent anywhere until they send it. */
+const DRAFT = "joc-visit-draft";
 
 const card: React.CSSProperties = {
   backgroundColor: C.white, borderRadius: "18px", padding: "22px 20px",
