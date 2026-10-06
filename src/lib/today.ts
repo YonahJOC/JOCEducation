@@ -132,7 +132,7 @@ export async function getToday(
           line: m.body.slice(0, 150),
           tone: "info",
           weight: 5100 + days(m.sentAt),
-          action: { label: "Open schools", href: "/admin/schools" },
+          action: { label: "Read and reply", href: "/admin/messages" },
         });
       }
 

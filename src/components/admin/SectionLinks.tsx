@@ -21,6 +21,7 @@ type SectionKey = "schools" | "material" | "money" | "access" | "programs";
 
 const SECTIONS: Record<SectionKey, { href: string; label: string; need: Capability }[]> = {
   schools: [
+    { href: "/admin/messages", label: "Messages", need: "schools" },
     { href: "/admin/schools/status", label: "Status board", need: "schools" },
     { href: "/admin/demos", label: "Demo requests", need: "demos" },
   ],

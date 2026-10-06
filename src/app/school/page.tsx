@@ -131,6 +131,29 @@ export default async function SchoolToday() {
         </div>
       )}
 
+      {/* A way to reach a person, from the page everybody opens first.
+          "Reply from JOC" could appear above with no way to reply to it. */}
+      <div style={{ ...rowCard, padding: "20px 22px", marginTop: "26px" }}>
+        <p style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 700, color: C.ink, margin: "0 0 4px" }}>
+          Need something?
+        </p>
+        <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.muted, margin: "0 0 14px", maxWidth: "58ch" }}>
+          Write to whoever looks after your programs at JOC. They read it on their console —
+          nothing is emailed either way.
+        </p>
+        <Link
+          href="/school/messages"
+          style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.blue,
+            backgroundColor: C.white, border: `2px solid ${C.blue}`,
+            borderRadius: "12px", padding: "0 18px", minHeight: "44px", textDecoration: "none",
+          }}
+        >
+          Message JOC
+        </Link>
+      </div>
+
       {runsAccount && (
         <p style={{ ...label, color: C.muted, margin: "26px 0 0" }}>
           <Link href="/school/plan" style={{ color: C.blue }}>Your plan</Link>

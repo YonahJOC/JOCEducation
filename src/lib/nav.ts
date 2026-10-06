@@ -72,6 +72,11 @@ export function jocNav(
   }
 
   if (can(user, "schools")) items.push({ label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history" });
+  // What the schools have written. A row on Today saying somebody wrote in
+  // needs somewhere to land, and the schools list is not it.
+  if (can(user, "schools") || can(user, "app_activity")) {
+    items.push({ label: "Messages", href: "/admin/messages", hint: "What schools have written in" });
+  }
   if (can(user, "programs") || can(user, "coordinators") || programs.length > 0) {
     items.push({ label: "Programs", href: "/admin/my-programs", hint: "Each program's own console" });
   }
@@ -101,7 +106,11 @@ export function jocNav(
   // In the order they go, not in the order they were pushed. Somebody who
   // holds every capability builds nine; the two that come out are the two
   // that are also listed on a hub, and People & access is on neither list.
-  const DROPPABLE = ["Calendar", "Chesed Cycles"];
+  // Messages goes last and only if still over: it is the newest item and the
+  // one with the most other ways in — a row on Today whenever a school
+  // writes, and the Schools hub. People & access has neither, which is why it
+  // is never in this list.
+  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages"];
   for (const label of DROPPABLE) {
     if (items.length <= 7) break;
     const i = items.findIndex((x) => x.label === label);
@@ -129,6 +138,11 @@ export function schoolNav(
 ): NavItem[] {
   const MAX = 7;
   const items: NavItem[] = [{ label: "Today", href: "/school", hint: "Where each program is up to" }];
+
+  // Messaging JOC lived on each program page, one level in from anywhere a
+  // school starts — so asking a question meant first deciding which program
+  // it was about, and "can you add another admin" belongs to none of them.
+  items.push({ label: "Messages", href: "/school/messages", hint: "Ask JOC anything" });
 
   for (const p of opts.programs ?? []) {
     items.push({ label: p.name, href: `/school/programs/${p.slug}`, dot: p.heroColor });
@@ -163,6 +177,7 @@ export function schoolNav(
   // Cycle progress first: it is a comparison, and a comparison is the thing
   // somebody looks at when nothing needs them. Ambassadors and Chesed
   // activity both live one click inside Today.
+  // Messages is never dropped: it is the only way a school can reach a person.
   for (const label of ["Cycle progress", "Ambassadors", "Chesed activity"]) {
     if (items.length <= MAX) break;
     const i = items.findIndex((it) => it.label === label);

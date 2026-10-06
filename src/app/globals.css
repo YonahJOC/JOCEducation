@@ -541,3 +541,34 @@ body {
     padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
   }
 }
+
+/* A conversation. Scrolls on its own so the composer stays put, the way a
+   messaging app behaves — a thread that pushes the box off the bottom of a
+   long page is a thread nobody answers. */
+.joc-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  min-height: 220px;
+  max-height: min(58vh, 560px);
+  padding: 4px 2px;
+  background: var(--joc-paper, #FBF9F4);
+  border-radius: 16px;
+}
+
+@media (max-width: 560px) {
+  .joc-conversation { max-height: 52vh; }
+}
+
+/* The console inbox: the list of schools beside the conversation, stacking
+   to one column where there is no room for two. */
+.joc-inbox {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .joc-inbox { grid-template-columns: 290px minmax(0, 1fr); gap: 22px; align-items: start; }
+}
