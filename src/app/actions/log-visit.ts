@@ -1,0 +1,158 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { safeAuth, openForReview } from "@/auth";
+import { isStaffEmail } from "@/lib/access";
+
+/**
+ * Somebody from JOC writing down what they did at a school.
+ *
+ * Anybody with a justonechesed.org address, and nothing else to grant. The
+ * alternative was a capability per person, which means somebody has to
+ * remember to switch it on the week a new person starts — and the thing that
+ * actually loses these records is friction, not permissions. Every entry
+ * carries the name of whoever wrote it.
+ *
+ * It writes a SchoolActivity, which is the row the school's history, the
+ * board's Last update column and the school's own Today already read. One
+ * record, four screens, no new plumbing.
+ *
+ * Nothing is sent to anybody.
+ */
+
+export type LogResult =
+  | { ok: true; schoolName: string; newSchool: boolean }
+  | { ok: false; error: string };
+
+/** A slug that will not collide with one of the thirty-nine. */
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+export async function logVisit(
+  _prev: LogResult | null,
+  form: FormData,
+): Promise<LogResult> {
+  if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
+
+  const session = await safeAuth();
+  const me = session?.user;
+
+  if (!openForReview && !isStaffEmail(me?.email)) {
+    return { ok: false, error: "Sign in with your justonechesed.org address first." };
+  }
+
+  const schoolId = String(form.get("schoolId") ?? "").trim();
+  const newSchoolName = String(form.get("newSchoolName") ?? "").trim();
+  const programId = Number(form.get("programId") ?? 0) || null;
+  const what = String(form.get("what") ?? "").trim();
+  const when = String(form.get("when") ?? "").trim();
+  const contactId = String(form.get("contactId") ?? "").trim();
+  const contactName = String(form.get("contactName") ?? "").trim();
+  const contactReach = String(form.get("contactReach") ?? "").trim();
+  const studentsRaw = String(form.get("students") ?? "").trim();
+
+  if (!schoolId && !newSchoolName) return { ok: false, error: "Which school was it?" };
+  if (!what) return { ok: false, error: "Write a line about what you did." };
+
+  const occurredAt = when && !Number.isNaN(Date.parse(when)) ? new Date(when) : new Date();
+  const students = studentsRaw && /^\d+$/.test(studentsRaw) ? Number(studentsRaw) : null;
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      let id = schoolId;
+      let name = "";
+      let madeSchool = false;
+
+      if (id) {
+        const s = await tx.school.findUnique({ where: { id }, select: { name: true } });
+        if (!s) throw new Error("gone");
+        name = s.name;
+      } else {
+        // A school nobody has recorded yet. Made as a prospect and flagged,
+        // rather than refused — a visit nobody can log is a visit nobody
+        // writes down, which is worse than a row somebody has to check.
+        let slug = slugify(newSchoolName);
+        if (await tx.school.findUnique({ where: { slug }, select: { id: true } })) {
+          slug = `${slug}-${Date.now().toString(36).slice(-4)}`;
+        }
+        const made = await tx.school.create({
+          data: { name: newSchoolName.slice(0, 120), slug, status: "PROSPECT" },
+          select: { id: true, name: true },
+        });
+        id = made.id;
+        name = made.name;
+        madeSchool = true;
+      }
+
+      // The person they dealt with, where they named a new one.
+      let contact = contactId || null;
+      if (!contact && contactName) {
+        const existing = await tx.schoolContact.count({ where: { schoolId: id } });
+        const made = await tx.schoolContact.create({
+          data: {
+            schoolId: id,
+            name: contactName.slice(0, 120),
+            email: contactReach.includes("@") ? contactReach.slice(0, 160) : null,
+            phone: contactReach.includes("@") ? null : contactReach.slice(0, 40) || null,
+            // The first person anybody names is the one to ring.
+            isPrimary: existing === 0,
+          },
+          select: { id: true },
+        });
+        contact = made.id;
+      }
+
+      const who = me?.name ?? me?.email ?? "Somebody at JOC";
+      const program = programId
+        ? await tx.programPage.findUnique({ where: { id: programId }, select: { name: true } })
+        : null;
+
+      const detail = [
+        what,
+        // Always labelled as an estimate. Nobody counted them.
+        students != null ? `About ${students} students, ${who.split(/\s+/)[0]}'s estimate.` : null,
+      ].filter(Boolean).join("\n\n");
+
+      await tx.schoolActivity.create({
+        data: {
+          schoolId: id,
+          type: "VISIT",
+          summary: program ? `${program.name} at ${name}` : `Visit to ${name}`,
+          detail,
+          occurredAt,
+          authorId: me?.id ?? undefined,
+          programId: programId ?? undefined,
+        },
+      });
+
+      if (madeSchool) {
+        await tx.schoolActivity.create({
+          data: {
+            schoolId: id,
+            type: "NOTE",
+            summary: `Added from a visit log by ${who} — needs checking`,
+            detail: "Nobody has confirmed this school's details. Check before it is used.",
+            occurredAt,
+            authorId: me?.id ?? undefined,
+          },
+        });
+      }
+
+      void contact;
+      return { name, madeSchool };
+    });
+
+    revalidatePath("/admin/interactions");
+    revalidatePath("/admin/schools/board");
+    return { ok: true, schoolName: result.name, newSchool: result.madeSchool };
+  } catch {
+    return { ok: false, error: "That didn't save. Try again in a moment." };
+  }
+}
