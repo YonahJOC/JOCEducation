@@ -23,7 +23,7 @@ import { C, F, label, datum } from "@/lib/joc-tokens";
  * beside the tool.
  */
 
-type Group = "status" | "account" | "network" | "list" | "owner";
+type Group = "none" | "status" | "account" | "network" | "list" | "owner";
 
 const LIST_LABEL: Record<string, string> = {
   UPLOADED: "Uploaded",
@@ -43,7 +43,7 @@ const ago = (d: Date | null): string => {
 };
 
 export function ClientsBoard({ board }: { board: Board }) {
-  const [group, setGroup] = useState<Group>("status");
+  const [group, setGroup] = useState<Group>("none");
   const [owner, setOwner] = useState("all");
   const [acc, setAcc] = useState("all");
   const [net, setNet] = useState("all");
@@ -128,6 +128,7 @@ export function ClientsBoard({ board }: { board: Board }) {
           ["all", "Any account"], ["with", "With an account"], ["without", "Without"],
         ]} />
         <Picker value={group} onChange={(v) => setGroup(v as Group)} options={[
+          ["none", "No grouping"],
           ["status", "By status"], ["account", "By account"], ["network", "By network"],
           ["list", "By student list"], ["owner", "By owner"],
         ]} />
@@ -184,6 +185,22 @@ export function ClientsBoard({ board }: { board: Board }) {
 
           {groups.map((g) => {
             const shut = collapsed.has(g.key);
+            if (g.key === "__all") {
+              return (
+                <tbody key={g.key}>
+                  {g.rows.map((r) => (
+                    <Row
+                      key={r.schoolId}
+                      r={r}
+                      board={board}
+                      onOpen={() => setOpen(r.schoolId)}
+                      act={act}
+                      error={error?.schoolId === r.schoolId ? error.text : null}
+                    />
+                  ))}
+                </tbody>
+              );
+            }
             return (
               <tbody key={g.key}>
                 <tr className="joc-board-group">
@@ -578,10 +595,18 @@ function groupRows(
   group: Group,
   board: Board,
 ): { key: string; label: string; tone: string; rows: BoardRow[] }[] {
+  if (group === "none") {
+    return [{ key: "__all", label: "", tone: "ink", rows }];
+  }
+
   if (group === "status") {
-    // Every status appears, even empty: a status with nobody on it is a fact
-    // about the board, and hiding it makes it look like it does not exist.
-    const out = board.statuses.map((s) => ({
+    // An empty status is worth seeing once somebody is using statuses at all.
+    // Before that it is five headers and no schools, so they stay hidden
+    // until at least one school has been given one.
+    const anyUsed = rows.some((r) => r.statusId);
+    const out = board.statuses
+      .filter((s) => anyUsed || rows.some((r) => r.statusId === s.id))
+      .map((s) => ({
       key: s.id,
       label: s.label,
       tone: s.tone,
