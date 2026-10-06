@@ -56,7 +56,29 @@ model School {
   /// would never have matched.
   appSchoolId String? @unique
 
+  /// Where the board puts this school. Null means nobody has said.
+  boardStatusId String?
+  boardStatus   BoardStatus? @relation(fields: [boardStatusId], references: [id], onDelete: SetNull)
+
+  /// Which network they belong to, where they belong to one.
+  network SchoolNetwork?
+
+  /// True for a JOC App client. The Monday import sets it, and the board
+  /// shows these and not the other thirty-odd schools in the portal.
+  onBoard Boolean @default(false)
+
+  /// Where their student list has got to, and why it is stuck.
+  studentListState StudentListState @default(NOT_SENT)
+  studentListNote  String?
+
+  boardFieldValues BoardFieldValue[]
+  boardCheckMarks  BoardCheckMark[]
+  studentLists     StudentListFile[]
+
   /// When the school sent the list of students taking part.
+  ///
+  /// Kept in step with studentListState: set when it becomes UPLOADED and
+  /// cleared on NOT_SENT, because the status board and Today both read it.
   studentListAt DateTime?
   /// When the JOC live screen went up in the building.
   liveScreenAt  DateTime?
@@ -464,6 +486,8 @@ model User {
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
+  boardChecksTicked  BoardCheckMark[]  @relation("BoardCheckBy")
+  studentListsUploaded StudentListFile[] @relation("StudentListUploader")
   sentInvitations  Invitation[]        @relation("Inviter")
   editedFields     SiteField[]         @relation("FieldEditor")
   publishedFields  SiteFieldHistory[]  @relation("FieldPublisher")
@@ -854,6 +878,7 @@ enum Role {
 
 enum SchoolType {
   DAY_SCHOOL
+  MIDDLE_SCHOOL
   YESHIVA
   SEMINARY
   CHEDER
@@ -970,7 +995,8 @@ model StoredFile {
   uploadedById String?
   uploadedBy   User?   @relation("UploadedFiles", fields: [uploadedById], references: [id], onDelete: SetNull)
 
-  reportPhotos EventReport[] @relation("ReportPhoto")
+  reportPhotos EventReport[]     @relation("ReportPhoto")
+  studentLists StudentListFile[] @relation("StudentList")
 
   createdAt DateTime @default(now())
 
@@ -2173,4 +2199,114 @@ model ProgramPost {
   updatedAt DateTime @updatedAt
 
   @@index([programId, kind, published])
+}
+
+// ─── The JOC App clients board ────────────────────────────────────────────
+// What the Monday board "JOC App Clients" held, in the portal. Everything a
+// coordinator could rename or reorder there they can rename or reorder here,
+// which is why the statuses, the extra columns and the one-off ticks are
+// rows rather than enums: a board nobody can change without a developer is a
+// board people go back to Monday for.
+
+/// Where a school is up to, in JOC's own words.
+model BoardStatus {
+  id    String @id @default(cuid())
+  label String
+  /// "green" | "orange" | "red" | "blue" | "ink" — a token, not a hex code,
+  /// so the board cannot drift away from the rest of the site.
+  tone  String @default("ink")
+  sort  Int    @default(0)
+
+  schools School[]
+
+  @@index([sort])
+}
+
+/// A column JOC owns. "Numbers" from Monday is the first.
+model BoardField {
+  id    String @id @default(cuid())
+  label String
+  sort  Int    @default(0)
+
+  values BoardFieldValue[]
+
+  @@index([sort])
+}
+
+model BoardFieldValue {
+  fieldId  String
+  schoolId String
+  value    String
+
+  field  BoardField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  school School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@id([fieldId, schoolId])
+  @@index([schoolId])
+}
+
+/// A one-off tick — "did we print a sign". Named once, becomes a column.
+model BoardCheck {
+  id    String @id @default(cuid())
+  label String
+  sort  Int    @default(0)
+
+  marks BoardCheckMark[]
+
+  @@index([sort])
+}
+
+model BoardCheckMark {
+  checkId  String
+  schoolId String
+  at       DateTime @default(now())
+  byId     String?
+  /// True when it came across from Monday rather than somebody ticking it
+  /// here, so the board can say "from Monday" instead of implying a date
+  /// somebody chose.
+  imported Boolean  @default(false)
+
+  check  BoardCheck @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  school School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  by     User?      @relation("BoardCheckBy", fields: [byId], references: [id], onDelete: SetNull)
+
+  @@id([checkId, schoolId])
+  @@index([schoolId])
+}
+
+/// Every student list ever uploaded, newest first.
+///
+/// These files hold minors' names. They are served only through
+/// /api/files/[id], which checks the Schools capability on the JOC side and
+/// the uploader's own school on the other. Their contents are never rendered
+/// on any screen.
+model StudentListFile {
+  id           String   @id @default(cuid())
+  schoolId     String
+  fileId       String
+  uploadedAt   DateTime @default(now())
+  uploadedById String?
+  /// True when a school uploaded it from their own portal.
+  fromSchool   Boolean  @default(false)
+  /// "Original", "Fixed", "Last year" — the names Monday used.
+  label        String?
+
+  school     School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  file       StoredFile @relation("StudentList", fields: [fileId], references: [id], onDelete: Cascade)
+  uploadedBy User?      @relation("StudentListUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  @@index([schoolId, uploadedAt])
+}
+
+enum StudentListState {
+  NOT_SENT
+  UPLOADED
+  /// JOC has it and cannot use it. studentListNote says why.
+  STUCK
+}
+
+enum SchoolNetwork {
+  YESHIVA_LEAGUE
+  ISRAEL
+  CANADA
 }

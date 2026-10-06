@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF9F4}
+a{color:#2D46AF} a:hover{color:#223892}
+input::placeholder,textarea::placeholder{color:#4A5A74;opacity:.8}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #10233F;outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative; display:flex; flex-direction:{{ shellDir }}; height:{{ rootH }}; background:#FBF9F4; font-family:Outfit,sans-serif; color:#10233F; overflow:hidden">
+
+  <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+    <aside style="width:236px; flex-shrink:0; background:#10233F; color:#FFFFFF; display:flex; flex-direction:column; padding:22px 0; box-sizing:border-box">
+      <div style="padding:0 20px 18px; border-bottom:1px solid rgba(255,255,255,.12); margin-bottom:16px">
+        <img src="public/brand/joc-wordmark-white.png" alt="JustOneChesed" style="height:19px; width:auto; display:block">
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#FFD8AE; margin:8px 0 0">Super admin</p>
+      </div>
+      <nav aria-label="Sections" style="display:flex; flex-direction:column">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+          <div role="link" style="display:flex; align-items:center; padding:10px 20px; min-height:44px; box-sizing:border-box; font-size:15px; font-weight:{{ n.weight }}; color:{{ n.fg }}; background:{{ n.bg }}; border-left:3px solid {{ n.bar }}; border-radius:0 12px 12px 0; margin-right:10px; cursor:pointer">{{ n.label }}</div>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto; padding:16px 20px 0; border-top:1px solid rgba(255,255,255,.12)">
+        <p style="font-size:13px; margin:0; color:rgba(255,255,255,.7)">yonah@justonechesed.org</p>
+      </div>
+    </aside>
+  </sc-if>
+
+  <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+    <header style="flex-shrink:0; background:#10233F; color:#FFFFFF; padding:12px 16px; display:flex; justify-content:space-between; align-items:baseline; gap:10px">
+      <img src="public/brand/joc-wordmark-white.png" alt="JustOneChesed" style="height:16px; width:auto; display:block">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#FFD8AE">Schools</span>
+    </header>
+  </sc-if>
+
+  <main style="flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; padding:{{ mainPad }}; gap:14px; box-sizing:border-box; overflow:{{ mainOverflow }}">
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px 20px; flex-wrap:wrap; flex-shrink:0">
+      <div style="min-width:0; flex:1 1 360px">
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0 0 4px">Schools · <a href="#" onClick="{{ noop }}" style="color:#2D46AF">Accounts</a> · <span style="color:#10233F">JOC App board</span> · <a href="#" onClick="{{ noop }}" style="color:#2D46AF">Status</a></p>
+        <h1 style="font-size:{{ titleSize }}; font-weight:600; letter-spacing:-0.03em; margin:0">{{ pageTitle }}</h1>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <sc-if value="{{ isBoard }}">
+          <button onClick="{{ toImport }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Import from Monday</button>
+          <button onClick="{{ addSchool }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer" style-hover="background:#223892">Add a school</button>
+        </sc-if>
+        <sc-if value="{{ isImport }}">
+          <button onClick="{{ toBoard }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Back to the board</button>
+        </sc-if>
+      </div>
+    </div>
+
+    <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-direction:column; gap:14px; flex:1; min-height:0">
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:14px 24px; flex-shrink:0">
+          <sc-for list="{{ figures }}" as="f" hint-placeholder-count="5">
+            <div style="display:flex; flex-direction:column; min-width:0">
+              <span style="font-size:24px; font-weight:800; letter-spacing:-0.02em; line-height:1.15; color:{{ f.fg }}">{{ f.value }}</span>
+              <span style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">{{ f.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; flex-shrink:0">
+          <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Find a school, contact or email" aria-label="Find a school" style="flex:1 1 220px; max-width:300px; font-family:Outfit,sans-serif; font-size:15px; color:#10233F; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; padding:0 14px; min-height:44px; box-sizing:border-box; outline:none" style-focus="border-color:#2D46AF">
+          <div role="group" aria-label="Owner" style="display:flex; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; padding:3px; gap:2px">
+            <sc-for list="{{ ownerTabs }}" as="o" hint-placeholder-count="3">
+              <button onClick="{{ o.pick }}" style="font-family:Outfit,sans-serif; font-size:14px; font-weight:700; border:none; border-radius:9px; min-height:38px; padding:0 12px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; white-space:nowrap">{{ o.label }}</button>
+            </sc-for>
+          </div>
+          <div role="group" aria-label="Account" style="display:flex; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; padding:3px; gap:2px">
+            <sc-for list="{{ accTabs }}" as="o" hint-placeholder-count="3">
+              <button onClick="{{ o.pick }}" style="font-family:Outfit,sans-serif; font-size:14px; font-weight:700; border:none; border-radius:9px; min-height:38px; padding:0 12px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; white-space:nowrap">{{ o.label }}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5">
+              <button onClick="{{ c.pick }}" style="font-family:Outfit,sans-serif; font-size:13px; font-weight:700; border:1px solid {{ c.border }}; border-radius:9999px; min-height:44px; padding:0 13px; cursor:pointer; background:{{ c.bg }}; color:{{ c.fg }}; white-space:nowrap">{{ c.label }} <span style="opacity:.7">{{ c.n }}</span></button>
+            </sc-for>
+          </div>
+          <button onClick="{{ openLabels }}" style="margin-left:auto; font-family:Outfit,sans-serif; font-size:14px; font-weight:700; color:#2D46AF; background:none; border:none; min-height:44px; padding:0 6px; cursor:pointer; text-decoration:underline">Edit statuses</button>
+          <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#4A5A74">Group by
+            <select value="{{ groupBy }}" onChange="{{ onGroup }}" style="font-family:Outfit,sans-serif; font-size:14px; font-weight:600; color:#10233F; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:10px; min-height:44px; padding:0 10px">
+              <option value="status">Status</option>
+              <option value="account">Account</option>
+              <option value="network">Network</option>
+              <option value="list">Student list</option>
+              <option value="owner">Owner</option>
+            </select>
+          </label>
+        </div>
+
+        <sc-if value="{{ wideTable }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1; min-height:0; overflow:auto; background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)">
+            <div style="min-width:1480px">
+              <div style="position:sticky; top:0; z-index:3; display:grid; grid-template-columns:{{ cols }}; background:#F4F7FD; border-bottom:1px solid #E3E6EF">
+                <sc-for list="{{ heads }}" as="h" hint-placeholder-count="12">
+                  <sc-if value="{{ h.fixed }}"><div style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; padding:11px 12px; position:{{ h.pos }}; left:0; background:#F4F7FD; z-index:{{ h.z }}; text-align:{{ h.align }}; white-space:nowrap">{{ h.label }}</div></sc-if>
+                  <sc-if value="{{ h.editable }}"><div style="padding:4px 6px; display:flex; align-items:center"><input value="{{ numLabel }}" onChange="{{ onNumLabel }}" placeholder="Name this column" aria-label="Column name" title="Click to rename this column" style="width:100%; min-width:0; font-family:Outfit,sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#2D46AF; background:transparent; border:1px dashed #B9C3DD; border-radius:8px; padding:0 6px; min-height:30px; outline:none; text-align:right" style-focus="border:1px solid #2D46AF; background:#FFFFFF"></div></sc-if>
+                </sc-for>
+              </div>
+
+              <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+                <div style="display:flex; flex-direction:column">
+                  <button onClick="{{ g.toggle }}" style="position:sticky; left:0; display:flex; align-items:center; gap:10px; width:max-content; border:none; background:none; padding:16px 14px 8px; cursor:pointer; font-family:Outfit,sans-serif; min-height:44px">
+                    <span style="font-size:13px; color:{{ g.fg }}; width:14px">{{ g.chev }}</span>
+                    <span style="font-size:17px; font-weight:700; color:{{ g.fg }}">{{ g.label }}</span>
+                    <span style="font-size:13px; color:#4A5A74">{{ g.count }}</span>
+                    <sc-if value="{{ g.hasNote }}"><span style="font-size:13px; color:#4A5A74">· {{ g.note }}</span></sc-if>
+                  </button>
+                  <sc-if value="{{ g.open }}">
+                    <div style="border-left:4px solid {{ g.fg }}; margin-left:6px">
+                      <sc-for list="{{ g.rows }}" as="r">
+                        <div onClick="{{ r.open }}" style="display:grid; grid-template-columns:{{ cols }}; border-bottom:1px solid #E3E6EF; background:{{ r.bg }}; cursor:pointer; min-height:48px" style-hover="background:#F4F7FD">
+                          <div style="position:sticky; left:0; z-index:1; background:{{ r.bg }}; padding:8px 12px; display:flex; align-items:center; gap:8px; border-right:1px solid #E3E6EF; min-width:0">
+                            <span style="font-size:15px; font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1">{{ r.name }}</span>
+                            <sc-if value="{{ r.hasUpdates }}"><span title="Updates" style="flex-shrink:0; font-size:11px; font-weight:700; color:#2D46AF; background:#E4E9F8; border-radius:9999px; padding:2px 7px">{{ r.updates }}</span></sc-if>
+                          </div>
+                          <div style="padding:6px 12px; display:flex; flex-direction:column; justify-content:center; min-width:0" onClick="{{ stop }}">
+                            <sc-if value="{{ r.hasAcct }}">
+                              <button onClick="{{ r.openAcct }}" style="display:flex; align-items:center; gap:6px; border:none; background:none; padding:0; cursor:pointer; font-family:Outfit,sans-serif; font-size:14px; font-weight:700; color:#2D46AF; text-decoration:underline; min-height:24px">Open account<sc-if value="{{ r.hasUnread }}"><span style="text-decoration:none; font-size:11px; font-weight:700; color:#10233F; background:#FA912D; border-radius:9999px; padding:1px 7px">{{ r.unread }}</span></sc-if></button>
+                              <span style="font-size:12px; color:{{ r.acctLineFg }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.acctLine }}</span>
+                            </sc-if>
+                            <sc-if value="{{ r.noAcct }}">
+                              <button onClick="{{ r.create }}" style="align-self:flex-start; font-family:Outfit,sans-serif; font-size:13px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:10px; min-height:36px; padding:0 10px; cursor:pointer; white-space:nowrap">Set up account</button>
+                            </sc-if>
+                          </div>
+                          <div style="padding:6px 8px; display:flex; align-items:center" onClick="{{ stop }}">
+                            <select value="{{ r.status }}" onChange="{{ r.setStatus }}" aria-label="Status" style="width:100%; font-family:Outfit,sans-serif; font-size:13px; font-weight:700; color:{{ r.stFg }}; background:{{ r.stBg }}; border:none; border-radius:9999px; min-height:34px; padding:0 10px; cursor:pointer; appearance:none; text-align:center">
+                              <sc-for list="{{ stOptions }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                            </select>
+                          </div>
+                          <div style="padding:8px 12px; display:flex; align-items:center; font-size:13px; font-weight:{{ r.ownerWeight }}; color:{{ r.ownerFg }}">{{ r.owner }}</div>
+                          <div style="padding:8px 12px; display:flex; align-items:center"><span style="font-size:12px; font-weight:700; color:{{ r.netFg }}; background:{{ r.netBg }}; border-radius:9999px; padding:4px 9px; white-space:nowrap">{{ r.network }}</span></div>
+                          <div style="padding:8px 12px; display:flex; align-items:center; font-size:13px; color:{{ r.typeFg }}; font-weight:{{ r.typeWeight }}">{{ r.type }}</div>
+                          <div style="padding:8px 12px; display:flex; align-items:center; justify-content:flex-end; font-size:14px; font-weight:{{ r.stuWeight }}; color:{{ r.stuFg }}; font-variant-numeric:tabular-nums">{{ r.students }}</div>
+                          <div style="padding:6px 6px; display:flex; align-items:center" onClick="{{ stop }}"><input value="{{ r.num }}" onChange="{{ r.setNum }}" aria-label="{{ numLabel }}" style="width:100%; min-width:0; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; color:#10233F; background:transparent; border:1px solid transparent; border-radius:8px; padding:0 6px; min-height:34px; outline:none; text-align:right" style-hover="border-color:#E3E6EF" style-focus="border-color:#2D46AF; background:#FFFFFF"></div>
+                          <div style="padding:6px 12px; display:flex; flex-direction:column; justify-content:center; min-width:0">
+                            <span style="font-size:14px; font-weight:{{ r.ctWeight }}; color:{{ r.ctFg }}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ r.contact }}</span>
+                            <sc-if value="{{ r.hasReach }}"><span style="font-size:12px; color:#4A5A74; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ r.reach }}</span></sc-if>
+                          </div>
+                          <div style="padding:6px 12px; display:flex; align-items:center" onClick="{{ stop }}">
+                            <button onClick="{{ r.togglePrinted }}" aria-pressed="{{ r.printedAria }}" aria-label="Sign printed" style="display:flex; align-items:center; gap:6px; border:none; background:none; cursor:pointer; min-height:36px; padding:0; font-family:Outfit,sans-serif; font-size:13px; font-weight:600; color:{{ r.prFg }}">
+                              <span style="width:18px; height:18px; border-radius:5px; border:2px solid {{ r.prBox }}; background:{{ r.prFill }}; color:#FFFFFF; font-size:12px; line-height:14px; text-align:center; box-sizing:border-box">{{ r.prTick }}</span>{{ r.printed }}
+                            </button>
+                          </div>
+                          <div style="padding:6px 12px; display:flex; align-items:center; gap:6px; min-width:0">
+                            <span style="font-size:12px; font-weight:700; color:{{ r.lsFg }}; background:{{ r.lsBg }}; border-radius:9999px; padding:4px 10px; white-space:nowrap">{{ r.listState }}</span>
+                            <sc-if value="{{ r.hasFiles }}"><span style="font-size:12px; color:#4A5A74; white-space:nowrap">{{ r.files }}</span></sc-if>
+                          </div>
+                          <div style="padding:8px 12px; display:flex; align-items:center; font-size:13px; color:{{ r.touchFg }}; font-weight:{{ r.touchWeight }}; white-space:nowrap">{{ r.touch }}</div>
+                          <div style="padding:8px 12px; display:flex; align-items:center; font-family:Newsreader,serif; font-size:14px; color:#10233F; min-width:0"><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ r.note }}</span></div>
+                        </div>
+                      </sc-for>
+                      <div style="display:grid; grid-template-columns:{{ cols }}; background:#FBF9F4; border-bottom:1px solid #E3E6EF; min-height:44px">
+                        <div style="position:sticky; left:0; background:#FBF9F4; padding:10px 12px; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; border-right:1px solid #E3E6EF">{{ g.count }}</div>
+                        <div style="padding:10px 12px; font-size:13px; color:#4A5A74">{{ g.acctSum }}</div>
+                        <div style="padding:14px 10px"><div style="display:flex; height:10px; border-radius:9999px; overflow:hidden; background:#E3E6EF"><sc-for list="{{ g.stBar }}" as="b"><span style="flex:{{ b.n }}; background:{{ b.c }}"></span></sc-for></div></div>
+                        <div></div><div></div><div></div>
+                        <div style="padding:10px 12px; text-align:right; display:flex; flex-direction:column; align-items:flex-end"><span style="font-size:14px; font-weight:800; font-variant-numeric:tabular-nums">{{ g.stuSum }}</span><span style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">{{ g.stuNote }}</span></div>
+                        <div></div><div></div>
+                        <div style="padding:10px 12px; font-size:13px; color:#4A5A74">{{ g.printedSum }}</div>
+                        <div style="padding:14px 12px"><div style="display:flex; height:10px; border-radius:9999px; overflow:hidden; background:#E3E6EF"><sc-for list="{{ g.lsBar }}" as="b"><span style="flex:{{ b.n }}; background:{{ b.c }}"></span></sc-for></div></div>
+                        <div></div><div></div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noRows }}"><p style="font-family:Newsreader,serif; font-size:17px; color:#4A5A74; padding:28px 18px; margin:0">{{ noRowsText }}</p></sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ cardList }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:10px; padding-bottom:20px">
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+              <div style="display:flex; flex-direction:column; gap:8px">
+                <button onClick="{{ g.toggle }}" style="display:flex; align-items:center; gap:8px; border:none; background:none; padding:8px 2px 0; min-height:44px; cursor:pointer; font-family:Outfit,sans-serif; text-align:left">
+                  <span style="font-size:13px; color:{{ g.fg }}; width:14px">{{ g.chev }}</span>
+                  <span style="font-size:17px; font-weight:700; color:{{ g.fg }}">{{ g.label }}</span>
+                  <span style="font-size:13px; color:#4A5A74">{{ g.count }}</span>
+                </button>
+                <sc-if value="{{ g.open }}">
+                  <div style="display:flex; flex-direction:column; gap:8px">
+                    <sc-for list="{{ g.rows }}" as="r">
+                      <button onClick="{{ r.open }}" style="display:flex; flex-direction:column; gap:8px; text-align:left; background:#FFFFFF; border:none; border-left:4px solid {{ g.fg }}; border-radius:14px; padding:12px 14px; box-shadow:0 2px 0 #E3E6EF; cursor:pointer; font-family:Outfit,sans-serif; color:#10233F">
+                        <span style="display:flex; justify-content:space-between; gap:10px; align-items:baseline; width:100%">
+                          <span style="font-size:17px; font-weight:700; min-width:0">{{ r.name }}</span>
+                          <span style="font-size:12px; font-weight:700; color:{{ r.stFg }}; background:{{ r.stBg }}; border-radius:9999px; padding:3px 9px; white-space:nowrap">{{ r.statusLabel }}</span>
+                        </span>
+                        <span style="display:flex; gap:6px; flex-wrap:wrap">
+                          <span style="font-size:12px; font-weight:700; color:{{ r.lsFg }}; background:{{ r.lsBg }}; border-radius:9999px; padding:3px 9px">List: {{ r.listState }}</span>
+                          <span style="font-size:12px; font-weight:700; color:{{ r.prFg }}; background:#F4F7FD; border-radius:9999px; padding:3px 9px">Sign {{ r.printedShort }}</span>
+                          <span style="font-size:12px; font-weight:700; color:{{ r.stuFg }}; background:#F4F7FD; border-radius:9999px; padding:3px 9px">{{ r.studentsShort }}</span>
+                        </span>
+                        <span style="font-size:13px; color:{{ r.ctFg }}">{{ r.contact }}</span>
+                        <sc-if value="{{ r.hasAcct }}"><span style="font-size:13px; font-weight:700; color:#1D6B37">Has an account · {{ r.acctLine }}<sc-if value="{{ r.hasUnread }}"> · <span style="color:#C96C00">{{ r.unread }}</span></sc-if></span></sc-if>
+                        <sc-if value="{{ r.noAcct }}"><span style="font-size:13px; font-weight:700; color:#C96C00">No account yet</span></sc-if>
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isImport }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:1080px; padding-bottom:30px">
+        <div style="background:#2D46AF; border-radius:20px; padding:30px 32px; color:#FFFFFF; position:relative; overflow:hidden">
+          <span style="position:absolute; right:-60px; top:-90px; width:220px; height:220px; border-radius:50%; background:#FA912D"></span>
+          <span style="position:absolute; right:150px; top:-40px; width:90px; height:90px; border-radius:50%; background:#4760C9"></span>
+          <p style="position:relative; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#FFD8AE; margin:0 0 8px">One time · replaces the Monday board</p>
+          <h2 style="position:relative; font-size:{{ heroSize }}; font-weight:800; letter-spacing:-0.03em; line-height:1.05; margin:0 0 10px; max-width:16ch">37 rows read. 34 match a school.</h2>
+          <p style="position:relative; font-size:16px; color:#C6CFF0; margin:0; max-width:60ch">From “JOC App Clients.xlsx”, exported from Monday's Main table. Nothing is written until you press Import, and nothing is ever sent to a school.</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:10px">
+          <sc-for list="{{ impBands }}" as="b" hint-placeholder-count="4">
+            <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden; display:flex; flex-direction:column">
+              <div style="background:{{ b.bg }}; padding:14px 18px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:{{ b.fg }}; margin:0">{{ b.label }}</p><p style="font-size:30px; font-weight:800; letter-spacing:-0.02em; margin:2px 0 0">{{ b.figure }}</p></div>
+              <p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#4A5A74; margin:0; padding:12px 18px 16px">{{ b.line }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); padding:20px; display:flex; flex-direction:column; gap:12px">
+          <h3 style="font-size:19px; font-weight:700; margin:0">Needs you: 3 rows didn't match by name</h3>
+          <sc-for list="{{ impMatch }}" as="m" hint-placeholder-count="3">
+            <div style="display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; padding:12px 0; border-top:1px solid #E3E6EF">
+              <div style="flex:1 1 220px; min-width:0"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; margin:0 0 2px">On Monday</p><p style="font-size:16px; font-weight:700; margin:0">{{ m.monday }}</p></div>
+              <span style="font-size:18px; color:#4A5A74">→</span>
+              <div style="flex:1 1 260px; min-width:0">
+                <select value="{{ m.pick }}" onChange="{{ m.onPick }}" aria-label="Match to" style="width:100%; font-family:Outfit,sans-serif; font-size:15px; font-weight:600; color:#10233F; background:#FFFFFF; border:2px solid #B9C3DD; border-radius:12px; min-height:46px; padding:0 12px">
+                  <sc-for list="{{ m.options }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+              <p style="flex:1 1 100%; font-family:Newsreader,serif; font-size:14px; color:{{ m.hintFg }}; margin:0">{{ m.hint }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); padding:20px; display:flex; flex-direction:column; gap:4px">
+          <h3 style="font-size:19px; font-weight:700; margin:0 0 8px">What each Monday column becomes</h3>
+          <sc-for list="{{ impCols }}" as="c" hint-placeholder-count="8">
+            <div style="display:grid; grid-template-columns:minmax(120px,1fr) minmax(160px,1.4fr) minmax(160px,1.6fr); gap:6px 16px; padding:10px 0; border-top:1px solid #E3E6EF; align-items:baseline">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; color:#10233F">{{ c.monday }}</span>
+              <span style="font-size:15px; font-weight:600; color:{{ c.toFg }}">{{ c.to }}</span>
+              <span style="font-family:Newsreader,serif; font-size:14px; line-height:1.45; color:{{ c.whatFg }}">{{ c.what }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background:#FFF0E0; border-radius:16px; padding:16px 20px">
+          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; color:#C96C00; margin:0"><strong style="font-family:Outfit,sans-serif">The student list files don't come across in the export.</strong> Monday's export carries links to them that expire, and they hold students' names. Upload each school's newest list on its row after importing. 33 schools need one.</p>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+          <button onClick="{{ doImport }}" style="font-family:Outfit,sans-serif; font-size:16px; font-weight:700; color:#FFFFFF; background:#2D46AF; border:2px solid #2D46AF; border-radius:12px; min-height:48px; padding:0 22px; cursor:pointer">Import 37 schools</button>
+          <span style="font-size:14px; color:#4A5A74">Updates 34, adds 3. A field already filled in the portal is kept, and each one that differs is listed on that school's record.</span>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{ creating }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCreate }}" style="position:absolute; inset:0; background:rgba(16,35,63,.28); z-index:10"></div>
+    <div role="dialog" aria-label="Create an account" style="position:absolute; top:70px; left:50%; transform:translateX(-50%); width:min(540px, calc(100% - 24px)); max-height:calc(100% - 100px); overflow-y:auto; background:#FFFFFF; border-radius:20px; box-shadow:0 20px 50px rgba(16,35,63,.25); z-index:11; padding:22px; box-sizing:border-box; display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px">
+        <div>
+          <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0 0 2px">{{ cr.school }}</p>
+          <h2 style="font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:0">Their account</h2>
+        </div>
+        <button onClick="{{ closeCreate }}" aria-label="Close" style="width:44px; height:44px; border:none; background:#F4F7FD; border-radius:12px; font-size:20px; color:#10233F; cursor:pointer; flex-shrink:0">×</button>
+      </div>
+      <sc-if value="{{ cr.notDone }}">
+        <div role="group" aria-label="New or existing" style="display:flex; background:#F4F7FD; border-radius:12px; padding:3px; gap:2px">
+          <sc-for list="{{ cr.modeTabs }}" as="t" hint-placeholder-count="2">
+            <button onClick="{{ t.pick }}" style="flex:1; font-family:Outfit,sans-serif; font-size:14px; font-weight:700; border:none; border-radius:9px; min-height:42px; padding:0 12px; cursor:pointer; background:{{ t.bg }}; color:{{ t.fg }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cr.showLink }}">
+        <div style="display:flex; flex-direction:column; gap:14px">
+          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; color:#4A5A74; margin:0">If someone at the school already signed up and made an account, connect it to this row instead of making a second one. The account id is on their Account page, under the school's name.</p>
+          <label style="display:flex; flex-direction:column; gap:6px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Account id</span>
+            <input value="{{ cr.acctId }}" onChange="{{ cr.onAcctId }}" placeholder="sch_…" style="font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:500; color:#10233F; border:2px solid #B9C3DD; border-radius:12px; padding:0 13px; min-height:46px; outline:none" style-focus="border-color:#2D46AF"></label>
+          <sc-if value="{{ cr.lkFound }}">
+            <div style="background:#E3F4E8; border-radius:12px; padding:12px 14px; display:flex; flex-direction:column; gap:2px">
+              <span style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1D6B37">Found</span>
+              <span style="font-size:17px; font-weight:700">{{ cr.lkSchool }}</span>
+              <span style="font-size:14px; color:#1D6B37">{{ cr.lkLine }}</span>
+            </div>
+            <p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#4A5A74; margin:0">Connecting joins this account to {{ cr.school }} on the board. The account keeps its people, its logins and anything it already sent. Its name stays as they typed it.</p>
+          </sc-if>
+          <sc-if value="{{ cr.lkMissing }}"><p style="font-size:14px; font-weight:600; color:#C96C00; margin:0">No account has the id “{{ cr.lkTyped }}”. Check it against their Account page.</p></sc-if>
+          <sc-if value="{{ cr.lkTaken }}"><p style="font-size:14px; font-weight:600; color:#A3261A; margin:0">That account is already connected to another school on the board.</p></sc-if>
+          <button onClick="{{ cr.link2 }}" style="align-self:flex-start; font-family:Outfit,sans-serif; font-size:16px; font-weight:700; color:#FFFFFF; background:{{ cr.linkBg }}; border:none; border-radius:12px; min-height:48px; padding:0 22px; cursor:pointer">Connect this account</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cr.doneLink }}">
+        <div style="display:flex; flex-direction:column; gap:12px">
+          <div style="background:#E3F4E8; border-radius:12px; padding:12px 14px"><p style="font-size:16px; font-weight:700; color:#1D6B37; margin:0">Connected. {{ cr.school }} now opens {{ cr.lkSchool }}'s account.</p></div>
+          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0">Nobody at the school was told. Messages and the student list now reach the people on that account.</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <button onClick="{{ openAfterCreate }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Back to {{ cr.school }}</button>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cr.showNew }}">
+        <div style="display:flex; flex-direction:column; gap:14px">
+          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; color:#4A5A74; margin:0">One person runs the account at the school: their plan, their teachers, their student list and their messages. They can add the others themselves.</p>
+          <label style="display:flex; flex-direction:column; gap:6px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Who runs it there</span>
+            <input value="{{ cr.name }}" onChange="{{ cr.onName }}" placeholder="Their name" style="font-family:Outfit,sans-serif; font-size:16px; color:#10233F; border:2px solid #B9C3DD; border-radius:12px; padding:0 13px; min-height:46px; outline:none" style-focus="border-color:#2D46AF"></label>
+          <label style="display:flex; flex-direction:column; gap:6px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Their email</span>
+            <input value="{{ cr.email }}" onChange="{{ cr.onEmail }}" placeholder="name@school.org" style="font-family:Outfit,sans-serif; font-size:16px; color:#10233F; border:2px solid #B9C3DD; border-radius:12px; padding:0 13px; min-height:46px; outline:none" style-focus="border-color:#2D46AF"></label>
+          <sc-if value="{{ cr.hasDomain }}">
+            <button onClick="{{ cr.toggleDomain }}" style="display:flex; gap:10px; align-items:flex-start; text-align:left; border:1px solid #E3E6EF; background:#F4F7FD; border-radius:12px; padding:12px 14px; cursor:pointer; font-family:Outfit,sans-serif; color:#10233F">
+              <span style="flex-shrink:0; width:22px; height:22px; border-radius:6px; border:2px solid #2D46AF; background:{{ cr.domainBox }}; color:#FFFFFF; font-size:14px; line-height:18px; text-align:center; box-sizing:border-box">{{ cr.domainTick }}</span>
+              <span style="display:flex; flex-direction:column; gap:2px"><span style="font-size:15px; font-weight:700">Anyone with an @{{ cr.domain }} address joins as a teacher</span><span style="font-family:Newsreader,serif; font-size:14px; color:#4A5A74">So the school doesn't have to invite each teacher one by one.</span></span>
+            </button>
+          </sc-if>
+          <div style="background:#FFF0E0; border-radius:12px; padding:11px 14px"><p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#C96C00; margin:0"><strong style="font-family:Outfit,sans-serif">No email is sent.</strong> Email to schools stays off until JOC launches. You'll get a sign-up link to pass on yourself, by WhatsApp or however you usually reach them.</p></div>
+          <button onClick="{{ cr.go }}" style="align-self:flex-start; font-family:Outfit,sans-serif; font-size:16px; font-weight:700; color:#FFFFFF; background:{{ cr.goBg }}; border:none; border-radius:12px; min-height:48px; padding:0 22px; cursor:pointer">Create the account</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cr.doneNew }}">
+        <div style="display:flex; flex-direction:column; gap:12px">
+          <div style="background:#E3F4E8; border-radius:12px; padding:12px 14px"><p style="font-size:16px; font-weight:700; color:#1D6B37; margin:0">The account is made. Nobody has been told.</p></div>
+          <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.5; margin:0">Send {{ cr.first }} this link. When they sign up with {{ cr.email }}, they'll land in {{ cr.school }}'s portal as the person who runs it.</p>
+          <div style="display:flex; gap:8px; align-items:center; background:#F4F7FD; border-radius:12px; padding:6px 6px 6px 14px">
+            <span style="flex:1; min-width:0; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ cr.link }}</span>
+            <button onClick="{{ noop }}" style="font-family:Outfit,sans-serif; font-size:14px; font-weight:700; color:#FFFFFF; background:#2D46AF; border:none; border-radius:10px; min-height:44px; padding:0 14px; cursor:pointer">Copy link</button>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <button onClick="{{ openAfterCreate }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Back to {{ cr.school }}</button>
+            <button onClick="{{ closeCreate }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#4A5A74; background:none; border:none; min-height:46px; padding:0 8px; cursor:pointer">Done</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ editLabels }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLabels }}" style="position:absolute; inset:0; background:rgba(16,35,63,.28); z-index:10"></div>
+    <div role="dialog" aria-label="Edit statuses" style="position:absolute; top:90px; left:50%; transform:translateX(-50%); width:min(520px, calc(100% - 24px)); max-height:calc(100% - 120px); overflow-y:auto; background:#FFFFFF; border-radius:20px; box-shadow:0 20px 50px rgba(16,35,63,.25); z-index:11; padding:22px; box-sizing:border-box; display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px">
+        <div>
+          <h2 style="font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:0">Statuses</h2>
+          <p style="font-family:Newsreader,serif; font-size:15px; line-height:1.5; color:#4A5A74; margin:4px 0 0">Rename one and every school wearing it changes with it. Click the swatch to change its colour. The order here is the order of the groups on the board.</p>
+        </div>
+        <button onClick="{{ closeLabels }}" aria-label="Close" style="width:44px; height:44px; border:none; background:#F4F7FD; border-radius:12px; font-size:20px; color:#10233F; cursor:pointer; flex-shrink:0">×</button>
+      </div>
+      <sc-for list="{{ labelRows }}" as="l" hint-placeholder-count="4">
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 0; border-top:1px solid #E3E6EF">
+          <button onClick="{{ l.up }}" aria-label="Move up" style="width:36px; height:44px; border:none; background:none; color:#4A5A74; font-size:16px; cursor:pointer; flex-shrink:0">↑</button>
+          <button onClick="{{ l.cycle }}" aria-label="Change colour" style="width:44px; height:44px; border-radius:12px; border:2px solid {{ l.bar }}; background:{{ l.bg }}; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center"><span style="width:16px; height:16px; border-radius:50%; background:{{ l.bar }}"></span></button>
+          <input value="{{ l.label }}" onChange="{{ l.onLabel }}" placeholder="Name this status" aria-label="Status name" style="flex:1; min-width:0; font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:{{ l.fg }}; background:{{ l.bg }}; border:none; border-radius:9999px; padding:0 14px; min-height:44px; outline:none">
+          <span style="font-size:12px; color:#4A5A74; white-space:nowrap; width:72px; text-align:right">{{ l.used }}</span>
+          <sc-if value="{{ l.canRemove }}"><button onClick="{{ l.remove }}" style="font-family:Outfit,sans-serif; font-size:13px; font-weight:700; color:#A3261A; background:none; border:none; min-height:44px; cursor:pointer; width:60px">Remove</button></sc-if>
+          <sc-if value="{{ l.cantRemove }}"><span style="width:60px"></span></sc-if>
+        </div>
+      </sc-for>
+      <button onClick="{{ addLabel }}" style="align-self:flex-start; font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Add a status</button>
+      <p style="font-size:13px; color:#4A5A74; margin:0">A status in use can't be removed. Move its schools to another one first.</p>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ close }}" style="position:absolute; inset:0; background:rgba(16,35,63,.28); z-index:10"></div>
+    <aside aria-label="{{ d.name }}" style="position:absolute; top:0; right:0; bottom:0; width:{{ drawerW }}; background:#FBF9F4; z-index:11; display:flex; flex-direction:column; box-shadow:-12px 0 30px rgba(16,35,63,.14)">
+      <div style="background:#FFFFFF; border-bottom:1px solid #E3E6EF; padding:14px 18px; display:flex; gap:12px; align-items:flex-start">
+        <div style="flex:1; min-width:0">
+          <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0 0 2px">{{ d.kicker }}</p>
+          <h2 style="font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:0">{{ d.name }}</h2>
+        </div>
+        <button onClick="{{ close }}" aria-label="Close" style="width:44px; height:44px; border:none; background:#F4F7FD; border-radius:12px; font-size:20px; color:#10233F; cursor:pointer; flex-shrink:0">×</button>
+      </div>
+      <div style="flex:1; min-height:0; overflow-y:auto; padding:16px 18px 24px; display:grid; grid-auto-rows:max-content; align-content:start; gap:14px">
+
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+          <div style="display:flex; flex-wrap:wrap">
+            <div style="flex:1 1 120px; background:{{ d.acctBand }}; padding:14px 18px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:{{ d.acctBandFg }}; margin:0">Account</p><p style="font-size:26px; font-weight:800; letter-spacing:-0.02em; margin:2px 0 0">{{ d.acctFigure }}</p></div>
+            <div style="flex:100 1 220px; padding:12px 16px; display:flex; flex-direction:column; justify-content:center; gap:2px">
+              <p style="font-size:15px; font-weight:700; margin:0">{{ d.acctTitle }}</p>
+              <p style="font-family:Newsreader,serif; font-size:14px; color:#4A5A74; margin:0">{{ d.acctSub }}</p>
+            </div>
+          </div>
+          <div style="border-top:1px solid #E3E6EF; padding:12px 16px; display:flex; gap:8px; flex-wrap:wrap">
+            <sc-if value="{{ d.hasAcct }}">
+              <a href="#" onClick="{{ noop }}" style="display:flex; align-items:center; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border-radius:12px; min-height:46px; padding:0 16px; text-decoration:none">Open their account</a>
+              <a href="#" onClick="{{ noop }}" style="display:flex; align-items:center; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 14px; text-decoration:none; box-sizing:border-box">{{ d.msgLabel }}</a>
+              <a href="#" onClick="{{ noop }}" style="display:flex; align-items:center; font-size:14px; font-weight:700; min-height:46px; padding:0 4px">See their portal</a>
+            </sc-if>
+            <sc-if value="{{ d.noAcct }}">
+              <button onClick="{{ d.create }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Create their account</button>
+              <button onClick="{{ d.connect }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Connect an existing one</button>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px">
+          <label style="display:flex; flex-direction:column; gap:4px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Status</span>
+            <select value="{{ d.status }}" onChange="{{ d.setStatus }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:{{ d.stFg }}; background:{{ d.stBg }}; border:none; border-radius:12px; min-height:46px; padding:0 12px">
+              <sc-for list="{{ stOptions }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+            </select></label>
+          <label style="display:flex; flex-direction:column; gap:4px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Owner at JOC</span>
+            <select value="{{ d.owner }}" onChange="{{ d.setOwner }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:600; color:{{ d.ownerFg }}; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; min-height:46px; padding:0 12px">
+              <option value="">Nobody yet</option><option value="Yonah">Yonah</option><option value="Gilad">Gilad Fishberger</option><option value="Dalia">Dalia</option>
+            </select></label>
+          <label style="display:flex; flex-direction:column; gap:4px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Network</span>
+            <select value="{{ d.net }}" onChange="{{ d.setNet }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:600; color:#10233F; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; min-height:46px; padding:0 12px">
+              <option value="">Not recorded</option><option value="Y">Yeshiva League</option><option value="I">Israel</option><option value="C">Canada</option>
+            </select></label>
+          <label style="display:flex; flex-direction:column; gap:4px"><span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74">Type</span>
+            <select value="{{ d.type }}" onChange="{{ d.setType }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:600; color:#10233F; background:#FFFFFF; border:1px solid #E3E6EF; border-radius:12px; min-height:46px; padding:0 12px">
+              <option value="">Not recorded</option><option value="H">High school</option><option value="M">Middle school</option>
+            </select></label>
+        </div>
+
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+          <div style="display:flex; align-items:stretch; flex-wrap:wrap">
+            <div style="flex:1 1 140px; background:{{ d.lsBg }}; padding:14px 18px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:{{ d.lsFg }}; margin:0">Student list</p><p style="font-size:26px; font-weight:800; letter-spacing:-0.02em; margin:2px 0 0">{{ d.listState }}</p></div>
+            <div style="flex:100 1 200px; padding:12px 16px; display:flex; flex-direction:column; justify-content:center; gap:2px">
+              <p style="font-size:15px; font-weight:700; margin:0">{{ d.listLine }}</p>
+              <p style="font-family:Newsreader,serif; font-size:14px; color:{{ d.listSubFg }}; margin:0">{{ d.listSub }}</p>
+            </div>
+          </div>
+          <div style="border-top:1px solid #E3E6EF; padding:6px 16px 4px">
+            <sc-for list="{{ d.versions }}" as="v" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #E3E6EF">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; color:{{ v.tagFg }}; background:{{ v.tagBg }}; border-radius:6px; padding:3px 7px; flex-shrink:0">{{ v.tag }}</span>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column"><span style="font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ v.file }}</span><span style="font-size:12px; color:#4A5A74">{{ v.meta }}</span></span>
+                <a href="#" onClick="{{ noop }}" style="font-size:14px; font-weight:700; min-height:44px; display:flex; align-items:center">Open</a>
+              </div>
+            </sc-for>
+            <sc-if value="{{ d.noVersions }}"><p style="font-family:Newsreader,serif; font-size:15px; color:#C96C00; margin:10px 0">No list on file. The school hasn't sent one, or it's still in Monday.</p></sc-if>
+          </div>
+          <div style="padding:12px 16px 16px; display:flex; flex-direction:column; gap:10px">
+            <sc-if value="{{ d.stuck }}">
+              <div style="background:#FBE6E3; border-radius:12px; padding:10px 14px"><p style="font-size:14px; font-weight:700; color:#A3261A; margin:0">Stuck · {{ d.stuckWhy }}</p><p style="font-family:Newsreader,serif; font-size:14px; color:#A3261A; margin:2px 0 0">Waiting on the school to send a fixed list.</p></div>
+            </sc-if>
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+              <button onClick="{{ noop }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">Upload a newer list</button>
+              <button onClick="{{ d.toggleStuck }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:#2D46AF; background:#FFFFFF; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 16px; cursor:pointer">{{ d.stuckBtn }}</button>
+            </div>
+            <p style="font-size:12px; color:#4A5A74; margin:0">Lists hold students' names. Only people with the Schools permission can open them, and they are never shown to the school's other teachers.</p>
+          </div>
+        </div>
+
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); padding:6px 16px">
+          <sc-for list="{{ d.facts }}" as="f" hint-placeholder-count="5">
+            <div style="display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid #E3E6EF; align-items:baseline">
+              <span style="font-size:14px; color:#4A5A74; flex-shrink:0">{{ f.k }}</span>
+              <span style="font-size:14px; font-weight:600; color:{{ f.fg }}; text-align:right; word-break:break-word">{{ f.v }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; padding:12px 0">
+            <sc-if value="{{ d.hasWa }}"><a href="#" onClick="{{ noop }}" style="display:flex; align-items:center; font-size:14px; font-weight:700; color:#1D6B37; background:#E3F4E8; border-radius:12px; min-height:44px; padding:0 14px; text-decoration:none">WhatsApp {{ d.contactFirst }}</a></sc-if>
+            <sc-if value="{{ d.hasEmail }}"><a href="#" onClick="{{ noop }}" style="display:flex; align-items:center; font-size:14px; font-weight:700; color:#2D46AF; background:#E4E9F8; border-radius:12px; min-height:44px; padding:0 14px; text-decoration:none">Copy email</a></sc-if>
+          </div>
+        </div>
+
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); padding:16px; display:flex; flex-direction:column; gap:10px">
+          <p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; margin:0">Updates</p>
+          <div style="display:flex; gap:8px; align-items:flex-end">
+            <textarea value="{{ draft }}" onChange="{{ onDraft }}" rows="2" placeholder="What happened? A call, a visit, what they asked for" aria-label="Write an update" style="flex:1; min-width:0; resize:vertical; font-family:Newsreader,serif; font-size:16px; line-height:1.45; color:#10233F; background:#FFFFFF; border:2px solid #B9C3DD; border-radius:12px; padding:9px 12px; outline:none" style-focus="border-color:#2D46AF"></textarea>
+            <button onClick="{{ post }}" style="font-family:Outfit,sans-serif; font-size:15px; font-weight:700; color:{{ postFg }}; background:{{ postBg }}; border:2px solid #2D46AF; border-radius:12px; min-height:46px; padding:0 14px; cursor:pointer">Log it</button>
+          </div>
+          <sc-for list="{{ d.log }}" as="l" hint-placeholder-count="2">
+            <div style="display:flex; gap:10px; align-items:flex-start; padding-top:10px; border-top:1px solid #E3E6EF">
+              <span style="font-size:11px; font-weight:700; letter-spacing:.08em; color:#2D46AF; background:#F4F7FD; border-radius:6px; padding:4px 6px; flex-shrink:0; width:62px; text-align:center">{{ l.kind }}</span>
+              <div style="min-width:0"><p style="font-family:Newsreader,serif; font-size:15px; line-height:1.45; margin:0; white-space:pre-wrap">{{ l.text }}</p><p style="font-size:12px; color:#4A5A74; margin:2px 0 0">{{ l.meta }}</p></div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ d.noLog }}"><p style="font-family:Newsreader,serif; font-size:15px; color:#C96C00; margin:0">Nothing logged yet.</p></sc-if>
+        </div>
+
+        <a href="#" onClick="{{ noop }}" style="font-size:15px; font-weight:700; min-height:44px; display:flex; align-items:center">Open the full school record: plan, logins, programs</a>
+      </div>
+    </aside>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;board&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;board&quot;,&quot;import&quot;],&quot;section&quot;:&quot;State&quot;},&quot;openSchool&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;&quot;,&quot;s33&quot;,&quot;s1&quot;,&quot;s12&quot;],&quot;section&quot;:&quot;State&quot;},&quot;createFor&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;&quot;,&quot;s12&quot;],&quot;section&quot;:&quot;State&quot;},&quot;createMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;new&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;new&quot;,&quot;link&quot;],&quot;section&quot;:&quot;State&quot;},&quot;editLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;State&quot;},&quot;height&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;}}">
+// name, status, net, type, students, contact, email, wa, list(U/S/-), files [orig, fixed, old], printed, num, note, mainAdmin
+const RAW = [
+  ['Magen David','active','Y','H',150,'Sara Ovadia','sovadia@mdy.org','+1 (917) 771-0825','U',[1,1,0],1,1],
+  ['Shalhevet','active','Y','H',237,'Tova Goldman','t.goldman@shalhevet.org','+1 (323) 327-1768','U',[1,1,1],1,4],
+  ['North Shore High School','active','Y','H',null,null,null,null,'U',[1,0,0],1,5],
+  ["Sha'arei Bina",'active','','',null,null,null,null,'U',[1,1,0],0,6],
+  ['Arizona Jewish Academy','waiting','Y','',null,null,null,null,'U',[0,1,0],1,8],
+  ['Moriah','active','Y','M',163,'Dov Levinson','dlevinson@moriah.org','+1 (224) 436-4053','U',[1,0,1],1,9],
+  ['BMA','active','Y','M',158,'Norma Reizz','nreiz@brauser.us','+1 (305) 467-9851','U',[1,1,1],1,10],
+  ['HAFTR High School','active','Y','H',381,'Eliana Samimi','alschechter@haftr.org','+1 (917) 690-1445','U',[1,1,0],1,14],
+  ['Shulamith','active','Y','H',150,'Esty Munk',null,'+1 (314) 698-0995','U',[1,1,0],1,16],
+  ['SKA','active','Y','H',null,null,null,null,'U',[1,1,0],1,20],
+  ['Ilan High School','active','Y','H',150,'Shoshana Koslowitz','skoslowitz@ilanhs.org',null,'U',[1,1,0],1,22],
+  ['Valley Torah Girls','waiting','I','H',null,'Talia Rosenbaum','trosenbaum@vths.org','+1 (818) 488-4898','U',[1,1,0],1,23],
+  ['Bruriah','active','Y','H',165,'Dina Lichtman','dlichtman@bruriah.org','+1 (908) 451-0276','U',[1,1,1],1,25],
+  ['MTA','waiting','Y','H',null,null,null,null,'U',[1,1,0],1,26],
+  ["Ma'ayanot",'active','Y','H',358,'Nina Kaminetsky','kaminetskyn@maayanot.org','+1 (201) 220-2368','U',[1,0,1],1,24],
+  ['ICJA','active','Y','H',277,'Alise Gold','lfiegelman@icja.org','+1 (773) 592-6037','U',[1,1,1],1,23],
+  ['YTA Boys','active','Y','H',59,'Tal Gilboa','talgilboa@live.ca','+972 53-521-4709','U',[1,0,0],1,25],
+  ['Fuchs Mizrachi','active','Y','H',127,'Rachel Glickman','racglickman@fuchs.org','+1 (216) 258-4260','U',[0,1,1],1,26],
+  ['YTA Girls','active','Y','H',39,'Desi Yishai','girlsyta@gmail.com','+972 50-706-3332','-',[0,0,0],1,28],
+  ['DRS','active','Y','H',402,'Kivi Naiman','knaiman@gmail.com','+1 (917) 952-0399','U',[1,1,1],1,30],
+  ['Azrieli Herzliya','active','C','H',null,'Rabbi David Wallach',null,'+1 438 869 2198','U',[1,2,0],1,34],
+  ['Ohr Moshe','waiting','I','H',null,null,null,null,'U',[0,0,0],1,37],
+  ['Naaleh','waiting','Y','H',206,'Aliza Davis','adavis@naalehhigh.org','+1 (516) 967-0589','U',[1,1,1],0,40],
+  ['JEC','active','Y','H',null,null,null,null,'U',[1,0,0],0,43],
+  ['Mazel High School','active','I','',null,null,null,null,'U',[1,1,0],0,null],
+  ['HAFTR Middle School','active','I','',null,null,null,null,'U',[0,0,0],1,null],
+  ['Kohelet','active','Y','H',121,'Jonny Gordon','jgordon@kohelet.org','+1 (610) 613-2981','U',[1,1,1],1,2],
+  ['Maimonide Montreal','active','I','',null,null,null,null,'U',[1,0,0],0,null],
+  ['NSHA (Middle)','active','Y','M',218,null,null,null,'U',[1,1,0],1,19],
+  ['Yeshivat Har Torah','active','Y','M',150,'Rabbi Yair Menchel',null,'+1 (516) 672-1325','-',[0,0,0],1,35],
+  ['Hanna Sachs','active','Y','H',104,'Chaya Krohn','ckrohn@hsby.org','+1 (773) 701-0607','U',[1,0,1],1,15],
+  ['Katz','active','Y','H',null,null,null,null,'U',[0,1,0],1,500],
+  ['YULA Boys','active','Y','H',258,'Rabbi Daniel Tamir','dtamir@yula.org','+1 (646) 821-3280','U',[1,1,1],1,7],
+  ['Ramaz','active','Y','H',375,'Nancy Block','blockn@ramaz.org','+1 (201) 803-7027','S',[1,1,1],1,27,'Missing gender'],
+  ['NYHS Seattle','active','I','',null,null,null,null,'U',[1,1,0],0,null],
+  ['CHAT','active','C','H',null,null,null,null,'-',[0,0,0],0,47],
+  ['HANC','active','Y','H',295,'Alyssa Schechter','esamimi@hanc.org','+1 (516) 582-7496','U',[1,1,0],1,13],
+];
+const TOUCH = { 'Ramaz': ['Call', '2 days ago', 'Asked for genders on the fixed list.'], 'Naaleh': ['Visit', '3 weeks ago', 'Sign not up yet; printing next week.'], 'Shalhevet': ['Call', 'yesterday', 'Live screen is up in the lobby.'], 'Moriah': ['Email', '5 days ago', 'Sent the newest list.'], 'DRS': ['Visit', '2 weeks ago', 'Store opening after Sukkos.'], 'Magen David': ['Call', '4 days ago', 'All good, 8th grade joining.'] };
+const PALETTE = [
+  { fg: '#1D6B37', bg: '#E3F4E8', bar: '#2FA457' },
+  { fg: '#C96C00', bg: '#FFF0E0', bar: '#FA912D' },
+  { fg: '#A3261A', bg: '#FBE6E3', bar: '#D8412F' },
+  { fg: '#2D46AF', bg: '#E4E9F8', bar: '#2D46AF' },
+  { fg: '#10233F', bg: '#E3E6EF', bar: '#4A5A74' },
+];
+const STATUSES = [
+  { id: 'offtrack', l: 'Off track', c: 2 },
+  { id: 'waiting', l: 'Waiting on school', c: 1 },
+  { id: 'contract', l: 'Waiting on contract', c: 3 },
+  { id: 'active', l: 'Active', c: 0 },
+];
+const NET = { Y: ['Yeshiva League', '#2D46AF', '#E4E9F8'], I: ['Israel', '#10233F', '#F4F7FD'], C: ['Canada', '#A3261A', '#FBE6E3'] };
+const TYPE = { H: 'High school', M: 'Middle school' };
+const LS = { U: ['Uploaded', '#1D6B37', '#E3F4E8', '#2FA457'], S: ['Stuck', '#A3261A', '#FBE6E3', '#D8412F'], '-': ['Not sent', '#C96C00', '#FFF0E0', '#FA912D'] };
+const COLS = '232px 178px 148px 104px 128px 112px 92px 64px 230px 112px 170px 120px minmax(160px,1fr)';
+
+// Specimen accounts. logins 0 = created, nobody has signed in yet.
+const ACCT = {
+  'Shalhevet': { logins: 2, admin: 'Tova Goldman', seen: 'yesterday', unread: 1 },
+  'Ramaz': { logins: 1, admin: 'Nancy Block', seen: '3 days ago', unread: 2 },
+  'Moriah': { logins: 3, admin: 'Dov Levinson', seen: 'today', unread: 0 },
+  'Magen David': { logins: 0, admin: 'Sara Ovadia', seen: null, unread: 0 },
+  'HANC': { logins: 1, admin: 'Alyssa Schechter', seen: '2 weeks ago', unread: 0 },
+};
+const CONSUMER = ['gmail.com', 'live.ca', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+
+function seed() {
+  return RAW.map((r, i) => ({ id: 's' + i, acct: ACCT[r[0]] || null, name: r[0], status: r[1], net: r[2], type: r[3], students: r[4], contact: r[5], email: r[6], wa: r[7], list: r[8], files: r[9], printed: !!r[10], num: r[11], note: r[12] || '', owner: i % 9 === 0 ? 'Yonah' : '', log: TOUCH[r[0]] ? [{ kind: TOUCH[r[0]][0].toUpperCase(), text: TOUCH[r[0]][2], meta: TOUCH[r[0]][1] + ' · Yonah' }] : [] }));
+}
+
+class Component extends DCLogic {
+  state = { numLabel: 'Numbers', acc: 'all', creating: null, statuses: STATUSES, editLabels: !!this.props.editLabels, schools: seed(), q: '', owner: 'all', net: 'all', groupBy: 'status', closed: {}, openId: this.props.openSchool || null, view: this.props.view || 'board', draft: '', w: typeof window !== 'undefined' ? window.innerWidth : 1440, match: { a: 'new', b: 'ilan', c: 'new' } };
+
+  componentDidUpdate(p) {
+    if (p.view !== this.props.view || p.openSchool !== this.props.openSchool) this.setState({ view: this.props.view || 'board', openId: this.props.openSchool || null });
+  }
+  componentDidMount() {
+    if (this.props.createFor) {
+      const s = this.state.schools.find((x) => x.id === this.props.createFor);
+      if (s) { this.startCreate(s, this.props.createMode || 'new'); if (this.props.createMode === 'link') setTimeout(() => this.setCreate({ acctId: 'sch_8f2k41' }), 0); }
+    }
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+
+  patch(id, o) { this.setState((s) => ({ schools: s.schools.map((x) => x.id === id ? Object.assign({}, x, o) : x) })); }
+
+  lookup(idRaw) {
+    const id = (idRaw || '').trim();
+    if (!id) return null;
+    if (/^sch_[a-z0-9]{6,}$/i.test(id)) return { found: true, school: 'Bruriah High School for Girls', admin: 'Dina Lichtman', logins: 1, seen: 'last week', linkedTo: null };
+    if (/^sch_taken/i.test(id)) return { found: true, taken: true };
+    return { found: false };
+  }
+  finishLink() {
+    const c = this.state.creating, r = this.lookup(c.acctId);
+    if (!r || !r.found) return;
+    this.patch(c.id, { acct: { logins: r.logins, admin: r.admin, seen: r.seen, unread: 0 } });
+    this.setCreate({ linked: true, done: true });
+  }
+
+  startCreate(s, mode) {
+    const dom = s.email ? s.email.split('@')[1] : '';
+    this.setState({ creating: { mode: mode || 'new', acctId: '', linked: false, id: s.id, name: s.contact || '', email: s.email || '', domain: dom && !CONSUMER.includes(dom) ? dom : '', useDomain: !!(dom && !CONSUMER.includes(dom)), done: false }, openId: null });
+  }
+  setCreate(o) { this.setState((st) => ({ creating: Object.assign({}, st.creating, o) })); }
+  finishCreate() {
+    const c = this.state.creating;
+    if (!c.name.trim() || !c.email.trim()) return;
+    this.patch(c.id, { acct: { logins: 0, admin: c.name.trim(), seen: null, unread: 0 } });
+    this.setCreate({ done: true });
+  }
+
+  setLabels(fn) { this.setState((s) => ({ statuses: fn(s.statuses) })); }
+
+  renderVals() {
+    const S = this.state;
+    const ST = {};
+    S.statuses.forEach((x) => { const p = PALETTE[x.c]; ST[x.id] = { l: x.l || 'Untitled status', fg: p.fg, bg: p.bg, bar: p.bar }; });
+    const stOptions = S.statuses.map((x) => ({ key: x.id, v: x.id, l: x.l || 'Untitled status' }));
+    const labelRows = S.statuses.map((x, i) => {
+      const p = PALETTE[x.c];
+      const used = S.schools.filter((s) => s.status === x.id).length;
+      return {
+        key: x.id, label: x.l, fg: p.fg, bg: p.bg, bar: p.bar, used: used ? `${used} school${used > 1 ? 's' : ''}` : 'Not used',
+        onLabel: (e) => { const v = e.target.value; this.setLabels((L) => L.map((y) => y.id === x.id ? Object.assign({}, y, { l: v }) : y)); },
+        cycle: () => this.setLabels((L) => L.map((y) => y.id === x.id ? Object.assign({}, y, { c: (y.c + 1) % PALETTE.length }) : y)),
+        canRemove: used === 0 && S.statuses.length > 1,
+        cantRemove: !(used === 0 && S.statuses.length > 1),
+        remove: () => this.setLabels((L) => L.filter((y) => y.id !== x.id)),
+        up: () => this.setLabels((L) => { if (i === 0) return L; const n = L.slice(); [n[i - 1], n[i]] = [n[i], n[i - 1]]; return n; }),
+      };
+    });
+    const narrow = S.w < 760;
+    const list = S.schools;
+    const q = S.q.trim().toLowerCase();
+    let rows = list.filter((s) => (S.net === 'all' || s.net === S.net)
+      && (S.acc === 'all' || (S.acc === 'yes' ? !!s.acct : !s.acct))
+      && (S.owner === 'all' || (S.owner === 'mine' ? s.owner === 'Yonah' : !s.owner))
+      && (!q || [s.name, s.contact, s.email].some((v) => v && v.toLowerCase().includes(q))));
+
+    const keyOf = {
+      account: (s) => !s.acct ? 'none' : s.acct.logins ? 'live' : 'invited',
+      status: (s) => s.status, network: (s) => s.net || 'none', list: (s) => s.list, owner: (s) => s.owner || 'nobody',
+    }[S.groupBy];
+    const order = {
+      status: S.statuses.map((x) => [x.id, x.l || 'Untitled status']),
+      account: [['live', 'Have an account, signed in'], ['invited', 'Account made, nobody signed in yet'], ['none', 'No account yet']],
+      network: [['Y', 'Yeshiva League'], ['I', 'Israel'], ['C', 'Canada'], ['none', 'Network not recorded']],
+      list: [['S', 'Student list stuck'], ['-', 'No student list'], ['U', 'Student list uploaded']],
+      owner: [['nobody', 'Nobody owns these yet'], ['Yonah', 'Yonah']],
+    }[S.groupBy];
+    const gColor = (k) => S.groupBy === 'account' ? ({ live: '#2FA457', invited: '#2D46AF', none: '#C96C00' })[k] : S.groupBy === 'status' ? ST[k].bar : S.groupBy === 'network' ? (NET[k] ? NET[k][1] : '#C96C00') : S.groupBy === 'list' ? LS[k][3] : k === 'nobody' ? '#C96C00' : '#2D46AF';
+
+    const row = (s) => {
+      const st = ST[s.status], ls = LS[s.list];
+      const nFiles = s.files.reduce((a, b) => a + b, 0);
+      const t = s.log[0];
+      const reach = [s.email, s.wa].filter(Boolean).join(' · ');
+      const a = s.acct;
+      return {
+        hasAcct: !!a, noAcct: !a,
+        acctLine: a ? (a.logins ? `${a.logins} login${a.logins > 1 ? 's' : ''} · seen ${a.seen}` : 'Nobody signed in yet') : '',
+        acctLineFg: a && !a.logins ? '#C96C00' : '#4A5A74',
+        unread: a && a.unread ? `${a.unread} new` : '', hasUnread: !!(a && a.unread),
+        openAcct: (e) => { e.stopPropagation(); this.setState({ openId: s.id, draft: '' }); },
+        create: (e) => { e.stopPropagation(); this.startCreate(s); },
+        key: s.id, name: s.name, bg: S.openId === s.id ? '#E4E9F8' : '#FFFFFF',
+        updates: s.log.length, hasUpdates: s.log.length > 0,
+        status: s.status, statusLabel: st.l, stFg: st.fg, stBg: st.bg,
+        setStatus: (e) => this.patch(s.id, { status: e.target.value }),
+        owner: s.owner || 'Nobody', ownerFg: s.owner ? '#10233F' : '#C96C00', ownerWeight: s.owner ? 600 : 600,
+        network: s.net ? NET[s.net][0] : 'Not recorded', netFg: s.net ? NET[s.net][1] : '#C96C00', netBg: s.net ? NET[s.net][2] : '#FFF0E0',
+        type: s.type ? TYPE[s.type] : 'Not recorded', typeFg: s.type ? '#10233F' : '#C96C00', typeWeight: s.type ? 400 : 600,
+        students: s.students != null ? s.students.toLocaleString() : 'Not recorded', stuFg: s.students != null ? '#10233F' : '#C96C00', stuWeight: s.students != null ? 600 : 600,
+        studentsShort: s.students != null ? s.students + ' students' : 'Students not recorded',
+        num: s.num != null ? String(s.num) : '',
+        setNum: (e) => this.patch(s.id, { num: e.target.value }),
+        contact: s.contact || 'Nobody named', ctFg: s.contact ? '#10233F' : '#C96C00', ctWeight: s.contact ? 600 : 600,
+        reach, hasReach: !!reach,
+        printed: s.printed ? 'Printed' : 'Not yet', printedShort: s.printed ? 'printed' : 'not printed', prFg: s.printed ? '#1D6B37' : '#C96C00',
+        prBox: s.printed ? '#2FA457' : '#B9C3DD', prFill: s.printed ? '#2FA457' : '#FFFFFF', prTick: s.printed ? '✓' : '', printedAria: s.printed ? 'true' : 'false',
+        togglePrinted: () => this.patch(s.id, { printed: !s.printed }),
+        listState: ls[0], lsFg: ls[1], lsBg: ls[2],
+        files: nFiles ? `${nFiles} file${nFiles > 1 ? 's' : ''}` : '', hasFiles: nFiles > 0,
+        touch: t ? t.meta.split(' · ')[0] : 'Never', touchFg: t ? '#10233F' : '#C96C00', touchWeight: t ? 400 : 600,
+        note: s.note || (t ? t.text : ''),
+        open: () => this.setState({ openId: s.id, draft: '' }),
+      };
+    };
+
+    const groups = order.map(([k, label]) => {
+      const gr = rows.filter((s) => keyOf(s) === k);
+      const open = !S.closed[S.groupBy + k];
+      const stu = gr.filter((s) => s.students != null);
+      return {
+        key: k, label, fg: gColor(k), count: `${gr.length} school${gr.length === 1 ? '' : 's'}`, open, chev: open ? '▾' : '▸',
+        hasNote: false, note: '',
+        toggle: () => this.setState((st) => ({ closed: Object.assign({}, st.closed, { [S.groupBy + k]: open }) })),
+        rows: gr.map(row), n: gr.length,
+        stBar: Object.keys(ST).map((x) => ({ key: x, n: gr.filter((s) => s.status === x).length, c: ST[x].bar })),
+        lsBar: Object.keys(LS).map((x) => ({ key: x, n: gr.filter((s) => s.list === x).length, c: LS[x][3] })),
+        stuSum: stu.reduce((a, s) => a + s.students, 0).toLocaleString(),
+        stuNote: stu.length === gr.length ? 'students' : `students · ${gr.length - stu.length} not recorded`,
+        printedSum: `${gr.filter((s) => s.printed).length} of ${gr.length}`,
+        acctSum: `${gr.filter((s) => s.acct).length} with an account`,
+      };
+    }).filter((g) => g.n > 0 || S.groupBy === 'status');
+
+    const all = list;
+    const stuAll = all.filter((s) => s.students != null);
+    const figures = [
+      { key: 'a', value: String(all.filter((s) => s.status === 'active').length), label: 'Active schools', fg: '#10233F' },
+      { key: 'b', value: stuAll.reduce((a, s) => a + s.students, 0).toLocaleString(), label: `Students · ${all.length - stuAll.length} schools not counted`, fg: '#10233F' },
+      { key: 'c', value: `${all.filter((s) => s.list === 'U').length} of ${all.length}`, label: 'Student lists uploaded', fg: '#10233F' },
+      { key: 'd', value: String(all.filter((s) => s.list !== 'U').length), label: 'Lists stuck or not sent', fg: '#C96C00' },
+      { key: 'e', value: `${all.filter((s) => s.acct).length} of ${all.length}`, label: 'Have an account', fg: '#10233F' },
+      { key: 'f', value: String(all.filter((s) => !s.owner).length), label: 'With nobody owning them', fg: '#C96C00' },
+    ];
+
+    const netCount = (k) => list.filter((s) => k === 'all' || s.net === k).length;
+    const chips = [['all', 'All'], ['Y', 'Yeshiva League'], ['I', 'Israel'], ['C', 'Canada']].map(([k, l]) => ({
+      key: k, label: l, n: netCount(k), bg: S.net === k ? '#10233F' : '#FFFFFF', fg: S.net === k ? '#FFFFFF' : '#10233F', border: S.net === k ? '#10233F' : '#E3E6EF',
+      pick: () => this.setState({ net: k }),
+    }));
+    const ownerTabs = [['all', 'Everyone'], ['mine', 'Mine'], ['nobody', "Nobody's"]].map(([k, l]) => ({
+      key: k, label: l, bg: S.owner === k ? '#10233F' : 'transparent', fg: S.owner === k ? '#FFFFFF' : '#10233F', pick: () => this.setState({ owner: k }),
+    }));
+
+    const accTabs = [['all', 'All'], ['yes', 'With an account'], ['no', 'Without']].map(([k, l]) => ({
+      key: k, label: l, bg: S.acc === k ? '#10233F' : 'transparent', fg: S.acc === k ? '#FFFFFF' : '#10233F', pick: () => this.setState({ acc: k }),
+    }));
+    const heads = ['School', 'Account', 'Status', 'Owner', 'Network', 'Type', 'Students', '__num', 'Main contact', 'Sign', 'Student list', 'Last update', 'Note'].map((l, i) => ({
+      key: l, label: l, editable: l === '__num', fixed: l !== '__num', pos: i === 0 ? 'sticky' : 'static', z: i === 0 ? 4 : 1, align: (i === 6 || i === 7) ? 'right' : 'left',
+    }));
+
+    // drawer
+    const o = S.schools.find((x) => x.id === S.openId);
+    let d = {};
+    if (o) {
+      const st = ST[o.status], ls = LS[o.list];
+      const tags = [['NEWEST', 'Fixed list', '#1D6B37', '#E3F4E8'], ['', 'Original list', '#4A5A74', '#F4F7FD'], ['OLD', 'Last year', '#4A5A74', '#F4F7FD']];
+      const versions = [];
+      const order2 = [1, 0, 2];
+      let newest = true;
+      order2.forEach((ix) => {
+        for (let n = 0; n < o.files[ix]; n++) {
+          const tg = tags[ix];
+          versions.push({ key: ix + '-' + n, tag: newest ? 'NEWEST' : ix === 2 ? 'OLD' : 'EARLIER', tagFg: newest ? '#1D6B37' : '#4A5A74', tagBg: newest ? '#E3F4E8' : '#F4F7FD', file: `${o.name} — ${tg[1].toLowerCase()}${n ? ' (' + (n + 1) + ')' : ''}.xlsx`, meta: ix === 2 ? '2025–26 · from Monday' : ix === 1 ? 'Uploaded 14 Sep · from Monday' : 'Uploaded 2 Sep · from Monday' });
+          newest = false;
+        }
+      });
+      const first = o.contact ? o.contact.replace(/^Rabbi /, '').split(' ')[0] : '';
+      const A = o.acct;
+      d = {
+        hasAcct: !!A, noAcct: !A,
+        acctFigure: A ? (A.logins ? `${A.logins} login${A.logins > 1 ? 's' : ''}` : 'Made') : 'None',
+        acctBand: A ? (A.logins ? '#E3F4E8' : '#E4E9F8') : '#FFF0E0', acctBandFg: A ? (A.logins ? '#1D6B37' : '#2D46AF') : '#C96C00',
+        acctTitle: A ? (A.logins ? `${A.admin} runs it · seen ${A.seen}` : `Made for ${A.admin}. Nobody has signed in yet.`) : `Nobody at ${o.name} can sign in yet`,
+        acctSub: A ? (A.logins ? 'They can read your messages and send their own student list.' : 'Messages you write wait until they do. Pass the sign-up link on yourself.') : 'Without an account they can’t read messages or upload a student list.',
+        msgLabel: A && A.unread ? `Message · ${A.unread} new` : 'Message them',
+        create: () => this.startCreate(o),
+        connect: () => this.startCreate(o, 'link'),
+        name: o.name, kicker: [o.net ? NET[o.net][0] : null, o.type ? TYPE[o.type] : null, o.num != null && o.num !== '' ? S.numLabel + ' ' + o.num : null].filter(Boolean).join(' · ') || 'JOC App client',
+        status: o.status, stFg: st.fg, stBg: st.bg, setStatus: (e) => this.patch(o.id, { status: e.target.value }),
+        owner: o.owner, ownerFg: o.owner ? '#10233F' : '#C96C00', setOwner: (e) => this.patch(o.id, { owner: e.target.value }),
+        net: o.net, setNet: (e) => this.patch(o.id, { net: e.target.value }),
+        type: o.type, setType: (e) => this.patch(o.id, { type: e.target.value }),
+        listState: ls[0], lsFg: ls[1], lsBg: ls[2],
+        listLine: o.list === 'U' ? 'Newest list is on file' : o.list === 'S' ? 'A list came in but can’t be used' : 'The school hasn’t sent a list',
+        listSub: o.list === 'S' ? o.note : versions.length ? `${versions.length} version${versions.length > 1 ? 's' : ''} kept, newest first` : 'Nothing uploaded',
+        listSubFg: o.list === 'S' ? '#A3261A' : '#4A5A74',
+        versions, noVersions: versions.length === 0,
+        stuck: o.list === 'S', stuckWhy: o.note || 'no reason given',
+        stuckBtn: o.list === 'S' ? 'Mark it usable' : 'Mark it stuck',
+        toggleStuck: () => this.patch(o.id, o.list === 'S' ? { list: 'U' } : { list: 'S', note: o.note || 'Missing gender' }),
+        facts: [
+          { key: 'stu', k: 'Students', v: o.students != null ? String(o.students) : 'Not recorded', fg: o.students != null ? '#10233F' : '#C96C00' },
+          { key: 'ct', k: 'Main contact', v: o.contact || 'Nobody named', fg: o.contact ? '#10233F' : '#C96C00' },
+          { key: 'em', k: 'Email', v: o.email || 'Not recorded', fg: o.email ? '#10233F' : '#C96C00' },
+          { key: 'wa', k: 'WhatsApp', v: o.wa || 'Not recorded', fg: o.wa ? '#10233F' : '#C96C00' },
+          { key: 'sg', k: 'Sign', v: o.printed ? 'Printed and up' : 'Not printed yet', fg: o.printed ? '#1D6B37' : '#C96C00' },
+        ],
+        hasWa: !!o.wa, hasEmail: !!o.email, contactFirst: first,
+        log: o.log.map((l, i) => Object.assign({ key: 'l' + i }, l)), noLog: o.log.length === 0,
+      };
+    }
+
+    const impBands = [
+      { key: 'm', label: 'Matched by name', figure: '34', line: 'Their Monday fields fill in what the portal hasn’t recorded.', bg: '#E3F4E8', fg: '#1D6B37' },
+      { key: 'n', label: 'Needs you', figure: '3', line: 'Close but not exact. Pick the school, or add it as a new one.', bg: '#FFF0E0', fg: '#C96C00' },
+      { key: 'd', label: 'Differ from the portal', figure: '6', line: 'Student counts that don’t agree. The portal’s figure is kept; Monday’s is noted.', bg: '#F4F7FD', fg: '#4A5A74' },
+      { key: 'a', label: 'Columns of your own', figure: '1', line: '“Numbers” comes in as a column you can rename and edit.', bg: '#E4E9F8', fg: '#2D46AF' },
+    ];
+    const opts = [{ key: 'new', v: 'new', l: 'Add as a new school' }, { key: 'ilan', v: 'ilan', l: 'Ilan High School (in the portal)' }, { key: 'nsha', v: 'nsha', l: 'North Shore Hebrew Academy (in the portal)' }, { key: 'haftr', v: 'haftr', l: 'HAFTR (in the portal)' }];
+    const impMatch = [['a', 'NSHA (Middle)', 'Probably the middle school of North Shore Hebrew Academy. The portal has one record for both.'], ['b', 'Ilan high School', 'Same name, different capitalisation.'], ['c', 'HAFTR Middle School', 'The portal has a single HAFTR record. Add the middle school separately if it signs its own contract.']].map(([k, m, hint]) => ({
+      key: k, monday: m, pick: S.match[k], options: opts, hint, hintFg: '#4A5A74',
+      onPick: (e) => this.setState((s) => ({ match: Object.assign({}, s.match, { [k]: e.target.value }) })),
+    }));
+    const impCols = [
+      ['Goal', 'School name', 'Matched to an existing record, or a new school.'],
+      ['Current Status', 'JOC App status: new', 'Active · Waiting on school (we asked, they haven’t answered) · Off track. Separate from the account status (Prospect → Active).'],
+      ['Owner', 'Owner at JOC', 'Empty on every Monday row, so every school starts with nobody.'],
+      ['Network', 'Network: new', 'Yeshiva League · Israel · Canada.'],
+      ['Type of Schools', 'School type', 'Middle school is added to the list. “n/a” imports as not recorded.'],
+      ['Location', 'City', 'Empty on Monday.'],
+      ['# of Students', 'Students', '22 filled. Kept where the portal already has a figure.'],
+      ['Contact · Email · Whatsapp', 'Main contact', 'One contact per school, marked Main. The WhatsApp number becomes the phone.'],
+      ['Main Admin', 'A second contact', 'Only Valley Torah Girls has one.'],
+      ['Sign Printed', 'Check: Sign printed', 'The first check. A dated tick; imported ones say “from Monday”.'],
+      ['Numbers', 'A column of your own: new', 'Comes in as it is, under the same header. Rename the header and edit the values on the board.'],
+      ['Student List', 'Student list state: new', 'Uploaded · Stuck · Not sent, plus the reason when stuck.'],
+      ['Student list · Fixed · Old · Newest', 'Student list files: new', 'Files don’t come across in the export. See below.'],
+      ['Comment', 'Note on the list', '“Missing gender” on Ramaz becomes the stuck reason.'],
+      ['Updates (the speech bubble)', 'History', 'Monday’s updates aren’t in the export. Paste the ones worth keeping.'],
+      ['#', 'Not imported', 'Only counted schools. The board does that itself.'],
+      ['List · Notes', 'Checks: new', 'One-off ticks. Name each one once, and it becomes a column on the board like Sign.'],
+    ].map(([monday, to, what], i) => ({ key: 'c' + i, monday, to, what, toFg: to.includes('new') ? '#2D46AF' : to === 'Not imported' ? '#C96C00' : '#10233F', whatFg: to === 'Not imported' ? '#C96C00' : '#4A5A74' }));
+
+    const NAV = ['Today', 'Schools', 'Messages', 'Programs', 'Calendar', 'Teaching material', 'People & access'];
+    return {
+      rootRef: (el) => { if (el && !this.ro && typeof ResizeObserver !== 'undefined') { this.ro = new ResizeObserver((e) => { const w = Math.round(e[0].contentRect.width); if (Math.abs(w - this.state.w) > 2) this.setState({ w }); }); this.ro.observe(el); } },
+      rootH: this.props.height || '100vh',
+      wide: !narrow, narrow, shellDir: narrow ? 'column' : 'row',
+      nav: NAV.map((l) => ({ key: l, label: l, weight: l === 'Schools' ? 700 : 400, fg: l === 'Schools' ? '#FFFFFF' : 'rgba(255,255,255,.8)', bg: l === 'Schools' ? 'rgba(255,255,255,.1)' : 'transparent', bar: l === 'Schools' ? '#FA912D' : 'transparent' })),
+      mainPad: narrow ? '16px 14px 0' : '26px 28px 22px', mainOverflow: narrow || S.view === 'import' ? 'auto' : 'hidden',
+      titleSize: narrow ? '24px' : '30px', heroSize: narrow ? '32px' : '44px',
+      pageTitle: S.view === 'import' ? 'Bring the Monday board in' : 'JOC App clients',
+      isBoard: S.view === 'board', isImport: S.view === 'import',
+      toImport: () => this.setState({ view: 'import', openId: null }), toBoard: () => this.setState({ view: 'board' }),
+      doImport: () => this.setState({ view: 'board' }), addSchool: () => {},
+      figures, q: S.q, onQ: (e) => this.setState({ q: e.target.value }), ownerTabs, chips,
+      groupBy: S.groupBy, onGroup: (e) => this.setState({ groupBy: e.target.value }),
+      wideTable: !narrow, cardList: narrow, cols: COLS, heads, groups,
+      noRows: rows.length === 0, noRowsText: q ? `No school, contact or email matches “${S.q}”.` : 'No school fits these filters.',
+      stop: (e) => e.stopPropagation(), noop: (e) => e.preventDefault(),
+      drawerOpen: !!o, d, drawerW: narrow ? '100%' : '460px', close: () => this.setState({ openId: null }),
+      draft: S.draft, onDraft: (e) => this.setState({ draft: e.target.value }),
+      postBg: S.draft.trim() ? '#2D46AF' : '#FFFFFF', postFg: S.draft.trim() ? '#FFFFFF' : '#2D46AF',
+      post: () => { const t = S.draft.trim(); if (!t || !o) return; this.patch(o.id, { log: [{ kind: 'NOTE', text: t, meta: 'just now · Yonah' }].concat(o.log) }); this.setState({ draft: '' }); },
+      impBands, impMatch, impCols,
+      numLabel: S.numLabel, onNumLabel: (e) => this.setState({ numLabel: e.target.value }),
+      accTabs, creating: !!S.creating,
+      cr: S.creating ? (() => {
+        const c = S.creating, sc = S.schools.find((x) => x.id === c.id);
+        const lk = this.lookup(c.acctId);
+        const isNew = c.mode === 'new', isLink = c.mode === 'link';
+        return {
+          modeTabs: [['new', 'Create a new one'], ['link', 'They already have one']].map(([k, l]) => ({ key: k, label: l, bg: c.mode === k ? '#10233F' : 'transparent', fg: c.mode === k ? '#FFFFFF' : '#10233F', pick: () => this.setCreate({ mode: k }) })),
+          showNew: isNew && !c.done, showLink: isLink && !c.done,
+          doneNew: c.done && !c.linked, doneLink: c.done && c.linked,
+          acctId: c.acctId, onAcctId: (e) => this.setCreate({ acctId: e.target.value }),
+          lkFound: !!(lk && lk.found && !lk.taken), lkMissing: !!(lk && !lk.found), lkTaken: !!(lk && lk.taken),
+          lkSchool: lk && lk.school, lkAdmin: lk && lk.admin, lkLine: lk && lk.found && !lk.taken ? `${lk.logins} login · ${lk.admin} runs it · seen ${lk.seen}` : '',
+          lkTyped: c.acctId.trim(),
+          link2: () => this.finishLink(),
+          linkBg: lk && lk.found && !lk.taken ? '#2D46AF' : '#B9C3DD',
+          school: sc.name, name: c.name, email: c.email, domain: c.domain, useDomain: c.useDomain, done: c.done, notDone: !c.done,
+          hasDomain: !!c.domain, first: (c.name || 'them').replace(/^Rabbi /, '').split(' ')[0],
+          link: `education.justonechesed.org/signup?email=${c.email}`,
+          onName: (e) => this.setCreate({ name: e.target.value }),
+          onEmail: (e) => { const v = e.target.value; const dm = v.split('@')[1] || ''; this.setCreate({ email: v, domain: dm && !CONSUMER.includes(dm) ? dm : '' }); },
+          toggleDomain: () => this.setCreate({ useDomain: !c.useDomain }),
+          domainBox: c.useDomain ? '#2D46AF' : '#FFFFFF', domainTick: c.useDomain ? '✓' : '',
+          go: () => this.finishCreate(),
+          goBg: c.name.trim() && c.email.trim() ? '#2D46AF' : '#B9C3DD',
+        };
+      })() : {},
+      closeCreate: () => this.setState({ creating: null }),
+      openAfterCreate: () => { const id = S.creating.id; this.setState({ creating: null, openId: id }); },
+      stOptions, labelRows, editLabels: S.editLabels,
+      openLabels: () => this.setState({ editLabels: true, openId: null }), closeLabels: () => this.setState({ editLabels: false }),
+      addLabel: () => this.setLabels((L) => L.concat([{ id: 'st' + Date.now(), l: '', c: 4 }])),
+    };
+  }
+}
+</script>
+</body>
+</html>

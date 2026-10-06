@@ -9,6 +9,8 @@ import { getSchoolToday } from "@/lib/school-today";
 import { C, F, R, label, datum, pageTitle, sectionHeading, rowCard } from "@/lib/joc-tokens";
 import { BandRow } from "@/components/ui/BandRow";
 import { currentSchoolId } from "@/lib/school-scope";
+import { prisma } from "@/lib/prisma";
+import { StudentListPanel } from "@/components/school/StudentListPanel";
 
 /**
  * Today, for a school (5a).
@@ -53,6 +55,17 @@ export default async function SchoolToday() {
 
   const { rows, programs } = await getSchoolToday(schoolId, { canReadReports });
 
+  // The student list is the account holder's job, not a teacher's: it is
+  // every student in the school.
+  const list = runsAccount
+    ? await prisma.school
+        .findUnique({
+          where: { id: schoolId },
+          select: { studentListState: true, studentListNote: true, studentListAt: true },
+        })
+        .catch(() => null)
+    : null;
+
   const heading = rows.length === 0
     ? "Nothing needs you this week"
     : `${rows.length} thing${rows.length === 1 ? "" : "s"} for you this week`;
@@ -65,6 +78,14 @@ export default async function SchoolToday() {
           ? "Nothing is waiting on anybody at your school. Your programs are below, with where each one has got to."
           : "Worst first. Everything below is something at your school, not something we are waiting to tell you."}
       </p>
+
+      {list && (
+        <StudentListPanel
+          state={list.studentListState}
+          note={list.studentListNote}
+          at={list.studentListAt}
+        />
+      )}
 
       {rows.length > 0 && (
         <div style={{ display: "grid", gap: "10px", marginBottom: "26px" }}>

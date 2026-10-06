@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#EEF0F4} a{color:#2D46AF} a:hover{color:#223892}</style>
+</helmet>
+<section data-screen-label="Turn 3 Monday" style="font-family:Outfit,sans-serif; color:#10233F; padding:56px; display:flex; flex-direction:column; gap:44px; width:max-content">
+
+  <header style="display:flex; flex-direction:column; gap:10px; max-width:980px">
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:#4A5A74; margin:0">Turn 3 · replacing the Monday board · /admin/schools/board</p>
+    <h1 style="font-size:44px; font-weight:700; letter-spacing:-0.03em; margin:0">Off Monday in two days</h1>
+    <p style="font-family:Newsreader,serif; font-size:20px; line-height:1.55; color:#4A5A74; margin:0; text-wrap:pretty">Most of what the Monday board holds is already in the portal, spread across the school record and the Status page. What the portal doesn't have is the board itself: one dense table of every school, grouped, filterable and editable in place. That's the main new screen. The rest is six new fields, versioned student lists, and a one-time import.</p>
+  </header>
+
+  <div style="display:grid; grid-template-columns:repeat(3, 420px); gap:20px">
+    <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+      <div style="background:#10233F; padding:16px 20px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#FFD8AE; margin:0">The CRM · JOC side</p><p style="font-size:24px; font-weight:800; color:#FFFFFF; margin:4px 0 0">What's new</p></div>
+      <div style="padding:14px 20px 18px; display:flex; flex-direction:column; gap:10px; font-family:Newsreader,serif; font-size:16px; line-height:1.5">
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">The board</strong> (<a href="#3a">3a</a>). Every JOC App school in one table: grouped by status, network, list or owner, with sums under each group and status, sign and Network editable in the cell.</p>
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">Owner</strong>. <code style="font-family:'IBM Plex Mono',monospace; font-size:13px">School.accountManagerId</code> already exists; nothing sets it. Add it to the row and the drawer, plus a Mine / Nobody's filter.</p>
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">New fields</strong>: JOC App status, network, middle school as a type, sign printed (dated), and student list state with the reason when it's stuck.</p>
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">Student list versions</strong> (<a href="#3b">3b</a>). Every upload is kept, newest first, instead of Monday's four file columns.</p>
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">The import</strong> (<a href="#3d">3d</a>). One time, from Monday's Excel export.</p>
+      </div>
+    </div>
+    <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+      <div style="background:#2D46AF; padding:16px 20px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#FFD8AE; margin:0">The link · both sides</p><p style="font-size:24px; font-weight:800; color:#FFFFFF; margin:4px 0 0">Where they meet</p></div>
+      <div style="padding:14px 20px 18px; display:flex; flex-direction:column; gap:10px; font-family:Newsreader,serif; font-size:16px; line-height:1.5">
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">Student list upload.</strong> A school admin uploads the list on their own portal, and it lands as the newest version on JOC's row. Marking a list stuck shows the school the reason ("Missing gender") and a button to send a fixed one.</p>
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">Messages</strong> (turn 1). A conversation per program, plus General. The board shows a count of unread messages on each school.</p>
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">Nothing is emailed.</strong> Both happen inside the portal, and every school still has nobody signed in, so for now JOC uploads the lists.</p>
+      </div>
+    </div>
+    <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+      <div style="background:#F4F7FD; padding:16px 20px; border-bottom:1px solid #E3E6EF"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; margin:0">The school portal</p><p style="font-size:24px; font-weight:800; margin:4px 0 0">Unchanged, plus one panel</p></div>
+      <div style="padding:14px 20px 18px; display:flex; flex-direction:column; gap:10px; font-family:Newsreader,serif; font-size:16px; line-height:1.5">
+        <p style="margin:0"><strong style="font-family:Outfit,sans-serif">"Your student list"</strong> on Today, for a school admin: whether JOC has a usable list, why not if not, and an upload button. Teachers never see it; it holds students' names.</p>
+        <p style="margin:0">Owner, network, the sign and the App status stay internal. A school never sees "Off track".</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px; max-width:1300px">
+    <h2 style="font-size:28px; font-weight:700; letter-spacing:-0.02em; margin:0">Monday column by column</h2>
+    <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden">
+      <div style="display:grid; grid-template-columns:240px 130px 380px 1fr; background:#F4F7FD; border-bottom:1px solid #E3E6EF">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; padding:11px 16px">On Monday</span>
+        <span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; padding:11px 16px">In the portal</span>
+        <span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; padding:11px 16px">Where</span>
+        <span style="font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4A5A74; padding:11px 16px">What changes</span>
+      </div>
+      <sc-for list="{{ gap }}" as="g" hint-placeholder-count="16">
+        <div style="display:grid; grid-template-columns:240px 130px 380px 1fr; border-bottom:1px solid #E3E6EF; align-items:baseline">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; padding:11px 16px">{{ g.m }}</span>
+          <span style="padding:9px 16px"><span style="font-size:12px; font-weight:700; color:{{ g.fg }}; background:{{ g.bg }}; border-radius:9999px; padding:4px 10px; white-space:nowrap">{{ g.state }}</span></span>
+          <span style="font-size:14px; padding:11px 16px; font-family:'IBM Plex Mono',monospace; color:#4A5A74">{{ g.where }}</span>
+          <span style="font-family:Newsreader,serif; font-size:15px; line-height:1.45; padding:11px 16px">{{ g.change }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start">
+    <div id="3a" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3a</span><span style="font-size:16px; font-weight:600">The board, grouped by status · 1440</span></div>
+      <div style="width:1440px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" height="900px" hint-size="1440px,900px"></dc-import></div>
+    </div>
+    <div id="3b" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3b</span><span style="font-size:16px; font-weight:600">A school opened: Ramaz, list stuck · 1440</span></div>
+      <div style="width:1440px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" open-school="s33" height="900px" hint-size="1440px,900px"></dc-import></div>
+    </div>
+    <div id="3g" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3g</span><span style="font-size:16px; font-weight:600">A school with no account: Bruriah · 1440</span></div>
+      <div style="width:1440px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" open-school="s12" height="900px" hint-size="1440px,900px"></dc-import></div>
+    </div>
+    <div id="3h" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3h</span><span style="font-size:16px; font-weight:600">Creating it · prefilled from the main contact · 1440</span></div>
+      <div style="width:1440px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" create-for="s12" height="900px" hint-size="1440px,900px"></dc-import></div>
+    </div>
+    <div id="3i" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3i</span><span style="font-size:16px; font-weight:600">Connecting an account they already made · 1440</span></div>
+      <div style="width:1440px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" create-for="s12" create-mode="link" height="900px" hint-size="1440px,900px"></dc-import></div>
+    </div>
+    <div id="3f" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3f</span><span style="font-size:16px; font-weight:600">Statuses are JOC's to edit · 1440</span></div>
+      <div style="width:1440px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" edit-labels="{{ true }}" height="900px" hint-size="1440px,900px"></dc-import></div>
+    </div>
+    <div id="3c" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3c</span><span style="font-size:16px; font-weight:600">Phone · 375</span></div>
+      <div style="width:375px; height:900px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" height="900px" hint-size="375px,900px"></dc-import></div>
+    </div>
+    <div id="3d" style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3d</span><span style="font-size:16px; font-weight:600">Import from Monday · 1440</span></div>
+      <div style="width:1440px; height:1500px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(16,35,63,.12)"><dc-import name="Clients Board" view="import" height="1500px" hint-size="1440px,1500px"></dc-import></div>
+    </div>
+    <div id="3e" style="display:flex; flex-direction:column; gap:10px; width:560px">
+      <div style="display:flex; gap:10px; align-items:center"><span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; background:#10233F; color:#FFFFFF; border-radius:6px; padding:3px 8px">3e</span><span style="font-size:16px; font-weight:600">The link: student list on the school's Today</span></div>
+      <div style="background:#FBF9F4; border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:10px; box-shadow:0 10px 30px rgba(16,35,63,.12)">
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden; display:flex; flex-wrap:wrap">
+          <div style="flex:1 1 150px; background:#FBE6E3; padding:14px 18px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#A3261A; margin:0">Student list</p><p style="font-size:28px; font-weight:800; letter-spacing:-0.02em; margin:2px 0 0">Needs a fix</p></div>
+          <div style="flex:100 1 240px; padding:14px 18px; display:flex; flex-direction:column; gap:4px">
+            <p style="font-size:19px; font-weight:700; margin:0">JOC can't use the list you sent</p>
+            <p style="font-family:Newsreader,serif; font-size:15px; color:#4A5A74; margin:0">It's missing each student's gender. Add a column and send it again.</p>
+          </div>
+          <div style="flex:1 1 180px; padding:14px 18px; display:flex; flex-direction:column; gap:6px; justify-content:center">
+            <span style="display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#FFFFFF; background:#2D46AF; border-radius:12px; min-height:46px">Send a fixed list</span>
+            <span style="font-size:13px; color:#2D46AF; text-decoration:underline; text-align:center">What the list needs</span>
+          </div>
+        </div>
+        <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05); overflow:hidden; display:flex; flex-wrap:wrap">
+          <div style="flex:1 1 150px; background:#E3F4E8; padding:14px 18px"><p style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1D6B37; margin:0">Student list</p><p style="font-size:28px; font-weight:800; letter-spacing:-0.02em; margin:2px 0 0">On file</p></div>
+          <div style="flex:100 1 240px; padding:14px 18px; display:flex; flex-direction:column; gap:4px">
+            <p style="font-size:19px; font-weight:700; margin:0">JOC has your list from 14 Sep</p>
+            <p style="font-family:Newsreader,serif; font-size:15px; color:#4A5A74; margin:0">New students this year? Send an updated one and it replaces this.</p>
+          </div>
+        </div>
+      </div>
+      <p style="font-family:Newsreader,serif; font-size:16px; line-height:1.55; margin:0">School admins only. The upload becomes the newest version on JOC's row and moves the state to Uploaded. JOC still decides whether it's usable.</p>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const N = { fg: '#2D46AF', bg: '#E4E9F8', state: 'New' };
+const H = { fg: '#1D6B37', bg: '#E3F4E8', state: 'Have it' };
+const P = { fg: '#C96C00', bg: '#FFF0E0', state: 'Half there' };
+const Q = { fg: '#A3261A', bg: '#FBE6E3', state: 'Unclear' };
+const ROWS = [
+  ['Goal (school)', H, 'School.name', 'Nothing.'],
+  ['Updates bubble', H, 'SchoolActivity', 'Count shown on the board row; log from the drawer.'],
+  ['Current Status', N, 'BoardStatus (JOC-editable) + School.boardStatusId', 'JOC names, colours, orders and adds its own statuses; a status in use can\u2019t be deleted. Ships with: Active · Waiting on school · Off track · Waiting on contract. Kept apart from School.status, the account pipeline. Waiting on school is set by hand for now; once schools have logins, a JOC message with no reply can set it on its own.'],
+  ['Owner', P, 'School.accountManagerId', 'The column exists and nothing sets it. Add a picker, and Mine / Nobody\u2019s filters.'],
+  ['Network', N, 'School.network', 'Yeshiva League · Israel · Canada. An enum, editable from the board.'],
+  ['Type of Schools', P, 'School.type', 'Add MIDDLE_SCHOOL to SchoolType.'],
+  ['Location', H, 'School.city / region', 'Nothing.'],
+  ['# of Students', H, 'School.studentCount', 'Summed per group, with how many schools aren\u2019t counted.'],
+  ['Contact · Email · Whatsapp', H, 'SchoolContact (isPrimary)', 'Phone shows as a WhatsApp link when it\u2019s a mobile.'],
+  ['Main Admin', P, 'User role SCHOOL_ADMIN', 'The board\u2019s Account column. With an account: open it, message them, see their portal. Without one: Create account, filled in from the main contact, and you get a sign-up link to pass on (no email sent).'],
+  ['Numbers', N, 'BoardField (new) + BoardFieldValue', 'A column JOC owns: the header is renamed in place and the values are edited in the cell. Imported as it is. The same mechanism gives JOC any future column without a developer.'],
+  ['Student List (status)', P, 'School.studentListState + studentListNote', 'studentListAt is a tick. Becomes Uploaded / Stuck / Not sent, with a reason.'],
+  ['Student list · Fixed · Old · Newest', N, 'StudentListFile', 'One row per upload on a StoredFile, newest first. Schools permission only.'],
+  ['Comment', H, 'studentListNote or activity', 'Ramaz\u2019s \u201cMissing gender\u201d is a stuck reason.'],
+  ['Groups: Active / Waiting out contracts', N, 'Board group-by', 'Grouping follows appStatus, network, list state or owner.'],
+  ['Summary row', N, 'Board group footer', 'Status mix, students summed, signs printed, lists uploaded.'],
+  ['Search · Person · Filter · Sort · Group by', N, 'Board toolbar', 'Search, owner, network, group by. Sorting is by name within a group.'],
+  ['#', H, 'Board figures', 'A running count of schools. The board counts them itself, so it isn\u2019t imported.'],
+  ['List \u2713 · Notes · Sign Printed', N, 'SchoolCheck (new)', 'One-off ticks like \u201cdid we print a sign\u201d. Instead of a new column each time, JOC names a check once and it gets its own column on the board, ticked and dated per school. Sign printed is the first check.'],
+];
+class Component extends DCLogic {
+  renderVals() {
+    return { gap: ROWS.map((r, i) => ({ key: 'g' + i, m: r[0], state: r[1].state, fg: r[1].fg, bg: r[1].bg, where: r[2], change: r[3] })) };
+  }
+}
+</script>
+</body>
+</html>

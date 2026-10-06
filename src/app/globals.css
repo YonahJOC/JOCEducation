@@ -624,3 +624,92 @@ body {
 @media (min-width: 760px) {
   .joc-only-sm { display: none !important; }
 }
+
+/* ── The JOC App clients board ────────────────────────────────────────────
+   Fourteen columns cannot wrap, so the table scrolls sideways with its
+   header and its school column pinned. Anything else turns a glance into a
+   scavenger hunt. */
+.joc-board-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 0 #E3E6EF, 0 6px 18px rgba(16, 35, 63, .05);
+}
+
+.joc-board {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: max-content;
+  min-width: 100%;
+  font-size: 14px;
+}
+
+.joc-board th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #F4F7FD;
+  text-align: left;
+  white-space: nowrap;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #4A5A74;
+  padding: 10px 14px;
+  border-bottom: 1px solid #E3E6EF;
+}
+
+.joc-board td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #E3E6EF;
+  vertical-align: top;
+  background: #fff;
+}
+
+/* The school column stays put while the rest scrolls under it. */
+.joc-board-sticky {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 1px 0 0 #E3E6EF;
+  min-width: 190px;
+}
+.joc-board th.joc-board-sticky { z-index: 4; background: #F4F7FD; }
+
+.joc-board tbody tr:hover td { background: #FBF9F4; }
+.joc-board tbody tr:hover .joc-board-sticky { background: #FBF9F4; }
+
+.joc-board-group td { background: #FBF9F4; border-bottom: 1px solid #E3E6EF; }
+.joc-board-group .joc-board-sticky { background: #FBF9F4; }
+
+.joc-board-footer td { background: #F4F7FD; }
+.joc-board-footer .joc-board-sticky { background: #F4F7FD; }
+
+/* The drawer: a panel on the right, the whole screen on a phone. */
+.joc-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  width: min(460px, 100vw);
+  overflow-y: auto;
+  background: #FBF9F4;
+  padding: 22px;
+  box-shadow: -12px 0 40px rgba(16, 35, 63, .18);
+}
+
+@media (max-width: 560px) {
+  .joc-drawer { width: 100vw; padding: 18px 16px; }
+  /* A fourteen-column table on a phone is unreadable; it becomes cards. */
+  .joc-board { font-size: 13px; }
+  .joc-board-sticky { min-width: 150px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .joc-board-group span { transition: none !important; }
+}
