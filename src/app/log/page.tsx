@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
-import { isStaffEmail } from "@/lib/access";
+import { isStaffEmail, can } from "@/lib/access";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import { SchoolUpdateForm } from "@/components/SchoolUpdateForm";
 import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
@@ -64,7 +65,7 @@ export default async function LogPage() {
       ? prisma.schoolActivity.findMany({
           where: {
             authorId: me.id,
-            type: { in: ["VISIT", "MEETING", "CALL", "EMAIL", "EVENT_PLANNED"] },
+            type: { in: ["VISIT", "MEETING", "CALL", "WHATSAPP", "EMAIL", "EVENT_PLANNED"] },
           },
           orderBy: { occurredAt: "desc" },
           take: 5,
@@ -80,7 +81,26 @@ export default async function LogPage() {
 
   return (
     <Shell>
-      <h1 style={{ ...pageTitle, margin: "0 0 22px" }}>JOC School Update Form</h1>
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "baseline",
+        gap: "12px", flexWrap: "wrap", marginBottom: "22px",
+      }}>
+        <h1 style={{ ...pageTitle, margin: 0 }}>JOC School Update Form</h1>
+        {/* Only for people who hold it — a link to a door you cannot open is
+            worse than no link. */}
+        {can(me, "buzz") && (
+          <Link
+            href="/buzz"
+            style={{
+              fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.blue,
+              textDecoration: "none", minHeight: "44px", display: "inline-flex",
+              alignItems: "center",
+            }}
+          >
+            See the Buzz →
+          </Link>
+        )}
+      </div>
 
       <SchoolUpdateForm
         schools={schools}

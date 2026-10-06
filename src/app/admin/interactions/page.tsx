@@ -5,58 +5,55 @@ import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { SectionLinks } from "@/components/admin/SectionLinks";
 import { BandRow } from "@/components/ui/BandRow";
-import { C, F, datum, rowCard, pageTitle, sectionHeading } from "@/lib/joc-tokens";
+import {
+  UPDATE_TYPES, INTERACTION_TYPES, TAG, day, shortDay, monthOf, clock, away,
+} from "@/lib/school-update";
+import { C, F, datum, label, rowCard, pageTitle, sectionHeading } from "@/lib/joc-tokens";
 
 /**
- * Everything JOC has done at a school, as it comes in.
+ * Everything JOC has done with a school, as it comes in.
  *
  * Its own page rather than a column on the app board: Boots for Israel is not
  * an app client, and a board about the app would quietly become a board about
  * everything.
  *
- * Two things rise to the top, because they are the only two that need a
- * person: a school somebody added that nobody has checked, and a visit to a
- * school with nobody to ring.
+ * Two halves, because the rows answer two different questions. What is still
+ * ahead of us sits at the top in date order — those are the only rows anybody
+ * can still act on. Everything behind us reads downwards, newest first, in
+ * months, which is how somebody looks for "that visit, back in the spring".
  */
 
 export const metadata = { title: "School updates — JOC Console" };
 export const dynamic = "force-dynamic";
 
-/** What each record is called on a row. */
-const TAG: Record<string, string> = {
-  MEETING: "MEETING",
-  CALL: "PHONE CALL",
-  EMAIL: "EMAIL",
-  VISIT: "EVENT",
-  EVENT_PLANNED: "BOOKED",
-};
-
-const day = (d: Date) =>
-  d.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-
 /**
- * The time of a booked event, which is the only row where somebody typed one.
+ * Which types each filter covers.
  *
- * Every other row carries whatever the clock said when it was written, and
- * showing that is showing a number nobody chose — a call logged at 5:35pm
- * reads as a call held at 5:35pm. Booked events are stored with their
- * wall-clock time pinned to UTC (see actions/school-update.ts) and read back
- * the same way; midnight means no time was given.
+ * `all` is the shared list, so a record type added to the form cannot go
+ * missing from this board — which is exactly what nearly happened to the
+ * phone call and the email.
  */
-const clock = (d: Date, type: string) =>
-  type !== "EVENT_PLANNED" || (d.getUTCHours() === 0 && d.getUTCMinutes() === 0)
-    ? null
-    : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+const FILTERS = {
+  all: UPDATE_TYPES,
+  talk: INTERACTION_TYPES,
+  events: ["VISIT"],
+  booked: ["EVENT_PLANNED"],
+} as const;
+type Filter = keyof typeof FILTERS;
 
 export default async function InteractionsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ program?: string; who?: string }>;
+  searchParams: Promise<{ program?: string; who?: string; type?: string; q?: string }>;
 }) {
   const session = await safeAuth();
   if (!openForReview && !can(session?.user, "schools")) redirect("/admin");
 
-  const { program, who } = await searchParams;
+  const sp = await searchParams;
+  const program = sp.program ?? "";
+  const who = sp.who ?? "";
+  const q = (sp.q ?? "").trim();
+  const filter: Filter = sp.type && sp.type in FILTERS ? (sp.type as Filter) : "all";
 
   if (!isDatabaseConfigured()) {
     return (
@@ -69,26 +66,29 @@ export default async function InteractionsPage({
     );
   }
 
-  const visits = await prisma.schoolActivity.findMany({
+  const rows = await prisma.schoolActivity.findMany({
     where: {
-      // Everything the School Update Form writes. A call, an email and a
-      // booked event are not visits, and leaving them out of this query is
-      // how they would have landed on nobody's screen.
-      type: { in: ["VISIT", "MEETING", "CALL", "EMAIL", "EVENT_PLANNED"] },
+      type: { in: [...FILTERS[filter]] },
       ...(program ? { programId: Number(program) || undefined } : {}),
       ...(who ? { authorId: who } : {}),
+      ...(q
+        ? {
+            OR: [
+              { school: { name: { contains: q, mode: "insensitive" as const } } },
+              { summary: { contains: q, mode: "insensitive" as const } },
+              { detail: { contains: q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
     },
     orderBy: { occurredAt: "desc" },
-    take: 200,
+    take: 300,
     select: {
       id: true, type: true, summary: true, detail: true, occurredAt: true,
       author: { select: { id: true, name: true, email: true } },
       program: { select: { id: true, name: true } },
       school: {
-        select: {
-          id: true, name: true, status: true,
-          _count: { select: { contacts: true } },
-        },
+        select: { id: true, name: true, _count: { select: { contacts: true } } },
       },
     },
   }).catch(() => []);
@@ -105,27 +105,60 @@ export default async function InteractionsPage({
     },
     orderBy: { occurredAt: "desc" },
     select: {
-      id: true, occurredAt: true,
-      school: { select: { id: true, name: true, status: true, _count: { select: { contacts: true } } } },
+      id: true,
+      school: { select: { id: true, name: true, status: true } },
     },
   }).catch(() => []);
 
   const stillProspect = unchecked.filter((u) => u.school.status === "PROSPECT");
-  const noContact = visits.filter((v) => v.school._count.contacts === 0);
+  const noContact = rows.filter((r) => r.school._count.contacts === 0);
 
-  // An event in the diary is the one row here that is about the future, so it
-  // is the one row that can still be acted on.
+  // Ahead of us, and behind us. The split is the page.
   const midnight = new Date(); midnight.setUTCHours(0, 0, 0, 0);
-  const upcoming = visits
-    .filter((v) => v.type === "EVENT_PLANNED" && v.occurredAt >= midnight)
+  const ahead = rows
+    .filter((r) => r.type === "EVENT_PLANNED" && r.occurredAt >= midnight)
     .sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime());
+  const aheadIds = new Set(ahead.map((a) => a.id));
+  const behind = rows.filter((r) => !aheadIds.has(r.id));
+
+  // Who and what to offer as filters — drawn from everything, not from the
+  // filtered rows, so choosing one never hides the way back to the others.
+  const everyone = await prisma.schoolActivity.findMany({
+    where: { type: { in: [...FILTERS.all] } },
+    select: {
+      author: { select: { id: true, name: true, email: true } },
+      program: { select: { id: true, name: true } },
+    },
+    take: 1000,
+  }).catch(() => []);
 
   const people = [...new Map(
-    visits.filter((v) => v.author).map((v) => [v.author!.id, v.author!]),
-  ).values()];
+    everyone.filter((r) => r.author).map((r) => [r.author!.id, r.author!]),
+  ).values()].sort((a, b) => (a.name ?? a.email ?? "").localeCompare(b.name ?? b.email ?? ""));
+
   const programs = [...new Map(
-    visits.filter((v) => v.program).map((v) => [v.program!.id, v.program!]),
-  ).values()];
+    everyone.filter((r) => r.program).map((r) => [r.program!.id, r.program!]),
+  ).values()].sort((a, b) => a.name.localeCompare(b.name));
+
+  /** A link that keeps every other filter where it was. */
+  const href = (change: Record<string, string>) => {
+    const next = new URLSearchParams();
+    const merged = { type: filter === "all" ? "" : filter, program, who, q, ...change };
+    for (const [k, v] of Object.entries(merged)) if (v) next.set(k, v);
+    const s = next.toString();
+    return s ? `/admin/interactions?${s}` : "/admin/interactions";
+  };
+
+  const filtered = filter !== "all" || Boolean(program) || Boolean(who) || Boolean(q);
+
+  // Behind us, in months. One heading per month, newest first.
+  const months: { key: string; label: string; rows: typeof behind }[] = [];
+  for (const r of behind) {
+    const key = `${r.occurredAt.getUTCFullYear()}-${r.occurredAt.getUTCMonth()}`;
+    const last = months[months.length - 1];
+    if (last?.key === key) last.rows.push(r);
+    else months.push({ key, label: monthOf(r.occurredAt), rows: [r] });
+  }
 
   return (
     <div>
@@ -133,33 +166,21 @@ export default async function InteractionsPage({
         <div style={{ minWidth: 0 }}>
           <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>School updates</h1>
           <p style={{ ...datum, color: C.muted, margin: 0 }}>
-            {visits.length} SENT IN · ANYONE AT JOC CAN ADD ONE AT /LOG
+            {rows.length} {filtered ? "MATCHING" : "SENT IN"} · ANYONE AT JOC CAN ADD ONE AT /LOG
           </p>
         </div>
         <SectionLinks section="schools" />
       </div>
 
-      {/* The only two things here that need somebody. */}
-      {(upcoming.length > 0 || stillProspect.length > 0 || noContact.length > 0) && (
-        <div style={{ display: "grid", gap: "10px", marginBottom: "24px" }}>
-          {upcoming.length > 0 && (
-            <BandRow
-              tone="good"
-              label="In the diary"
-              figure={String(upcoming.length)}
-              title={`${upcoming.length} event${upcoming.length === 1 ? "" : "s"} booked and not run yet`}
-              line={`Next: ${upcoming[0].school.name}, ${day(upcoming[0].occurredAt)}${
-                clock(upcoming[0].occurredAt, upcoming[0].type) ? ` at ${clock(upcoming[0].occurredAt, upcoming[0].type)}` : ""
-              }`}
-              action={{ label: "Open schools", href: "/admin/schools" }}
-            />
-          )}
+      {/* The things that need a person. */}
+      {(stillProspect.length > 0 || noContact.length > 0) && (
+        <div style={{ display: "grid", gap: "10px", marginBottom: "22px" }}>
           {stillProspect.length > 0 && (
             <BandRow
               tone="warn"
               label="Needs checking"
               figure={String(stillProspect.length)}
-              title={`${stillProspect.length} school${stillProspect.length === 1 ? "" : "s"} added from a visit, not yet checked`}
+              title={`${stillProspect.length} school${stillProspect.length === 1 ? "" : "s"} added from a school update, not yet checked`}
               line={stillProspect.map((u) => u.school.name).slice(0, 5).join(", ")}
               action={{ label: "Open schools", href: "/admin/schools" }}
             />
@@ -168,95 +189,203 @@ export default async function InteractionsPage({
             <BandRow
               tone="quiet"
               label="Nobody to ring"
-              figure={String(new Set(noContact.map((v) => v.school.id)).size)}
-              title="Visited, with no contact on record"
-              line={[...new Set(noContact.map((v) => v.school.name))].slice(0, 5).join(", ")}
+              figure={String(new Set(noContact.map((r) => r.school.id)).size)}
+              title="Schools here with no contact on record"
+              line={[...new Set(noContact.map((r) => r.school.name))].slice(0, 5).join(", ")}
               action={{ label: "Open schools", href: "/admin/schools" }}
             />
           )}
         </div>
       )}
 
-      {(programs.length > 1 || people.length > 1) && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "18px" }}>
-          <Chip href="/admin/interactions" on={!program && !who}>Everything</Chip>
+      {/* ── Finding one ───────────────────────────────────────────────── */}
+      <form action="/admin/interactions" style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+        {filter !== "all" && <input type="hidden" name="type" value={filter} />}
+        {program && <input type="hidden" name="program" value={program} />}
+        {who && <input type="hidden" name="who" value={who} />}
+        <input
+          name="q"
+          defaultValue={q}
+          placeholder="School, or anything written"
+          style={{
+            flex: "1 1 220px", minWidth: 0, boxSizing: "border-box",
+            fontFamily: F.ui, fontSize: "16px", color: C.ink, backgroundColor: C.white,
+            border: `1px solid ${C.hairline}`, borderRadius: "12px",
+            padding: "11px 14px", minHeight: "46px",
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.white,
+            backgroundColor: C.ink, border: "none", borderRadius: "12px",
+            padding: "0 18px", minHeight: "46px", cursor: "pointer",
+          }}
+        >
+          Search
+        </button>
+      </form>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
+        <Chip href={href({ type: "" })} on={filter === "all"}>Everything</Chip>
+        <Chip href={href({ type: "talk" })} on={filter === "talk"}>Interactions</Chip>
+        <Chip href={href({ type: "events" })} on={filter === "events"}>Events</Chip>
+        <Chip href={href({ type: "booked" })} on={filter === "booked"}>In the diary</Chip>
+      </div>
+
+      {(programs.length > 0 || people.length > 0) && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "22px" }}>
           {programs.map((p) => (
-            <Chip key={p.id} href={`/admin/interactions?program=${p.id}`} on={program === String(p.id)}>
+            <Chip
+              key={`p${p.id}`}
+              href={href({ program: program === String(p.id) ? "" : String(p.id) })}
+              on={program === String(p.id)}
+              quiet
+            >
               {p.name}
             </Chip>
           ))}
           {people.map((u) => (
-            <Chip key={u.id} href={`/admin/interactions?who=${u.id}`} on={who === u.id}>
+            <Chip
+              key={u.id}
+              href={href({ who: who === u.id ? "" : u.id })}
+              on={who === u.id}
+              quiet
+            >
               {u.name ?? u.email}
             </Chip>
           ))}
+          {filtered && (
+            <Chip href="/admin/interactions" on={false} quiet>Clear</Chip>
+          )}
         </div>
       )}
 
-      <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>As it came in</h2>
+      {/* ── Still ahead ───────────────────────────────────────────────── */}
+      {ahead.length > 0 && (
+        <section style={{ marginBottom: "30px" }}>
+          <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>Coming up</h2>
+          <div style={{ display: "grid", gap: "10px" }}>
+            {ahead.map((r) => (
+              <article key={r.id} style={{ ...rowCard, display: "flex", flexWrap: "wrap", alignItems: "stretch" }}>
+                <div style={{
+                  flex: "0 0 160px", boxSizing: "border-box", minWidth: 0,
+                  padding: "14px 18px", backgroundColor: C.greenTint, color: C.greenText,
+                  display: "flex", flexDirection: "column", justifyContent: "center", gap: "2px",
+                }}>
+                  <span style={{ ...label, color: C.greenText }}>{away(r.occurredAt, midnight)}</span>
+                  <span style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 700, lineHeight: 1.2 }}>
+                    {shortDay(r.occurredAt)}
+                    {clock(r.occurredAt, r.type) ? `, ${clock(r.occurredAt, r.type)}` : ""}
+                  </span>
+                </div>
+                <div style={{ flex: "100 1 220px", minWidth: 0, padding: "14px 18px" }}>
+                  <Link
+                    href={`/admin/schools/${r.school.id}`}
+                    style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 700, color: C.ink, textDecoration: "none" }}
+                  >
+                    {r.school.name}
+                  </Link>
+                  <p style={{ ...datum, color: C.muted, margin: "4px 0 0" }}>
+                    {r.program?.name ?? "No program recorded"}
+                    {" · "}
+                    {r.author?.name ?? r.author?.email ?? "somebody at JOC"}
+                  </p>
+                  {r.detail && (
+                    <p style={{
+                      fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.muted,
+                      margin: "8px 0 0", maxWidth: "62ch", whiteSpace: "pre-wrap",
+                    }}>
+                      {r.detail}
+                    </p>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {visits.length === 0 ? (
+      {/* ── Behind us ─────────────────────────────────────────────────── */}
+      <h2 style={{ ...sectionHeading, margin: "0 0 12px" }}>
+        {ahead.length > 0 ? "Already happened" : "As it came in"}
+      </h2>
+
+      {behind.length === 0 ? (
         <div style={{ ...rowCard, padding: "24px" }}>
           <p style={{ fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.muted, margin: 0, maxWidth: "58ch" }}>
-            Nothing logged yet. Anyone with a justonechesed.org address can write one at{" "}
-            <strong style={{ color: C.ink }}>/log</strong> — no console, no permission to grant.
+            {filtered
+              ? "Nothing matches that."
+              : <>Nothing yet. Anyone with a justonechesed.org address can write one at <strong style={{ color: C.ink }}>/log</strong> — no console, no permission to grant.</>}
           </p>
         </div>
       ) : (
-        <div style={{ display: "grid", gap: "10px" }}>
-          {visits.map((v) => (
-            <article key={v.id} style={{ ...rowCard, padding: "16px 18px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", alignItems: "baseline" }}>
-                <Link
-                  href={`/admin/schools/${v.school.id}`}
-                  style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 700, color: C.ink, textDecoration: "none" }}
-                >
-                  {v.school.name}
-                </Link>
-                <span style={{ ...datum, color: C.muted }}>
-                  {day(v.occurredAt).toUpperCase()}
-                  {clock(v.occurredAt, v.type) ? ` · ${clock(v.occurredAt, v.type)}` : ""}
-                </span>
-              </div>
+        months.map((m) => (
+          <section key={m.key} style={{ marginBottom: "22px" }}>
+            <p style={{ ...label, color: C.muted, margin: "0 0 10px" }}>{m.label}</p>
+            <div style={{ display: "grid", gap: "10px" }}>
+              {m.rows.map((r) => (
+                <article key={r.id} style={{ ...rowCard, padding: "16px 18px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", alignItems: "baseline" }}>
+                    <Link
+                      href={`/admin/schools/${r.school.id}`}
+                      style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 700, color: C.ink, textDecoration: "none" }}
+                    >
+                      {r.school.name}
+                    </Link>
+                    <span style={{ ...datum, color: C.muted }}>
+                      {day(r.occurredAt).toUpperCase()}
+                      {clock(r.occurredAt, r.type) ? ` · ${clock(r.occurredAt, r.type)}` : ""}
+                    </span>
+                  </div>
 
-              <p style={{ ...datum, color: C.muted, margin: "4px 0 8px" }}>
-                <span style={{ color: v.type === "EVENT_PLANNED" ? C.greenText : C.ink }}>
-                  {TAG[v.type] ?? "UPDATE"}
-                </span>
-                {" · "}
-                {v.program?.name ?? "No program recorded"}
-                {" · "}
-                {v.author?.name ?? v.author?.email ?? "somebody at JOC"}
-              </p>
+                  <p style={{ ...datum, color: C.muted, margin: "4px 0 8px" }}>
+                    <span style={{ color: r.type === "EVENT_PLANNED" ? C.greenText : C.ink }}>
+                      {TAG[r.type] ?? "UPDATE"}
+                    </span>
+                    {" · "}
+                    {r.program?.name ?? "No program recorded"}
+                    {" · "}
+                    {r.author?.name ?? r.author?.email ?? "somebody at JOC"}
+                  </p>
 
-              {v.detail && (
-                <p style={{
-                  fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.muted,
-                  margin: 0, maxWidth: "62ch", whiteSpace: "pre-wrap",
-                }}>
-                  {v.detail}
-                </p>
-              )}
+                  {r.detail && (
+                    <p style={{
+                      fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.muted,
+                      margin: 0, maxWidth: "62ch", whiteSpace: "pre-wrap",
+                    }}>
+                      {r.detail}
+                    </p>
+                  )}
 
-              {v.school._count.contacts === 0 && (
-                <p style={{ fontFamily: F.read, fontSize: "14px", color: C.orangeText, margin: "8px 0 0" }}>
-                  Nobody is on file to ring at this school.
-                </p>
-              )}
-            </article>
-          ))}
-        </div>
+                  {r.school._count.contacts === 0 && (
+                    <p style={{ fontFamily: F.read, fontSize: "14px", color: C.orangeText, margin: "8px 0 0" }}>
+                      Nobody is on file to ring at this school.
+                    </p>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
+        ))
       )}
     </div>
   );
 }
 
-function Chip({ href, on, children }: { href: string; on: boolean; children: React.ReactNode }) {
+function Chip({
+  href, on, quiet, children,
+}: {
+  href: string;
+  on: boolean;
+  quiet?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
       style={{
-        fontFamily: F.ui, fontSize: "13px", fontWeight: 600,
+        fontFamily: F.ui, fontSize: quiet ? "13px" : "14px", fontWeight: 600,
         color: on ? C.white : C.ink,
         backgroundColor: on ? C.ink : C.white,
         border: on ? "none" : `1px solid ${C.hairline}`,

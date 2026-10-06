@@ -63,7 +63,7 @@ export async function logSchoolUpdate(
 
   const howRaw = String(form.get("how") ?? "");
   const how: InteractionType =
-    howRaw === "CALL" || howRaw === "EMAIL" ? howRaw : "MEETING";
+    howRaw === "CALL" || howRaw === "EMAIL" || howRaw === "WHATSAPP" ? howRaw : "MEETING";
 
   const schoolId = String(form.get("schoolId") ?? "").trim();
   const newSchoolName = String(form.get("newSchoolName") ?? "").trim();
@@ -162,7 +162,11 @@ export async function logSchoolUpdate(
       const type = kind === "INTERACTION" ? how : booked ? "EVENT_PLANNED" : "VISIT";
 
       // What it is called on every screen that reads this row.
-      const spoke = how === "CALL" ? "Call with" : how === "EMAIL" ? "Email with" : "Meeting at";
+      const spoke =
+        how === "CALL" ? "Call with"
+        : how === "EMAIL" ? "Email with"
+        : how === "WHATSAPP" ? "WhatsApp with"
+        : "Meeting at";
 
       const summary =
         kind === "INTERACTION"

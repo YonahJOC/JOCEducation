@@ -202,7 +202,7 @@ export const CAPABILITIES = [
   // The calendar
   "programming", "cycles", "coordinators",
   // School accounts
-  "schools", "demos", "orders", "pricing", "money_view", "money_record", "messages",
+  "schools", "demos", "orders", "pricing", "money_view", "money_record", "messages", "buzz",
   // Access
   "users", "run_admin_agenda",
 ] as const;
@@ -223,7 +223,7 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
     ],
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
-  { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing", "money_view", "money_record", "messages"] },
+  { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing", "money_view", "money_record", "messages", "buzz"] },
   { label: "Access", capabilities: ["users", "run_admin_agenda"] },
 ];
 
@@ -249,6 +249,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   money_view: "See the money",
   money_record: "Record a payment",
   messages: "Messages from schools",
+  buzz: "The Buzz",
   users: "People and access",
 };
 
@@ -277,6 +278,8 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   demos: "Bookings from the landing page and contact-form messages.",
   orders: "What schools have ordered from the shop.",
   pricing: "What a plan or a program costs.",
+  buzz:
+    "See the Buzz — every meeting, call and event anybody at JOC has written down, across all schools. Read only, and no console needed: it is for the people who run programs rather than the people who run the schools list.",
   users: "Who has an account, what they can do, and passwords. The keys to everything else.",
 };
 

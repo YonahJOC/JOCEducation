@@ -56,6 +56,9 @@ const PUBLIC_PATHS = new Set([
   // the only thing they came to do. The page checks the address itself and
   // shows nothing until it matches.
   "/log",
+  // Same reason: it has to open as itself and ask, rather than bounce
+  // somebody to a marketing page.
+  "/buzz",
 ]);
 
 // Reachable by anyone signed in, including someone who still has to change

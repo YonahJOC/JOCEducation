@@ -19,6 +19,7 @@ const OWN_CHROME = [
   // header offering a demo and a shop is noise around the only thing on the
   // page.
   "/log",
+  "/buzz",
 ];
 
 export function ChromeGate({ children }: { children: React.ReactNode }) {

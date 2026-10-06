@@ -908,6 +908,8 @@ enum ActivityType {
   NOTE
   CALL
   EMAIL
+  /// How most of these conversations actually happen.
+  WHATSAPP
   MEETING
   /// Somebody from JOC physically went to the school.
   VISIT

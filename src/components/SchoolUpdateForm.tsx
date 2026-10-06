@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { logSchoolUpdate, type LogResult } from "@/app/actions/school-update";
 import {
-  NEW_CONTACT, INTERACTION_LABEL,
+  NEW_CONTACT, INTERACTION_LABEL, INTERACTION_TYPES,
   type UpdateKind, type EventStage, type InteractionType,
 } from "@/lib/school-update";
 import { C, R, F, label, primaryButton } from "@/lib/joc-tokens";
@@ -207,7 +207,7 @@ export function SchoolUpdateForm({
         <div>
           <Label>How</Label>
           <Choice
-            options={(["MEETING", "CALL", "EMAIL"] as const).map((t) => ({
+            options={INTERACTION_TYPES.map((t) => ({
               value: t, label: INTERACTION_LABEL[t],
             }))}
             value={how}
@@ -468,8 +468,15 @@ function Choice({
   value: string;
   onPick: (v: string) => void;
 }) {
+  // Two across on a phone once there are more than three, rather than four
+  // columns of squeezed text.
   return (
-    <div style={{ display: "grid", gap: "8px", gridTemplateColumns: `repeat(${options.length}, 1fr)` }}>
+    <div style={{
+      display: "grid", gap: "8px",
+      gridTemplateColumns: options.length > 3
+        ? "repeat(auto-fit, minmax(140px, 1fr))"
+        : `repeat(${options.length}, 1fr)`,
+    }}>
       {options.map((o) => {
         const on = value === o.value;
         return (
