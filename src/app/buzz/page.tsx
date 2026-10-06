@@ -138,36 +138,79 @@ export default async function BuzzPage() {
 
   return (
     <Shell>
-      <Wordmark />
-
-      <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "baseline",
-        gap: "12px", flexWrap: "wrap", marginBottom: "6px",
+      {/* A masthead rather than four stacked lines of small caps. The dark
+          ground is the brand's, carries the white wordmark, and separates
+          the page's own furniture from the feed underneath it. */}
+      <header style={{
+        backgroundColor: C.ink, color: C.white,
+        borderRadius: "20px", padding: "24px 22px",
+        marginBottom: "26px",
       }}>
-        <div style={{ minWidth: 0 }}>
-          <h1 style={{ ...pageTitle, margin: 0 }}>The JOC School Buzz</h1>
-          <p style={{ ...label, color: C.orangeText, margin: "6px 0 0" }}>
-            JOC staff view only
-          </p>
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+          gap: "14px", flexWrap: "wrap",
+        }}>
+          <div>
+            <Image
+              src="/brand/joc-wordmark-white.png"
+              alt="JustOneChesed"
+              width={170}
+              height={21}
+              priority
+              style={{ height: "19px", width: "auto", display: "block" }}
+            />
+            <div style={{
+              fontFamily: F.data, fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em",
+              textTransform: "uppercase", color: C.orange, marginTop: "6px",
+            }}>
+              Education
+            </div>
+          </div>
+
+          <span style={{
+            fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
+            textTransform: "uppercase", color: C.orange,
+            backgroundColor: "rgba(250,145,45,.14)",
+            border: "1px solid rgba(250,145,45,.35)",
+            borderRadius: "999px", padding: "6px 11px", whiteSpace: "nowrap",
+          }}>
+            JOC staff only
+          </span>
         </div>
+
+        <h1 style={{
+          fontFamily: F.ui, fontSize: "clamp(27px, 7vw, 36px)", fontWeight: 700,
+          letterSpacing: "-0.03em", lineHeight: 1.05, color: C.white,
+          margin: "20px 0 0",
+        }}>
+          The JOC School Buzz
+        </h1>
+
+        <div style={{
+          display: "flex", gap: "26px", flexWrap: "wrap",
+          margin: "18px 0 0", paddingTop: "18px",
+          borderTop: "1px solid rgba(255,255,255,.14)",
+        }}>
+          <Stat n={lastMonth} name={lastMonth === 1 ? "update, 30 days" : "updates, 30 days"} />
+          <Stat
+            n={schoolsTouched.length}
+            name={schoolsTouched.length === 1 ? "school" : "schools"}
+          />
+          {ahead.length > 0 && <Stat n={ahead.length} name="in the diary" accent />}
+        </div>
+
         <Link
           href="/log"
           style={{
-            fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.white,
-            backgroundColor: C.blue, borderRadius: "12px", padding: "11px 18px",
-            minHeight: "44px", display: "inline-flex", alignItems: "center",
-            textDecoration: "none",
+            fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.white,
+            backgroundColor: C.orange, borderRadius: "12px", padding: "0 20px",
+            minHeight: "48px", display: "inline-flex", alignItems: "center",
+            justifyContent: "center", textDecoration: "none", marginTop: "20px",
           }}
         >
           Add an update
         </Link>
-      </div>
-
-      <p style={{ ...label, color: C.muted, margin: "10px 0 20px" }}>
-        {lastMonth} {lastMonth === 1 ? "UPDATE" : "UPDATES"} IN THE LAST 30 DAYS
-        {schoolsTouched.length > 0 &&
-          ` · ${schoolsTouched.length} ${schoolsTouched.length === 1 ? "SCHOOL" : "SCHOOLS"}`}
-      </p>
+      </header>
 
       {/* ── Still ahead ───────────────────────────────────────────────── */}
       {ahead.length > 0 && (
@@ -279,9 +322,29 @@ function H2({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** One figure in the masthead. */
+function Stat({ n, name, accent }: { n: number; name: string; accent?: boolean }) {
+  return (
+    <div style={{ minWidth: 0 }}>
+      <div style={{
+        fontFamily: F.ui, fontSize: "26px", fontWeight: 800, lineHeight: 1,
+        letterSpacing: "-0.02em", color: accent ? C.orange : C.white,
+      }}>
+        {n}
+      </div>
+      <div style={{
+        fontFamily: F.data, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em",
+        textTransform: "uppercase", color: "rgba(255,255,255,.55)", marginTop: "5px",
+      }}>
+        {name}
+      </div>
+    </div>
+  );
+}
+
 /**
  * The mark, on a light ground, so the blue wordmark rather than the white.
- * Without a site header this page has nothing else saying whose it is.
+ * Used on the sign-in card, which has no masthead above it.
  */
 function Wordmark() {
   return (
