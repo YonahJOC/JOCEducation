@@ -190,6 +190,9 @@ model SchoolActivity {
 
   /// The thread under it. Anybody who can read the Buzz can add to one.
   notes BuzzNote[]
+  /// Who has opened that thread, and when.
+  seenBy BuzzSeen[]
+  likes  BuzzLike[]
 
   /// True when somebody at the school wrote it rather than somebody at JOC.
   /// Every row before this one was JOC recording what it did; an ask runs the
@@ -512,6 +515,8 @@ model User {
   /// School updates they took off the Buzz to deal with.
   takenActivities  SchoolActivity[]    @relation("ActivityTaken")
   buzzNotes        BuzzNote[]
+  buzzSeen         BuzzSeen[]
+  buzzLikes        BuzzLike[]
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2361,4 +2366,38 @@ model BuzzNote {
   createdAt  DateTime       @default(now())
 
   @@index([activityId, createdAt])
+}
+
+/// When one person last opened one thread on the Buzz.
+///
+/// Per person, not per item: a dot that clears for everybody the moment one
+/// of us reads it is worse than no dot, because the other four never learn
+/// there was anything to read.
+model BuzzSeen {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activityId String
+  activity   SchoolActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  seenAt     DateTime       @default(now())
+
+  @@unique([userId, activityId])
+  @@index([userId])
+}
+
+/// A thumbs up on a school update.
+///
+/// One per person per item. Somebody writes down that a student at SKA loves
+/// the app; four people wanting to say "good" should not have to write four
+/// comments saying it.
+model BuzzLike {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activityId String
+  activity   SchoolActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now())
+
+  @@unique([userId, activityId])
+  @@index([activityId])
 }

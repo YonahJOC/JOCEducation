@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import { addNote, editUpdate, assignUpdate, removeUpdate } from "@/app/actions/buzz-item";
 import { takeUpdate, releaseUpdate } from "@/app/actions/buzz-pickup";
+import { markThreadSeen } from "@/app/actions/buzz-seen";
+import { toggleLike } from "@/app/actions/buzz-like";
 import { C, R, F, label } from "@/lib/joc-tokens";
 
 /**
@@ -23,11 +25,15 @@ export type Note = {
 };
 
 export function ItemTools({
-  activityId, detail, notes, takenBy, mine, canPick, canComment, superAdmin, people,
+  activityId, detail, notes, unread, likes, liked, takenBy, mine, canPick, canComment, superAdmin, people,
 }: {
   activityId: string;
   detail: string | null;
   notes: Note[];
+  /** Comments written since this person last opened the thread. */
+  unread: number;
+  likes: number;
+  liked: boolean;
   takenBy: string | null;
   mine: boolean;
   canPick: boolean;
@@ -41,6 +47,8 @@ export function ItemTools({
   // there is something to read, and a feed where every thread is open is a
   // feed you have to scroll past rather than scan.
   const [open, setOpen] = useState(false);
+  const [fresh, setFresh] = useState(unread);
+  const [cheer, setCheer] = useState({ n: likes, on: liked });
   const [body, setBody] = useState("");
   const [held, setHeld] = useState<{ by: string | null; mine: boolean }>({ by: takenBy, mine });
   const [editing, setEditing] = useState(false);
@@ -150,15 +158,52 @@ export function ItemTools({
           </button>
         )}
 
+        {/* A thumbs up, so four people who just want to say "good" do not
+            write four comments saying it. */}
+        <button
+          type="button"
+          aria-pressed={cheer.on}
+          aria-label={cheer.on ? "Undo thumbs up" : "Thumbs up"}
+          onClick={() => {
+            const next = { n: cheer.n + (cheer.on ? -1 : 1), on: !cheer.on };
+            const before = cheer;
+            setCheer(next);
+            void toggleLike(activityId, next.on).then((res) => {
+              if (!res.ok) setCheer(before);
+            });
+          }}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "6px",
+            fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
+            color: cheer.on ? C.blue : C.muted,
+            backgroundColor: cheer.on ? C.blueTint : "transparent",
+            border: `1px solid ${cheer.on ? "#CBD5F2" : "transparent"}`,
+            borderRadius: R.chip, padding: "6px 10px", minHeight: "38px",
+            cursor: "pointer",
+          }}
+        >
+          <span aria-hidden="true" style={{ fontSize: "15px", lineHeight: 1 }}>👍</span>
+          {cheer.n > 0 ? cheer.n : ""}
+        </button>
+
         {canComment && (
           <button
             type="button"
             aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
+            onClick={() => {
+              const next = !open;
+              setOpen(next);
+              // Opening it is the only thing that means they read it.
+              if (next && fresh > 0) {
+                setFresh(0);
+                void markThreadSeen(activityId);
+              }
+            }}
             style={{
               ...quiet,
               display: "inline-flex", alignItems: "center", gap: "6px",
-              color: thread.length > 0 && !open ? C.blue : C.muted,
+              color: fresh > 0 ? C.orangeText : thread.length > 0 && !open ? C.blue : C.muted,
+              fontWeight: fresh > 0 ? 700 : 600,
             }}
           >
             <span aria-hidden="true" style={{
@@ -172,6 +217,16 @@ export function ItemTools({
               : open
                 ? "Hide"
                 : `${thread.length} ${thread.length === 1 ? "comment" : "comments"}`}
+            {fresh > 0 && !open && (
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+                minWidth: "18px", height: "18px", padding: "0 5px", borderRadius: "999px",
+                backgroundColor: C.orange, color: C.white,
+                fontFamily: F.data, fontSize: "11px", fontWeight: 700, lineHeight: 1,
+              }}>
+                {fresh}
+              </span>
+            )}
           </button>
         )}
 

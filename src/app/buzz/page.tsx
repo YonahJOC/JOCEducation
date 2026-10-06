@@ -167,6 +167,7 @@ export default async function BuzzPage() {
             author: { select: { name: true, email: true } },
           },
         },
+        likes: { select: { userId: true } },
       },
     }).catch(() => []),
     prisma.schoolActivity.count({
@@ -207,6 +208,29 @@ export default async function BuzzPage() {
     .filter((r) => !aheadIds.has(r.id))
     .sort((a, b) => standing(b) - standing(a))
     .slice(0, FEED);
+
+  /**
+   * How many comments this person has not seen on each thread.
+   *
+   * Never counts their own: writing a comment is not a notification to
+   * yourself, and a dot on something you just said is noise.
+   */
+  const seen = me?.id
+    ? new Map(
+        (await prisma.buzzSeen.findMany({
+          where: { userId: me.id },
+          select: { activityId: true, seenAt: true },
+        }).catch(() => [])).map((s) => [s.activityId, s.seenAt]),
+      )
+    : new Map<string, Date>();
+
+  const unreadOn = (r: { id: string; notes: { createdAt: Date; authorId: string | null }[] }) => {
+    if (!me?.id) return 0;
+    const last = seen.get(r.id);
+    return r.notes.filter(
+      (n) => n.authorId !== me.id && (!last || n.createdAt > last),
+    ).length;
+  };
 
   return (
     <Shell>
@@ -307,6 +331,9 @@ export default async function BuzzPage() {
                   when: ago(n.createdAt, midnight),
                   mine: Boolean(me?.id && n.authorId === me.id),
                 }))}
+                unread={unreadOn(r)}
+                likes={r.likes.length}
+                liked={Boolean(me?.id && r.likes.some((l) => l.userId === me.id))}
                 takenBy={r.takenById ? first(r.takenBy?.name ?? r.takenBy?.email) : null}
                 mine={Boolean(me?.id && r.takenById === me.id)}
                 canPick={canPick}
