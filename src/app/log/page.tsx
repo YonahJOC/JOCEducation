@@ -62,7 +62,10 @@ export default async function LogPage() {
     // Their own last few, so nobody logs the same visit twice.
     allowed && me?.id
       ? prisma.schoolActivity.findMany({
-          where: { authorId: me.id, type: { in: ["VISIT", "MEETING", "EVENT_PLANNED"] } },
+          where: {
+            authorId: me.id,
+            type: { in: ["VISIT", "MEETING", "CALL", "EMAIL", "EVENT_PLANNED"] },
+          },
           orderBy: { occurredAt: "desc" },
           take: 5,
           select: {

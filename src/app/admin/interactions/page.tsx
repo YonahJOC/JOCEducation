@@ -22,16 +22,29 @@ import { C, F, datum, rowCard, pageTitle, sectionHeading } from "@/lib/joc-token
 export const metadata = { title: "School updates — JOC Console" };
 export const dynamic = "force-dynamic";
 
+/** What each record is called on a row. */
+const TAG: Record<string, string> = {
+  MEETING: "MEETING",
+  CALL: "PHONE CALL",
+  EMAIL: "EMAIL",
+  VISIT: "EVENT",
+  EVENT_PLANNED: "BOOKED",
+};
+
 const day = (d: Date) =>
   d.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
 /**
- * The time, where one was given. A booked event is stored with its wall-clock
- * time pinned to UTC — see actions/school-update.ts — so it is read back the
- * same way. Midnight means nobody gave a time.
+ * The time of a booked event, which is the only row where somebody typed one.
+ *
+ * Every other row carries whatever the clock said when it was written, and
+ * showing that is showing a number nobody chose — a call logged at 5:35pm
+ * reads as a call held at 5:35pm. Booked events are stored with their
+ * wall-clock time pinned to UTC (see actions/school-update.ts) and read back
+ * the same way; midnight means no time was given.
  */
-const clock = (d: Date) =>
-  d.getUTCHours() === 0 && d.getUTCMinutes() === 0
+const clock = (d: Date, type: string) =>
+  type !== "EVENT_PLANNED" || (d.getUTCHours() === 0 && d.getUTCMinutes() === 0)
     ? null
     : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
 
@@ -58,10 +71,10 @@ export default async function InteractionsPage({
 
   const visits = await prisma.schoolActivity.findMany({
     where: {
-      // Everything the School Update Form writes. A meeting and a booked
-      // event are not visits, and leaving them out of this query is how they
-      // would have landed on nobody's screen.
-      type: { in: ["VISIT", "MEETING", "EVENT_PLANNED"] },
+      // Everything the School Update Form writes. A call, an email and a
+      // booked event are not visits, and leaving them out of this query is
+      // how they would have landed on nobody's screen.
+      type: { in: ["VISIT", "MEETING", "CALL", "EMAIL", "EVENT_PLANNED"] },
       ...(program ? { programId: Number(program) || undefined } : {}),
       ...(who ? { authorId: who } : {}),
     },
@@ -136,7 +149,7 @@ export default async function InteractionsPage({
               figure={String(upcoming.length)}
               title={`${upcoming.length} event${upcoming.length === 1 ? "" : "s"} booked and not run yet`}
               line={`Next: ${upcoming[0].school.name}, ${day(upcoming[0].occurredAt)}${
-                clock(upcoming[0].occurredAt) ? ` at ${clock(upcoming[0].occurredAt)}` : ""
+                clock(upcoming[0].occurredAt, upcoming[0].type) ? ` at ${clock(upcoming[0].occurredAt, upcoming[0].type)}` : ""
               }`}
               action={{ label: "Open schools", href: "/admin/schools" }}
             />
@@ -202,13 +215,13 @@ export default async function InteractionsPage({
                 </Link>
                 <span style={{ ...datum, color: C.muted }}>
                   {day(v.occurredAt).toUpperCase()}
-                  {clock(v.occurredAt) ? ` · ${clock(v.occurredAt)}` : ""}
+                  {clock(v.occurredAt, v.type) ? ` · ${clock(v.occurredAt, v.type)}` : ""}
                 </span>
               </div>
 
               <p style={{ ...datum, color: C.muted, margin: "4px 0 8px" }}>
                 <span style={{ color: v.type === "EVENT_PLANNED" ? C.greenText : C.ink }}>
-                  {v.type === "MEETING" ? "MEETING" : v.type === "EVENT_PLANNED" ? "BOOKED" : "EVENT"}
+                  {TAG[v.type] ?? "UPDATE"}
                 </span>
                 {" · "}
                 {v.program?.name ?? "No program recorded"}

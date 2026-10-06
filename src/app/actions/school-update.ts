@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview } from "@/auth";
 import { isStaffEmail } from "@/lib/access";
-import { NEW_CONTACT } from "@/lib/school-update";
+import { NEW_CONTACT, type InteractionType } from "@/lib/school-update";
 
 /**
  * Somebody from JOC writing down what happened with a school.
@@ -58,8 +58,12 @@ export async function logSchoolUpdate(
     return { ok: false, error: "Sign in with your justonechesed.org address first." };
   }
 
-  const kind = form.get("kind") === "EVENT" ? "EVENT" : "MEETING";
+  const kind = form.get("kind") === "EVENT" ? "EVENT" : "INTERACTION";
   const booked = kind === "EVENT" && form.get("stage") === "BOOKED";
+
+  const howRaw = String(form.get("how") ?? "");
+  const how: InteractionType =
+    howRaw === "CALL" || howRaw === "EMAIL" ? howRaw : "MEETING";
 
   const schoolId = String(form.get("schoolId") ?? "").trim();
   const newSchoolName = String(form.get("newSchoolName") ?? "").trim();
@@ -83,7 +87,7 @@ export async function logSchoolUpdate(
   } else if (!what) {
     return {
       ok: false,
-      error: kind === "MEETING" ? "Conversation notes are empty." : "Post event notes are empty.",
+      error: kind === "INTERACTION" ? "Conversation notes are empty." : "Post event notes are empty.",
     };
   }
 
@@ -155,11 +159,14 @@ export async function logSchoolUpdate(
         ? await tx.programPage.findUnique({ where: { id: programId }, select: { name: true } })
         : null;
 
-      const type = kind === "MEETING" ? "MEETING" : booked ? "EVENT_PLANNED" : "VISIT";
+      const type = kind === "INTERACTION" ? how : booked ? "EVENT_PLANNED" : "VISIT";
+
+      // What it is called on every screen that reads this row.
+      const spoke = how === "CALL" ? "Call with" : how === "EMAIL" ? "Email with" : "Meeting at";
 
       const summary =
-        kind === "MEETING"
-          ? program ? `${program.name} meeting at ${name}` : `Meeting at ${name}`
+        kind === "INTERACTION"
+          ? program ? `${program.name} — ${spoke.toLowerCase()} ${name}` : `${spoke} ${name}`
           : booked
             ? program ? `${program.name} booked at ${name}` : `Event booked at ${name}`
             : program ? `${program.name} at ${name}` : `Visit to ${name}`;

@@ -2,7 +2,10 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { logSchoolUpdate, type LogResult } from "@/app/actions/school-update";
-import { NEW_CONTACT, type UpdateKind, type EventStage } from "@/lib/school-update";
+import {
+  NEW_CONTACT, INTERACTION_LABEL,
+  type UpdateKind, type EventStage, type InteractionType,
+} from "@/lib/school-update";
 import { C, R, F, label, primaryButton } from "@/lib/joc-tokens";
 
 /**
@@ -38,6 +41,7 @@ export function SchoolUpdateForm({
   const [result, action, pending] = useActionState<LogResult | null, FormData>(logSchoolUpdate, null);
 
   const [kind, setKind] = useState<UpdateKind | "">("");
+  const [how, setHow] = useState<InteractionType>("MEETING");
   const [stage, setStage] = useState<EventStage>("DONE");
   const [schoolId, setSchoolId] = useState("");
   const [adding, setAdding] = useState(false);
@@ -50,7 +54,7 @@ export function SchoolUpdateForm({
   const naming = contactId === NEW_CONTACT;
   const today = new Date().toISOString().slice(0, 10);
 
-  const meeting = kind === "MEETING";
+  const talking = kind === "INTERACTION";
   const booked = kind === "EVENT" && stage === "BOOKED";
 
   // What they wrote before signing in, carried across the trip to Google.
@@ -90,7 +94,8 @@ export function SchoolUpdateForm({
     let d: Record<string, string>;
     try { d = JSON.parse(raw) as Record<string, string>; } catch { return; }
 
-    if (d.kind === "MEETING" || d.kind === "EVENT") setKind(d.kind);
+    if (d.kind === "INTERACTION" || d.kind === "EVENT") setKind(d.kind);
+    if (d.how === "MEETING" || d.how === "CALL" || d.how === "EMAIL") setHow(d.how);
     if (d.stage === "BOOKED" || d.stage === "DONE") setStage(d.stage);
     if (d.whenChoice === "TODAY" || d.whenChoice === "OTHER") setWhenChoice(d.whenChoice);
     if (d.schoolId) setSchoolId(d.schoolId);
@@ -180,20 +185,36 @@ export function SchoolUpdateForm({
   const fields = (
     <>
       <input type="hidden" name="kind" value={kind} />
+      <input type="hidden" name="how" value={how} />
       <input type="hidden" name="stage" value={stage} />
       <input type="hidden" name="whenChoice" value={whenChoice} />
 
       <div>
-        <Label>Meeting or event</Label>
+        <Label>Interaction or event</Label>
         <Choice
           options={[
-            { value: "MEETING", label: "Meeting" },
+            { value: "INTERACTION", label: "Interaction" },
             { value: "EVENT", label: "Event" },
           ]}
           value={kind}
           onPick={(v) => setKind(v as UpdateKind)}
         />
       </div>
+
+      {/* A meeting, a call and an email are the same fact told three ways.
+          One branch, three records. */}
+      {talking && (
+        <div>
+          <Label>How</Label>
+          <Choice
+            options={(["MEETING", "CALL", "EMAIL"] as const).map((t) => ({
+              value: t, label: INTERACTION_LABEL[t],
+            }))}
+            value={how}
+            onPick={(v) => setHow(v as InteractionType)}
+          />
+        </div>
+      )}
 
       {kind && (
         <>
@@ -258,7 +279,7 @@ export function SchoolUpdateForm({
             )}
           </div>
 
-          {meeting ? (
+          {talking ? (
             <>
               <div>
                 <Label>Conversation notes</Label>
