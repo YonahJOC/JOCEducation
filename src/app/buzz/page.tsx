@@ -7,7 +7,7 @@ import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import {
   UPDATE_TYPES, TAG, day, shortDay, clock, away, ago,
 } from "@/lib/school-update";
-import { C, R, F, label, pageTitle } from "@/lib/joc-tokens";
+import { C, R, F, label } from "@/lib/joc-tokens";
 
 /**
  * The Buzz — what JOC is doing, for the people who are given it.
@@ -49,8 +49,8 @@ export default async function BuzzPage() {
   if (!allowed) {
     return (
       <Shell>
-        <Wordmark />
-        <h1 style={{ ...pageTitle, margin: "0 0 18px" }}>The JOC School Buzz</h1>
+        <Masthead />
+        <Inside>
         <div style={card}>
           {me ? (
             <>
@@ -88,6 +88,7 @@ export default async function BuzzPage() {
             </p>
           )}
         </div>
+        </Inside>
       </Shell>
     );
   }
@@ -95,11 +96,12 @@ export default async function BuzzPage() {
   if (!isDatabaseConfigured()) {
     return (
       <Shell>
-        <Wordmark />
-        <h1 style={{ ...pageTitle, margin: "0 0 10px" }}>The JOC School Buzz</h1>
-        <p style={{ ...body, color: C.orangeText, margin: 0 }}>
-          The database isn&rsquo;t connected, so there&rsquo;s nothing to show.
-        </p>
+        <Masthead />
+        <Inside>
+          <p style={{ ...body, color: C.orangeText, margin: 0 }}>
+            The database isn&rsquo;t connected, so there&rsquo;s nothing to show.
+          </p>
+        </Inside>
       </Shell>
     );
   }
@@ -141,76 +143,17 @@ export default async function BuzzPage() {
       {/* A masthead rather than four stacked lines of small caps. The dark
           ground is the brand's, carries the white wordmark, and separates
           the page's own furniture from the feed underneath it. */}
-      <header style={{
-        backgroundColor: C.ink, color: C.white,
-        borderRadius: "20px", padding: "24px 22px",
-        marginBottom: "26px",
-      }}>
-        <div style={{
-          display: "flex", justifyContent: "space-between", alignItems: "flex-start",
-          gap: "14px", flexWrap: "wrap",
-        }}>
-          <div>
-            <Image
-              src="/brand/joc-wordmark-white.png"
-              alt="JustOneChesed"
-              width={170}
-              height={21}
-              priority
-              style={{ height: "19px", width: "auto", display: "block" }}
-            />
-            <div style={{
-              fontFamily: F.data, fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em",
-              textTransform: "uppercase", color: C.orange, marginTop: "6px",
-            }}>
-              Education
-            </div>
-          </div>
+      <Masthead
+        line={[
+          `${lastMonth} ${lastMonth === 1 ? "update" : "updates"} in the last 30 days`,
+          schoolsTouched.length > 0
+            ? `${schoolsTouched.length} ${schoolsTouched.length === 1 ? "school" : "schools"}`
+            : null,
+          ahead.length > 0 ? `${ahead.length} in the diary` : null,
+        ].filter(Boolean).join(" · ")}
+      />
 
-          <span style={{
-            fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
-            textTransform: "uppercase", color: C.orange,
-            backgroundColor: "rgba(250,145,45,.14)",
-            border: "1px solid rgba(250,145,45,.35)",
-            borderRadius: "999px", padding: "6px 11px", whiteSpace: "nowrap",
-          }}>
-            JOC staff only
-          </span>
-        </div>
-
-        <h1 style={{
-          fontFamily: F.ui, fontSize: "clamp(27px, 7vw, 36px)", fontWeight: 700,
-          letterSpacing: "-0.03em", lineHeight: 1.05, color: C.white,
-          margin: "20px 0 0",
-        }}>
-          The JOC School Buzz
-        </h1>
-
-        <div style={{
-          display: "flex", gap: "26px", flexWrap: "wrap",
-          margin: "18px 0 0", paddingTop: "18px",
-          borderTop: "1px solid rgba(255,255,255,.14)",
-        }}>
-          <Stat n={lastMonth} name={lastMonth === 1 ? "update, 30 days" : "updates, 30 days"} />
-          <Stat
-            n={schoolsTouched.length}
-            name={schoolsTouched.length === 1 ? "school" : "schools"}
-          />
-          {ahead.length > 0 && <Stat n={ahead.length} name="in the diary" accent />}
-        </div>
-
-        <Link
-          href="/log"
-          style={{
-            fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.white,
-            backgroundColor: C.orange, borderRadius: "12px", padding: "0 20px",
-            minHeight: "48px", display: "inline-flex", alignItems: "center",
-            justifyContent: "center", textDecoration: "none", marginTop: "20px",
-          }}
-        >
-          Add an update
-        </Link>
-      </header>
+      <Inside>
 
       {/* ── Still ahead ───────────────────────────────────────────────── */}
       {ahead.length > 0 && (
@@ -287,10 +230,73 @@ export default async function BuzzPage() {
         </div>
       )}
 
-      <p style={{ ...hint, textAlign: "center", marginTop: "26px" }}>
-        Anybody at JOC can add to this. Seeing it is switched on per person.
-      </p>
+        <p style={{ ...hint, textAlign: "center", marginTop: "26px" }}>
+          Anybody at JOC can add to this. Seeing it is switched on per person.
+        </p>
+      </Inside>
     </Shell>
+  );
+}
+
+/**
+ * The head of the sheet.
+ *
+ * One block: who it belongs to, who it is for, what it is called, one line of
+ * numbers and the one thing to do. The figures used to be three columns under
+ * a rule, which is more furniture than a feed needs above it.
+ */
+function Masthead({ line }: { line?: string }) {
+  return (
+    <header style={{ backgroundColor: C.ink, color: C.white, padding: "24px 20px 22px" }}>
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        gap: "12px", flexWrap: "wrap",
+      }}>
+        <Image
+          src="/brand/joc-wordmark-white.png"
+          alt="JustOneChesed"
+          width={170}
+          height={21}
+          priority
+          style={{ height: "18px", width: "auto", display: "block" }}
+        />
+        <span style={{
+          fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
+          textTransform: "uppercase", color: C.orange, whiteSpace: "nowrap",
+        }}>
+          JOC staff only
+        </span>
+      </div>
+
+      <h1 style={{
+        fontFamily: F.ui, fontSize: "clamp(26px, 6.5vw, 34px)", fontWeight: 700,
+        letterSpacing: "-0.03em", lineHeight: 1.05, color: C.white,
+        margin: "18px 0 0",
+      }}>
+        The JOC School Buzz
+      </h1>
+
+      {line && (
+        <p style={{
+          fontFamily: F.read, fontSize: "15px", lineHeight: 1.5,
+          color: "rgba(255,255,255,.6)", margin: "8px 0 0",
+        }}>
+          {line}
+        </p>
+      )}
+
+      <Link
+        href="/log"
+        style={{
+          fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.white,
+          backgroundColor: C.orange, borderRadius: "12px", padding: "0 20px",
+          minHeight: "46px", display: "inline-flex", alignItems: "center",
+          justifyContent: "center", textDecoration: "none", marginTop: "18px",
+        }}
+      >
+        Add an update
+      </Link>
+    </header>
   );
 }
 
@@ -322,60 +328,36 @@ function H2({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** One figure in the masthead. */
-function Stat({ n, name, accent }: { n: number; name: string; accent?: boolean }) {
-  return (
-    <div style={{ minWidth: 0 }}>
-      <div style={{
-        fontFamily: F.ui, fontSize: "26px", fontWeight: 800, lineHeight: 1,
-        letterSpacing: "-0.02em", color: accent ? C.orange : C.white,
-      }}>
-        {n}
-      </div>
-      <div style={{
-        fontFamily: F.data, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em",
-        textTransform: "uppercase", color: "rgba(255,255,255,.55)", marginTop: "5px",
-      }}>
-        {name}
-      </div>
-    </div>
-  );
-}
-
 /**
- * The mark, on a light ground, so the blue wordmark rather than the white.
- * Used on the sign-in card, which has no masthead above it.
+ * One framed sheet on the paper, with the masthead flush at its head.
+ *
+ * The frame is what holds the page together without a site header: the dark
+ * block was floating on the background, and a rule down each side says where
+ * the page is as plainly as a nav bar would have.
  */
-function Wordmark() {
-  return (
-    <div style={{ marginBottom: "22px" }}>
-      <Image
-        src="/brand/joc-wordmark.png"
-        alt="JustOneChesed"
-        width={170}
-        height={21}
-        priority
-        style={{ height: "20px", width: "auto", display: "block" }}
-      />
-      <div style={{
-        fontFamily: F.data, fontWeight: 700, fontSize: "9px", letterSpacing: "0.22em",
-        textTransform: "uppercase", color: C.orange, marginTop: "7px",
-      }}>
-        Education
-      </div>
-    </div>
-  );
-}
-
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main style={{
       minHeight: "100vh", backgroundColor: C.paper,
-      padding: "clamp(22px, 5vw, 54px) 18px 64px",
+      padding: "clamp(16px, 4vw, 44px) 14px 56px",
     }}>
-      <div style={{ maxWidth: "620px", margin: "0 auto" }}>{children}</div>
+      <div style={{
+        maxWidth: "640px", margin: "0 auto",
+        backgroundColor: C.paper,
+        border: `1px solid ${C.hairline}`,
+        borderRadius: "22px",
+        overflow: "hidden",
+        boxShadow: "0 1px 0 #E3E6EF, 0 10px 34px rgba(16,35,63,.06)",
+      }}>
+        {children}
+      </div>
     </main>
   );
+}
+
+/** Everything inside the frame that is not the masthead. */
+function Inside({ children }: { children: React.ReactNode }) {
+  return <div style={{ padding: "22px 18px 28px" }}>{children}</div>;
 }
 
 const body: React.CSSProperties = {
