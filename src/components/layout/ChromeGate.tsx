@@ -15,6 +15,10 @@ const OWN_CHROME = [
   "/forgot-password",
   "/reset-password",
   "/verify",
+  // One form, opened from a link, filled in on a phone in a car park. A site
+  // header offering a demo and a shop is noise around the only thing on the
+  // page.
+  "/log",
 ];
 
 export function ChromeGate({ children }: { children: React.ReactNode }) {

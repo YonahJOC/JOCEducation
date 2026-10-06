@@ -42,69 +42,48 @@ export default async function LogPage() {
           picks it up — you don&rsquo;t need to tell anybody separately.
         </p>
 
-        <div style={card}>
-          {wrongAccount ? (
-            <>
-              <p style={{ ...body, fontSize: "16px", margin: "0 0 4px", color: C.ink }}>
-                <strong>Wrong account.</strong>
-              </p>
-              <p style={{ ...body, fontSize: "16px", margin: "0 0 18px" }}>
-                You&rsquo;re signed in as {me!.email}. This form needs your
-                justonechesed.org address.
-              </p>
-              <form action={signOutAction}>
-                <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
-                  Sign out
-                </button>
-              </form>
-              <p style={{ ...hint, textAlign: "center" }}>
-                Then open this link again and sign in with your JOC address.
-              </p>
-            </>
-          ) : (
-            <>
-              <p style={{ ...body, fontSize: "16px", margin: "0 0 18px" }}>
-                Sign in with your <strong style={{ color: C.ink }}>justonechesed.org</strong>{" "}
-                address and the form opens. There&rsquo;s nothing else to set up.
-              </p>
-
-              {isGoogleConfigured ? (
+        <LogVisitForm
+          // Nobody has signed in, so nobody is shown the list of schools.
+          schools={[]}
+          programs={[]}
+          myName=""
+          locked
+          signIn={
+            wrongAccount ? (
+              <>
+                <p style={{ ...body, fontSize: "16px", margin: "0 0 16px" }}>
+                  You&rsquo;re signed in as <strong style={{ color: C.ink }}>{me!.email}</strong>,
+                  which isn&rsquo;t a justonechesed.org address.
+                </p>
+                <form action={signOutAction}>
+                  <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
+                    Sign out
+                  </button>
+                </form>
+                <p style={{ ...hint, textAlign: "center" }}>
+                  Then open this link again with your JOC address.
+                </p>
+              </>
+            ) : isGoogleConfigured ? (
+              <>
                 <form action={signInWithGoogle}>
                   <input type="hidden" name="next" value="/log" />
                   <button type="submit" style={{ ...googleButton, cursor: "pointer" }}>
                     <GoogleMark />
-                    Continue with Google
+                    Sign in to fill this in
                   </button>
                 </form>
-              ) : (
-                <p style={{ ...body, fontSize: "16px", color: C.orangeText, margin: 0 }}>
-                  Google sign-in isn&rsquo;t switched on yet, so the form can&rsquo;t open.
+                <p style={{ ...hint, textAlign: "center" }}>
+                  Your justonechesed.org address. Nothing is emailed to the school.
                 </p>
-              )}
-            </>
-          )}
-
-          {/* What they are signing in to reach. */}
-          <div style={{ borderTop: `1px solid ${C.hairline}`, marginTop: "22px", paddingTop: "18px" }}>
-            <p style={{ ...label, color: C.muted, margin: "0 0 12px" }}>What it asks</p>
-            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "9px" }}>
-              {[
-                "Which school",
-                "Which program",
-                "Who you dealt with there",
-                "What you did",
-                "When, and roughly how many students",
-              ].map((q) => (
-                <li key={q} style={{ ...body, fontSize: "16px", margin: 0, color: C.ink, opacity: 0.55 }}>
-                  {q}
-                </li>
-              ))}
-            </ul>
-            <p style={{ ...hint, marginTop: "14px" }}>
-              Two minutes. Nothing is emailed to the school.
-            </p>
-          </div>
-        </div>
+              </>
+            ) : (
+              <p style={{ ...body, fontSize: "16px", color: C.orangeText, margin: 0 }}>
+                Google sign-in isn&rsquo;t switched on yet, so the form can&rsquo;t open.
+              </p>
+            )
+          }
+        />
       </Shell>
     );
   }
@@ -196,12 +175,6 @@ const body: React.CSSProperties = {
 
 const hint: React.CSSProperties = {
   fontFamily: F.read, fontSize: "14px", lineHeight: 1.5, color: C.muted, margin: "10px 0 0",
-};
-
-/** The same card the form itself sits in, so the sign-in reads as its cover. */
-const card: React.CSSProperties = {
-  backgroundColor: C.white, borderRadius: "18px", padding: "22px 20px",
-  boxShadow: "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)",
 };
 
 const googleButton: React.CSSProperties = {
