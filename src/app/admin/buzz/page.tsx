@@ -68,13 +68,21 @@ async function Inner() {
 
   const withAccess = rows.filter((r) => r.added || r.viaType || r.superAdmin);
 
+  // Given it before they ever signed in. Spent the first time they open it.
+  const invites = (await prisma.buzzInvite.findMany({
+    orderBy: { createdAt: "asc" },
+    select: { email: true },
+  }).catch(() => [])).map((i) => i.email);
+
   return (
     <div>
       <div className="joc-page-head">
         <div style={{ minWidth: 0 }}>
           <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>Who can see the Buzz</h1>
           <p style={{ ...datum, color: C.muted, margin: 0 }}>
-            {withAccess.length} {withAccess.length === 1 ? "PERSON" : "PEOPLE"} ·{" "}
+            {withAccess.length} {withAccess.length === 1 ? "PERSON" : "PEOPLE"}
+            {invites.length > 0 && ` · ${invites.length} WAITING TO SIGN IN`}
+            {" · "}
             <Link href="/buzz" style={{ color: C.blue, textDecoration: "none" }}>OPEN THE BUZZ</Link>
           </p>
         </div>
@@ -90,7 +98,7 @@ async function Inner() {
         straight away.
       </p>
 
-      <BuzzAccessList rows={rows} />
+      <BuzzAccessList rows={rows} invites={invites} />
     </div>
   );
 }

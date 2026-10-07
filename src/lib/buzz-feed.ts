@@ -1,0 +1,113 @@
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { safeAuth, openForReview } from "@/auth";
+import { can, isSuperAdminEmail } from "@/lib/access";
+import { leadsAnyProgram } from "@/lib/program-admin";
+import { UPDATE_TYPES } from "@/lib/school-update";
+
+/**
+ * The rows behind the Buzz, and who is looking at them.
+ *
+ * Both places that show the feed — the Buzz itself and the window on the
+ * console home — read it through here, so an item behaves the same on both.
+ * It was two different components with two different ideas of what an item
+ * is, which is how one of them ended up without a comment box.
+ */
+
+export type BuzzRow = Awaited<ReturnType<typeof buzzRows>>[number];
+
+export async function buzzRows(take: number) {
+  if (!isDatabaseConfigured()) return [];
+  return prisma.schoolActivity.findMany({
+    // Removed items are hidden here and nowhere else: the row is still the
+    // school's history, it is just off the feed.
+    where: { type: { in: [...UPDATE_TYPES] }, removedAt: null },
+    orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
+    take,
+    select: {
+      id: true, type: true, detail: true, occurredAt: true, createdAt: true,
+      author: { select: { name: true, email: true } },
+      takenById: true,
+      takenBy: { select: { name: true, email: true } },
+      program: { select: { name: true } },
+      school: { select: { id: true, name: true } },
+      notes: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true, body: true, createdAt: true, authorId: true,
+          author: { select: { name: true, email: true } },
+        },
+      },
+      likes: { select: { userId: true } },
+    },
+  }).catch(() => []);
+}
+
+export type BuzzViewer = Awaited<ReturnType<typeof buzzViewer>>;
+
+/**
+ * Everything about the reader that an item needs to draw itself: what they
+ * may do, who they could hand something to, and what they have already read.
+ */
+export async function buzzViewer() {
+  const session = await safeAuth();
+  const me = session?.user;
+
+  const superAdmin = openForReview || isSuperAdminEmail(me?.email);
+
+  // Anybody who runs a program can take an item; so can the schools team. A
+  // coordinator holds no console capability, so the capability alone would
+  // have shut out exactly the people this is for.
+  const canPick = openForReview || can(me, "schools") || (await leadsAnyProgram(me?.id ?? null));
+
+  // Who a super admin can hand an item to. Only fetched for them, so nobody
+  // else's page carries a list of their colleagues.
+  const taggable = superAdmin && isDatabaseConfigured()
+    ? (await prisma.user.findMany({
+        where: { schoolId: null, active: true },
+        orderBy: [{ name: "asc" }, { email: "asc" }],
+        select: { id: true, name: true, email: true },
+      }).catch(() => [])).map((u) => ({ id: u.id, name: u.name ?? u.email ?? "somebody" }))
+    : [];
+
+  // When they last opened each thread.
+  const seen = me?.id && isDatabaseConfigured()
+    ? new Map(
+        (await prisma.buzzSeen.findMany({
+          where: { userId: me.id },
+          select: { activityId: true, seenAt: true },
+        }).catch(() => [])).map((s) => [s.activityId, s.seenAt]),
+      )
+    : new Map<string, Date>();
+
+  return { me: me ?? null, superAdmin, canPick, taggable, seen };
+}
+
+/**
+ * Comments on one item this person has not seen.
+ *
+ * Never counts their own: writing a comment is not a notification to
+ * yourself, and a dot on something you just said is noise.
+ */
+export function unreadFor(row: BuzzRow, viewer: BuzzViewer): number {
+  const id = viewer.me?.id;
+  if (!id) return 0;
+  const last = viewer.seen.get(row.id);
+  return row.notes.filter((n) => n.authorId !== id && (!last || n.createdAt > last)).length;
+}
+
+/**
+ * Where an item sits: when it entered the feed, lifted once by its first
+ * comment. See the note in app/buzz/page.tsx for why it is not the date on
+ * the row.
+ */
+export function standing(row: { createdAt: Date; notes: { createdAt: Date }[] }): number {
+  return row.notes.length > 0
+    ? Math.max(row.createdAt.getTime(), row.notes[0].createdAt.getTime())
+    : row.createdAt.getTime();
+}
+
+/** First name only — this is a feed, not a directory. */
+export function first(who: string | null | undefined): string {
+  if (!who) return "somebody at JOC";
+  return who.includes("@") ? who.split("@")[0] : who.split(/\s+/)[0];
+}

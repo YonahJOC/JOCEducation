@@ -3,13 +3,13 @@ import Link from "next/link";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
 import { can, isSuperAdminEmail } from "@/lib/access";
-import { leadsAnyProgram } from "@/lib/program-admin";
-import { ItemTools } from "@/components/buzz/ItemTools";
+import { buzzRows, buzzViewer, standing, first } from "@/lib/buzz-feed";
+import { BuzzCard } from "@/components/buzz/BuzzCard";
 import { AdminToggle } from "@/components/buzz/AdminToggle";
 import { Detail } from "@/components/buzz/Detail";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import {
-  UPDATE_TYPES, TAG, day, shortDay, clock, away, ago,
+  UPDATE_TYPES, shortDay, clock, away,
 } from "@/lib/school-update";
 import { C, R, F, label } from "@/lib/joc-tokens";
 
@@ -128,49 +128,11 @@ export default async function BuzzPage() {
   const midnight = new Date(); midnight.setUTCHours(0, 0, 0, 0);
   const monthBack = new Date(midnight.getTime() - 30 * 86400000);
 
-  // Anybody who runs a program can take an item; so can the schools team. A
-  // coordinator holds no console capability, so the capability alone would
-  // have shut out exactly the people this is for.
-  const canPick = openForReview || can(me, "schools") || (await leadsAnyProgram(me?.id ?? null));
-
-  // Edit, tag, remove. Yonah, Jerry and Avir — nobody else, ever.
-  const superAdmin = openForReview || isSuperAdminEmail(me?.email);
-
-  // Who a super admin can hand an item to. Only fetched for them, so nobody
-  // else's page carries a list of their colleagues.
-  const taggable = superAdmin
-    ? (await prisma.user.findMany({
-        where: { schoolId: null, active: true },
-        orderBy: [{ name: "asc" }, { email: "asc" }],
-        select: { id: true, name: true, email: true },
-      }).catch(() => [])).map((u) => ({ id: u.id, name: u.name ?? u.email ?? "somebody" }))
-    : [];
-
-  const [rows, lastMonth, schoolsTouched] = await Promise.all([
-    prisma.schoolActivity.findMany({
-      // Removed items are hidden here and nowhere else: the row is still the
-      // school's history, it is just off the feed.
-      where: { type: { in: [...UPDATE_TYPES] }, removedAt: null },
-      orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
-      take: 200,
-      select: {
-        id: true, type: true, detail: true, occurredAt: true, createdAt: true,
-        author: { select: { name: true, email: true } },
-        takenById: true,
-        takenBy: { select: { name: true, email: true } },
-        program: { select: { name: true } },
-        school: { select: { id: true, name: true } },
-        notes: {
-          orderBy: { createdAt: "asc" },
-          select: {
-            id: true, body: true, createdAt: true,
-            authorId: true,
-            author: { select: { name: true, email: true } },
-          },
-        },
-        likes: { select: { userId: true } },
-      },
-    }).catch(() => []),
+  // Both this page and the window on the console home read the feed through
+  // lib/buzz-feed, so an item behaves the same in either.
+  const [rows, viewer, lastMonth, schoolsTouched] = await Promise.all([
+    buzzRows(200),
+    buzzViewer(),
     prisma.schoolActivity.count({
       where: { type: { in: [...UPDATE_TYPES] }, occurredAt: { gte: monthBack, lte: midnight } },
     }).catch(() => 0),
@@ -180,6 +142,8 @@ export default async function BuzzPage() {
       distinct: ["schoolId"],
     }).catch(() => []),
   ]);
+
+  const superAdmin = viewer.superAdmin;
 
   // Ahead of us, and behind us.
   const ahead = rows
@@ -200,23 +164,6 @@ export default async function BuzzPage() {
    * A real update always outranks a lift, because it carries today's date and
    * the lift carries the date the thread started.
    */
-  /**
-   * Ordered by when a thing entered the feed, not by the date written on it.
-   *
-   * "Today" on the form is a date, not a moment, so it is stored as midnight.
-   * Ordering on that put everything filed today at the same instant, and left
-   * a brand new update below any item somebody had commented on — a comment
-   * carries a real time and midnight loses to all of them. The date on the
-   * row is for reading; this is for sorting.
-   *
-   * The first comment still lifts an old item once. It cannot lift it above
-   * something filed since, because that was filed later.
-   */
-  const standing = (r: { createdAt: Date; notes: { createdAt: Date }[] }) =>
-    r.notes.length > 0
-      ? Math.max(r.createdAt.getTime(), r.notes[0].createdAt.getTime())
-      : r.createdAt.getTime();
-
   const behind = rows
     .filter((r) => !aheadIds.has(r.id))
     .sort((a, b) =>
@@ -227,29 +174,6 @@ export default async function BuzzPage() {
       (standing(b) - standing(a)) || (b.createdAt.getTime() - a.createdAt.getTime()),
     )
     .slice(0, FEED);
-
-  /**
-   * How many comments this person has not seen on each thread.
-   *
-   * Never counts their own: writing a comment is not a notification to
-   * yourself, and a dot on something you just said is noise.
-   */
-  const seen = me?.id
-    ? new Map(
-        (await prisma.buzzSeen.findMany({
-          where: { userId: me.id },
-          select: { activityId: true, seenAt: true },
-        }).catch(() => [])).map((s) => [s.activityId, s.seenAt]),
-      )
-    : new Map<string, Date>();
-
-  const unreadOn = (r: { id: string; notes: { createdAt: Date; authorId: string | null }[] }) => {
-    if (!me?.id) return 0;
-    const last = seen.get(r.id);
-    return r.notes.filter(
-      (n) => n.authorId !== me.id && (!last || n.createdAt > last),
-    ).length;
-  };
 
   return (
     <Shell>
@@ -317,50 +241,7 @@ export default async function BuzzPage() {
       ) : (
         <div style={{ display: "grid", gap: "10px" }}>
           {behind.map((r) => (
-            <article key={r.id} style={card}>
-              <div style={{
-                display: "flex", justifyContent: "space-between", gap: "10px",
-                flexWrap: "wrap", alignItems: "baseline",
-              }}>
-                <p style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 700, color: C.ink, margin: 0 }}>
-                  {r.school.name}
-                </p>
-                <span style={{ ...label, color: C.muted }} title={day(r.occurredAt)}>
-                  {ago(r.occurredAt, midnight).toUpperCase()}
-                </span>
-              </div>
-
-              <p style={{ ...label, color: C.muted, margin: "4px 0 0" }}>
-                <span style={{ color: C.ink }}>{TAG[r.type] ?? "UPDATE"}</span>
-                {" · "}
-                {r.program?.name ?? "No program"}
-                {" · "}
-                {first(r.author?.name ?? r.author?.email)}
-              </p>
-
-              {r.detail && <Detail text={r.detail} />}
-
-              <ItemTools
-                activityId={r.id}
-                detail={r.detail}
-                notes={r.notes.map((n) => ({
-                  id: n.id,
-                  body: n.body,
-                  who: first(n.author?.name ?? n.author?.email),
-                  when: ago(n.createdAt, midnight),
-                  mine: Boolean(me?.id && n.authorId === me.id),
-                }))}
-                unread={unreadOn(r)}
-                likes={r.likes.length}
-                liked={Boolean(me?.id && r.likes.some((l) => l.userId === me.id))}
-                takenBy={r.takenById ? first(r.takenBy?.name ?? r.takenBy?.email) : null}
-                mine={Boolean(me?.id && r.takenById === me.id)}
-                canPick={canPick}
-                canComment
-                superAdmin={superAdmin}
-                people={taggable}
-              />
-            </article>
+            <BuzzCard key={r.id} row={r} viewer={viewer} now={midnight} />
           ))}
         </div>
       )}
@@ -450,10 +331,6 @@ function Masthead({ line, tools = false }: { line?: string; tools?: boolean }) {
 }
 
 /** First name only — this is a feed, not a directory. */
-function first(who: string | null | undefined): string {
-  if (!who) return "somebody at JOC";
-  return who.includes("@") ? who.split("@")[0] : who.split(/\s+/)[0];
-}
 
 function H2({ children }: { children: React.ReactNode }) {
   return (

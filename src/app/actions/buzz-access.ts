@@ -55,3 +55,63 @@ export async function setBuzzAccess(userId: string, on: boolean): Promise<Access
   revalidatePath("/buzz");
   return { ok: true };
 }
+
+/**
+ * Give somebody the Buzz before they have an account.
+ *
+ * Somebody starts on Monday; the moment to decide they should see this is
+ * then, not the first time they happen to sign in. If they already have an
+ * account the switch is flipped instead, so one address cannot end up both
+ * invited and listed.
+ */
+export async function inviteToBuzz(emailRaw: string): Promise<AccessResult> {
+  const allowed = await guard();
+  if (!allowed.ok) return allowed;
+
+  const email = emailRaw.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: "That doesn't look like an email address." };
+  }
+
+  const existing = await prisma.user.findFirst({
+    where: { email: { equals: email, mode: "insensitive" } },
+    select: { id: true, schoolId: true },
+  }).catch(() => null);
+
+  if (existing?.schoolId) {
+    return { ok: false, error: "That account belongs to a school, so it can't see the Buzz." };
+  }
+
+  try {
+    if (existing) {
+      // They are already here. No invite — just switch them on.
+      await prisma.user.update({ where: { id: existing.id }, data: { buzzAccess: true } });
+    } else {
+      await prisma.buzzInvite.upsert({
+        where: { email },
+        create: { email, invitedById: (await safeAuth())?.user?.id ?? null },
+        update: {},
+      });
+    }
+  } catch {
+    return { ok: false, error: "That didn't save. Try again in a moment." };
+  }
+
+  revalidatePath("/admin/buzz");
+  return { ok: true };
+}
+
+/** Take back an invite nobody has used yet. */
+export async function cancelBuzzInvite(email: string): Promise<AccessResult> {
+  const allowed = await guard();
+  if (!allowed.ok) return allowed;
+
+  try {
+    await prisma.buzzInvite.deleteMany({ where: { email: email.trim().toLowerCase() } });
+  } catch {
+    return { ok: false, error: "That didn't save. Try again in a moment." };
+  }
+
+  revalidatePath("/admin/buzz");
+  return { ok: true };
+}

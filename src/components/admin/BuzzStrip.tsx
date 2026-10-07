@@ -1,50 +1,36 @@
 import Link from "next/link";
-import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth } from "@/auth";
 import { canReadBuzz } from "@/lib/buzz-access";
-import { UPDATE_TYPES, TAG, ago } from "@/lib/school-update";
-import { BandRow } from "@/components/ui/BandRow";
+import { buzzRows, buzzViewer, standing } from "@/lib/buzz-feed";
+import { BuzzCard } from "@/components/buzz/BuzzCard";
 import { C, F } from "@/lib/joc-tokens";
 
 /**
  * The Buzz, on somebody's console home.
  *
- * A short scrolling window rather than the feed itself: the point of the
- * console home is the handful of things that need a person today, and forty
- * school updates underneath that would bury them. This says what is going on
- * and gets out of the way — every row and the heading open the real thing.
+ * The same cards as the feed itself — comment, thumbs up, pick it up, and
+ * for a super admin edit and tag — inside a window that scrolls. Anything
+ * less and this is a picture of the Buzz rather than the Buzz, and somebody
+ * reading a comment here has to open another page to answer it.
  *
- * Shown to whoever can read the Buzz and nobody else, and it renders nothing
- * at all rather than an empty box when there is nothing to show.
+ * A window rather than the whole feed because the console home is the
+ * handful of things that need a person today; forty updates underneath them
+ * would bury the point of the page.
  */
 
 const SHOW = 12;
 
 export async function BuzzStrip() {
   const session = await safeAuth();
-  const me = session?.user;
+  if (!(await canReadBuzz(session?.user))) return null;
 
-  if (!isDatabaseConfigured()) return null;
-  if (!(await canReadBuzz(me))) return null;
-
-  const rows = await prisma.schoolActivity.findMany({
-    where: { type: { in: [...UPDATE_TYPES] }, removedAt: null },
-    orderBy: [{ createdAt: "desc" }],
-    take: SHOW,
-    select: {
-      id: true, type: true, detail: true, createdAt: true,
-      author: { select: { name: true, email: true } },
-      program: { select: { name: true } },
-      school: { select: { id: true, name: true } },
-      takenById: true,
-      takenBy: { select: { name: true, email: true } },
-      _count: { select: { notes: true } },
-    },
-  }).catch(() => []);
-
+  const [rows, viewer] = await Promise.all([buzzRows(60), buzzViewer()]);
   if (rows.length === 0) return null;
 
   const now = new Date();
+  const items = [...rows]
+    .sort((a, b) => (standing(b) - standing(a)) || (b.createdAt.getTime() - a.createdAt.getTime()))
+    .slice(0, SHOW);
 
   return (
     <section style={{ marginTop: "30px" }}>
@@ -66,52 +52,16 @@ export async function BuzzStrip() {
         </Link>
       </div>
 
-      {/* The feed's own cards, on its own paper, in a window that scrolls.
-          A page that grows by forty rows is a page where the things that
-          need somebody today are off the screen. */}
       <div style={{
-        maxHeight: "340px", overflowY: "auto",
+        maxHeight: "460px", overflowY: "auto",
         backgroundColor: C.paper,
         borderRadius: "18px", border: `1px solid ${C.hairline}`,
         padding: "12px", display: "grid", gap: "10px",
       }}>
-        {rows.map((r) => (
-          <BandRow
-            key={r.id}
-            tone={r.type === "EVENT_PLANNED" ? "good" : "info"}
-            label={TAG[r.type] ?? "UPDATE"}
-            figure={ago(r.createdAt, now)}
-            word
-            title={r.school.name}
-            line={[
-              // One line means one line. A row's own text wrapping to five
-              // of them is what made these cards different heights.
-              clip(r.detail?.split("\n")[0], 92),
-              r._count.notes > 0
-                ? `${r._count.notes} ${r._count.notes === 1 ? "comment" : "comments"}`
-                : null,
-              r.takenById ? `with ${first(r.takenBy?.name ?? r.takenBy?.email)}` : null,
-            ].filter(Boolean).join(" · ")}
-            action={{ label: "Open the Buzz", href: "/buzz" }}
-          />
+        {items.map((r) => (
+          <BuzzCard key={r.id} row={r} viewer={viewer} now={now} />
         ))}
       </div>
     </section>
   );
-}
-
-/** Cut at a word, not mid-syllable. */
-function clip(text: string | null | undefined, n: number): string | null {
-  if (!text) return null;
-  const t = text.trim();
-  if (t.length <= n) return t;
-  const cut = t.slice(0, n);
-  const space = cut.lastIndexOf(" ");
-  return `${(space > n * 0.6 ? cut.slice(0, space) : cut).trimEnd()}…`;
-}
-
-/** First name only — this is a glance, not a directory. */
-function first(who: string | null | undefined): string {
-  if (!who) return "somebody";
-  return who.includes("@") ? who.split("@")[0] : who.split(/\s+/)[0];
 }

@@ -517,6 +517,7 @@ model User {
   buzzNotes        BuzzNote[]
   buzzSeen         BuzzSeen[]
   buzzLikes        BuzzLike[]
+  buzzInvitesSent  BuzzInvite[]        @relation("BuzzInvitedBy")
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2400,4 +2401,20 @@ model BuzzLike {
 
   @@unique([userId, activityId])
   @@index([activityId])
+}
+
+/// Somebody given the Buzz before they have ever signed in.
+///
+/// Held by email, not as a half-made User: a stub account with no provider
+/// record is something Google sign-in would have to be taught to adopt, and
+/// getting that wrong locks a real person out of everything rather than just
+/// this. The row is spent the first time they open the Buzz — the flag moves
+/// onto their account and the invite is deleted.
+model BuzzInvite {
+  id          String   @id @default(cuid())
+  /// Always lowercased, so one address cannot be invited twice.
+  email       String   @unique
+  invitedById String?
+  invitedBy   User?    @relation("BuzzInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
 }

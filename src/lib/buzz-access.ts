@@ -42,6 +42,29 @@ export async function canReadBuzz(user: U): Promise<boolean> {
 
   if (!row || row.schoolId) return false;
   if (row.buzzAccess) return true;
+
+  // Invited before they ever signed in. Spend the invite now: the flag moves
+  // onto the account, so from here they are an ordinary name on the list
+  // rather than a special case anybody has to remember.
+  const email = user.email?.trim().toLowerCase();
+  if (email) {
+    const invite = await prisma.buzzInvite.findUnique({
+      where: { email }, select: { id: true },
+    }).catch(() => null);
+
+    if (invite) {
+      try {
+        await prisma.$transaction([
+          prisma.user.update({ where: { id: user.id }, data: { buzzAccess: true } }),
+          prisma.buzzInvite.delete({ where: { id: invite.id } }),
+        ]);
+      } catch {
+        // Worst case the invite is spent next time; they can read it now.
+      }
+      return true;
+    }
+  }
+
   if (can(user, "buzz")) return true;
   return leadsAnyProgram(user.id);
 }
