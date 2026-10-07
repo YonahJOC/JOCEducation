@@ -6,6 +6,7 @@ import { signOutAction } from "@/app/actions/auth";
 import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { jocNav, roleLabel } from "@/lib/nav";
 import { needCount } from "@/lib/program-today";
+import { deskBadges } from "@/lib/my-desk";
 import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
 export const metadata = { title: "JOC Console", robots: { index: false, follow: false } };
@@ -66,6 +67,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     );
   }
 
+  // The two numbers at the top of the rail: what is waiting on this person,
+  // and what is new in the office.
+  const badges = await deskBadges();
+
   // A coordinator's rail is the programs they run, each with what it needs.
   const mine = leadsProgram ? await listProgramsForAdmin() : [];
   const programs = await Promise.all(
@@ -82,7 +87,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       side="joc"
       who={me?.email ?? "Nobody signed in"}
       role={openForReview ? "Console" : roleLabel(me, { leadsPrograms: mine.length })}
-      items={jocNav(me, { programs })}
+      items={jocNav(me, { programs, badges })}
       action={
         <div style={{ display: "grid", gap: "8px" }}>
           <ShellExit side="joc" href="/home">Back to the site</ShellExit>

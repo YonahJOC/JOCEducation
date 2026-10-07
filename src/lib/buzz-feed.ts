@@ -30,6 +30,10 @@ export async function buzzRows(take: number) {
       takenBy: { select: { name: true, email: true } },
       doneAt: true,
       doneBy: { select: { name: true, email: true } },
+      // Closed for the whole office — a super admin decision, and separate
+      // from any one person having finished with it.
+      closedAt: true,
+      closedBy: { select: { name: true, email: true } },
       program: { select: { name: true } },
       school: { select: { id: true, name: true } },
       notes: {
@@ -102,7 +106,35 @@ export async function buzzViewer() {
       )
     : new Set<string>();
 
-  return { me: me ?? null, superAdmin, canPick, taggable, seen, mySchools };
+  /**
+   * The two private states, per person.
+   *
+   * `onDesk` is the task this person made from a note — what they said they
+   * would do, which is the line the card shows back to them. `doneForMe` is
+   * them having finished with it while it stays open for everybody else.
+   *
+   * Both are read here rather than on the row, because a row is shared and
+   * these two things are emphatically not.
+   */
+  const onDesk = me?.id && isDatabaseConfigured()
+    ? new Map(
+        (await prisma.deskTodo.findMany({
+          where: { userId: me.id, activityId: { not: null } },
+          select: { id: true, activityId: true, text: true, doneAt: true },
+        }).catch(() => [])).map((t) => [t.activityId as string, t]),
+      )
+    : new Map<string, { id: string; activityId: string | null; text: string; doneAt: Date | null }>();
+
+  const doneForMe = me?.id && isDatabaseConfigured()
+    ? new Set(
+        (await prisma.buzzDone.findMany({
+          where: { userId: me.id },
+          select: { activityId: true },
+        }).catch(() => [])).map((d) => d.activityId),
+      )
+    : new Set<string>();
+
+  return { me: me ?? null, superAdmin, canPick, taggable, seen, mySchools, onDesk, doneForMe };
 }
 
 /**

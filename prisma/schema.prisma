@@ -198,6 +198,12 @@ model SchoolActivity {
   doneAt   DateTime?
   doneById String?
   doneBy   User?     @relation("ActivityDoneBy", fields: [doneById], references: [id], onDelete: SetNull)
+  /// Closed for everybody, by a super admin. Distinct from one person being
+  /// finished with it, which is BuzzDone.
+  closedAt   DateTime?
+  closedById String?
+  closedBy   User?     @relation("ActivityClosedBy", fields: [closedById], references: [id], onDelete: SetNull)
+  doneByUsers BuzzDone[]
   todos    DeskTodo[]
 
   /// The thread under it. Anybody who can read the Buzz can add to one.
@@ -535,6 +541,10 @@ model User {
   notices          Notice[]            @relation("NoticeAuthor")
   noticeReads      NoticeRead[]
   activitiesDone   SchoolActivity[]    @relation("ActivityDoneBy")
+  activitiesClosed SchoolActivity[]    @relation("ActivityClosedBy")
+  notebook         NotebookPage[]
+  buzzDone         BuzzDone[]
+  inTrayCleared    InTrayCleared[]
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2458,6 +2468,12 @@ model DeskTodo {
   assignedById String?
   assignedBy   User?           @relation("DeskTodoAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
   due          DateTime?
+  /// TODAY or LATER. Which pile it sits in, not when it is due.
+  whenBucket   String          @default("TODAY")
+  /// A handed-off task: when the recipient first opened their desk with it
+  /// on, and when the sender last chased. SENT → SEEN → NUDGED → DONE.
+  seenAt       DateTime?
+  nudgedAt     DateTime?
   doneAt       DateTime?
   createdAt    DateTime        @default(now())
 
@@ -2493,4 +2509,45 @@ model NoticeRead {
   readAt   DateTime @default(now())
 
   @@unique([userId, noticeId])
+}
+
+
+/// A private page. Nobody else ever reads it.
+model NotebookPage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String   @default("")
+  body      String   @default("") @db.Text
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([userId, sort])
+}
+
+/// One person is finished with a Buzz note. Not the school being answered —
+/// that is closing the thread, which only a super admin can do.
+model BuzzDone {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activityId String
+  activity   SchoolActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  doneAt     DateTime       @default(now())
+
+  @@unique([userId, activityId])
+}
+
+/// Something in For you that this person has dealt with. Kind plus the id of
+/// whatever it points at, because the three sources are three tables.
+model InTrayCleared {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      String
+  refId     String
+  clearedAt DateTime @default(now())
+
+  @@unique([userId, kind, refId])
 }

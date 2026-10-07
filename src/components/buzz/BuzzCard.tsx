@@ -23,6 +23,9 @@ export function BuzzCard({
   const me = viewer.me;
   const unread = unreadFor(row, viewer);
   const byMe = Boolean(me?.id && row.takenById === me.id);
+  // The task this person made from this note. Private: nobody else's card
+  // carries it, and the map it comes from is only ever built for the reader.
+  const takenToDesk = viewer.onDesk.get(row.id) ?? null;
 
   return (
     <article style={{
@@ -77,6 +80,11 @@ export function BuzzCard({
         superAdmin={viewer.superAdmin}
         people={viewer.taggable}
         doneBy={row.doneAt ? first(row.doneBy?.name ?? row.doneBy?.email) : null}
+        school={row.school.name}
+        /* The two private states and the one public one. */
+        onDesk={takenToDesk ? { id: takenToDesk.id, text: takenToDesk.text } : null}
+        doneForMe={viewer.doneForMe.has(row.id)}
+        closedBy={row.closedAt ? first(row.closedBy?.name ?? row.closedBy?.email) : null}
       />
     </article>
   );

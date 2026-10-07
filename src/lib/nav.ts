@@ -23,6 +23,8 @@ export type NavItem = {
   dot?: string;
   /** How many things need them there. */
   need?: number;
+  /** Orange for work waiting on this person, blue for news. */
+  tone?: "orange" | "blue";
 };
 
 type U = Parameters<typeof can>[0];
@@ -45,11 +47,23 @@ export function roleLabel(user: U, opts: { leadsPrograms: number }): string {
  */
 export function jocNav(
   user: U,
-  opts: { programs?: { name: string; slug: string; heroColor: string; need: number }[] } = {},
+  opts: {
+    programs?: { name: string; slug: string; heroColor: string; need: number }[];
+    /** The two counts in the rail. */
+    badges?: { desk: number; office: number };
+  } = {},
 ): NavItem[] {
   // "My desk", not "Today": the page is no longer only the things that are
   // wrong this morning — it is also this person's list, diary and programs.
-  const items: NavItem[] = [{ label: "My desk", href: "/admin", hint: "What needs you" }];
+  //
+  // The Office sits directly under it and is the other half of the same idea:
+  // the desk is this person's own work, the Office is everybody's. Everyone in
+  // the console gets both, including a coordinator who gets nothing else —
+  // the Buzz inside it is still gated on its own permission.
+  const items: NavItem[] = [
+    { label: "My desk", href: "/admin", hint: "Your own work", need: opts.badges?.desk, tone: "orange" },
+    { label: "The Office", href: "/admin/office", hint: "The Buzz, schools, the board", need: opts.badges?.office, tone: "blue" },
+  ];
   const programs = opts.programs ?? [];
 
   // A coordinator holds no capability at all. Their navigation is the

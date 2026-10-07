@@ -60,8 +60,8 @@ export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "sch
             {i.need != null && i.need > 0 && (
               <span style={{
                 ...label,
-                color: dark ? C.ink : C.white,
-                backgroundColor: dark ? C.orange : C.orangeText,
+                color: i.tone === "blue" ? C.white : dark ? C.ink : C.white,
+                backgroundColor: i.tone === "blue" ? C.blue : dark ? C.orange : C.orangeText,
                 borderRadius: R.chip, padding: "2px 7px", flexShrink: 0,
               }}>
                 {i.need}

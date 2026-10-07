@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { addNote, editUpdate, assignUpdate, removeUpdate, setBuzzDone } from "@/app/actions/buzz-item";
-import { takeUpdate, releaseUpdate } from "@/app/actions/buzz-pickup";
+import { moveToMyDesk, takeOffMyDesk, doneForMe, closeThread } from "@/app/actions/buzz-desk";
+import {  } from "@/app/actions/buzz-pickup";
 import { markThreadSeen, markThreadUnread } from "@/app/actions/buzz-seen";
 import { toggleLike } from "@/app/actions/buzz-like";
 
@@ -29,7 +30,7 @@ export type Note = {
 
 export function ItemTools({
   activityId, detail, notes, unread, likes, liked, takenBy, mine, canPick,
-  canComment, superAdmin, people, doneBy,
+  canComment, superAdmin, people, doneBy, onDesk, doneForMe: doneMine, closedBy, school,
 }: {
   activityId: string;
   detail: string | null;
@@ -45,6 +46,14 @@ export function ItemTools({
   people: { id: string; name: string }[];
   /** Who marked it dealt with, for everybody. */
   doneBy: string | null;
+  /** This person's own task off this note, if they took it. Private. */
+  onDesk: { id: string; text: string } | null;
+  /** This person has finished with it. Private. */
+  doneForMe: boolean;
+  /** A super admin closed the thread for the whole office. */
+  closedBy: string | null;
+  /** The school's name, for the default wording of a pickup. */
+  school: string;
 }) {
   const [thread, setThread] = useState<Note[]>(notes);
   const [open, setOpen] = useState(false);
@@ -53,6 +62,12 @@ export function ItemTools({
   const [held, setHeld] = useState<{ by: string | null; mine: boolean }>({ by: takenBy, mine });
   const [cheer, setCheer] = useState({ n: likes, on: liked });
   const [done, setDone] = useState<string | null>(doneBy);
+  const [desk, setDesk] = useState<{ id: string; text: string } | null>(onDesk);
+  const [composing, setComposing] = useState(false);
+  const [plan, setPlan] = useState("");
+  const [planLater, setPlanLater] = useState(false);
+  const [mineDone, setMineDone] = useState(doneMine);
+  const [closed, setClosed] = useState<string | null>(closedBy);
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(detail ?? "");
   const [gone, setGone] = useState(false);
@@ -80,6 +95,137 @@ export function ItemTools({
 
   return (
     <>
+      {/* ── Closed for the whole office ─────────────────────────────── */}
+      {closed && (
+        <div style={{
+          display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 12px",
+          background: "#E3F4E8", borderRadius: "10px", padding: "8px 12px",
+          margin: "-4px -4px 12px",
+        }}>
+          <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: "#1D6B37" }}>
+            ✓ CLOSED
+          </span>
+          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: "#2C3C5A", flex: 1 }}>
+            Closed for everyone by {closed === "you" ? "you" : closed}
+          </span>
+          {superAdmin && (
+            <button
+              type="button"
+              style={plain}
+              onClick={() => {
+                const before = closed;
+                setClosed(null);
+                run(() => closeThread(activityId, false), () => setClosed(before));
+              }}
+            >
+              Reopen
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* ── Finished with, by this person alone ─────────────────────── */}
+      {!closed && mineDone && (
+        <div style={{
+          display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 12px",
+          background: "#F0F2F7", borderRadius: "10px", padding: "8px 12px",
+          margin: "-4px -4px 12px",
+        }}>
+          <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: "#5A6782" }}>
+            ✓ DONE FOR YOU
+          </span>
+          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: "#5A6782", flex: 1 }}>
+            Still open for everyone else
+          </span>
+          <button
+            type="button"
+            style={plain}
+            onClick={() => {
+              setMineDone(false);
+              run(() => doneForMe(activityId, false), () => setMineDone(true));
+            }}
+          >
+            Undo
+          </button>
+        </div>
+      )}
+
+      {/* ── What this person said they would do. Nobody else sees it. ─ */}
+      {desk && !mineDone && !closed && (
+        <p style={{
+          font: "500 10.5px/1.5 var(--font-mono)", letterSpacing: ".07em",
+          color: "#1D6B37", background: "#E3F4E8", borderRadius: "8px",
+          padding: "6px 10px", margin: "-4px -4px 12px", textTransform: "uppercase",
+        }}>
+          On your desk · {desk.text} · only you see this
+        </p>
+      )}
+
+      {/* ── Taking it: private, and nothing is posted to the thread ─── */}
+      {composing && (
+        <div style={{
+          background: "#F8F9FC", border: "1px solid #E3E6EF", borderRadius: "12px",
+          padding: "12px", margin: "0 0 12px",
+        }}>
+          <span style={{ font: "500 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: "#8A97B3" }}>
+            PRIVATE
+          </span>
+          <input
+            value={plan}
+            onChange={(e) => setPlan(e.target.value)}
+            placeholder="What will you do?"
+            aria-label="What will you do?"
+            style={{
+              width: "100%", boxSizing: "border-box", marginTop: "8px",
+              font: "400 15px/1.4 var(--font-outfit)", color: "#10233F",
+              background: "#fff", border: "1px solid #E3E6EF", borderRadius: "10px",
+              padding: "10px 12px",
+            }}
+          />
+          <div style={{ display: "flex", gap: "6px", alignItems: "center", marginTop: "9px", flexWrap: "wrap" }}>
+            {[["Today", false], ["Later", true]].map(([text, v]) => (
+              <button
+                key={String(v)}
+                type="button"
+                onClick={() => setPlanLater(v as boolean)}
+                style={{
+                  border: 0, borderRadius: "9999px", padding: "6px 11px", cursor: "pointer",
+                  font: "600 12px/1 var(--font-outfit)",
+                  background: planLater === v ? "#10233F" : "transparent",
+                  color: planLater === v ? "#fff" : "#8A97B3",
+                }}
+              >
+                {text}
+              </button>
+            ))}
+            <div style={{ marginLeft: "auto", display: "flex", gap: "6px" }}>
+              <button type="button" style={plain} onClick={() => setComposing(false)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                style={{
+                  background: "#2D46AF", color: "#fff", border: 0, borderRadius: "10px",
+                  padding: "9px 13px", font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
+                }}
+                onClick={() => {
+                  const text = plan.trim() || `Follow up with ${school}`;
+                  setComposing(false);
+                  setDesk({ id: "new", text });
+                  run(
+                    () => moveToMyDesk(activityId, text, planLater),
+                    () => setDesk(null),
+                  );
+                }}
+              >
+                Add to my desk
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Dealt with, for everybody ───────────────────────────────── */}
       {done && (
         <div style={{
@@ -142,7 +288,7 @@ export function ItemTools({
           </span>
         )}
 
-        {!done && held.mine && (
+        {desk && (
           <button
             type="button"
             style={{
@@ -150,22 +296,22 @@ export function ItemTools({
               padding: "9px 12px", font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
             }}
             onClick={() => {
-              const before = held;
-              setHeld({ by: null, mine: false });
-              run(() => releaseUpdate(activityId, false), () => setHeld(before));
+              const before = desk;
+              setDesk(null);
+              run(() => takeOffMyDesk(activityId), () => setDesk(before));
             }}
           >
-            ✓ On your list
+            ✓ On your desk
           </button>
         )}
 
-        {!done && !held.by && canPick && (
+        {!desk && !closed && canPick && (
           <button
             type="button"
             style={outlined}
             onClick={() => {
-              setHeld({ by: "you", mine: true });
-              run(() => takeUpdate(activityId), () => setHeld({ by: null, mine: false }));
+              setPlan(`Follow up with ${school}`);
+              setComposing((c) => !c);
             }}
           >
             Move to my desk
@@ -232,16 +378,31 @@ export function ItemTools({
             </button>
           )}
 
-          {!done && canPick && (
+          {!closed && !mineDone && canPick && (
             <button
               type="button"
               style={outlinedInk}
               onClick={() => {
-                setDone("you");
-                run(() => setBuzzDone(activityId, true), () => setDone(null));
+                setMineDone(true);
+                run(() => doneForMe(activityId, true), () => setMineDone(false));
               }}
             >
-              ✓ Done
+              ✓ Done for me
+            </button>
+          )}
+
+          {/* Closing is the only control here that changes what everybody
+              else sees, so it is the only one behind the super admin. */}
+          {!closed && superAdmin && (
+            <button
+              type="button"
+              style={plainGrey}
+              onClick={() => {
+                setClosed("you");
+                run(() => closeThread(activityId, true), () => setClosed(null));
+              }}
+            >
+              Close thread
             </button>
           )}
         </div>
