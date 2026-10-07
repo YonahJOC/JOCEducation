@@ -3,7 +3,7 @@ import { safeAuth } from "@/auth";
 import { canReadBuzz } from "@/lib/buzz-access";
 import { buzzRows, buzzViewer, standing } from "@/lib/buzz-feed";
 import { BuzzCard } from "@/components/buzz/BuzzCard";
-import { ShowMore } from "@/components/desk/ShowMore";
+import { BuzzFilter } from "@/components/buzz/BuzzFilter";
 import { C, F } from "@/lib/joc-tokens";
 
 /**
@@ -52,27 +52,16 @@ export async function BuzzStrip() {
         </Link>
       </div>
 
-      {items.length === 0 ? (
-        <div style={{
-          backgroundColor: C.white, borderRadius: "16px", padding: "16px 18px",
-          boxShadow: "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)",
-        }}>
-          <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.muted, margin: 0 }}>
-            Nothing new from your schools this week.
-          </p>
-        </div>
-      ) : (
-        <ShowMore
-          count={items.length - SHOW}
-          word="note"
-          first={items.slice(0, SHOW).map((r) => (
-            <BuzzCard key={r.id} row={r} viewer={viewer} now={now} />
-          ))}
-          rest={items.slice(SHOW).map((r) => (
-            <BuzzCard key={r.id} row={r} viewer={viewer} now={now} />
-          ))}
-        />
-      )}
+      <BuzzFilter
+        cap={SHOW}
+        startAll={viewer.superAdmin || viewer.mySchools.size === 0}
+        items={items.map((r) => ({
+          id: r.id,
+          schoolId: r.school.id,
+          mine: viewer.mySchools.has(r.school.id),
+          node: <BuzzCard row={r} viewer={viewer} now={now} />,
+        }))}
+      />
     </section>
   );
 }

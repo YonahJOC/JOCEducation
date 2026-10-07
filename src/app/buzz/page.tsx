@@ -5,6 +5,7 @@ import { safeAuth, openForReview, isGoogleConfigured } from "@/auth";
 import { can, isSuperAdminEmail } from "@/lib/access";
 import { buzzRows, buzzViewer, standing, first } from "@/lib/buzz-feed";
 import { BuzzCard } from "@/components/buzz/BuzzCard";
+import { BuzzFilter } from "@/components/buzz/BuzzFilter";
 import { AdminToggle } from "@/components/buzz/AdminToggle";
 import { Detail } from "@/components/buzz/Detail";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
@@ -239,11 +240,16 @@ export default async function BuzzPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: "grid", gap: "10px" }}>
-          {behind.map((r) => (
-            <BuzzCard key={r.id} row={r} viewer={viewer} now={midnight} />
-          ))}
-        </div>
+        <BuzzFilter
+          cap={12}
+          startAll={viewer.superAdmin || viewer.mySchools.size === 0}
+          items={behind.map((r) => ({
+            id: r.id,
+            schoolId: r.school.id,
+            mine: viewer.mySchools.has(r.school.id),
+            node: <BuzzCard row={r} viewer={viewer} now={midnight} />,
+          }))}
+        />
       )}
 
         <p style={{ ...hint, textAlign: "center", marginTop: "26px" }}>

@@ -79,7 +79,28 @@ export async function buzzViewer() {
       )
     : new Map<string, Date>();
 
-  return { me: me ?? null, superAdmin, canPick, taggable, seen };
+  /**
+   * The schools this person's own programs run at.
+   *
+   * What "My schools" means on the Buzz filter. A coordinator who runs Boots
+   * for Israel has no column anywhere saying which schools are theirs — it is
+   * which schools are enrolled in the programs they lead, and that is the
+   * only honest answer available.
+   *
+   * Empty for somebody who leads nothing: their filter has nothing to narrow
+   * to, so the control is not shown.
+   */
+  const mySchools = me?.id && isDatabaseConfigured()
+    ? new Set(
+        (await prisma.programEnrollment.findMany({
+          where: { program: { leads: { some: { id: me.id } } } },
+          select: { schoolId: true },
+          distinct: ["schoolId"],
+        }).catch(() => [])).map((r) => r.schoolId),
+      )
+    : new Set<string>();
+
+  return { me: me ?? null, superAdmin, canPick, taggable, seen, mySchools };
 }
 
 /**
