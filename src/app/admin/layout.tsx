@@ -85,7 +85,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <PortalShell
       side="joc"
-      who={me?.email ?? "Nobody signed in"}
+      /* Their name, with the address as the fallback: the rail is where you
+         check whose console you are in, and an email answers that twice. */
+      who={me?.name?.trim() || me?.email || "Nobody signed in"}
       role={openForReview ? "Console" : roleLabel(me, { leadsPrograms: mine.length })}
       items={jocNav(me, { programs, badges })}
       action={

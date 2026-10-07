@@ -176,6 +176,35 @@ export async function markSeen(): Promise<void> {
 
 /* ------------------------------------------------------------- notebook -- */
 
+/**
+ * Save the open page, creating it if this is the first thing they've typed.
+ *
+ * The notebook shows a writable page from the moment the desk loads, with no
+ * "new page" step — so the row in the database has to appear on the first
+ * keystroke rather than on a button nobody pressed. Returns the id, which
+ * the client holds so the next save edits rather than creates.
+ */
+export async function savePageOrCreate(
+  pageId: string | null, title: string, body: string,
+): Promise<R> {
+  const id = await meId();
+  if (!id) return { ok: false, error: "Sign in first." };
+  if (pageId) {
+    const res = await savePage(pageId, title, body);
+    return res.ok ? { ok: true, id: pageId } : res;
+  }
+  try {
+    const n = await prisma.notebookPage.count({ where: { userId: id } });
+    const made = await prisma.notebookPage.create({
+      data: { userId: id, title: title.slice(0, 120), body: body.slice(0, 20000), sort: n },
+      select: { id: true },
+    });
+    return { ok: true, id: made.id };
+  } catch {
+    return { ok: false, error: "That didn't save." };
+  }
+}
+
 export async function savePage(pageId: string, title: string, body: string): Promise<R> {
   const id = await meId();
   if (!id) return { ok: false, error: "Sign in first." };

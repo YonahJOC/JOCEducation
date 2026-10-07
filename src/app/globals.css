@@ -743,7 +743,7 @@ body {
 
 /* The desk is exactly the window tall and the grid takes whatever the title
    leaves, rather than both guessing at a fixed offset and disagreeing. */
-.joc-desk { height: 100vh; display: flex; flex-direction: column; }
+.joc-desk { height: 100vh; display: flex; flex-direction: column; container-type: inline-size; }
 
 .joc-desk-grid {
   display: grid;

@@ -61,7 +61,7 @@ export function PortalShell({
           </Link>
         </div>
 
-        <div className="joc-shell-nav">
+        <div className="joc-shell-nav" style={{ padding: "0 14px" }}>
           <ShellNav items={items} side={side} />
         </div>
 
@@ -69,13 +69,24 @@ export function PortalShell({
           className="joc-shell-who"
           style={{ marginTop: "auto", padding: "16px 20px 0", borderTop: `1px solid ${hairline}` }}
         >
-          <p style={{
-            fontFamily: F.ui, fontSize: "13px", lineHeight: 1.5, margin: "0 0 10px",
-            color: side === "joc" ? "rgba(255,255,255,.7)" : C.muted,
-            wordBreak: "break-word",
-          }}>
-            {who}
-          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 12px" }}>
+            <span style={{
+              width: "36px", height: "36px", flex: "0 0 36px", borderRadius: "50%",
+              background: side === "joc" ? C.orange : C.blueTint,
+              color: side === "joc" ? C.ink : C.blue,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontFamily: F.ui, fontWeight: 600, fontSize: "14px",
+            }}>
+              {(who ?? "?").trim().charAt(0).toUpperCase()}
+            </span>
+            <p style={{
+              fontFamily: F.ui, fontSize: "13.5px", fontWeight: 600, lineHeight: 1.3, margin: 0,
+              color: side === "joc" ? C.white : C.ink,
+              minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {who}
+            </p>
+          </div>
           {action}
         </div>
       </aside>

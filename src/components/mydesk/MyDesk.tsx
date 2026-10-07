@@ -1,4 +1,4 @@
-import { C, F, label } from "@/lib/joc-tokens";
+import { C, F } from "@/lib/joc-tokens";
 import { Tasks } from "./Tasks";
 import { YourDay } from "./YourDay";
 import { ForYou } from "./ForYou";
@@ -26,11 +26,21 @@ export function MyDesk({ desk }: { desk: Awaited<ReturnType<typeof getMyDesk>> }
 
   return (
     <div className="joc-bleed joc-desk" style={{ padding: "22px 24px 20px" }}>
-      <header style={{ display: "flex", alignItems: "baseline", gap: "12px", flexWrap: "wrap", marginBottom: "14px" }}>
-        <h1 style={{ fontFamily: F.ui, fontSize: "26px", fontWeight: 700, color: C.ink, margin: 0, letterSpacing: "-.01em" }}>
+      <header style={{
+        display: "flex", flexWrap: "wrap", alignItems: "baseline",
+        gap: "6px 16px", marginBottom: "16px",
+      }}>
+        <h1 style={{
+          margin: 0, font: `600 clamp(24px, 2.6cqw, 30px)/1.1 ${F.ui}`,
+          letterSpacing: "-.02em", color: C.ink,
+        }}>
           {who ? `${name}’s desk` : "Your desk"}
         </h1>
-        <span style={{ ...label, color: C.faint }}>{date}</span>
+        <span style={{
+          font: `500 11px/1 ${F.data}`, letterSpacing: ".1em", color: "#5A6782",
+        }}>
+          {date}
+        </span>
       </header>
 
       <div className="joc-desk-grid">

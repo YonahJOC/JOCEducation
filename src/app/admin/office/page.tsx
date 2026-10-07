@@ -50,7 +50,7 @@ export default async function Office() {
               <Empty head="Nothing waiting." line="A message sent through a school's own page lands here." />
             ) : null}
             {office.messages.map((m) => (
-              <div key={m.id} style={{ padding: "10px 2px", borderBottom: `1px solid ${C.hairline}` }}>
+              <div key={m.id} style={{ padding: "12px 18px", borderBottom: `1px solid ${C.hairline}` }}>
                 <p style={{ fontFamily: F.ui, fontSize: "14.5px", fontWeight: 600, color: C.ink, margin: 0 }}>
                   {m.school}
                 </p>
@@ -80,7 +80,7 @@ export default async function Office() {
               <Empty head="Nothing booked." line="Events booked with a school show up here for everybody." />
             ) : null}
             {office.events.map((e) => (
-              <div key={e.id} style={{ display: "flex", gap: "12px", padding: "8px 2px" }}>
+              <div key={e.id} style={{ display: "flex", gap: "12px", padding: "9px 18px" }}>
                 <span style={{ ...label, color: e.today ? C.blue : C.faint, flex: "0 0 74px", paddingTop: "2px" }}>
                   {e.day}
                 </span>
