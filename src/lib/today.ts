@@ -76,7 +76,7 @@ export async function getToday(
     {
       const [asks, inquiries, unread] = await Promise.all([
         prisma.schoolActivity.findMany({
-          where: { inbound: true, answeredAt: null },
+          where: { inbound: true, answeredAt: null, school: { isTest: false } },
           orderBy: { createdAt: "asc" },
           select: {
             id: true, topic: true, detail: true, createdAt: true,
@@ -85,7 +85,7 @@ export async function getToday(
           },
         }),
         prisma.inquiry.findMany({
-          where: { status: "OPEN" },
+          where: { status: "OPEN", school: { isTest: false } },
           orderBy: { createdAt: "asc" },
           select: {
             id: true, kind: true, createdAt: true,
@@ -93,7 +93,7 @@ export async function getToday(
           },
         }),
         prisma.schoolMessage.findMany({
-          where: { inbound: true, seenAt: null },
+          where: { inbound: true, seenAt: null, school: { isTest: false } },
           orderBy: { sentAt: "asc" },
           select: {
             id: true, body: true, sentAt: true,
@@ -187,13 +187,13 @@ export async function getToday(
           where: { status: "PAST_DUE" },
           select: { school: { select: { id: true, name: true } } },
         }),
-        prisma.school.count({ where: { status: "LAPSED" } }),
-        prisma.school.count(),
+        prisma.school.count({ where: { status: "LAPSED", isTest: false } }),
+        prisma.school.count({ where: { isTest: false } }),
         // Schools that have somebody to ring, not contact rows. Counting
         // rows meant two contacts at one school made the figure better while
         // nothing had improved, and it read 34 of 39 when the true answer
         // was 36.
-        prisma.school.count({ where: { contacts: { some: {} } } }),
+        prisma.school.count({ where: { contacts: { some: {} }, isTest: false } }),
       ]);
 
       for (const p of pastDue.slice(0, 3)) {
@@ -453,7 +453,10 @@ export async function getToday(
       rows,
       figures: figures.slice(0, 4),
     };
-  } catch {
+  } catch (e) {
+    // A swallowed failure here empties the console and looks like a quiet
+    // morning. Say so in the log instead.
+    console.error("[today] could not be built:", e);
     return empty;
   }
 }

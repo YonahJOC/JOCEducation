@@ -1,6 +1,6 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview } from "@/auth";
-import { can, canAccessConsole } from "@/lib/access";
+import { can, canAccessConsole, isStaffEmail } from "@/lib/access";
 import { listResponses, type ResponseRow, type PublicField } from "@/lib/forms";
 import { ensureProgramForm } from "@/lib/program-forms";
 
@@ -231,11 +231,28 @@ export async function leadsAnyProgram(userId: string | null | undefined): Promis
  * missed, somebody got a console they could not see a way into.
  */
 export async function canOpenConsole(
-  user: { id?: string | null; role?: string | null; email?: string | null; capabilities?: string[] | null } | null | undefined,
+  user: {
+    id?: string | null; role?: string | null; email?: string | null;
+    capabilities?: string[] | null; schoolId?: string | null;
+  } | null | undefined,
 ): Promise<boolean> {
   if (!user) return false;
   if (canAccessConsole(user)) return true;
-  return leadsAnyProgram(user.id ?? null);
+  if (await leadsAnyProgram(user.id ?? null)) return true;
+
+  /**
+   * Anybody at JOC, because everybody here has a desk.
+   *
+   * It used to be capabilities or a program, which meant most of the office
+   * could not open the one page that is theirs — their list, their diary,
+   * what the schools have been saying. Those are not permissions; they are
+   * the job.
+   *
+   * Somebody tied to a school is not staff and never gets in. The console
+   * is JOC's side of the wall.
+   */
+  if (user.schoolId) return false;
+  return isStaffEmail(user.email);
 }
 
 /** Every program this person may open — for the list page. */

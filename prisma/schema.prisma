@@ -98,6 +98,11 @@ model School {
   unapprovedCheckedAt DateTime?
 
   /// JOC staff member who owns this relationship
+  /// A school that exists to try something on. Kept out of every count and
+  /// every list of things that need somebody — it is not a school, it is a
+  /// rehearsal.
+  isTest Boolean @default(false)
+
   accountManagerId String?
   accountManager   User?   @relation("AccountManager", fields: [accountManagerId], references: [id], onDelete: SetNull)
 

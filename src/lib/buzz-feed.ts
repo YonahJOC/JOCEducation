@@ -20,7 +20,7 @@ export async function buzzRows(take: number) {
   return prisma.schoolActivity.findMany({
     // Removed items are hidden here and nowhere else: the row is still the
     // school's history, it is just off the feed.
-    where: { type: { in: [...UPDATE_TYPES] }, removedAt: null },
+    where: { type: { in: [...UPDATE_TYPES] }, removedAt: null, school: { isTest: false } },
     orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
     take,
     select: {

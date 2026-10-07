@@ -147,6 +147,7 @@ export async function getDesk() {
       where: {
         type: "EVENT_PLANNED",
         removedAt: null,
+        school: { isTest: false },
         occurredAt: { gte: midnight, lt: new Date(midnight.getTime() + 21 * DAY) },
       },
       orderBy: { occurredAt: "asc" },

@@ -1,7 +1,3 @@
-import { redirect } from "next/navigation";
-import { safeAuth, openForReview } from "@/auth";
-import { canAccessConsole } from "@/lib/access";
-import { leadsAnyProgram, listProgramsForAdmin } from "@/lib/program-admin";
 import { getToday } from "@/lib/today";
 import { getDesk } from "@/lib/desk";
 import { Desk } from "@/components/desk/Desk";
@@ -22,18 +18,17 @@ export const metadata = { title: "My desk — JOC Console" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminToday() {
-  const session = await safeAuth();
-
-  // A coordinator holds no capability at all. One program and they land on
-  // its console; more than one and they get the cards, which is the only
-  // page in here that is theirs.
-  if (!openForReview && !canAccessConsole(session?.user)) {
-    if (await leadsAnyProgram(session?.user?.id ?? null)) {
-      const mine = await listProgramsForAdmin();
-      redirect(mine.length === 1 ? `/admin/programs/${mine[0].slug}` : "/admin/my-programs");
-    }
-  }
-
+  /**
+   * Everybody lands here now.
+   *
+   * A coordinator used to be bounced straight past this to their program's
+   * console, because this page was only the things that were wrong and a
+   * coordinator could do nothing about most of them. It is their desk now —
+   * their list, their diary, their schools' notes — so sending them through
+   * it to somewhere else is sending them past the page built for them.
+   *
+   * Their programs are still one row down, under Your programs.
+   */
   const [today, desk] = await Promise.all([getToday(), getDesk()]);
   return <Desk today={today} desk={desk} />;
 }
