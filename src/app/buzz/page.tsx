@@ -6,6 +6,7 @@ import { can, isSuperAdminEmail } from "@/lib/access";
 import { leadsAnyProgram } from "@/lib/program-admin";
 import { ItemTools } from "@/components/buzz/ItemTools";
 import { AdminToggle } from "@/components/buzz/AdminToggle";
+import { Detail } from "@/components/buzz/Detail";
 import { signInWithGoogle, signOutAction } from "@/app/actions/auth";
 import {
   UPDATE_TYPES, TAG, day, shortDay, clock, away, ago,
@@ -452,17 +453,6 @@ function Masthead({ line, tools = false }: { line?: string; tools?: boolean }) {
 function first(who: string | null | undefined): string {
   if (!who) return "somebody at JOC";
   return who.includes("@") ? who.split("@")[0] : who.split(/\s+/)[0];
-}
-
-function Detail({ text }: { text: string }) {
-  return (
-    <p style={{
-      fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.muted,
-      margin: "8px 0 0", maxWidth: "62ch", whiteSpace: "pre-wrap",
-    }}>
-      {text}
-    </p>
-  );
 }
 
 function H2({ children }: { children: React.ReactNode }) {
