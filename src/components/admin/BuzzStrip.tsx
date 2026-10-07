@@ -3,7 +3,8 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth } from "@/auth";
 import { canReadBuzz } from "@/lib/buzz-access";
 import { UPDATE_TYPES, TAG, ago } from "@/lib/school-update";
-import { C, F, label, datum } from "@/lib/joc-tokens";
+import { BandRow } from "@/components/ui/BandRow";
+import { C, F } from "@/lib/joc-tokens";
 
 /**
  * The Buzz, on somebody's console home.
@@ -33,6 +34,7 @@ export async function BuzzStrip() {
     select: {
       id: true, type: true, detail: true, createdAt: true,
       author: { select: { name: true, email: true } },
+      program: { select: { name: true } },
       school: { select: { id: true, name: true } },
       takenById: true,
       takenBy: { select: { name: true, email: true } },
@@ -64,57 +66,48 @@ export async function BuzzStrip() {
         </Link>
       </div>
 
-      {/* Fixed height, scrolls inside. A page that grows by forty rows is a
-          page where the seven things that need somebody are off the screen. */}
+      {/* The feed's own cards, on its own paper, in a window that scrolls.
+          A page that grows by forty rows is a page where the things that
+          need somebody today are off the screen. */}
       <div style={{
-        maxHeight: "330px", overflowY: "auto",
-        backgroundColor: C.white, borderRadius: "16px",
-        border: `1px solid ${C.hairline}`,
-        boxShadow: "0 1px 0 #E3E6EF",
+        maxHeight: "340px", overflowY: "auto",
+        backgroundColor: C.paper,
+        borderRadius: "18px", border: `1px solid ${C.hairline}`,
+        padding: "12px", display: "grid", gap: "10px",
       }}>
-        {rows.map((r, i) => (
-          <Link
+        {rows.map((r) => (
+          <BandRow
             key={r.id}
-            href="/buzz"
-            style={{
-              display: "block", padding: "12px 16px", textDecoration: "none",
-              borderTop: i === 0 ? "none" : `1px solid ${C.hairline}`,
-            }}
-          >
-            <div style={{
-              display: "flex", justifyContent: "space-between", gap: "10px",
-              alignItems: "baseline", flexWrap: "wrap",
-            }}>
-              <span style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.ink }}>
-                {r.school.name}
-              </span>
-              <span style={{ ...label, color: C.muted }}>
-                {ago(r.createdAt, now).toUpperCase()}
-              </span>
-            </div>
-
-            <p style={{ ...datum, color: C.muted, margin: "2px 0 0" }}>
-              {TAG[r.type] ?? "UPDATE"}
-              {" · "}
-              {first(r.author?.name ?? r.author?.email)}
-              {r._count.notes > 0 && ` · ${r._count.notes} ${r._count.notes === 1 ? "COMMENT" : "COMMENTS"}`}
-              {r.takenById && ` · WITH ${first(r.takenBy?.name ?? r.takenBy?.email).toUpperCase()}`}
-            </p>
-
-            {r.detail && (
-              <p style={{
-                fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.muted,
-                margin: "4px 0 0", maxWidth: "70ch",
-                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              }}>
-                {r.detail.split("\n")[0]}
-              </p>
-            )}
-          </Link>
+            tone={r.type === "EVENT_PLANNED" ? "good" : "info"}
+            label={TAG[r.type] ?? "UPDATE"}
+            figure={ago(r.createdAt, now)}
+            word
+            title={r.school.name}
+            line={[
+              // One line means one line. A row's own text wrapping to five
+              // of them is what made these cards different heights.
+              clip(r.detail?.split("\n")[0], 92),
+              r._count.notes > 0
+                ? `${r._count.notes} ${r._count.notes === 1 ? "comment" : "comments"}`
+                : null,
+              r.takenById ? `with ${first(r.takenBy?.name ?? r.takenBy?.email)}` : null,
+            ].filter(Boolean).join(" · ")}
+            action={{ label: "Open the Buzz", href: "/buzz" }}
+          />
         ))}
       </div>
     </section>
   );
+}
+
+/** Cut at a word, not mid-syllable. */
+function clip(text: string | null | undefined, n: number): string | null {
+  if (!text) return null;
+  const t = text.trim();
+  if (t.length <= n) return t;
+  const cut = t.slice(0, n);
+  const space = cut.lastIndexOf(" ");
+  return `${(space > n * 0.6 ? cut.slice(0, space) : cut).trimEnd()}…`;
 }
 
 /** First name only — this is a glance, not a directory. */
