@@ -1,18 +1,22 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { addNote, editUpdate, assignUpdate, removeUpdate } from "@/app/actions/buzz-item";
+import { addNote, editUpdate, assignUpdate, removeUpdate, setBuzzDone } from "@/app/actions/buzz-item";
 import { takeUpdate, releaseUpdate } from "@/app/actions/buzz-pickup";
 import { markThreadSeen, markThreadUnread } from "@/app/actions/buzz-seen";
 import { toggleLike } from "@/app/actions/buzz-like";
-import { C, R, F, label } from "@/lib/joc-tokens";
 
 /**
- * Everything that can be done to one item, under the item.
+ * Everything that can be done to one note, under the note.
  *
- * The thread is open to anybody who can read the Buzz; the rest is a super
- * admin's. Both live here so the row is one thing on the screen rather than
- * a feed with a separate admin mode layered over it.
+ * Built to the design handoff: one controls row with a hairline above it,
+ * the claim control first in one of three states, then 👍 and Comments, and
+ * read / Done pushed to the right. The thread opens in place as a grey panel
+ * with bubbles, yours on the right.
+ *
+ * Two bars: anybody who can read the Buzz can claim, like, comment and mark
+ * done; edit, tag and remove are a super admin's and sit on their own line
+ * behind the Admin tools switch.
  */
 
 export type Note = {
@@ -20,17 +24,16 @@ export type Note = {
   body: string;
   who: string;
   when: string;
-  /** Yours sit on the right, as they do in every chat anybody already uses. */
   mine: boolean;
 };
 
 export function ItemTools({
-  activityId, detail, notes, unread, likes, liked, takenBy, mine, canPick, canComment, superAdmin, people,
+  activityId, detail, notes, unread, likes, liked, takenBy, mine, canPick,
+  canComment, superAdmin, people, doneBy,
 }: {
   activityId: string;
   detail: string | null;
   notes: Note[];
-  /** Comments written since this person last opened the thread. */
   unread: number;
   likes: number;
   liked: boolean;
@@ -39,21 +42,19 @@ export function ItemTools({
   canPick: boolean;
   canComment: boolean;
   superAdmin: boolean;
-  /** Who can be tagged. Only sent to a super admin. */
   people: { id: string; name: string }[];
+  /** Who marked it dealt with, for everybody. */
+  doneBy: string | null;
 }) {
   const [thread, setThread] = useState<Note[]>(notes);
-  // Closed to start, however many there are. The count on the button says
-  // there is something to read, and a feed where every thread is open is a
-  // feed you have to scroll past rather than scan.
   const [open, setOpen] = useState(false);
   const [fresh, setFresh] = useState(unread);
-  const [cheer, setCheer] = useState({ n: likes, on: liked });
   const [body, setBody] = useState("");
   const [held, setHeld] = useState<{ by: string | null; mine: boolean }>({ by: takenBy, mine });
+  const [cheer, setCheer] = useState({ n: likes, on: liked });
+  const [done, setDone] = useState<string | null>(doneBy);
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(detail ?? "");
-  const [shown, setShown] = useState(detail);
   const [gone, setGone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, start] = useTransition();
@@ -62,18 +63,15 @@ export function ItemTools({
     setError(null);
     start(async () => {
       const res = await fn();
-      if (!res.ok) {
-        undo?.();
-        setError(res.error ?? "That didn't save.");
-      }
+      if (!res.ok) { undo?.(); setError(res.error ?? "That didn't save."); }
     });
   };
 
   if (gone) {
     return (
-      <div style={{ marginTop: "10px", display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ ...label, color: C.muted }}>Removed from the Buzz</span>
-        <button type="button" style={quiet} onClick={() => run(() => removeUpdate(activityId, false), () => setGone(true))}>
+      <div style={{ ...rowTop, gap: "10px" }}>
+        <span style={monoFaint}>Removed from the Buzz</span>
+        <button type="button" style={plain} onClick={() => run(() => removeUpdate(activityId, false), () => setGone(true))}>
           Undo
         </button>
       </div>
@@ -81,109 +79,116 @@ export function ItemTools({
   }
 
   return (
-    <div style={{ marginTop: "10px" }}>
-      {/* ── What it says, and the super admin's pencil ──────────────── */}
-      {editing ? (
-        <div style={{ marginBottom: "10px" }}>
+    <>
+      {/* ── Dealt with, for everybody ───────────────────────────────── */}
+      {done && (
+        <div style={{
+          display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 12px",
+          background: "#E3F4E8", borderRadius: "10px", padding: "8px 12px",
+          margin: "-4px -4px 12px",
+        }}>
+          <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em" }}>✓ DONE</span>
+          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: "#2C3C5A", flex: 1 }}>
+            Marked done by {done}
+          </span>
+          <button
+            type="button"
+            style={plain}
+            onClick={() => {
+              setDone(null);
+              run(() => setBuzzDone(activityId, false), () => setDone(doneBy));
+            }}
+          >
+            Reopen
+          </button>
+        </div>
+      )}
+
+      {editing && (
+        <div style={{ marginTop: "10px" }}>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={4}
             style={{
               width: "100%", boxSizing: "border-box", resize: "vertical",
-              fontFamily: F.read, fontSize: "16px", lineHeight: 1.6, color: C.ink,
-              backgroundColor: C.white, border: `1px solid ${C.hairline}`,
-              borderRadius: "12px", padding: "11px 13px",
+              font: "400 16px/1.5 var(--font-newsreader)", color: "#1F304D",
+              background: "#fff", border: "1px solid #E3E6EF", borderRadius: "12px",
+              padding: "11px 13px",
             }}
           />
           <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-            <button
-              type="button"
-              style={chip}
-              disabled={busy}
-              onClick={() => {
-                const before = shown;
-                setShown(text.trim() || null);
-                setEditing(false);
-                run(() => editUpdate(activityId, text), () => setShown(before));
-              }}
-            >
+            <button type="button" style={outlined} disabled={busy} onClick={() => {
+              setEditing(false);
+              run(() => editUpdate(activityId, text));
+            }}>
               Save
             </button>
-            <button type="button" style={quiet} onClick={() => { setText(shown ?? ""); setEditing(false); }}>
+            <button type="button" style={plain} onClick={() => { setText(detail ?? ""); setEditing(false); }}>
               Cancel
             </button>
           </div>
         </div>
-      ) : null}
+      )}
 
-      {/* ── The row of actions ──────────────────────────────────────── */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
-        {held.by && !held.mine && (
-          <span style={{ ...label, color: C.muted }}>{held.by} has this</span>
+      {/* ── The controls ────────────────────────────────────────────── */}
+      <div style={rowTop}>
+        {!done && held.by && !held.mine && (
+          <span style={{
+            background: "#F1F3F8", color: "#3B4A66", borderRadius: "9px",
+            padding: "9px 12px", font: "500 13px/1 var(--font-outfit)",
+          }}>
+            {held.by} has this
+          </span>
         )}
 
-        {held.mine && (
-          <>
-            <span style={{
-              ...label, color: C.greenText, backgroundColor: C.greenTint,
-              borderRadius: R.chip, padding: "6px 10px",
-            }}>
-              In your console
-            </span>
-            <button
-              type="button"
-              style={quiet}
-              onClick={() => {
-                const before = held;
-                setHeld({ by: null, mine: false });
-                run(() => releaseUpdate(activityId, false), () => setHeld(before));
-              }}
-            >
-              Put it back
-            </button>
-          </>
-        )}
-
-        {!held.by && canPick && (
+        {!done && held.mine && (
           <button
             type="button"
-            style={chip}
+            style={{
+              background: "#E3F4E8", color: "#10233F", border: 0, borderRadius: "9px",
+              padding: "9px 12px", font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
+            }}
+            onClick={() => {
+              const before = held;
+              setHeld({ by: null, mine: false });
+              run(() => releaseUpdate(activityId, false), () => setHeld(before));
+            }}
+          >
+            ✓ On your list
+          </button>
+        )}
+
+        {!done && !held.by && canPick && (
+          <button
+            type="button"
+            style={outlined}
             onClick={() => {
               setHeld({ by: "you", mine: true });
               run(() => takeUpdate(activityId), () => setHeld({ by: null, mine: false }));
             }}
           >
-            Move to my console
+            Move to my desk
           </button>
         )}
 
-        {/* A thumbs up, so four people who just want to say "good" do not
-            write four comments saying it. */}
         <button
           type="button"
           aria-pressed={cheer.on}
-          aria-label={cheer.on ? "Undo thumbs up" : "Thumbs up"}
           onClick={() => {
-            const next = { n: cheer.n + (cheer.on ? -1 : 1), on: !cheer.on };
             const before = cheer;
+            const next = { n: cheer.n + (cheer.on ? -1 : 1), on: !cheer.on };
             setCheer(next);
-            void toggleLike(activityId, next.on).then((res) => {
-              if (!res.ok) setCheer(before);
-            });
+            void toggleLike(activityId, next.on).then((r) => { if (!r.ok) setCheer(before); });
           }}
           style={{
-            display: "inline-flex", alignItems: "center", gap: "6px",
-            fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
-            color: cheer.on ? C.blue : C.muted,
-            backgroundColor: cheer.on ? C.blueTint : "transparent",
-            border: `1px solid ${cheer.on ? "#CBD5F2" : "transparent"}`,
-            borderRadius: R.chip, padding: "6px 10px", minHeight: "38px",
-            cursor: "pointer",
+            background: cheer.on ? "#E4E9F8" : "transparent",
+            color: cheer.on ? "#2D46AF" : "#3B4A66",
+            border: 0, borderRadius: "9px", padding: "8px 10px",
+            font: `${cheer.on ? 600 : 500} 13px/1 var(--font-outfit)`, cursor: "pointer",
           }}
         >
-          <span aria-hidden="true" style={{ fontSize: "15px", lineHeight: 1 }}>👍</span>
-          {cheer.n > 0 ? cheer.n : ""}
+          👍 {cheer.n > 0 ? cheer.n : ""}
         </button>
 
         {canComment && (
@@ -193,198 +198,203 @@ export function ItemTools({
             onClick={() => {
               const next = !open;
               setOpen(next);
-              // Opening it is the only thing that means they read it.
-              if (next && fresh > 0) {
-                setFresh(0);
-                void markThreadSeen(activityId);
-              }
+              if (next && fresh > 0) { setFresh(0); void markThreadSeen(activityId); }
             }}
             style={{
-              ...quiet,
-              display: "inline-flex", alignItems: "center", gap: "6px",
-              color: fresh > 0 ? C.orangeText : thread.length > 0 && !open ? C.blue : C.muted,
-              fontWeight: fresh > 0 ? 700 : 600,
+              display: "flex", alignItems: "center", gap: "6px",
+              background: "transparent", color: "#3B4A66", border: 0, borderRadius: "9px",
+              padding: "8px 10px", font: "500 13px/1 var(--font-outfit)", cursor: "pointer",
             }}
           >
-            <span aria-hidden="true" style={{
-              display: "inline-block", fontSize: "10px", lineHeight: 1,
-              transform: open ? "rotate(90deg)" : "none", transition: "transform .12s",
-            }}>
-              ▶
-            </span>
-            {thread.length === 0
-              ? "Comment"
-              : open
-                ? "Hide"
-                : `${thread.length} ${thread.length === 1 ? "comment" : "comments"}`}
-            {fresh > 0 && !open && (
+            Comments {thread.length}
+            {fresh > 0 && (
               <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                minWidth: "18px", height: "18px", padding: "0 5px", borderRadius: "999px",
-                backgroundColor: C.orange, color: C.white,
-                fontFamily: F.data, fontSize: "11px", fontWeight: 700, lineHeight: 1,
+                background: "#2D46AF", color: "#fff", borderRadius: "10px",
+                padding: "3px 6px", font: "600 10px/1 var(--font-mono)",
               }}>
-                {fresh}
+                {fresh} NEW
               </span>
             )}
           </button>
         )}
 
-        {/* Read it, and cannot deal with it now. Without this the only way to
-            keep a note in front of you is to leave it unopened. */}
-        {canComment && thread.length > 0 && fresh === 0 && (
-          <button
-            type="button"
-            style={quiet}
-            onClick={() => {
-              setFresh(thread.length);
-              void markThreadUnread(activityId);
-            }}
-          >
-            Mark unread
-          </button>
-        )}
-
-        {superAdmin && (
-          /* Hidden until the switch in the masthead turns them on — see
-             AdminToggle. Cosmetic: each action is refused server-side too. */
-          <span className="joc-admin-tools" style={{ display: "contents" }}>
-            <button type="button" style={quiet} onClick={() => { setText(shown ?? ""); setEditing((e) => !e); }}>
-              Edit
-            </button>
-
-            <select
-              value=""
-              disabled={busy}
-              onChange={(e) => {
-                const id = e.target.value;
-                if (!id) return;
-                const name = people.find((p) => p.id === id)?.name ?? "them";
-                const before = held;
-                setHeld({ by: name, mine: false });
-                run(() => assignUpdate(activityId, id), () => setHeld(before));
-              }}
-              style={{
-                fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.muted,
-                background: "none", border: "none", cursor: "pointer", minHeight: "38px",
-                maxWidth: "150px",
-              }}
-            >
-              <option value="">Tag someone…</option>
-              {people.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
-
+        <div style={{ marginLeft: "auto", display: "flex", gap: "2px", alignItems: "center" }}>
+          {canComment && thread.length > 0 && (
             <button
               type="button"
-              style={{ ...quiet, color: C.orangeText }}
+              style={plainGrey}
               onClick={() => {
-                setGone(true);
-                run(() => removeUpdate(activityId, true), () => setGone(false));
+                if (fresh > 0) { setFresh(0); void markThreadSeen(activityId); }
+                else { setFresh(thread.length); void markThreadUnread(activityId); }
               }}
             >
-              Remove
+              {fresh > 0 ? "Mark read" : "Mark unread"}
             </button>
-          </span>
-        )}
+          )}
 
-        {error && <span style={{ ...label, color: C.orangeText }}>{error}</span>}
+          {!done && canPick && (
+            <button
+              type="button"
+              style={outlinedInk}
+              onClick={() => {
+                setDone("you");
+                run(() => setBuzzDone(activityId, true), () => setDone(null));
+              }}
+            >
+              ✓ Done
+            </button>
+          )}
+        </div>
+
+        {error && <span style={{ ...monoFaint, color: "#B4541A" }}>{error}</span>}
       </div>
+
+      {/* ── A super admin's own line ────────────────────────────────── */}
+      {superAdmin && (
+        <div className="joc-admin-tools" style={{
+          display: "flex", gap: "14px", alignItems: "center",
+          font: "600 13px/1 var(--font-outfit)", padding: "10px 2px 2px",
+        }}>
+          <span style={{ font: "500 10.5px/13px var(--font-mono)", letterSpacing: ".08em", color: "#8A97B3" }}>
+            ADMIN
+          </span>
+          <button type="button" style={adminLink} onClick={() => { setText(detail ?? ""); setEditing((e) => !e); }}>
+            Edit
+          </button>
+          <select
+            value=""
+            disabled={busy}
+            onChange={(e) => {
+              const id = e.target.value;
+              if (!id) return;
+              const name = people.find((p) => p.id === id)?.name ?? "them";
+              const before = held;
+              setHeld({ by: name, mine: false });
+              run(() => assignUpdate(activityId, id), () => setHeld(before));
+            }}
+            style={{ ...adminLink, maxWidth: "140px" }}
+          >
+            <option value="">Tag someone</option>
+            {people.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+          <button
+            type="button"
+            style={{ ...adminLink, color: "#B4541A" }}
+            onClick={() => { setGone(true); run(() => removeUpdate(activityId, true), () => setGone(false)); }}
+          >
+            Remove
+          </button>
+        </div>
+      )}
 
       {/* ── The thread ──────────────────────────────────────────────── */}
       {open && canComment && (
         <div style={{
-          marginTop: "12px", paddingTop: "14px",
-          borderTop: `1px solid ${C.hairline}`,
-          display: "grid", gap: "8px",
+          marginTop: "10px", background: "#F5F6FA", borderRadius: "12px", padding: "12px",
+          display: "flex", flexDirection: "column", gap: "8px",
         }}>
-          {thread.map((n, i) => {
-            // One name per run, the way a chat does it — six bubbles from
-            // Gilad do not need his name six times.
-            const sameAsLast = i > 0 && thread[i - 1].who === n.who && thread[i - 1].mine === n.mine;
-            return (
-              <div
-                key={n.id}
-                style={{
-                  display: "flex", flexDirection: "column",
-                  alignItems: n.mine ? "flex-end" : "flex-start",
-                  marginTop: sameAsLast ? "-4px" : 0,
-                }}
-              >
-                {!sameAsLast && (
-                  <p style={{
-                    ...label, color: C.muted, margin: "0 0 3px",
-                    padding: n.mine ? "0 4px 0 0" : "0 0 0 4px",
-                  }}>
-                    {n.mine ? "You" : n.who} · {n.when}
-                  </p>
-                )}
-                <div style={{
-                  maxWidth: "min(84%, 46ch)",
-                  backgroundColor: n.mine ? C.blueTint : C.panel,
-                  border: `1px solid ${n.mine ? "#CBD5F2" : C.hairline}`,
-                  borderRadius: "16px",
-                  // The flat corner on the side it came from, as a tail.
-                  borderTopRightRadius: n.mine && !sameAsLast ? "5px" : "16px",
-                  borderTopLeftRadius: !n.mine && !sameAsLast ? "5px" : "16px",
-                  padding: "9px 13px",
-                }}>
-                  <p style={{
-                    fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.ink,
-                    margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word",
-                  }}>
-                    {n.body}
-                  </p>
+          {thread.map((n) => (
+            n.mine ? (
+              <div key={n.id} style={{
+                alignSelf: "flex-end", maxWidth: "82%", background: "#2D46AF", color: "#fff",
+                borderRadius: "14px 14px 4px 14px", padding: "8px 11px",
+                font: "400 14.5px/1.4 var(--font-newsreader)", whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}>
+                {n.body}
+                <div style={{ font: "500 9.5px/1 var(--font-mono)", opacity: 0.75, marginTop: "4px", textAlign: "right" }}>
+                  {n.when}
                 </div>
               </div>
-            );
-          })}
+            ) : (
+              <div key={n.id} style={{
+                alignSelf: "flex-start", maxWidth: "82%", background: "#fff",
+                border: "1px solid #E3E6EF", borderRadius: "14px 14px 14px 4px",
+                padding: "8px 11px", color: "#1F304D",
+                font: "400 14.5px/1.4 var(--font-newsreader)", whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}>
+                <div style={{ font: "600 12px/1 var(--font-outfit)", color: "#10233F", marginBottom: "4px" }}>
+                  {n.who}
+                </div>
+                {n.body}
+                <div style={{ font: "500 9.5px/1 var(--font-mono)", color: "#8A97B3", marginTop: "4px" }}>
+                  {n.when}
+                </div>
+              </div>
+            )
+          ))}
 
           <form
             action={() => {
-              const text = body.trim();
-              if (!text) return;
+              const value = body.trim();
+              if (!value) return;
               const optimistic: Note = {
-                id: `pending-${Date.now()}`, body: text, who: "You", when: "just now", mine: true,
+                id: `pending-${Date.now()}`, body: value, who: "You", when: "just now", mine: true,
               };
               setThread((t) => [...t, optimistic]);
               setBody("");
-              run(
-                () => addNote(activityId, text),
-                () => setThread((t) => t.filter((x) => x.id !== optimistic.id)),
-              );
+              run(() => addNote(activityId, value), () => setThread((t) => t.filter((x) => x.id !== optimistic.id)));
             }}
-            style={{ display: "flex", gap: "8px", alignItems: "flex-end", flexWrap: "wrap" }}
+            style={{ display: "flex", gap: "8px", marginTop: "2px" }}
           >
-            <textarea
+            <input
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              rows={2}
-              placeholder="Add a comment"
+              placeholder="Write a comment"
               style={{
-                flex: "100 1 200px", minWidth: 0, boxSizing: "border-box", resize: "vertical",
-                fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.ink,
-                backgroundColor: C.white, border: `1px solid ${C.hairline}`,
-                borderRadius: "12px", padding: "10px 12px",
+                flex: 1, minWidth: 0, border: "1px solid #E3E6EF", borderRadius: "20px",
+                padding: "9px 13px", font: "400 14px/1.2 var(--font-outfit)",
+                outline: 0, background: "#fff", color: "#10233F",
               }}
             />
-            <button type="submit" style={{ ...chip, flex: "0 0 auto" }} disabled={busy}>
+            <button type="submit" disabled={busy} style={{
+              background: "#2D46AF", color: "#fff", border: 0, borderRadius: "20px",
+              padding: "0 14px", minHeight: "38px", font: "600 13px/1 var(--font-outfit)",
+              cursor: "pointer",
+            }}>
               Send
             </button>
           </form>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
-const chip: React.CSSProperties = {
-  fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.blue,
-  backgroundColor: C.white, border: `1px solid ${C.hairline}`,
-  borderRadius: R.chip, padding: "8px 13px", minHeight: "38px", cursor: "pointer",
+const rowTop: React.CSSProperties = {
+  display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px",
+  borderTop: "1px solid #E3E6EF", marginTop: "14px", paddingTop: "11px",
 };
 
-const quiet: React.CSSProperties = {
-  fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.muted,
-  background: "none", border: "none", cursor: "pointer",
-  padding: "6px 2px", minHeight: "38px",
+const outlined: React.CSSProperties = {
+  background: "#fff", color: "#2D46AF", border: "1.5px solid #CBD3EE",
+  borderRadius: "9px", padding: "8px 12px",
+  font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
+};
+
+const outlinedInk: React.CSSProperties = {
+  background: "transparent", color: "#10233F", border: "1.5px solid #CBD3EE",
+  borderRadius: "9px", padding: "7px 11px",
+  font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
+};
+
+const plain: React.CSSProperties = {
+  background: "transparent", border: 0, padding: 0, color: "#2D46AF",
+  font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
+};
+
+const plainGrey: React.CSSProperties = {
+  background: "transparent", border: 0, borderRadius: "9px", padding: "8px 10px",
+  color: "#3B4A66", font: "500 13px/1 var(--font-outfit)", cursor: "pointer",
+};
+
+const adminLink: React.CSSProperties = {
+  background: "transparent", border: 0, padding: 0, color: "#2D46AF",
+  font: "600 13px/1 var(--font-outfit)", cursor: "pointer",
+};
+
+const monoFaint: React.CSSProperties = {
+  font: "500 10.5px/1 var(--font-mono)", letterSpacing: ".08em",
+  textTransform: "uppercase", color: "#8A97B3",
 };

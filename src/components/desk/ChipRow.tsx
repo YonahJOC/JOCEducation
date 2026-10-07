@@ -33,7 +33,9 @@ export function ChipRow({ chips }: { chips: Chip[] }) {
     >
       {chips.map((c) => (
         <a
-          key={c.to}
+          // The label, not the target: Your list and Diary both point at
+          // Your week, and Buzz and Board both at the bottom band.
+          key={c.label}
           href={`#${c.to}`}
           style={{
             flex: "0 0 auto", display: "inline-flex", alignItems: "center", gap: "6px",

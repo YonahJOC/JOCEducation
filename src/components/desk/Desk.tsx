@@ -29,6 +29,7 @@ export function Desk({
 }) {
   const { me, superAdmin, now, todos, diary, patch, notices, fresh } = desk;
   const open = todos.filter((t) => !t.done).length;
+  const booked = diary.filter((d) => d.kind === "event").length;
 
   // One sentence, from the data. Not a welcome — a summary.
   const summary = [
@@ -77,7 +78,10 @@ export function Desk({
 
       {/* ── Needs you ───────────────────────────────────────────────── */}
       <section id="needs" style={{ marginBottom: "44px", scrollMarginTop: "64px" }}>
-        <SectionHead title="Needs you" count={today.rows.length ? `${today.rows.length}` : undefined} />
+        <SectionHead
+          title="Needs you"
+          count={today.rows.length ? `${today.rows.length} open` : "all clear"}
+        />
 
         {today.rows.length === 0 ? (
           <BandRow
@@ -106,7 +110,13 @@ export function Desk({
 
       {/* ── Your week ───────────────────────────────────────────────── */}
       <section id="week" style={{ marginBottom: "44px", scrollMarginTop: "64px" }}>
-        <SectionHead title="Your week" />
+        <SectionHead
+          title="Your week"
+          count={[
+            `${open} to do`,
+            booked > 0 ? `${booked} booked` : null,
+          ].filter(Boolean).join(" · ")}
+        />
         <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
           <YourList todos={todos} />
           <YourDiary items={diary} now={now} />
@@ -130,7 +140,10 @@ export function Desk({
       {/* ── Your programs ───────────────────────────────────────────── */}
       {patch.length > 0 && (
         <section id="programs" style={{ marginBottom: "44px", scrollMarginTop: "64px" }}>
-          <SectionHead title={superAdmin ? "Every program" : "Your programs"} />
+          <SectionHead
+            title={superAdmin ? "Every program" : "Your programs"}
+            count={`${patch.length} ${patch.length === 1 ? "program" : "programs"}`}
+          />
           <div style={{
             display: "grid", gap: "10px",
             gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))",
@@ -141,34 +154,39 @@ export function Desk({
                 padding: "14px 16px", boxShadow: "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)",
                 display: "block",
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "6px" }}>
+                {/* The status is a tinted chip, as on the rows above: the
+                    same fact should not change shape between sections. */}
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: "6px",
+                  background: p.tone === "good" ? "#E3F4E8" : "#F1F3F8",
+                  borderRadius: "8px", padding: "4px 8px", marginBottom: "9px",
+                  font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em",
+                  textTransform: "uppercase",
+                  color: p.tone === "good" ? "#1D6B37" : "#5A6782",
+                }}>
                   <span aria-hidden="true" style={{
-                    width: "8px", height: "8px", borderRadius: "50%", flex: "0 0 auto",
-                    backgroundColor: p.tone === "good" ? "#4FAE6E" : C.faint,
+                    width: "7px", height: "7px", borderRadius: "50%",
+                    background: p.tone === "good" ? "#4FAE6E" : "#8A97B3",
                   }} />
-                  <span style={{
-                    fontFamily: F.data, fontSize: "10.5px", fontWeight: 600,
-                    letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted,
-                  }}>
-                    {p.status}
-                  </span>
-                </div>
+                  {p.status}
+                </span>
+
                 <p style={{
-                  fontFamily: F.ui, fontSize: "16px", fontWeight: 600, color: C.ink,
-                  margin: "0 0 8px", lineHeight: 1.25,
+                  font: "600 16px/1.25 var(--font-outfit)", color: C.ink, margin: "0 0 9px",
                 }}>
                   {p.name}
                 </p>
+
                 {p.facts.map((f) => (
-                  <p key={f.key} style={{ margin: "0 0 3px", display: "flex", gap: "8px" }}>
+                  <p key={f.key} style={{ margin: "0 0 4px", display: "flex", gap: "10px" }}>
                     <span style={{
-                      fontFamily: F.data, fontSize: "10px", fontWeight: 500,
-                      letterSpacing: "0.08em", color: C.faint, flex: "0 0 68px",
+                      font: "500 10px/1.5 var(--font-mono)", letterSpacing: ".08em",
+                      color: "#8A97B3", flex: "0 0 62px", textTransform: "uppercase",
                     }}>
                       {f.key}
                     </span>
                     <span style={{
-                      fontFamily: F.read, fontSize: "14px", color: C.muted, minWidth: 0,
+                      font: "400 14px/1.45 var(--font-newsreader)", color: "#2C3C5A", minWidth: 0,
                     }}>
                       {f.value}
                     </span>
@@ -191,19 +209,24 @@ export function Desk({
   );
 }
 
+/**
+ * A heading and, beside it, what is in the section — "2 OPEN", "3 TO DO · 2
+ * BOOKED". The count is the first thing somebody reads to decide whether to
+ * look, so it belongs on the heading rather than inside.
+ */
 function SectionHead({ title, count }: { title: string; count?: string }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", gap: "10px", marginBottom: "12px" }}>
       <h2 style={{
-        fontFamily: F.ui, fontSize: "19px", fontWeight: 600, letterSpacing: "-0.01em",
+        font: "600 19px/1.2 var(--font-outfit)", letterSpacing: "-.01em",
         color: C.ink, margin: 0,
       }}>
         {title}
       </h2>
       {count && (
         <span style={{
-          fontFamily: F.data, fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em",
-          color: C.muted,
+          font: "500 11px/1 var(--font-mono)", letterSpacing: ".08em",
+          color: "#5A6782", textTransform: "uppercase",
         }}>
           {count}
         </span>

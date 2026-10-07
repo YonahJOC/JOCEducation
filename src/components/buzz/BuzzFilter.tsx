@@ -41,8 +41,8 @@ export function BuzzFilter({
     <>
       {canNarrow && (
         <div style={{
-          display: "inline-flex", backgroundColor: C.segment, borderRadius: "999px",
-          padding: "3px", marginBottom: "12px",
+          display: "inline-flex", background: "#EEF0F5", borderRadius: "10px",
+          padding: "3px", gap: "2px", marginBottom: "12px",
         }}>
           {[
             { on: !all, label: "My schools", set: false },
@@ -54,12 +54,12 @@ export function BuzzFilter({
               aria-pressed={t.on}
               onClick={() => { setAll(t.set); setOpen(false); }}
               style={{
-                fontFamily: F.ui, fontSize: "13px", fontWeight: 600,
-                color: t.on ? C.ink : C.muted,
-                backgroundColor: t.on ? C.white : "transparent",
-                border: "none", borderRadius: "999px",
-                padding: "7px 14px", minHeight: "34px", cursor: "pointer",
-                boxShadow: t.on ? "0 1px 2px rgba(16,35,63,.12)" : "none",
+                background: t.on ? "#fff" : "transparent",
+                color: t.on ? "#10233F" : "#5A6782",
+                border: 0, borderRadius: "8px", padding: "7px 11px",
+                font: `${t.on ? 600 : 500} 13px/1 var(--font-outfit)`,
+                boxShadow: t.on ? "0 1px 2px rgba(16,35,63,.08)" : "none",
+                cursor: "pointer",
               }}
             >
               {t.label}

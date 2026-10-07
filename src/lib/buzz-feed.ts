@@ -28,6 +28,8 @@ export async function buzzRows(take: number) {
       author: { select: { name: true, email: true } },
       takenById: true,
       takenBy: { select: { name: true, email: true } },
+      doneAt: true,
+      doneBy: { select: { name: true, email: true } },
       program: { select: { name: true } },
       school: { select: { id: true, name: true } },
       notes: {

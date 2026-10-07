@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { safeAuth } from "@/auth";
 import { canReadBuzz } from "@/lib/buzz-access";
-import { buzzRows, buzzViewer, standing } from "@/lib/buzz-feed";
+import { buzzRows, buzzViewer, standing, unreadFor } from "@/lib/buzz-feed";
+import { AdminToggle } from "@/components/buzz/AdminToggle";
 import { BuzzCard } from "@/components/buzz/BuzzCard";
 import { BuzzFilter } from "@/components/buzz/BuzzFilter";
-import { C, F } from "@/lib/joc-tokens";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * The Buzz, on somebody's desk.
@@ -28,6 +29,10 @@ export async function BuzzStrip() {
   const [rows, viewer] = await Promise.all([buzzRows(60), buzzViewer()]);
 
   const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 86400000);
+  const week = rows.filter((r) => r.createdAt >= weekAgo).length;
+  const unread = rows.filter((r) => unreadFor(r, viewer) > 0).length;
+
   const items = [...rows]
     .sort((a, b) => (standing(b) - standing(a)) || (b.createdAt.getTime() - a.createdAt.getTime()))
     .slice(0, 12);
@@ -35,21 +40,26 @@ export async function BuzzStrip() {
   return (
     <section>
       <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "baseline",
-        gap: "12px", flexWrap: "wrap", marginBottom: "12px",
+        display: "flex", alignItems: "center", gap: "10px 14px",
+        flexWrap: "wrap", marginBottom: "12px",
       }}>
-        <h2 style={{
-          fontFamily: F.ui, fontSize: "19px", fontWeight: 600, letterSpacing: "-0.01em",
-          color: C.ink, margin: 0,
-        }}>
-          The JOC School Buzz
+        <h2 style={{ font: "600 19px/1.2 var(--font-outfit)", letterSpacing: "-.01em", color: C.ink, margin: 0 }}>
+          School Buzz
         </h2>
-        <Link href="/buzz" style={{
-          fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.blue,
-          textDecoration: "none",
+        <span style={{
+          font: "500 11px/1 var(--font-mono)", letterSpacing: ".08em",
+          color: "#5A6782", textTransform: "uppercase",
         }}>
-          Open the Buzz →
-        </Link>
+          {week} this week{unread > 0 ? ` · ${unread} unread` : ""}
+        </span>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "14px" }}>
+          {viewer.superAdmin && <AdminToggle />}
+          <Link href="/buzz" style={{
+            font: "600 14px/1 var(--font-outfit)", color: C.blue, textDecoration: "none",
+          }}>
+            Open the Buzz →
+          </Link>
+        </div>
       </div>
 
       <BuzzFilter

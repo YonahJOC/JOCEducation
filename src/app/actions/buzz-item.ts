@@ -67,6 +67,42 @@ export async function addNote(activityId: string, body: string): Promise<ItemRes
   return { ok: true };
 }
 
+/**
+ * Dealt with, and everybody can see it.
+ *
+ * Shared, unlike picking something up: one person holds a note, but anybody
+ * reading the feed needs to know the school has been answered. Ticks the
+ * holder's list item too, so the two cannot disagree.
+ *
+ * Open to anybody who can read the Buzz — the person who knows it is finished
+ * is whoever did it, and making them ask a super admin to say so is how a
+ * feed fills with things that are already handled.
+ */
+export async function setBuzzDone(activityId: string, done: boolean): Promise<ItemResult> {
+  if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
+  const { user, ok } = await asReader();
+  if (!ok) return { ok: false, error: "You can't change this." };
+
+  try {
+    await prisma.schoolActivity.update({
+      where: { id: activityId },
+      data: done
+        ? { doneAt: new Date(), doneById: user.id ?? null, takenDoneAt: new Date() }
+        : { doneAt: null, doneById: null, takenDoneAt: null },
+    });
+
+    await prisma.deskTodo.updateMany({
+      where: { activityId },
+      data: { doneAt: done ? new Date() : null },
+    }).catch(() => null);
+  } catch {
+    return { ok: false, error: "That didn't save. Try again in a moment." };
+  }
+
+  touched();
+  return { ok: true };
+}
+
 /** Change what was written down. Super admin only. */
 export async function editUpdate(activityId: string, detail: string): Promise<ItemResult> {
   if (!isDatabaseConfigured()) return { ok: false, error: "No database." };

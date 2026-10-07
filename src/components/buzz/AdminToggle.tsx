@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { C, F } from "@/lib/joc-tokens";
+import { C } from "@/lib/joc-tokens";
 
 /**
  * One quiet switch in the masthead, for the person who can edit, tag and
@@ -17,7 +17,7 @@ import { C, F } from "@/lib/joc-tokens";
 
 const KEY = "joc-admin-tools";
 
-export function AdminToggle() {
+export function AdminToggle({ dark = false }: { dark?: boolean }) {
   const [on, setOn] = useState(false);
 
   // Read the remembered choice after mounting: the server has no idea what
@@ -47,26 +47,24 @@ export function AdminToggle() {
       onClick={flip}
       title={on ? "Hide edit, tag and remove" : "Show edit, tag and remove"}
       style={{
-        display: "inline-flex", alignItems: "center", gap: "7px",
-        fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        color: on ? C.orange : "rgba(255,255,255,.45)",
-        background: "none", border: "none", cursor: "pointer",
-        padding: "6px 0", minHeight: "32px",
+        display: "flex", alignItems: "center", gap: "8px",
+        background: "transparent", border: 0, cursor: "pointer",
+        font: "500 13px/1 var(--font-outfit)",
+        color: dark ? "#DCE2EE" : "#3B4A66",
+        padding: "4px 0",
       }}
     >
       <span style={{
-        width: "26px", height: "15px", borderRadius: "999px", flex: "0 0 auto",
-        backgroundColor: on ? C.orange : "rgba(255,255,255,.22)",
-        position: "relative", transition: "background-color .15s",
+        width: "30px", height: "18px", borderRadius: "10px", flex: "0 0 auto",
+        background: on ? C.blue : "#C9D0DF",
+        display: "flex", justifyContent: on ? "flex-end" : "flex-start",
+        padding: "2px", boxSizing: "border-box", transition: "background .15s",
       }}>
         <span style={{
-          position: "absolute", top: "2px", left: on ? "13px" : "2px",
-          width: "11px", height: "11px", borderRadius: "50%",
-          backgroundColor: C.white, transition: "left .15s",
+          width: "14px", height: "14px", borderRadius: "50%", background: "#fff",
         }} />
       </span>
-      Tools
+      Admin tools
     </button>
   );
 }

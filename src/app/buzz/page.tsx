@@ -283,7 +283,7 @@ function Masthead({ line, tools = false }: { line?: string; tools?: boolean }) {
           style={{ height: "18px", width: "auto", display: "block" }}
         />
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-          {tools && <AdminToggle />}
+          {tools && <AdminToggle dark />}
           <span style={{
             fontFamily: F.data, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
             textTransform: "uppercase", color: C.orange, whiteSpace: "nowrap",

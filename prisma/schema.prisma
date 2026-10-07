@@ -192,6 +192,7 @@ model SchoolActivity {
   /// having picked it up.
   doneAt   DateTime?
   doneById String?
+  doneBy   User?     @relation("ActivityDoneBy", fields: [doneById], references: [id], onDelete: SetNull)
   todos    DeskTodo[]
 
   /// The thread under it. Anybody who can read the Buzz can add to one.
@@ -528,6 +529,7 @@ model User {
   todosAssigned    DeskTodo[]          @relation("DeskTodoAssigner")
   notices          Notice[]            @relation("NoticeAuthor")
   noticeReads      NoticeRead[]
+  activitiesDone   SchoolActivity[]    @relation("ActivityDoneBy")
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
