@@ -3,7 +3,7 @@ import { Tasks } from "./Tasks";
 import { YourDay } from "./YourDay";
 import { ForYou } from "./ForYou";
 import { Notebook } from "./Notebook";
-import { firstName } from "@/lib/desk";
+import { firstName, dateLine } from "@/lib/desk";
 import type { getMyDesk } from "@/lib/my-desk";
 
 /**
@@ -20,9 +20,9 @@ export function MyDesk({ desk }: { desk: Awaited<ReturnType<typeof getMyDesk>> }
   // Signed out — reviewing locally. "Your desk" rather than "your's desk".
   const who = desk.me?.name ?? desk.me?.email ?? null;
   const name = who ? firstName(who) : "Your";
-  const date = desk.now
-    .toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" })
-    .toUpperCase();
+  // Both calendars, the way the console has always shown the date. Writing
+  // the Gregorian one by hand here is how the Hebrew one went missing.
+  const date = dateLine(desk.now);
 
   return (
     <div className="joc-bleed joc-desk" style={{ padding: "22px 24px 20px" }}>
