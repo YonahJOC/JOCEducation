@@ -64,18 +64,19 @@ export async function setBuzzAccess(userId: string, on: boolean): Promise<Access
  * account the switch is flipped instead, so one address cannot end up both
  * invited and listed.
  */
-export async function inviteToBuzz(emailRaw: string): Promise<AccessResult> {
+export async function inviteToBuzz(nameRaw: string, emailRaw: string): Promise<AccessResult> {
   const allowed = await guard();
   if (!allowed.ok) return allowed;
 
+  const name = nameRaw.trim().slice(0, 120) || null;
   const email = emailRaw.trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { ok: false, error: "That doesn't look like an email address." };
+    return { ok: false, error: "An email address is how their account is matched — it needs one." };
   }
 
   const existing = await prisma.user.findFirst({
     where: { email: { equals: email, mode: "insensitive" } },
-    select: { id: true, schoolId: true },
+    select: { id: true, schoolId: true, name: true },
   }).catch(() => null);
 
   if (existing?.schoolId) {
@@ -84,17 +85,71 @@ export async function inviteToBuzz(emailRaw: string): Promise<AccessResult> {
 
   try {
     if (existing) {
-      // They are already here. No invite — just switch them on.
-      await prisma.user.update({ where: { id: existing.id }, data: { buzzAccess: true } });
+      // They are already here. No invite — switch them on, and give them a
+      // name if the account has none.
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: { buzzAccess: true, ...(existing.name ? {} : name ? { name } : {}) },
+      });
     } else {
       await prisma.buzzInvite.upsert({
         where: { email },
-        create: { email, invitedById: (await safeAuth())?.user?.id ?? null },
-        update: {},
+        create: { email, name, invitedById: (await safeAuth())?.user?.id ?? null },
+        update: name ? { name } : {},
       });
     }
   } catch {
     return { ok: false, error: "That didn't save. Try again in a moment." };
+  }
+
+  revalidatePath("/admin/buzz");
+  return { ok: true };
+}
+
+/** Correct a name or an address on somebody who has not signed in yet. */
+export async function editBuzzInvite(
+  currentEmail: string,
+  nameRaw: string,
+  emailRaw: string,
+): Promise<AccessResult> {
+  const allowed = await guard();
+  if (!allowed.ok) return allowed;
+
+  const name = nameRaw.trim().slice(0, 120) || null;
+  const email = emailRaw.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: "An email address is how their account is matched — it needs one." };
+  }
+
+  // Changed to an address that already has an account: switch that account
+  // on instead, and drop the invite. Otherwise the invite would sit there
+  // forever waiting for a sign-in that has already happened.
+  const existing = await prisma.user.findFirst({
+    where: { email: { equals: email, mode: "insensitive" } },
+    select: { id: true, schoolId: true, name: true },
+  }).catch(() => null);
+
+  if (existing?.schoolId) {
+    return { ok: false, error: "That account belongs to a school, so it can't see the Buzz." };
+  }
+
+  try {
+    if (existing) {
+      await prisma.$transaction([
+        prisma.user.update({
+          where: { id: existing.id },
+          data: { buzzAccess: true, ...(existing.name ? {} : name ? { name } : {}) },
+        }),
+        prisma.buzzInvite.deleteMany({ where: { email: currentEmail.trim().toLowerCase() } }),
+      ]);
+    } else {
+      await prisma.buzzInvite.update({
+        where: { email: currentEmail.trim().toLowerCase() },
+        data: { name, email },
+      });
+    }
+  } catch {
+    return { ok: false, error: "That didn't save — is the new address already on the list?" };
   }
 
   revalidatePath("/admin/buzz");

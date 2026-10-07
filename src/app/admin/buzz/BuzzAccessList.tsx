@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { setBuzzAccess, inviteToBuzz, cancelBuzzInvite } from "@/app/actions/buzz-access";
+import { setBuzzAccess, inviteToBuzz, cancelBuzzInvite, editBuzzInvite } from "@/app/actions/buzz-access";
 import { C, R, F, label, datum } from "@/lib/joc-tokens";
 
 /**
@@ -24,9 +24,12 @@ export type Row = {
   superAdmin: boolean;
 };
 
-export function BuzzAccessList({ rows, invites }: { rows: Row[]; invites: string[] }) {
+export type Invite = { email: string; name: string | null };
+
+export function BuzzAccessList({ rows, invites }: { rows: Row[]; invites: Invite[] }) {
   const [q, setQ] = useState("");
-  const [waiting, setWaiting] = useState(invites);
+  const [waiting, setWaiting] = useState<Invite[]>(invites);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
   const [edits, setEdits] = useState<Record<string, boolean>>({});
@@ -76,15 +79,20 @@ export function BuzzAccessList({ rows, invites }: { rows: Row[]; invites: string
           if (!value) return;
           setAddError(null);
           start(async () => {
-            const res = await inviteToBuzz(value);
+            const res = await inviteToBuzz(name, value);
             if (!res.ok) {
               setAddError(res.error);
               return;
             }
-            setEmail("");
             const known = rows.find((r) => r.email.toLowerCase() === value.toLowerCase());
             if (known) setEdits((e) => ({ ...e, [known.id]: true }));
-            else setWaiting((w) => (w.includes(value.toLowerCase()) ? w : [...w, value.toLowerCase()]));
+            else setWaiting((w) =>
+              w.some((x) => x.email === value.toLowerCase())
+                ? w
+                : [...w, { email: value.toLowerCase(), name: name.trim() || null }],
+            );
+            setEmail("");
+            setName("");
           });
         }}
         style={{
@@ -93,12 +101,23 @@ export function BuzzAccessList({ rows, invites }: { rows: Row[]; invites: string
         }}
       >
         <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Their name"
+          style={{
+            flex: "1 1 160px", maxWidth: "220px", boxSizing: "border-box",
+            fontFamily: F.read, fontSize: "15px", color: C.ink, backgroundColor: C.white,
+            border: `1px solid ${C.hairline}`, borderRadius: "12px",
+            padding: "11px 14px", minHeight: "46px",
+          }}
+        />
+        <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="someone@justonechesed.org"
           style={{
-            flex: "1 1 260px", maxWidth: "340px", boxSizing: "border-box",
+            flex: "1 1 240px", maxWidth: "320px", boxSizing: "border-box",
             fontFamily: F.read, fontSize: "15px", color: C.ink, backgroundColor: C.white,
             border: `1px solid ${C.hairline}`, borderRadius: "12px",
             padding: "11px 14px", minHeight: "46px",
@@ -127,38 +146,18 @@ export function BuzzAccessList({ rows, invites }: { rows: Row[]; invites: string
             Waiting for their first sign-in
           </p>
           <div style={{ display: "grid", gap: "6px" }}>
-            {waiting.map((e) => (
-              <div
-                key={e}
-                style={{
-                  backgroundColor: C.panel, borderRadius: "12px", padding: "10px 14px",
-                  display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap",
-                }}
-              >
-                <span style={{
-                  flex: "100 1 200px", minWidth: 0,
-                  fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.ink,
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                }}>
-                  {e}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setWaiting((w) => w.filter((x) => x !== e));
-                    start(async () => {
-                      const res = await cancelBuzzInvite(e);
-                      if (!res.ok) setWaiting((w) => [...w, e]);
-                    });
-                  }}
-                  style={{
-                    fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.muted,
-                    background: "none", border: "none", cursor: "pointer", minHeight: "32px",
-                  }}
-                >
-                  Take it back
-                </button>
-              </div>
+            {waiting.map((w) => (
+              <WaitingRow
+                key={w.email}
+                invite={w}
+                onSaved={(next) =>
+                  setWaiting((list) =>
+                    list.map((x) => (x.email === w.email ? next : x)),
+                  )
+                }
+                onGone={() => setWaiting((list) => list.filter((x) => x.email !== w.email))}
+                onRestore={() => setWaiting((list) => [...list, w])}
+              />
             ))}
           </div>
           <p style={{
@@ -253,6 +252,125 @@ export function BuzzAccessList({ rows, invites }: { rows: Row[]; invites: string
     </div>
   );
 }
+
+/**
+ * Somebody invited who has not signed in yet.
+ *
+ * Editable, because the only thing on file is what whoever added them typed,
+ * and a typo in an address means an invite that is never redeemed by anybody.
+ */
+function WaitingRow({
+  invite, onSaved, onGone, onRestore,
+}: {
+  invite: Invite;
+  onSaved: (next: Invite) => void;
+  onGone: () => void;
+  onRestore: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(invite.name ?? "");
+  const [email, setEmail] = useState(invite.email);
+  const [error, setError] = useState<string | null>(null);
+  const [, start] = useTransition();
+
+  if (open) {
+    return (
+      <div style={{ backgroundColor: C.panel, borderRadius: "12px", padding: "12px 14px" }}>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Their name"
+            style={{ ...field, flex: "1 1 150px", maxWidth: "210px" }}
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="someone@justonechesed.org"
+            style={{ ...field, flex: "1 1 220px", maxWidth: "300px" }}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "8px", marginTop: "8px", alignItems: "center", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            style={{
+              fontFamily: F.ui, fontSize: "14px", fontWeight: 700, color: C.white,
+              backgroundColor: C.ink, border: "none", borderRadius: R.chip,
+              padding: "8px 14px", minHeight: "38px", cursor: "pointer",
+            }}
+            onClick={() => {
+              setError(null);
+              start(async () => {
+                const res = await editBuzzInvite(invite.email, name, email);
+                if (!res.ok) { setError(res.error); return; }
+                // An address that already had an account is switched on and
+                // the invite is spent, so it leaves this list either way.
+                setOpen(false);
+                onSaved({ name: name.trim() || null, email: email.trim().toLowerCase() });
+              });
+            }}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => { setName(invite.name ?? ""); setEmail(invite.email); setOpen(false); setError(null); }}
+            style={quietSmall}
+          >
+            Cancel
+          </button>
+          {error && <span style={{ ...label, color: C.orangeText }}>{error}</span>}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      backgroundColor: C.panel, borderRadius: "12px", padding: "10px 14px",
+      display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap",
+    }}>
+      <div style={{ flex: "100 1 200px", minWidth: 0 }}>
+        <p style={{
+          fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.ink, margin: 0,
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
+          {invite.name ?? invite.email}
+        </p>
+        {invite.name && (
+          <p style={{ ...label, color: C.muted, margin: "2px 0 0" }}>{invite.email}</p>
+        )}
+      </div>
+      <button type="button" onClick={() => setOpen(true)} style={quietSmall}>Edit</button>
+      <button
+        type="button"
+        onClick={() => {
+          onGone();
+          start(async () => {
+            const res = await cancelBuzzInvite(invite.email);
+            if (!res.ok) onRestore();
+          });
+        }}
+        style={quietSmall}
+      >
+        Take it back
+      </button>
+    </div>
+  );
+}
+
+const field: React.CSSProperties = {
+  boxSizing: "border-box",
+  fontFamily: F.read, fontSize: "15px", color: C.ink, backgroundColor: C.white,
+  border: `1px solid ${C.hairline}`, borderRadius: "10px",
+  padding: "10px 12px", minHeight: "42px",
+};
+
+const quietSmall: React.CSSProperties = {
+  fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: C.muted,
+  background: "none", border: "none", cursor: "pointer", minHeight: "32px",
+};
 
 /** A switch, because the answer is yes or no and there are forty of them. */
 function Switch({

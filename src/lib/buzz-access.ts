@@ -49,13 +49,25 @@ export async function canReadBuzz(user: U): Promise<boolean> {
   const email = user.email?.trim().toLowerCase();
   if (email) {
     const invite = await prisma.buzzInvite.findUnique({
-      where: { email }, select: { id: true },
+      where: { email }, select: { id: true, name: true },
     }).catch(() => null);
 
     if (invite) {
       try {
+        // The name from the invite only fills a gap. Whatever the account
+        // already carries is theirs and wins.
+        const named = await prisma.user.findUnique({
+          where: { id: user.id }, select: { name: true },
+        });
+
         await prisma.$transaction([
-          prisma.user.update({ where: { id: user.id }, data: { buzzAccess: true } }),
+          prisma.user.update({
+            where: { id: user.id },
+            data: {
+              buzzAccess: true,
+              ...(named?.name || !invite.name ? {} : { name: invite.name }),
+            },
+          }),
           prisma.buzzInvite.delete({ where: { id: invite.id } }),
         ]);
       } catch {

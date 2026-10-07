@@ -2412,6 +2412,10 @@ model BuzzLike {
 /// onto their account and the invite is deleted.
 model BuzzInvite {
   id          String   @id @default(cuid())
+  /// What to call them before they have ever signed in. Their account name
+  /// wins once they have one — this is for the waiting list, and for giving
+  /// a brand new account a name on its first visit.
+  name        String?
   /// Always lowercased, so one address cannot be invited twice.
   email       String   @unique
   invitedById String?

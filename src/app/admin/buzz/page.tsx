@@ -71,8 +71,8 @@ async function Inner() {
   // Given it before they ever signed in. Spent the first time they open it.
   const invites = (await prisma.buzzInvite.findMany({
     orderBy: { createdAt: "asc" },
-    select: { email: true },
-  }).catch(() => [])).map((i) => i.email);
+    select: { email: true, name: true },
+  }).catch(() => [])).map((i) => ({ email: i.email, name: i.name }));
 
   return (
     <div>
