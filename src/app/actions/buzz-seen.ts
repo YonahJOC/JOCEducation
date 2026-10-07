@@ -30,3 +30,23 @@ export async function markThreadSeen(activityId: string): Promise<void> {
     // is worse.
   }
 }
+
+/**
+ * Put the dot back, for this person only.
+ *
+ * The thing somebody does when they have read a note and cannot deal with it
+ * now. Without it the only way to keep a note in front of you is to leave it
+ * unopened, which means not reading it.
+ */
+export async function markThreadUnread(activityId: string): Promise<void> {
+  if (!isDatabaseConfigured()) return;
+  const session = await safeAuth();
+  const id = session?.user?.id;
+  if (!id) return;
+
+  try {
+    await prisma.buzzSeen.deleteMany({ where: { userId: id, activityId } });
+  } catch {
+    // As above.
+  }
+}

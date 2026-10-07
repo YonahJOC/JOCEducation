@@ -3,6 +3,8 @@ import { BandRow } from "@/components/ui/BandRow";
 import { YourList } from "@/components/desk/YourList";
 import { YourDiary } from "@/components/desk/YourDiary";
 import { TheBoard } from "@/components/desk/TheBoard";
+import { NoticeStrip } from "@/components/desk/NoticeStrip";
+import { ChipRow } from "@/components/desk/ChipRow";
 import { BuzzStrip } from "@/components/admin/BuzzStrip";
 import { greeting, firstName, dateLine, type getDesk } from "@/lib/desk";
 import type { Today } from "@/lib/today";
@@ -25,7 +27,7 @@ export function Desk({
   today: Today;
   desk: Awaited<ReturnType<typeof getDesk>>;
 }) {
-  const { me, superAdmin, now, todos, diary, patch, notices } = desk;
+  const { me, superAdmin, now, todos, diary, patch, notices, fresh } = desk;
   const open = todos.filter((t) => !t.done).length;
 
   // One sentence, from the data. Not a welcome — a summary.
@@ -62,8 +64,19 @@ export function Desk({
         </p>
       </header>
 
+      {fresh && <NoticeStrip notice={fresh} />}
+
+      <ChipRow chips={[
+        { label: "Needs you", count: today.rows.length, to: "needs" },
+        { label: "Your list", count: open, to: "week" },
+        { label: "Diary", count: diary.length, to: "week" },
+        { label: "Programs", count: patch.length, to: "programs" },
+        { label: "Buzz", count: null, to: "buzz" },
+        { label: "Board", count: notices.filter((n) => !n.read).length, to: "buzz" },
+      ]} />
+
       {/* ── Needs you ───────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "44px" }}>
+      <section id="needs" style={{ marginBottom: "44px", scrollMarginTop: "64px" }}>
         <SectionHead title="Needs you" count={today.rows.length ? `${today.rows.length}` : undefined} />
 
         {today.rows.length === 0 ? (
@@ -92,7 +105,7 @@ export function Desk({
       </section>
 
       {/* ── Your week ───────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "44px" }}>
+      <section id="week" style={{ marginBottom: "44px", scrollMarginTop: "64px" }}>
         <SectionHead title="Your week" />
         <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
           <YourList todos={todos} />
@@ -116,7 +129,7 @@ export function Desk({
 
       {/* ── Your programs ───────────────────────────────────────────── */}
       {patch.length > 0 && (
-        <section style={{ marginBottom: "44px" }}>
+        <section id="programs" style={{ marginBottom: "44px", scrollMarginTop: "64px" }}>
           <SectionHead title={superAdmin ? "Every program" : "Your programs"} />
           <div style={{
             display: "grid", gap: "10px",
@@ -168,7 +181,7 @@ export function Desk({
       )}
 
       {/* ── The Buzz, and the board ─────────────────────────────────── */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "flex-start" }}>
+      <div id="buzz" style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "flex-start", scrollMarginTop: "64px" }}>
         <div style={{ flex: "1 1 520px", minWidth: 0 }}>
           <BuzzStrip />
         </div>

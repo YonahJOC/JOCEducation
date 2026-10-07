@@ -721,3 +721,10 @@ body {
 [data-admin-tools="off"] .joc-admin-tools {
   display: none !important;
 }
+
+/* The desk's jump-to-section chips: a phone only. Above 768px the page is
+   short enough to see whole, and a sticky row of links is just furniture. */
+.joc-desk-chips { display: flex; }
+@media (min-width: 768px) {
+  .joc-desk-chips { display: none; }
+}

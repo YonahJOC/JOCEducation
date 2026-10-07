@@ -112,7 +112,7 @@ export async function getDesk() {
       me: me ?? null, superAdmin, now,
       todos: [] as DeskTodo[], diary: [] as DiaryItem[],
       patch: [] as PatchCard[], patchLabel: "Your programs",
-      notices: [] as Notice[],
+      notices: [] as Notice[], fresh: null as Notice | null,
     };
   }
 
@@ -251,10 +251,16 @@ export async function getDesk() {
     read: readIds.has(n.id),
   }));
 
+  // The one notice that earns a place across the top: newest, unread, and
+  // under two days old. Anything older is news nobody needs interrupting for.
+  const fresh = notices.find(
+    (n) => !n.read && (n.ago === "today" || n.ago === "yesterday"),
+  ) ?? null;
+
   return {
     me, superAdmin, now,
     todos, diary, patch,
-    patchLabel: superAdmin ? "Your programs" : "Your programs",
-    notices,
+    patchLabel: "Your programs",
+    notices, fresh,
   };
 }

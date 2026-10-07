@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { addNote, editUpdate, assignUpdate, removeUpdate } from "@/app/actions/buzz-item";
 import { takeUpdate, releaseUpdate } from "@/app/actions/buzz-pickup";
-import { markThreadSeen } from "@/app/actions/buzz-seen";
+import { markThreadSeen, markThreadUnread } from "@/app/actions/buzz-seen";
 import { toggleLike } from "@/app/actions/buzz-like";
 import { C, R, F, label } from "@/lib/joc-tokens";
 
@@ -227,6 +227,21 @@ export function ItemTools({
                 {fresh}
               </span>
             )}
+          </button>
+        )}
+
+        {/* Read it, and cannot deal with it now. Without this the only way to
+            keep a note in front of you is to leave it unopened. */}
+        {canComment && thread.length > 0 && fresh === 0 && (
+          <button
+            type="button"
+            style={quiet}
+            onClick={() => {
+              setFresh(thread.length);
+              void markThreadUnread(activityId);
+            }}
+          >
+            Mark unread
           </button>
         )}
 
