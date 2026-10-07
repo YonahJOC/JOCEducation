@@ -1,3 +1,4 @@
+import { BuzzStrip } from "@/components/admin/BuzzStrip";
 import Link from "next/link";
 import { SectionLinks } from "@/components/admin/SectionLinks";
 import { listProgramsForAdmin } from "@/lib/program-admin";
@@ -195,6 +196,8 @@ export default async function MyProgramsPage() {
           ))}
         </div>
       )}
+
+      <BuzzStrip />
     </div>
   );
 }

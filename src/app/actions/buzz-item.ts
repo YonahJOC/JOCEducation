@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview } from "@/auth";
-import { can, isSuperAdminEmail } from "@/lib/access";
-import { leadsAnyProgram } from "@/lib/program-admin";
+import { isSuperAdminEmail } from "@/lib/access";
+import { canReadBuzz } from "@/lib/buzz-access";
 
 /**
  * What can be done to one item on the Buzz.
@@ -37,19 +37,7 @@ async function asSuperAdmin(): Promise<{ user: Me; ok: boolean }> {
 /** The reading bar: whoever may see the Buzz may add to a thread on it. */
 async function asReader(): Promise<{ user: Me; ok: boolean }> {
   const user = await me();
-  if (openForReview) return { user, ok: true };
-  if (!user.id) return { user, ok: false };
-  if (isSuperAdminEmail(user.email)) return { user, ok: true };
-
-  // Tied to one school: never, whatever else is set. The Buzz is every
-  // school at once.
-  const row = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { buzzAccess: true, schoolId: true },
-  }).catch(() => null);
-  if (!row || row.schoolId) return { user, ok: false };
-
-  return { user, ok: row.buzzAccess || can(user, "buzz") || (await leadsAnyProgram(user.id)) };
+  return { user, ok: await canReadBuzz(user) };
 }
 
 function touched() {

@@ -1,3 +1,4 @@
+import { BuzzStrip } from "@/components/admin/BuzzStrip";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
 import { canAccessConsole } from "@/lib/access";
@@ -35,5 +36,11 @@ export default async function AdminToday() {
     }
   }
 
-  return <TodayPage data={await getToday()} />;
+  return (
+    <>
+      <TodayPage data={await getToday()} />
+      {/* Under the things that need somebody, never above them. */}
+      <BuzzStrip />
+    </>
+  );
 }
