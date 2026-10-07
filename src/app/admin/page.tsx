@@ -1,26 +1,24 @@
-import { BuzzStrip } from "@/components/admin/BuzzStrip";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
 import { canAccessConsole } from "@/lib/access";
 import { leadsAnyProgram, listProgramsForAdmin } from "@/lib/program-admin";
 import { getToday } from "@/lib/today";
-import { TodayPage } from "@/components/admin/TodayPage";
+import { getDesk } from "@/lib/desk";
+import { Desk } from "@/components/desk/Desk";
 
 /**
- * Today.
+ * My desk.
  *
- * This was an overview: a board of every school, their statuses and a
- * pipeline. That is something to browse, and nobody opens a console to
- * browse — they open it because something needs them, and the page could not
- * say what.
+ * This was Today: the rows that need somebody, and nothing else. They are
+ * still the top of it and still unchanged — but a console whose only page is
+ * a list of problems is a console people open once a day and close.
  *
- * It is now the same shape for every role, built from capabilities: rows that
- * are true right now, each with a figure, a sentence and one action. The
- * board it replaced is still there, under Schools, where somebody looking for
- * a board would look.
+ * Now it is one page read top to bottom: what needs you, your own list and
+ * diary, a rule saying the rest is not waiting on anybody, then the shared
+ * things — the programs, the Buzz, the board.
  */
 
-export const metadata = { title: "Today — JOC Console" };
+export const metadata = { title: "My desk — JOC Console" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminToday() {
@@ -36,11 +34,6 @@ export default async function AdminToday() {
     }
   }
 
-  return (
-    <>
-      <TodayPage data={await getToday()} />
-      {/* Under the things that need somebody, never above them. */}
-      <BuzzStrip />
-    </>
-  );
+  const [today, desk] = await Promise.all([getToday(), getDesk()]);
+  return <Desk today={today} desk={desk} />;
 }

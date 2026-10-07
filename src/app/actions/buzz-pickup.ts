@@ -56,11 +56,34 @@ export async function takeUpdate(activityId: string): Promise<PickupResult> {
       where: { id: activityId },
       data: { takenById: me.id, takenAt: new Date(), takenDoneAt: null },
     });
+
+    // And it lands on their list. Picking something up and then having to
+    // write down that you picked it up is how a list stops being true.
+    const already = await prisma.deskTodo.findFirst({
+      where: { userId: me.id, activityId },
+      select: { id: true },
+    });
+
+    if (!already) {
+      const note = await prisma.schoolActivity.findUnique({
+        where: { id: activityId },
+        select: { summary: true, school: { select: { name: true } } },
+      });
+      await prisma.deskTodo.create({
+        data: {
+          userId: me.id,
+          text: note?.summary ?? `Follow up with ${note?.school.name ?? "a school"}`,
+          source: "BUZZ",
+          activityId,
+        },
+      });
+    }
   } catch {
     return { ok: false, error: "That didn't save. Try again in a moment." };
   }
 
   revalidatePath("/buzz");
+  revalidatePath("/admin");
   revalidatePath("/admin/my-updates");
   return { ok: true };
 }
@@ -88,6 +111,14 @@ export async function releaseUpdate(activityId: string, done: boolean): Promise<
         ? { takenDoneAt: new Date() }
         : { takenById: null, takenAt: null, takenDoneAt: null },
     });
+
+    // Putting it back takes it off their list too, for the same reason
+    // picking it up put it on.
+    if (!done && me.id) {
+      await prisma.deskTodo.deleteMany({
+        where: { userId: me.id, activityId, doneAt: null },
+      }).catch(() => null);
+    }
   } catch {
     return { ok: false, error: "That didn't save. Try again in a moment." };
   }

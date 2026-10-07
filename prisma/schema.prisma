@@ -188,6 +188,12 @@ model SchoolActivity {
   removedAt   DateTime?
   removedById String?
 
+  /// Everybody can see this one is finished with, as against one person
+  /// having picked it up.
+  doneAt   DateTime?
+  doneById String?
+  todos    DeskTodo[]
+
   /// The thread under it. Anybody who can read the Buzz can add to one.
   notes BuzzNote[]
   /// Who has opened that thread, and when.
@@ -518,6 +524,10 @@ model User {
   buzzSeen         BuzzSeen[]
   buzzLikes        BuzzLike[]
   buzzInvitesSent  BuzzInvite[]        @relation("BuzzInvitedBy")
+  todos            DeskTodo[]          @relation("DeskTodoOwner")
+  todosAssigned    DeskTodo[]          @relation("DeskTodoAssigner")
+  notices          Notice[]            @relation("NoticeAuthor")
+  noticeReads      NoticeRead[]
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2421,4 +2431,59 @@ model BuzzInvite {
   invitedById String?
   invitedBy   User?    @relation("BuzzInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
+}
+
+/// A thing one person has to do.
+///
+/// Three sources, one row: what they typed, what they took off the Buzz, and
+/// what somebody handed them. They look the same on the page on purpose — a
+/// list that sorts itself by where an item came from is a list nobody works
+/// through.
+model DeskTodo {
+  id           String          @id @default(cuid())
+  userId       String
+  user         User            @relation("DeskTodoOwner", fields: [userId], references: [id], onDelete: Cascade)
+  text         String
+  /// MINE | BUZZ | ASSIGNED
+  source       String          @default("MINE")
+  activityId   String?
+  activity     SchoolActivity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  assignedById String?
+  assignedBy   User?           @relation("DeskTodoAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+  due          DateTime?
+  doneAt       DateTime?
+  createdAt    DateTime        @default(now())
+
+  @@index([userId, doneAt])
+  @@index([activityId])
+}
+
+/// Something one team needs everybody to know.
+///
+/// Comes down on its own date, because a noticeboard nobody clears is a wall
+/// of last term.
+model Notice {
+  id         String       @id @default(cuid())
+  dept       String
+  title      String
+  body       String       @db.Text
+  authorId   String?
+  author     User?        @relation("NoticeAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  takeDownAt DateTime?
+  createdAt  DateTime     @default(now())
+  reads      NoticeRead[]
+
+  @@index([createdAt])
+}
+
+/// Read is per person, for the same reason the Buzz's unread dot is.
+model NoticeRead {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noticeId String
+  notice   Notice   @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  readAt   DateTime @default(now())
+
+  @@unique([userId, noticeId])
 }

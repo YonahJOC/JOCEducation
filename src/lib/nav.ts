@@ -47,7 +47,9 @@ export function jocNav(
   user: U,
   opts: { programs?: { name: string; slug: string; heroColor: string; need: number }[] } = {},
 ): NavItem[] {
-  const items: NavItem[] = [{ label: "Today", href: "/admin", hint: "What needs you" }];
+  // "My desk", not "Today": the page is no longer only the things that are
+  // wrong this morning — it is also this person's list, diary and programs.
+  const items: NavItem[] = [{ label: "My desk", href: "/admin", hint: "What needs you" }];
   const programs = opts.programs ?? [];
 
   // A coordinator holds no capability at all. Their navigation is the

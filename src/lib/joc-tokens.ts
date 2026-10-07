@@ -26,6 +26,20 @@ export const C = {
   onDarkLabel: "#FFD8AE",
   onDarkBody: "#C6CFF0",
 
+  /**
+   * The console home's own greys, from the design handoff.
+   *
+   * `muted` is for a line somebody reads; these are for the furniture around
+   * it — the mono line under a to-do, an unticked checkbox, a dashed +.
+   */
+  faint: "#8A97B3",
+  ringQuiet: "#9AA6C2",
+  /** A secondary button's outline, and the segmented control's ground. */
+  outline: "#CBD3EE",
+  segment: "#EEF0F5",
+  /** Remove, and anything else that undoes somebody else's work. */
+  destructive: "#B4541A",
+
   green: "#2FA457",
   greenTint: "#E3F4E8",
   greenText: "#1D6B37",
