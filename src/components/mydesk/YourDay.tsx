@@ -40,11 +40,28 @@ export function YourDay({ day }: { day: DayItem[] }) {
   const rest = day.filter((d) => !d.today);
 
   function submit() {
-    if (!title.trim() || pending) return;
+    if (pending) return;
+
+    /**
+     * Take whichever box they typed in.
+     *
+     * The note field is the wide one at the bottom, so people put the whole
+     * thing in it — "Call Eva Kesselman" — and pressing Enter did nothing at
+     * all, silently, because the name above was empty. Refusing to save
+     * something a person has clearly written is never the right answer: if
+     * there is no name, the note becomes the name.
+     */
+    const name = title.trim() || note.trim();
+    if (!name) {
+      setError("Write what it is first.");
+      return;
+    }
+    const detail = title.trim() ? note : "";
+
     setError(null);
-    const payload = { title, when, time, note };
+    const payload = { name, when, time, detail };
     start(async () => {
-      const res = await addDeskEvent(payload.title, payload.when, payload.time, payload.note);
+      const res = await addDeskEvent(payload.name, payload.when, payload.time, payload.detail);
       if (res.ok) {
         setTitle(""); setTime(""); setNote(""); setWhen(todayStr); setAdding(false);
       } else {
@@ -61,117 +78,122 @@ export function YourDay({ day }: { day: DayItem[] }) {
       {/* ---- add something of your own ------------------------------- */}
       {adding ? (
         <div style={{
-          flex: "0 0 auto", margin: "10px 12px 4px",
+          flex: "0 0 auto", margin: "10px 12px 6px",
           border: `1.5px solid ${C.hairline}`, borderRadius: "12px", background: "#FCFCFD",
+          padding: "12px",
         }}>
-          <input
-            value={title}
-            autoFocus
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } }}
-            placeholder="Meeting, call, visit…"
-            aria-label="What is it"
-            style={{
-              width: "100%", border: 0, outline: 0, background: "transparent",
-              font: `400 15.5px/1.3 ${F.ui}`, color: C.ink, padding: "10px 12px 6px",
-            }}
-          />
-
-          <div style={{
-            display: "flex", flexWrap: "wrap", alignItems: "center",
-            gap: "6px", padding: "0 8px 8px",
-          }}>
-            {/* Today and tomorrow get a chip each; everything else is the
-                picker, because a week of named buttons is a week of buttons. */}
-            <div style={{ display: "flex", background: C.segment, borderRadius: "8px", padding: "2px", gap: "2px" }}>
-              {([["Today", todayStr], ["Tomorrow", tomorrowStr]] as const).map(([text, v]) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setWhen(v)}
-                  style={{
-                    border: 0, borderRadius: "6px", padding: "5px 9px", cursor: "pointer",
-                    background: when === v ? C.white : "transparent",
-                    color: when === v ? C.ink : QUIET,
-                    font: `${when === v ? 600 : 500} 12.5px/1 ${F.ui}`,
-                    boxShadow: when === v ? "0 1px 2px rgba(16,35,63,.08)" : "none",
-                  }}
-                >
-                  {text}
-                </button>
-              ))}
-            </div>
-
+          {/* Every field says what it is above itself. With placeholders
+              alone, the widest box read as "the one to type in" and people
+              put the whole appointment in the note. */}
+          <Field label="What is it?">
             <input
-              type="date"
-              value={when}
-              onChange={(e) => setWhen(e.target.value)}
-              aria-label="Date"
+              value={title}
+              autoFocus
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } }}
+              placeholder="Call Eva Kesselman"
+              aria-label="What is it"
               style={{
+                width: "100%", boxSizing: "border-box",
                 background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-                padding: "5px 8px", font: `500 12.5px/1.2 ${F.ui}`, color: C.ink,
+                outline: 0, font: `500 15.5px/1.3 ${F.ui}`, color: C.ink, padding: "9px 11px",
               }}
             />
+          </Field>
+
+          <Field label="When">
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px" }}>
+              <div style={{ display: "flex", background: C.segment, borderRadius: "8px", padding: "2px", gap: "2px" }}>
+                {([["Today", todayStr], ["Tomorrow", tomorrowStr]] as const).map(([text, v]) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setWhen(v)}
+                    style={{
+                      border: 0, borderRadius: "6px", padding: "6px 10px", cursor: "pointer",
+                      background: when === v ? C.white : "transparent",
+                      color: when === v ? C.ink : QUIET,
+                      font: `${when === v ? 600 : 500} 12.5px/1 ${F.ui}`,
+                      boxShadow: when === v ? "0 1px 2px rgba(16,35,63,.08)" : "none",
+                    }}
+                  >
+                    {text}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="date"
+                value={when}
+                onChange={(e) => setWhen(e.target.value)}
+                aria-label="Date"
+                style={{
+                  background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
+                  padding: "7px 9px", font: `500 12.5px/1.2 ${F.ui}`, color: C.ink,
+                }}
+              />
+            </div>
+          </Field>
+
+          <Field label="Time" hint="leave empty for all day">
             <input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              aria-label="Time, if it has one"
+              aria-label="Time"
               style={{
                 background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-                padding: "5px 8px", font: `500 12.5px/1.2 ${F.ui}`, color: C.ink,
+                padding: "7px 9px", font: `500 12.5px/1.2 ${F.ui}`, color: C.ink,
               }}
             />
+          </Field>
+
+          <Field label="Who with, or where" hint="optional">
             <input
               value={note}
               onChange={(e) => setNote(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } }}
-              placeholder="Who with, or where"
+              placeholder="Her office, or by phone"
               aria-label="Who with, or where"
               style={{
-                flex: "1 1 120px", minWidth: "90px",
+                width: "100%", boxSizing: "border-box",
                 background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-                padding: "5px 8px", font: `400 12.5px/1.2 ${F.ui}`, color: C.ink, outline: 0,
+                outline: 0, font: `400 13.5px/1.3 ${F.ui}`, color: C.ink, padding: "8px 11px",
               }}
             />
-          </div>
+          </Field>
 
-          {/* The hint keeps its own line: this quarter is the narrow one, and
-              a wrapping sentence was pushing itself under the buttons. */}
           <div style={{
-            display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 8px",
-            padding: "0 10px 9px",
+            display: "flex", flexWrap: "wrap", alignItems: "center",
+            gap: "6px 8px", marginTop: "12px",
           }}>
             <span style={{
-              flex: "1 1 100%",
+              flex: "1 1 120px",
               font: `500 10px/1.4 ${F.data}`, letterSpacing: ".06em",
               color: error ? C.destructive : FAINT,
             }}>
-              {error ?? (time ? "ENTER ↵" : "NO TIME = ALL DAY")}
+              {error ?? "ENTER ↵"}
             </span>
-            <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
-              <button
-                type="button"
-                onClick={() => { setAdding(false); setError(null); }}
-                style={{
-                  background: "transparent", border: 0, color: FAINT,
-                  font: `500 12.5px/1 ${F.ui}`, cursor: "pointer", padding: "5px 0",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={pending}
-                onClick={submit}
-                style={{
-                  background: C.blue, color: C.white, border: 0, borderRadius: "8px",
-                  padding: "7px 11px", font: `600 12.5px/1 ${F.ui}`, cursor: "pointer",
-                }}
-              >
-                Add to my day
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => { setAdding(false); setError(null); }}
+              style={{
+                background: "transparent", border: 0, color: FAINT,
+                font: `500 12.5px/1 ${F.ui}`, cursor: "pointer", padding: "5px 0",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={submit}
+              style={{
+                background: C.blue, color: C.white, border: 0, borderRadius: "8px",
+                padding: "8px 12px", font: `600 12.5px/1 ${F.ui}`, cursor: "pointer",
+              }}
+            >
+              Add to my day
+            </button>
           </div>
         </div>
       ) : (
@@ -258,6 +280,35 @@ function DayRow({ d, start, ruled }: {
           ×
         </button>
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * A labelled field.
+ *
+ * The form ran on placeholders alone, so the widest box read as the one to
+ * type in and the appointment ended up in the note while the name stayed
+ * empty — and Enter then did nothing, silently. A label above each field
+ * costs four lines and removes the guess.
+ */
+function Field({ label, hint, children }: {
+  label: string; hint?: string; children: React.ReactNode;
+}) {
+  return (
+    <div style={{ marginBottom: "10px" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "4px" }}>
+        <span style={{
+          font: `600 10.5px/1 ${F.data}`, letterSpacing: ".08em",
+          color: QUIET, textTransform: "uppercase",
+        }}>
+          {label}
+        </span>
+        {hint ? (
+          <span style={{ font: `400 11px/1 ${F.ui}`, color: FAINT }}>{hint}</span>
+        ) : null}
+      </div>
+      {children}
     </div>
   );
 }
