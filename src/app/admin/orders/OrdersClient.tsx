@@ -11,7 +11,9 @@ const STATUS_LABEL: Record<string, string> = {
   FULFILLED: "Fulfilled", CANCELLED: "Cancelled",
 };
 const STATUS_COLOR: Record<string, string> = {
-  NEW: C.orange, QUOTED: "#2C7AC9", INVOICED: C.blue,
+  // Quoted is "started, not finished" — same blue as Invoiced, told apart
+  // by the dot beside it rather than by a second hue.
+  NEW: C.orange, QUOTED: C.blue, INVOICED: C.blue,
   FULFILLED: C.greenText, CANCELLED: C.muted,
 };
 
@@ -143,7 +145,7 @@ function OrderCard({ order, disabled }: { order: OrderRow; disabled?: boolean })
               onChange={(e) => setResponse(e.target.value)}
               rows={2}
               disabled={disabled}
-              style={{ width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px", resize: "vertical", outline: "none" }}
+              style={{ width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink, backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px", padding: "10px 12px", resize: "vertical" }}
             />
           </div>
 

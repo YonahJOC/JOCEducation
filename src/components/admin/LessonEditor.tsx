@@ -44,7 +44,7 @@ export type CycleRef = {
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
   backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
-  padding: "10px 12px", outline: "none", minHeight: "42px",
+  padding: "10px 12px", minHeight: "42px",
 };
 const legend: React.CSSProperties = {
   ...label, color: C.muted, margin: "0 0 14px",
@@ -117,8 +117,7 @@ export function LessonEditor({
             style={{
               width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 800,
               fontSize: "clamp(24px, 3vw, 34px)", letterSpacing: "-0.035em", lineHeight: 1.15,
-              color: C.ink, background: "transparent", border: "none", borderBottom: "2px solid transparent",
-              outline: "none", padding: "4px 0", marginBottom: "18px",
+              color: C.ink, background: "transparent", border: "none", borderBottom: "2px solid transparent", padding: "4px 0", marginBottom: "18px",
             }}
           />
 
@@ -225,7 +224,7 @@ export function LessonEditor({
                         width: "100%", fontFamily: "var(--font-outfit)", fontWeight: 800,
                         fontSize: "22px", letterSpacing: "-0.03em", textAlign: "center", color: C.blue,
                         backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
-                        padding: "8px 4px", outline: "none",
+                        padding: "8px 4px",
                       }}
                     />
                     <span style={{ ...label, color: C.muted, fontWeight: 700 }}>

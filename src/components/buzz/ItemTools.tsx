@@ -1,5 +1,7 @@
 "use client";
 
+import { C } from "@/lib/joc-tokens";
+
 import { useState, useTransition } from "react";
 import { addNote, editUpdate, assignUpdate, removeUpdate, setBuzzDone } from "@/app/actions/buzz-item";
 import { moveToMyDesk, takeOffMyDesk, doneForMe, closeThread } from "@/app/actions/buzz-desk";
@@ -105,7 +107,7 @@ export function ItemTools({
           <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: "#1D6B37" }}>
             ✓ CLOSED
           </span>
-          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: "#2C3C5A", flex: 1 }}>
+          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: C.ink, flex: 1 }}>
             Closed for everyone by {closed === "you" ? "you" : closed}
           </span>
           {superAdmin && (
@@ -128,13 +130,13 @@ export function ItemTools({
       {!closed && mineDone && (
         <div style={{
           display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 12px",
-          background: "#F0F2F7", borderRadius: "10px", padding: "8px 12px",
+          background: C.rule, borderRadius: "10px", padding: "8px 12px",
           margin: "-4px -4px 12px",
         }}>
-          <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: "#5A6782" }}>
+          <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: C.faint }}>
             ✓ DONE FOR YOU
           </span>
-          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: "#5A6782", flex: 1 }}>
+          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: C.faint, flex: 1 }}>
             Still open for everyone else
           </span>
           <button
@@ -167,7 +169,7 @@ export function ItemTools({
           background: "#F8F9FC", border: "1px solid #E3E6EF", borderRadius: "12px",
           padding: "12px", margin: "0 0 12px",
         }}>
-          <span style={{ font: "500 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: "#8A97B3" }}>
+          <span style={{ font: "500 10.5px/1 var(--font-mono)", letterSpacing: ".08em", color: C.faint }}>
             PRIVATE
           </span>
           <input
@@ -192,7 +194,7 @@ export function ItemTools({
                   border: 0, borderRadius: "9999px", padding: "6px 11px", cursor: "pointer",
                   font: "600 12px/1 var(--font-outfit)",
                   background: planLater === v ? "#10233F" : "transparent",
-                  color: planLater === v ? "#fff" : "#8A97B3",
+                  color: planLater === v ? "#fff" : C.faint,
                 }}
               >
                 {text}
@@ -234,7 +236,7 @@ export function ItemTools({
           margin: "-4px -4px 12px",
         }}>
           <span style={{ font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em" }}>✓ DONE</span>
-          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: "#2C3C5A", flex: 1 }}>
+          <span style={{ font: "400 13px/1.3 var(--font-outfit)", color: C.ink, flex: 1 }}>
             Marked done by {done}
           </span>
           <button
@@ -258,7 +260,7 @@ export function ItemTools({
             rows={4}
             style={{
               width: "100%", boxSizing: "border-box", resize: "vertical",
-              font: "400 16px/1.5 var(--font-newsreader)", color: "#1F304D",
+              font: "400 16px/1.5 var(--font-newsreader)", color: C.ink,
               background: "#fff", border: "1px solid #E3E6EF", borderRadius: "12px",
               padding: "11px 13px",
             }}
@@ -281,7 +283,7 @@ export function ItemTools({
       <div style={rowTop}>
         {!done && held.by && !held.mine && (
           <span style={{
-            background: "#F1F3F8", color: "#3B4A66", borderRadius: "9px",
+            background: "#F1F3F8", color: C.muted, borderRadius: "9px",
             padding: "9px 12px", font: "500 13px/1 var(--font-outfit)",
           }}>
             {held.by} has this
@@ -329,7 +331,7 @@ export function ItemTools({
           }}
           style={{
             background: cheer.on ? "#E4E9F8" : "transparent",
-            color: cheer.on ? "#2D46AF" : "#3B4A66",
+            color: cheer.on ? "#2D46AF" : C.muted,
             border: 0, borderRadius: "9px", padding: "8px 10px",
             font: `${cheer.on ? 600 : 500} 13px/1 var(--font-outfit)`, cursor: "pointer",
           }}
@@ -348,7 +350,7 @@ export function ItemTools({
             }}
             style={{
               display: "flex", alignItems: "center", gap: "6px",
-              background: "transparent", color: "#3B4A66", border: 0, borderRadius: "9px",
+              background: "transparent", color: C.muted, border: 0, borderRadius: "9px",
               padding: "8px 10px", font: "500 13px/1 var(--font-outfit)", cursor: "pointer",
             }}
           >
@@ -416,7 +418,7 @@ export function ItemTools({
           display: "flex", gap: "14px", alignItems: "center",
           font: "600 13px/1 var(--font-outfit)", padding: "10px 2px 2px",
         }}>
-          <span style={{ font: "500 10.5px/13px var(--font-mono)", letterSpacing: ".08em", color: "#8A97B3" }}>
+          <span style={{ font: "500 10.5px/13px var(--font-mono)", letterSpacing: ".08em", color: C.faint }}>
             ADMIN
           </span>
           <button type="button" style={adminLink} onClick={() => { setText(detail ?? ""); setEditing((e) => !e); }}>
@@ -471,7 +473,7 @@ export function ItemTools({
               <div key={n.id} style={{
                 alignSelf: "flex-start", maxWidth: "82%", background: "#fff",
                 border: "1px solid #E3E6EF", borderRadius: "14px 14px 14px 4px",
-                padding: "8px 11px", color: "#1F304D",
+                padding: "8px 11px", color: C.ink,
                 font: "400 14.5px/1.4 var(--font-newsreader)", whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
               }}>
@@ -479,7 +481,7 @@ export function ItemTools({
                   {n.who}
                 </div>
                 {n.body}
-                <div style={{ font: "500 9.5px/1 var(--font-mono)", color: "#8A97B3", marginTop: "4px" }}>
+                <div style={{ font: "500 9.5px/1 var(--font-mono)", color: C.faint, marginTop: "4px" }}>
                   {n.when}
                 </div>
               </div>
@@ -505,8 +507,7 @@ export function ItemTools({
               placeholder="Write a comment"
               style={{
                 flex: 1, minWidth: 0, border: "1px solid #E3E6EF", borderRadius: "20px",
-                padding: "9px 13px", font: "400 14px/1.2 var(--font-outfit)",
-                outline: 0, background: "#fff", color: "#10233F",
+                padding: "9px 13px", font: "400 14px/1.2 var(--font-outfit)", background: "#fff", color: "#10233F",
               }}
             />
             <button type="submit" disabled={busy} style={{
@@ -547,7 +548,7 @@ const plain: React.CSSProperties = {
 
 const plainGrey: React.CSSProperties = {
   background: "transparent", border: 0, borderRadius: "9px", padding: "8px 10px",
-  color: "#3B4A66", font: "500 13px/1 var(--font-outfit)", cursor: "pointer",
+  color: C.muted, font: "500 13px/1 var(--font-outfit)", cursor: "pointer",
 };
 
 const adminLink: React.CSSProperties = {
@@ -557,5 +558,5 @@ const adminLink: React.CSSProperties = {
 
 const monoFaint: React.CSSProperties = {
   font: "500 10.5px/1 var(--font-mono)", letterSpacing: ".08em",
-  textTransform: "uppercase", color: "#8A97B3",
+  textTransform: "uppercase", color: C.faint,
 };

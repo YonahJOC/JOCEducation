@@ -79,7 +79,7 @@ export function YourList({ todos }: { todos: DeskTodo[] }) {
           placeholder="Add something to your list"
           aria-label="Add something to your list"
           style={{
-            flex: "100 1 auto", minWidth: 0, border: "none", outline: "none",
+            flex: "100 1 auto", minWidth: 0, border: "none",
             background: "transparent", padding: 0,
             fontFamily: F.ui, fontSize: "15px", fontWeight: 500, color: C.ink,
           }}

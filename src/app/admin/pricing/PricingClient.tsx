@@ -19,7 +19,7 @@ const num: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
   fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "9px",
-  padding: "9px 10px", minHeight: "42px", outline: "none",
+  padding: "9px 10px", minHeight: "42px",
 };
 
 /** One cell of the program table: a price, "included", or "not available". */

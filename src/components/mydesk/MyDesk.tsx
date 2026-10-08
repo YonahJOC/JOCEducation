@@ -37,7 +37,7 @@ export function MyDesk({ desk }: { desk: Awaited<ReturnType<typeof getMyDesk>> }
           {who ? `${name}’s desk` : "Your desk"}
         </h1>
         <span style={{
-          font: `500 11px/1 ${F.data}`, letterSpacing: ".1em", color: "#5A6782",
+          font: `500 11px/1 ${F.data}`, letterSpacing: ".1em", color: C.faint,
         }}>
           {date}
         </span>

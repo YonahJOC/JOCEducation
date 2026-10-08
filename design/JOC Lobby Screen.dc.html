@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0&display=block" rel="stylesheet">
+<style>html,body{margin:0;height:100%;background:#10233F;overflow:hidden}a{color:#2D46AF}a:hover{color:#10233F}</style>
+</helmet>
+<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#10233F;font-family:Outfit, sans-serif">
+<div style="width:1920px;height:1080px;flex:none;transform:scale({{ scale }});transform-origin:center;background:#2D46AF;color:#10233F;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:24px;padding:32px 48px 40px;box-sizing:border-box;overflow:hidden">
+
+  <div data-screen-label="Header" style="display:flex;align-items:center;justify-content:space-between;gap:32px;color:#ffffff;padding:4px 8px 0">
+    <img src="./public/brand/joc-wordmark-white.png" alt="Just One Chesed" style="height:54px;width:auto;max-width:480px;object-fit:contain">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="background:rgba(255,255,255,0.14);border-radius:999px;padding:14px 28px;font-size:30px;font-weight:700">{{ dateLong }}</div>
+      <div style="background:#ffffff;color:#2D46AF;border-radius:999px;padding:8px 32px;font-size:56px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.01em">{{ clock }}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:28px;min-height:0">
+
+    <div data-screen-label="Today" style="background:#F4F7FD;border-radius:32px;padding:32px;display:flex;flex-direction:column;gap:20px;min-height:0;min-width:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 8px">
+        <div style="display:flex;align-items:center;gap:14px;font-size:34px;font-weight:800;color:#2D46AF">
+          <span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:#2D46AF;font-variation-settings:'FILL' 1, 'wght' 600;">today</span>Today at JOC
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <sc-for list="{{ dots }}" as="d" hint-placeholder-count="3">
+            <div style="height:14px;width:{{ d.w }};border-radius:7px;background:{{ d.bg }};transition:all 400ms"></div>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-for list="{{ banners }}" as="b" hint-placeholder-count="0">
+        <div style="background:#FA912D;color:#10233F;font-size:30px;font-weight:800;padding:14px 26px;border-radius:999px;align-self:flex-start;display:flex;align-items:center;gap:12px"><span style="font-family:'Material Symbols Rounded';font-size:32px;line-height:1;color:#10233F;font-variation-settings:'FILL' 1, 'wght' 600;">celebration</span>{{ b.title }}</div>
+      </sc-for>
+
+      <sc-if value="{{ hasFeature }}" hint-placeholder-val="{{ true }}">
+        <div style="overflow:hidden;border-radius:26px;min-width:0;width:100%;flex:none">
+          <div style="display:flex;transition:transform 800ms cubic-bezier(.65,0,.25,1);transform:translateX({{ slideX }})">
+            <sc-for list="{{ slides }}" as="feature" hint-placeholder-count="1">
+              <div style="flex:0 0 100%;box-sizing:border-box;background:#ffffff;border-radius:26px;padding:32px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:32px;align-items:stretch">
+                <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:4px 0 4px 12px">
+                  <div style="align-self:flex-start;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#ffffff;background:{{ feature.labelInk }};padding:8px 20px;border-radius:999px">
+                    <div style="width:12px;height:12px;border-radius:50%;background:#ffffff"></div>{{ feature.label }}
+                  </div>
+                  <div style="font-size:74px;font-weight:800;line-height:1.02;letter-spacing:-0.02em;text-wrap:pretty">{{ feature.program }}</div>
+                  <div style="font-size:38px;font-weight:700;line-height:1.15;color:#2D46AF">{{ feature.groupLine }}</div>
+                  <div style="margin-top:auto;display:flex;align-items:center;gap:12px;font-size:32px;font-weight:600;color:#4A5A74;font-variant-numeric:tabular-nums"><span style="font-family:'Material Symbols Rounded';font-size:36px;line-height:1;color:#4A5A74;font-variation-settings:'FILL' 1, 'wght' 600;">schedule</span>{{ feature.timeRange }}</div>
+                </div>
+                <div style="border-radius:20px;background:{{ feature.venueColor }};color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 16px">
+                  <span style="font-family:'Material Symbols Rounded';font-size:96px;line-height:1;color:#ffffff;font-variation-settings:'FILL' 1, 'wght' 600;">{{ feature.venueIcon }}</span>
+                  <div style="font-size:30px;font-weight:800;text-align:center;line-height:1.1">{{ feature.venueShort }}</div>
+                  <div style="font-size:22px;font-weight:600;text-align:center;line-height:1.2;opacity:0.92">{{ feature.venuePlace }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <div ref="{{ laterRef }}" style="display:flex;flex-direction:column;gap:10px;flex:1;min-height:0;overflow:hidden">
+        <sc-for list="{{ laterToday }}" as="e" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;padding:12px 16px 12px 12px;border-radius:20px;background:#ffffff;border:3px solid {{ e.rowBar }};transition:all 400ms">
+            <div style="background:#E4E9F8;color:#2D46AF;border-radius:14px;padding:10px 16px;font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;min-width:120px;text-align:center">{{ e.time }}</div>
+            <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+              <div style="font-size:30px;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.program }}</div>
+              <div style="font-size:24px;font-weight:500;color:#4A5A74;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.groupLine }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;background:{{ e.venueTint }};border-radius:999px;padding:8px 18px 8px 12px">
+              <span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1;color:{{ e.venueColor }};font-variation-settings:'FILL' 1, 'wght' 600;">{{ e.venueIcon }}</span>
+              <div style="font-size:22px;font-weight:800;color:{{ e.venueColor }};white-space:nowrap">{{ e.venueShortPlace }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ noLater }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:34px;font-weight:600;color:#4A5A74;padding:16px 8px">{{ noLaterText }}</div>
+      </sc-if>
+    </div>
+
+    <div data-screen-label="Coming up" style="display:flex;flex-direction:column;gap:16px;min-height:0;min-width:0">
+      <div style="display:flex;align-items:center;gap:14px;font-size:34px;font-weight:800;color:#ffffff;padding:8px 8px 0">
+        <span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:#FA912D;font-variation-settings:'FILL' 1, 'wght' 600;">event_upcoming</span>Coming up
+      </div>
+      <div ref="{{ weekRef }}" style="display:flex;flex-direction:column;gap:14px;min-height:0;flex:1;overflow:hidden">
+        <sc-for list="{{ week }}" as="d" hint-placeholder-count="3">
+          <div style="background:#ffffff;border-radius:26px;padding:16px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:20px;align-items:start">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 0;border-radius:18px;background:#FA912D;color:#10233F">
+              <div style="font-size:18px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase">{{ d.dowShort }}</div>
+              <div style="font-size:46px;font-weight:800;line-height:1">{{ d.num }}</div>
+              <div style="font-size:16px;font-weight:600">{{ d.mon }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;min-width:0;padding:4px 8px 4px 0">
+              <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center">
+                  <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <div style="font-size:22px;font-weight:800;color:#2D46AF;font-variant-numeric:tabular-nums">{{ e.time }}</div>
+                    <div style="font-size:27px;font-weight:800;line-height:1.15">{{ e.program }}</div>
+                    <div style="font-size:21px;font-weight:500;color:#4A5A74;line-height:1.2">{{ e.groupLine }}</div>
+                  </div>
+                  <div style="width:64px;height:64px;border-radius:50%;background:{{ e.venueTint }};display:flex;align-items:center;justify-content:center">
+                    <span style="font-family:'Material Symbols Rounded';font-size:34px;line-height:1;color:{{ e.venueColor }};font-variation-settings:'FILL' 1, 'wght' 600;">{{ e.venueIcon }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono', monospace;font-size:16px;color:#C6CFF0;padding:0 8px">
+        <div>{{ sourceLabel }}</div>
+        <div>{{ updated }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div data-screen-label="Impact" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+      <div style="background:{{ s.color }};color:#10233F;border-radius:28px;padding:22px 24px;display:flex;align-items:center;gap:18px">
+        <div style="width:84px;height:84px;border-radius:50%;background:#ffffff;display:flex;align-items:center;justify-content:center;flex:none">
+          <span style="font-family:'Material Symbols Rounded';font-size:52px;line-height:1;color:{{ s.ink }};font-variation-settings:'FILL' 1, 'wght' 600;">{{ s.icon }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <div style="font-size:64px;font-weight:800;line-height:0.95;font-variant-numeric:tabular-nums;letter-spacing:-0.02em">{{ s.value }}</div>
+          <div style="font-size:24px;font-weight:700">{{ s.label }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;actsOfChesed&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:250000,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Impact counters&quot;},&quot;bedsGiven&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4200,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Impact counters&quot;},&quot;challahsBaked&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12000,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Impact counters&quot;},&quot;pizzasMade&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:18500,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Impact counters&quot;},&quot;calendarId&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Google Calendar&quot;},&quot;apiKey&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Google Calendar&quot;},&quot;excludeKeywords&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;out of office, away, OOO, private&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Filtering&quot;},&quot;abbreviations&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;BAB=Build A Bed&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Filtering&quot;},&quot;venueRules&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;center: joc center, chesed center, efrat | shuk: shuk, machane yehuda, mahane yehuda, market | usa: usa, ny, nj, ma, il, ca, fl, md, new york, chicago, teaneck, brooklyn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Locations&quot;},&quot;centerName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;JOC Center&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Locations&quot;},&quot;slideSeconds&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:8,&quot;min&quot;:3,&quot;max&quot;:30,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Display&quot;},&quot;daysAhead&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:2,&quot;max&quot;:7,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Display&quot;},&quot;refreshMinutes&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:5,&quot;min&quot;:1,&quot;max&quot;:60,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Display&quot;},&quot;clock24&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Display&quot;}}">
+class Component extends DCLogic {
+  state = { now: new Date(), events: null, live: false, error: null, fetchedAt: null, scale: 1, slide: 0 };
+
+  componentDidMount() {
+    this.t0 = Date.now();
+    const anim = () => { this.forceUpdate(); if (Date.now() - this.t0 < 2100) requestAnimationFrame(anim); };
+    requestAnimationFrame(anim);
+    this.fit = () => this.setState({ scale: Math.min(window.innerWidth / 1920, window.innerHeight / 1080) });
+    this.fit();
+    window.addEventListener('resize', this.fit);
+    this.slider = setInterval(() => this.setState(s => ({ slide: s.slide + 1 })), Math.max(3, this.props.slideSeconds ?? 8) * 1000);
+    this.tick = setInterval(() => this.setState({ now: new Date() }), 15000);
+    this.load();
+    const mins = Math.max(1, this.props.refreshMinutes ?? 5);
+    this.poll = setInterval(() => this.load(), mins * 60000);
+    this.dayCheck = setInterval(() => { if (new Date().getHours() === 3 && new Date().getMinutes() < 5) location.reload(); }, 300000);
+  }
+  weekRef = React.createRef();
+  laterRef = React.createRef();
+  countUp(target) {
+    const p = Math.min(1, (Date.now() - (this.t0 || 0)) / 2000);
+    const eased = 1 - Math.pow(1 - p, 3);
+    return Math.round(target * eased).toLocaleString('en-US');
+  }
+  componentDidUpdate() {
+    this.clip(this.weekRef);
+    const box = this.laterRef.current;
+    if (box) {
+      const rows = [...box.children]; rows.forEach(c => { c.style.visibility = ''; });
+      const a = rows[this.activeIdx || 0];
+      let top = 0;
+      if (a) { const aBottom = a.offsetTop - box.offsetTop + a.offsetHeight; if (aBottom > box.clientHeight) top = a.offsetTop - box.offsetTop; }
+      box.scrollTop = top;
+      rows.forEach(c => { const t = c.offsetTop - box.offsetTop - top; if (t < 0 || t + c.offsetHeight > box.clientHeight + 1) c.style.visibility = 'hidden'; });
+    }
+  }
+  clip(ref) {
+    const box = ref.current; if (!box) return;
+    const limit = box.clientHeight;
+    [...box.children].forEach(c => { c.style.visibility = ''; });
+    [...box.children].forEach(c => { if (c.offsetTop - box.offsetTop + c.offsetHeight > limit + 1) c.style.visibility = 'hidden'; });
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.fit);
+    clearInterval(this.tick); clearInterval(this.slider); clearInterval(this.poll); clearInterval(this.dayCheck);
+  }
+
+  async load() {
+    const calId = (this.props.calendarId ?? '').trim();
+    const key = (this.props.apiKey ?? '').trim();
+    if (!calId || !key) { this.setState({ events: this.sample(), live: false }); return; }
+    try {
+      const start = new Date(); start.setHours(0, 0, 0, 0);
+      const end = new Date(start); end.setDate(end.getDate() + 8);
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?key=${key}&singleEvents=true&orderBy=startTime&maxResults=250&timeMin=${start.toISOString()}&timeMax=${end.toISOString()}`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      const events = (j.items || []).map(it => {
+        const allDay = !!it.start.date;
+        const s = allDay ? new Date(it.start.date + 'T00:00') : new Date(it.start.dateTime);
+        const e = allDay ? new Date(it.end.date + 'T00:00') : new Date(it.end.dateTime);
+        return { title: it.summary || '', description: it.description || '', location: it.location || '', start: s, end: e, allDay };
+      });
+      this.setState({ events, live: true, error: null, fetchedAt: new Date() });
+    } catch (err) {
+      this.setState({ error: err.message, events: this.state.events || this.sample() });
+    }
+  }
+
+  sample() {
+    const d = (off, h, m, dur, title, location, allDay) => {
+      const s = new Date(); s.setHours(0, 0, 0, 0); s.setDate(s.getDate() + off);
+      if (allDay) { const e = new Date(s); e.setDate(e.getDate() + 1); return { title, location: '', start: s, end: e, allDay: true }; }
+      s.setHours(h, m); const e = new Date(s.getTime() + dur * 60000);
+      return { title, location, start: s, end: e, allDay: false };
+    };
+    const h = new Date().getHours();
+    return [
+      d(0, Math.max(8, h - 1), 0, 120, 'Kindness Booth - Ramaz 11th Grade', 'Ramaz, New York, NY'),
+      d(0, Math.min(h + 1, 21), 30, 90, 'Pizza Making - Olim Efrat', 'JOC Center'),
+      d(0, Math.min(h + 2, 22), 0, 60, 'Kindness Booth - Gap Year Students', 'Machane Yehuda Shuk'),
+      d(0, 9, 0, 30, 'Tuvia Out of Office', ''),
+      d(3, 16, 30, 90, 'BAB Lieberman Family', ''),
+      d(4, 10, 30, 60, 'JOC App Forum - Partner Schools', 'Maimonides School, Brookline, MA'),
+      d(4, 19, 0, 60, 'Chesed Packing - Maayanot', 'Maayanot, Teaneck, NJ'),
+      d(6, 10, 0, 90, 'Pizza Making - Gush Etzion Seniors', 'JOC Center'),
+      d(7, 10, 0, 240, 'Wellness Day - Reservist Families', 'JOC Center'),
+      d(7, 16, 0, 90, 'BAB/Pizza Making - Grodzinski Family', ''),
+      d(5, 0, 0, 0, 'Election Day', '', true),
+    ];
+  }
+
+  renderVals() {
+    const now = this.state.now;
+    const excl = (this.props.excludeKeywords ?? 'out of office, away, OOO, private').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    const all = (this.state.events || []).filter(e => !excl.some(k => e.title.toLowerCase().includes(k)));
+    const h12 = this.props.clock24 ? false : true;
+    const fmtT = t => t.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: h12 }).replace(':00', '').replace(' AM', 'am').replace(' PM', 'pm');
+    const sameDay = (a, b) => a.toDateString() === b.toDateString();
+    const abbr = {};
+    (this.props.abbreviations ?? 'BAB=Build A Bed').split(',').forEach(p => { const [k, v] = p.split('='); if (k && v) abbr[k.trim().toUpperCase()] = v.trim(); });
+    const expand = s => s.split('/').map(w => abbr[w.trim().toUpperCase()] || w.trim()).join(' + ');
+    const pal = { center: ['#2D46AF', '#C6CFF0', '#E4E9F8'], shuk: ['#A85B00', '#FFD8AE', '#FFF0E0'], usa: ['#A3261A', '#FBE6E3', '#FBE6E3'], other: ['#1D6B37', '#E3F4E8', '#E3F4E8'] };
+    const rules = (this.props.venueRules ?? 'center: joc center, chesed center, efrat | shuk: shuk, machane yehuda, mahane yehuda, market | usa: usa, ny, nj, ma, il, ca, fl, md, new york, chicago, teaneck, brooklyn')
+      .split('|').map(r => { const [k, v] = r.split(':'); return { k: (k || '').trim().toLowerCase(), words: (v || '').split(',').map(w => w.trim().toLowerCase()).filter(Boolean) }; });
+    const names = { center: this.props.centerName ?? 'JOC Center', shuk: 'The Shuk', usa: 'USA', other: 'Off-site' };
+    const icons = { center: 'home_pin', shuk: 'storefront', usa: 'flag', other: 'location_on' };
+    const venue = e => {
+      const loc = (e.location || '').trim();
+      const tokens = loc.toLowerCase().split(/[\s,]+/);
+      let type = loc ? 'other' : 'center';
+      for (const r of rules) if (r.words.some(w => w.includes(' ') ? loc.toLowerCase().includes(w) : tokens.includes(w))) { type = pal[r.k] ? r.k : 'other'; break; }
+      const place = loc.split(',')[0].trim();
+      const label = names[type];
+      const venueLine = type === 'center' ? label : (label ? label + ' · ' + place : place);
+      return { venueType: type, venueLine, venueIcon: icons[type], venueShort: label, venueShortPlace: type === 'center' ? label : (place || label), venuePlace: type === 'center' ? '' : place, venueColor: pal[type][0], venueColorDark: pal[type][1], venueTint: pal[type][2] };
+    };
+    const parse = e => {
+      const t = e.title.trim();
+      let program = t, group = '';
+      const dm = (e.description || '').match(/group\s*:\s*([^\n<]+)/i);
+      const sp = t.split(/\s+[-–—|]\s+/);
+      if (sp.length > 1) { program = sp[0]; group = sp.slice(1).join(' – '); }
+      else if (/\s+with\s+/i.test(t)) { const i = t.search(/\s+with\s+/i); program = t.slice(0, i); group = t.slice(i).replace(/^\s+with\s+/i, ''); }
+      else { const first = t.split(/\s+/)[0]; if (abbr[first.split('/')[0].toUpperCase()]) { program = first; group = t.slice(first.length).trim(); } }
+      if (dm) group = dm[1].trim();
+      program = expand(program);
+      return { program, group, groupLine: e.allDay ? '' : (group || 'Open to all visitors'), ...(e.allDay ? { venueLine: '', venueIcon: '', venueShort: '', venueShortPlace: '', venuePlace: '', venueColor: 'transparent', venueColorDark: 'transparent', venueTint: 'transparent' } : venue(e)) };
+    };
+    const decorate = e => ({ ...e, ...parse(e), time: fmtT(e.start), timeRange: fmtT(e.start) + ' – ' + fmtT(e.end) });
+
+    const todayTimed = all.filter(e => !e.allDay && sameDay(e.start, now) && e.end > now).sort((a, b) => a.start - b.start).map(decorate);
+    const banners = all.filter(e => e.allDay && e.start <= now && e.end > now);
+    const n = todayTimed.length;
+    const active = n ? this.state.slide % n : 0;
+    const firstUpcoming = todayTimed.find(e => e.start > now);
+    const slides = todayTimed.map(e => {
+      const on = e.start <= now;
+      return { ...e, label: on ? 'Happening now' : (e === firstUpcoming ? 'Next up' : 'Later today'), labelColor: on ? '#FFD8AE' : '#C6CFF0', labelInk: on ? '#A85B00' : '#2D46AF' };
+    });
+    const feature = slides[active];
+    this.activeIdx = active;
+    const laterToday = todayTimed.map((e, i) => ({ ...e, rowBg: i === active ? '#ffffff' : 'transparent', rowBar: i === active ? e.venueColor : 'transparent' }));
+    const dots = n > 1 ? todayTimed.map((_, i) => ({ w: i === active ? '44px' : '12px', bg: i === active ? '#2D46AF' : '#CBD3EE' })) : [];
+
+    const week = [];
+    for (let i = 1; i <= 7 && week.length < (this.props.daysAhead ?? 4); i++) {
+      const day = new Date(now); day.setHours(0, 0, 0, 0); day.setDate(day.getDate() + i);
+      const evs = all.filter(e => sameDay(e.start, day)).sort((a, b) => (b.allDay - a.allDay) || (a.start - b.start))
+        .map(e => ({ ...parse(e), time: e.allDay ? 'All day' : fmtT(e.start) }));
+      const more = evs.length > 2 ? evs.length - 2 : 0;
+      evs.splice(2);
+      if (evs.length) week.push({
+        dow: i === 1 ? 'Tomorrow' : day.toLocaleDateString('en-US', { weekday: 'long' }),
+        md: day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        dowShort: day.toLocaleDateString('en-US', { weekday: 'short' }), num: day.getDate(),
+        mon: day.toLocaleDateString('en-US', { month: 'short' }), events: evs });
+    }
+    const strip = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(now); day.setHours(0, 0, 0, 0); day.setDate(day.getDate() + i);
+      const has = all.some(e => !e.allDay && sameDay(e.start, day));
+      strip.push({ dow: i === 0 ? 'Today' : day.toLocaleDateString('en-US', { weekday: 'short' }), num: day.getDate(),
+        bg: i === 0 ? '#2D46AF' : '#ffffff', fg: i === 0 ? '#ffffff' : '#10233F',
+        dot: has ? (i === 0 ? '#FFD8AE' : '#2D46AF') : 'transparent' });
+    }
+
+    return {
+      scale: this.state.scale,
+      weekRef: this.weekRef, strip,
+      stats: [
+        { icon: 'volunteer_activism', color: '#FFF0E0', ink: '#FA912D', value: this.countUp(this.props.actsOfChesed ?? 250000), label: 'Acts of chesed' },
+        { icon: 'bed', color: '#E4E9F8', ink: '#2D46AF', value: this.countUp(this.props.bedsGiven ?? 4200), label: 'Beds given out' },
+        { icon: 'bakery_dining', color: '#E3F4E8', ink: '#2FA457', value: this.countUp(this.props.challahsBaked ?? 12000), label: 'Challahs baked' },
+        { icon: 'local_pizza', color: '#FBE6E3', ink: '#D8412F', value: this.countUp(this.props.pizzasMade ?? 18500), label: 'Pizzas made' },
+      ],
+      laterRef: this.laterRef,
+      dateLong: now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+      clock: now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: h12 }).replace(/ ?[AP]M/, ''),
+      banners,
+      hasFeature: !!feature,
+      feature: feature || {},
+      slides, dots, slideX: (-active * 100) + '%',
+      laterToday,
+      noLater: n === 0,
+      noLaterText: 'No more programs today — see what’s coming up.',
+      week,
+      sourceLabel: this.state.error ? 'Calendar offline · showing last data' : (this.state.live ? 'Live · Google Calendar' : 'Sample data · add calendar ID + API key'),
+      updated: this.state.fetchedAt ? 'Updated ' + fmtT(this.state.fetchedAt) : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

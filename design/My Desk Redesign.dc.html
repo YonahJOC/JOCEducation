@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,500,0..1,0&display=block" rel="stylesheet">
+<style>html,body{margin:0;background:#ECE8DF;color:#10233F;font-family:Outfit, sans-serif;-webkit-font-smoothing:antialiased}a{color:#2D46AF}a:hover{color:#223892}*{box-sizing:border-box}input::placeholder,textarea::placeholder{color:#5A6782}</style>
+</helmet>
+<section style="padding:56px 56px 0;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:900px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">Turn 2 · From your notes on <a href="#1a">1a</a> / <a href="#1b">1b</a></div>
+    <div style="font-size:30px;font-weight:600;letter-spacing:-0.03em">Sidebar, no progress bar, blue band kept</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
+  <div id="2a" style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:13px;font-weight:600;background:#10233F;color:#FFFFFF;padding:4px 10px;border-radius:8px">2a</div>
+      <div style="font-size:19px;font-weight:600">Sidebar + blue welcome band</div>
+    </div>
+    <div style="width:1440px;height:900px;display:grid;grid-template-columns:248px minmax(0,1fr);background:#FBF9F4;border-radius:20px;overflow:hidden;box-shadow:0 2px 0 #E3E6EF, 0 20px 50px rgba(16,35,63,.12)">
+      <div style="background:#10233F;padding:28px 0 24px 16px;display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0 12px">
+          <img src="./public/brand/joc-wordmark-white.png" alt="Just One Chesed" style="height:26px;width:auto;align-self:flex-start;object-fit:contain">
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#FFD8AE">SUPER ADMIN</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+            <div style="display:flex;align-items:center;gap:14px;min-height:48px;padding:0 16px;border-radius:14px 0 0 14px;background:{{ n.bg }};color:{{ n.fg }};font-size:16px;font-weight:{{ n.fw }};cursor:pointer" style-hover="background:{{ n.hoverBg }}">
+              <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:'FILL' {{ n.fill }}, 'wght' 500;color:{{ n.iconInk }}">{{ n.icon }}</span>{{ n.label }}
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-right:16px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.06)">
+            <div style="width:40px;height:40px;border-radius:50%;background:#FA912D;color:#10233F;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px">Y</div>
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:16px;font-weight:600;color:#FFFFFF">Yonah</div><div style="font-size:14px;color:#C6CFF0">Back to the site</div></div>
+          </div>
+          <div style="min-height:44px;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#C6CFF0">Sign out</div>
+        </div>
+      </div>
+
+      <div style="min-height:0;min-width:0;padding:28px 36px 32px;display:flex;flex-direction:column;gap:22px">
+        <div style="background:#2D46AF;border-radius:20px;padding:30px 34px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center;color:#FFFFFF">
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:500;letter-spacing:0.05em;color:#FFD8AE">THURSDAY 8 OCTOBER · 27 TISHRI</div>
+              <div style="font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:1.05">{{ greeting }}</div>
+              <div style="font-family:Newsreader, serif;font-size:19px;line-height:1.5;color:#C6CFF0;text-wrap:pretty">{{ summary }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 8px 8px 20px;border-radius:9999px;background:#FFFFFF;max-width:720px">
+              <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="What's on your plate today?" style="flex:1;min-width:0;border:0;background:transparent;font-family:Outfit, sans-serif;font-size:18px;color:#10233F;height:44px;outline:none">
+              <div onClick="{{ setToday }}" style="min-height:44px;padding:0 16px;display:flex;align-items:center;border-radius:9999px;font-size:15px;font-weight:600;cursor:pointer;background:{{ pillTodayBg }};color:{{ pillTodayFg }}">Today</div>
+              <div onClick="{{ setLater }}" style="min-height:44px;padding:0 16px;display:flex;align-items:center;border-radius:9999px;font-size:15px;font-weight:600;cursor:pointer;background:{{ pillLaterBg }};color:{{ pillLaterFg }}">Later</div>
+              <div onClick="{{ add }}" style="width:48px;height:48px;border-radius:50%;background:#FA912D;color:#10233F;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;font-variation-settings:'wght' 700">arrow_upward</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px">
+            <sc-for list="{{ tiles }}" as="s" hint-placeholder-count="3">
+              <div style="width:150px;height:150px;border-radius:20px;background:{{ s.bg }};color:#10233F;padding:18px;display:flex;flex-direction:column;justify-content:space-between">
+                <span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1;color:{{ s.ink }};font-variation-settings:'FILL' 1">{{ s.icon }}</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:44px;font-weight:800;line-height:1;letter-spacing:-0.03em">{{ s.value }}</div>
+                  <div style="font-size:15px;font-weight:600">{{ s.label }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px">
+          <sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
+            <div style="border-radius:16px;padding:12px 14px;background:{{ d.bg }};color:{{ d.fg }};border:1.5px solid {{ d.border }};display:flex;flex-direction:column;gap:6px;min-height:92px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between"><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:600;letter-spacing:0.04em;color:{{ d.labelInk }}">{{ d.dow }}</div><div style="font-size:22px;font-weight:700;line-height:1">{{ d.num }}</div></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:1.25;color:{{ d.evInk }}"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;font-variation-settings:'FILL' 1;color:{{ d.iconInk }}">{{ d.icon }}</span>{{ d.ev }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,0.9fr);gap:22px;flex:1;min-height:0">
+          <div style="display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:#E4E9F8;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:#2D46AF;font-variation-settings:'FILL' 1">task_alt</span></div><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">Today</div></div>
+            <sc-for list="{{ today }}" as="t" hint-placeholder-count="2">
+              <div onClick="{{ t.toggle }}" style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:16px;background:{{ t.cardBg }};box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);cursor:pointer;transition:background 250ms;transform:rotate({{ t.tilt }})" style-hover="box-shadow:0 2px 0 #CBD3EE, 0 10px 24px rgba(16,35,63,.10)">
+                <div style="width:32px;height:32px;border-radius:50%;border:2px solid {{ t.checkBorder }};background:{{ t.checkBg }};display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#FFFFFF;font-variation-settings:'wght' 700">{{ t.checkIcon }}</span></div>
+                <div style="display:flex;flex-direction:column;gap:4px;min-width:0;padding-top:3px">
+                  <div style="font-size:17px;font-weight:600;line-height:1.35;color:{{ t.titleInk }};text-decoration:{{ t.titleDeco }}">{{ t.title }}</div>
+                  <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ t.meta }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ cheer }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;color:#1D6B37;font-size:15px;font-weight:600;padding:4px 6px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;font-variation-settings:'FILL' 1">celebration</span>{{ cheerText }}</div>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:#E3F4E8;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:#1D6B37;font-variation-settings:'FILL' 1">hourglass_top</span></div><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">Waiting on others</div></div>
+            <sc-for list="{{ waiting }}" as="t" hint-placeholder-count="1">
+              <div style="display:flex;flex-direction:column;gap:12px;padding:16px 18px;border-radius:16px;background:#FFFFFF;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#E3F4E8;color:#1D6B37;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none">{{ t.who }}</div>
+                  <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><div style="font-size:17px;font-weight:600;line-height:1.35">{{ t.title }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ t.meta }}</div></div>
+                </div>
+                <div onClick="{{ t.nudge }}" style="align-self:flex-start;min-height:44px;padding:0 18px;display:flex;align-items:center;gap:6px;border-radius:9999px;background:{{ t.nudgeBg }};color:{{ t.nudgeInk }};font-size:15px;font-weight:600;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ t.nudgeIcon }}</span>{{ t.nudgeLabel }}</div>
+              </div>
+            </sc-for>
+            <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:16px;border:1.5px dashed #CBD3EE;color:#4A5A74;font-family:Newsreader, serif;font-size:16px;line-height:1.45">Nobody's waiting on you. When someone asks, it shows up here.</div>
+          </div>
+          <div style="min-height:0;border-radius:16px;padding:20px 22px 14px;transform:rotate(1deg);background:#FFFFFF;background-image:repeating-linear-gradient(180deg, transparent 0 31px, #E4E9F8 31px 32px);box-shadow:0 2px 0 #E3E6EF, 0 12px 26px rgba(16,35,63,.10);display:flex;flex-direction:column;gap:8px;position:relative">
+            <div style="position:absolute;top:-12px;left:50%;width:90px;height:24px;margin-left:-45px;background:#FFD8AE;border-radius:4px;transform:rotate(-3deg);opacity:0.9"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:6px"><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">Notebook</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">JUST YOU</div></div>
+            <textarea value="{{ note }}" onChange="{{ onNote }}" placeholder="Agendas, call notes, half-ideas…" style="flex:1;min-height:80px;border:0;background:transparent;resize:none;font-family:Newsreader, serif;font-size:18px;line-height:32px;color:#10233F;outline:none"></textarea>
+            <div onClick="{{ noteToTask }}" style="align-self:flex-end;min-height:44px;display:flex;align-items:center;color:#2D46AF;font-size:15px;font-weight:700;cursor:pointer">Make it a task →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:1440px;font-size:15px;line-height:1.45;color:#4A5A74">
+      <div><strong style="color:#10233F">From your notes:</strong> the sidebar stays on the side (from 1a), the progress bar is gone, and the blue band stays.</div>
+      <div><strong style="color:#10233F">New header:</strong> a greeting that changes with the time of day (Boker tov / Good afternoon / Erev tov) plus the one-line recap from 1a, so the band tells you where you stand before you scroll.</div>
+    </div>
+  </div>
+
+  </div>
+</section>
+<section style="padding:56px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:900px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">Turn 1 · My desk, redesigned · JOC tokens only</div>
+    <div style="font-size:30px;font-weight:600;letter-spacing:-0.03em">Two directions for a warmer desk</div>
+    <div style="font-family:Newsreader, serif;font-size:17px;line-height:1.6;color:#4A5A74">Both apply the same fixes: empty panels shrink to a single sentence, the page greets you before it puts you to work, ticking a task off feels good, and every control is at least 44px. Try ticking a task, nudging Gilad, or adding a task in either one.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
+
+  <div id="1a" style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:13px;font-weight:600;background:#10233F;color:#FFFFFF;padding:4px 10px;border-radius:8px">1a</div>
+      <div style="font-size:19px;font-weight:600">Home base: calm, one main list</div>
+    </div>
+    <div style="width:1440px;height:900px;display:grid;grid-template-columns:248px minmax(0,1fr);background:#FBF9F4;border-radius:20px;overflow:hidden;box-shadow:0 2px 0 #E3E6EF, 0 20px 50px rgba(16,35,63,.12)">
+      <div style="background:#10233F;padding:28px 0 24px 16px;display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0 12px">
+          <img src="./public/brand/joc-wordmark-white.png" alt="Just One Chesed" style="height:26px;width:auto;align-self:flex-start;object-fit:contain">
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#FFD8AE">SUPER ADMIN</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+            <div style="display:flex;align-items:center;gap:14px;min-height:48px;padding:0 16px;border-radius:14px 0 0 14px;background:{{ n.bg }};color:{{ n.fg }};font-size:16px;font-weight:{{ n.fw }};cursor:pointer" style-hover="background:{{ n.hoverBg }}">
+              <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:'FILL' {{ n.fill }}, 'wght' 500;color:{{ n.iconInk }}">{{ n.icon }}</span>{{ n.label }}
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-right:16px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.06)">
+            <div style="width:40px;height:40px;border-radius:50%;background:#FA912D;color:#10233F;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px">Y</div>
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:16px;font-weight:600;color:#FFFFFF">Yonah</div><div style="font-size:14px;color:#C6CFF0">Back to the site</div></div>
+          </div>
+          <div style="min-height:44px;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#C6CFF0">Sign out</div>
+        </div>
+      </div>
+
+      <div style="padding:36px 44px 36px 44px;display:flex;flex-direction:column;gap:28px;min-height:0;min-width:0">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:500;letter-spacing:0.05em;color:#5A6782">THURSDAY 8 OCTOBER · 27 TISHRI</div>
+            <div style="font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:1.05">Good morning, Yonah</div>
+            <div style="font-family:Newsreader, serif;font-size:19px;line-height:1.5;color:#4A5A74;text-wrap:pretty">{{ summary }}</div>
+          </div>
+          <div style="background:#FFFFFF;border-radius:20px;padding:18px 20px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);display:flex;flex-direction:column;gap:12px">
+            <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">TODAY AT JOC</div>
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="width:48px;height:48px;border-radius:14px;background:#FFF0E0;display:flex;align-items:center;justify-content:center;flex:none"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#A85B00;font-variation-settings:'FILL' 1">storefront</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:17px;font-weight:600">Kindness Booth · Gap year students</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">THE SHUK · 2:00–4:00 PM · +2 MORE</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:24px;flex:1;min-height:0">
+          <div style="background:#FFFFFF;border-radius:20px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:26px 26px 18px;display:flex;flex-direction:column;gap:18px;min-height:0;overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+              <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Your list</div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ progressLabel }}</div>
+                <div style="width:120px;height:10px;border-radius:9999px;background:#EEF0F5;overflow:hidden"><div style="height:100%;width:{{ progressPct }};background:#2FA457;border-radius:9999px;transition:width 400ms"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 8px 8px 18px;border-radius:16px;background:#F4F7FD;border:1.5px solid #CBD3EE">
+              <span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#2D46AF">add_circle</span>
+              <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="What do you need to do?" style="flex:1;min-width:0;border:0;background:transparent;font-family:Outfit, sans-serif;font-size:18px;color:#10233F;height:44px;outline:none">
+              <div style="display:flex;padding:3px;border-radius:12px;background:#EEF0F5">
+                <div onClick="{{ setToday }}" style="min-height:40px;padding:0 14px;display:flex;align-items:center;border-radius:9px;font-size:15px;font-weight:600;cursor:pointer;background:{{ segTodayBg }};color:{{ segTodayFg }}">Today</div>
+                <div onClick="{{ setLater }}" style="min-height:40px;padding:0 14px;display:flex;align-items:center;border-radius:9px;font-size:15px;font-weight:600;cursor:pointer;background:{{ segLaterBg }};color:{{ segLaterFg }}">Later</div>
+              </div>
+              <div onClick="{{ add }}" style="min-height:46px;padding:0 20px;display:flex;align-items:center;border-radius:12px;background:#2D46AF;color:#FFFFFF;font-size:16px;font-weight:700;cursor:pointer" style-hover="background:#223892">Add</div>
+            </div>
+            <sc-if value="{{ cheer }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:#E3F4E8;color:#1D6B37;font-size:15px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:'FILL' 1">celebration</span>{{ cheerText }}</div>
+            </sc-if>
+            <div style="display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden">
+              <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782;padding:6px 0">TODAY · {{ todayCount }}</div>
+              <sc-for list="{{ today }}" as="t" hint-placeholder-count="2">
+                <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 44px;align-items:center;min-height:64px;border-top:1px solid #F0F2F7">
+                  <div onClick="{{ t.toggle }}" style="height:100%;min-height:56px;display:flex;align-items:center;justify-content:flex-start;cursor:pointer">
+                    <div style="width:30px;height:30px;border-radius:50%;border:2px solid {{ t.checkBorder }};background:{{ t.checkBg }};display:flex;align-items:center;justify-content:center;transition:all 200ms"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#FFFFFF;font-variation-settings:'wght' 700">{{ t.checkIcon }}</span></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:3px;min-width:0;padding:8px 0">
+                    <div style="font-size:18px;font-weight:500;line-height:1.35;color:{{ t.titleInk }};text-decoration:{{ t.titleDeco }}">{{ t.title }}</div>
+                    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ t.meta }}</div>
+                  </div>
+                  <div onClick="{{ t.remove }}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;color:#4A5A74;cursor:pointer" style-hover="background:#F4F7FD"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">close</span></div>
+                </div>
+              </sc-for>
+              <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782;padding:14px 0 6px">WAITING ON OTHERS · {{ waitingCount }}</div>
+              <sc-for list="{{ waiting }}" as="t" hint-placeholder-count="1">
+                <div style="display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;min-height:64px;border-top:1px solid #F0F2F7;gap:0">
+                  <div style="width:34px;height:34px;border-radius:50%;background:#E3F4E8;color:#1D6B37;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px">{{ t.who }}</div>
+                  <div style="display:flex;flex-direction:column;gap:3px;min-width:0;padding:8px 12px 8px 0">
+                    <div style="font-size:18px;font-weight:500;line-height:1.35">{{ t.title }}</div>
+                    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ t.meta }}</div>
+                  </div>
+                  <div onClick="{{ t.nudge }}" style="min-height:44px;padding:0 16px;display:flex;align-items:center;gap:6px;border-radius:9999px;background:{{ t.nudgeBg }};color:{{ t.nudgeInk }};font-size:15px;font-weight:600;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ t.nudgeIcon }}</span>{{ t.nudgeLabel }}</div>
+                </div>
+              </sc-for>
+              <div style="display:flex;align-items:center;gap:10px;min-height:52px;border-top:1px solid #F0F2F7;margin-top:6px;color:#4A5A74;font-size:16px"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">expand_more</span>{{ laterLine }}</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:24px;min-height:0">
+            <div style="background:#FFFFFF;border-radius:20px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:24px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em">This week</div>
+                <div style="min-height:44px;padding:0 14px;display:flex;align-items:center;gap:6px;border-radius:12px;color:#2D46AF;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#E4E9F8"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">add</span>Add</div>
+              </div>
+              <sc-for list="{{ agenda }}" as="a" hint-placeholder-count="4">
+                <div style="display:grid;grid-template-columns:56px minmax(0,1fr) 36px;gap:14px;align-items:center">
+                  <div style="display:flex;flex-direction:column;align-items:center;padding:6px 0;border-radius:12px;background:{{ a.dateBg }};color:{{ a.dateFg }}">
+                    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:600;letter-spacing:0.04em">{{ a.dow }}</div>
+                    <div style="font-size:22px;font-weight:700;line-height:1.1">{{ a.num }}</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <div style="font-size:17px;font-weight:{{ a.fw }};color:{{ a.ink }}">{{ a.title }}</div>
+                    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ a.meta }}</div>
+                  </div>
+                  <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:{{ a.iconInk }};font-variation-settings:'FILL' 1">{{ a.icon }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="flex:1;min-height:0;background:#FFF0E0;border-radius:16px;padding:22px 24px 16px;transform:rotate(-0.8deg);box-shadow:0 2px 0 #FFD8AE, 0 10px 24px rgba(168,91,0,.12);display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;color:#10233F">Scratchpad</div>
+                <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#A85B00">ONLY YOU SEE THIS</div>
+              </div>
+              <textarea value="{{ note }}" onChange="{{ onNote }}" placeholder="Agendas, call notes, half-ideas…" style="flex:1;min-height:80px;border:0;background:transparent;resize:none;font-family:Newsreader, serif;font-size:19px;line-height:1.6;color:#10233F;outline:none"></textarea>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#1D6B37">SAVED</div>
+                <div onClick="{{ noteToTask }}" style="min-height:44px;display:flex;align-items:center;padding:0 4px;color:#A85B00;font-size:15px;font-weight:700;cursor:pointer">Make it a task →</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:1440px;font-size:15px;line-height:1.45;color:#4A5A74">
+      <div><strong style="color:#10233F">Feels like home:</strong> a greeting and a one-sentence recap replace the empty "For you" panel. The active nav tab blends into the page like a folder tab.</div>
+      <div><strong style="color:#10233F">Easy:</strong> one main list with big 30px ticks, a progress bar, and Today/Later right next to the Add button.</div>
+      <div><strong style="color:#10233F">Fun:</strong> a green "nice" moment when you tick something off, the notebook as a tilted sticky note, and what's on at JOC today.</div>
+    </div>
+  </div>
+
+  <div id="1b" style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:13px;font-weight:600;background:#10233F;color:#FFFFFF;padding:4px 10px;border-radius:8px">1b</div>
+      <div style="font-size:19px;font-weight:600">Kitchen table: bright, tactile cards</div>
+    </div>
+    <div style="width:1440px;height:900px;display:flex;flex-direction:column;background:#FBF9F4;border-radius:20px;overflow:hidden;box-shadow:0 2px 0 #E3E6EF, 0 20px 50px rgba(16,35,63,.12)">
+      <div style="background:#10233F;height:72px;flex:none;display:flex;align-items:center;gap:28px;padding:0 32px">
+        <img src="./public/brand/joc-wordmark-white.png" alt="Just One Chesed" style="height:24px;width:auto;object-fit:contain">
+        <div style="display:flex;gap:4px;flex:1;min-width:0">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+            <div style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:9999px;background:{{ n.pillBg }};color:{{ n.pillFg }};font-size:15px;font-weight:{{ n.fw }};white-space:nowrap;cursor:pointer" style-hover="background:{{ n.pillHover }}">
+              <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;font-variation-settings:'FILL' {{ n.fill }}">{{ n.icon }}</span>{{ n.short }}
+            </div>
+          </sc-for>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#FA912D;color:#10233F;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex:none">Y</div>
+      </div>
+
+      <div style="flex:1;min-height:0;padding:28px 36px 32px;display:flex;flex-direction:column;gap:22px">
+        <div style="background:#2D46AF;border-radius:20px;padding:30px 34px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center;color:#FFFFFF">
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:500;letter-spacing:0.05em;color:#FFD8AE">THURSDAY 8 OCTOBER · 27 TISHRI</div>
+              <div style="font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:1.05">Shalom, Yonah.</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 8px 8px 20px;border-radius:9999px;background:#FFFFFF;max-width:720px">
+              <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="What's on your plate today?" style="flex:1;min-width:0;border:0;background:transparent;font-family:Outfit, sans-serif;font-size:18px;color:#10233F;height:44px;outline:none">
+              <div onClick="{{ setToday }}" style="min-height:44px;padding:0 16px;display:flex;align-items:center;border-radius:9999px;font-size:15px;font-weight:600;cursor:pointer;background:{{ pillTodayBg }};color:{{ pillTodayFg }}">Today</div>
+              <div onClick="{{ setLater }}" style="min-height:44px;padding:0 16px;display:flex;align-items:center;border-radius:9999px;font-size:15px;font-weight:600;cursor:pointer;background:{{ pillLaterBg }};color:{{ pillLaterFg }}">Later</div>
+              <div onClick="{{ add }}" style="width:48px;height:48px;border-radius:50%;background:#FA912D;color:#10233F;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;font-variation-settings:'wght' 700">arrow_upward</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px">
+            <sc-for list="{{ tiles }}" as="s" hint-placeholder-count="3">
+              <div style="width:150px;height:150px;border-radius:20px;background:{{ s.bg }};color:#10233F;padding:18px;display:flex;flex-direction:column;justify-content:space-between">
+                <span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1;color:{{ s.ink }};font-variation-settings:'FILL' 1">{{ s.icon }}</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:44px;font-weight:800;line-height:1;letter-spacing:-0.03em">{{ s.value }}</div>
+                  <div style="font-size:15px;font-weight:600">{{ s.label }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px">
+          <sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
+            <div style="border-radius:16px;padding:12px 14px;background:{{ d.bg }};color:{{ d.fg }};border:1.5px solid {{ d.border }};display:flex;flex-direction:column;gap:6px;min-height:92px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between"><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:600;letter-spacing:0.04em;color:{{ d.labelInk }}">{{ d.dow }}</div><div style="font-size:22px;font-weight:700;line-height:1">{{ d.num }}</div></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;line-height:1.25;color:{{ d.evInk }}"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;font-variation-settings:'FILL' 1;color:{{ d.iconInk }}">{{ d.icon }}</span>{{ d.ev }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,0.9fr);gap:22px;flex:1;min-height:0">
+          <div style="display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:#E4E9F8;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:#2D46AF;font-variation-settings:'FILL' 1">task_alt</span></div><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">Today</div><div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:500;color:#5A6782;margin-left:auto">{{ progressLabel }}</div></div>
+            <sc-for list="{{ today }}" as="t" hint-placeholder-count="2">
+              <div onClick="{{ t.toggle }}" style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:16px;background:{{ t.cardBg }};box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);cursor:pointer;transition:background 250ms;transform:rotate({{ t.tilt }})" style-hover="box-shadow:0 2px 0 #CBD3EE, 0 10px 24px rgba(16,35,63,.10)">
+                <div style="width:32px;height:32px;border-radius:50%;border:2px solid {{ t.checkBorder }};background:{{ t.checkBg }};display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#FFFFFF;font-variation-settings:'wght' 700">{{ t.checkIcon }}</span></div>
+                <div style="display:flex;flex-direction:column;gap:4px;min-width:0;padding-top:3px">
+                  <div style="font-size:17px;font-weight:600;line-height:1.35;color:{{ t.titleInk }};text-decoration:{{ t.titleDeco }}">{{ t.title }}</div>
+                  <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ t.meta }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ cheer }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;color:#1D6B37;font-size:15px;font-weight:600;padding:4px 6px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;font-variation-settings:'FILL' 1">celebration</span>{{ cheerText }}</div>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:#E3F4E8;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:#1D6B37;font-variation-settings:'FILL' 1">hourglass_top</span></div><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">Waiting on others</div></div>
+            <sc-for list="{{ waiting }}" as="t" hint-placeholder-count="1">
+              <div style="display:flex;flex-direction:column;gap:12px;padding:16px 18px;border-radius:16px;background:#FFFFFF;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#E3F4E8;color:#1D6B37;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none">{{ t.who }}</div>
+                  <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><div style="font-size:17px;font-weight:600;line-height:1.35">{{ t.title }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ t.meta }}</div></div>
+                </div>
+                <div onClick="{{ t.nudge }}" style="align-self:flex-start;min-height:44px;padding:0 18px;display:flex;align-items:center;gap:6px;border-radius:9999px;background:{{ t.nudgeBg }};color:{{ t.nudgeInk }};font-size:15px;font-weight:600;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ t.nudgeIcon }}</span>{{ t.nudgeLabel }}</div>
+              </div>
+            </sc-for>
+            <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:16px;border:1.5px dashed #CBD3EE;color:#4A5A74;font-family:Newsreader, serif;font-size:16px;line-height:1.45">Nobody's waiting on you. When someone asks, it shows up here.</div>
+          </div>
+          <div style="min-height:0;border-radius:16px;padding:20px 22px 14px;transform:rotate(1deg);background:#FFFFFF;background-image:repeating-linear-gradient(180deg, transparent 0 31px, #E4E9F8 31px 32px);box-shadow:0 2px 0 #E3E6EF, 0 12px 26px rgba(16,35,63,.10);display:flex;flex-direction:column;gap:8px;position:relative">
+            <div style="position:absolute;top:-12px;left:50%;width:90px;height:24px;margin-left:-45px;background:#FFD8AE;border-radius:4px;transform:rotate(-3deg);opacity:0.9"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:6px"><div style="font-size:20px;font-weight:700;letter-spacing:-0.02em">Notebook</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">JUST YOU</div></div>
+            <textarea value="{{ note }}" onChange="{{ onNote }}" placeholder="Agendas, call notes, half-ideas…" style="flex:1;min-height:80px;border:0;background:transparent;resize:none;font-family:Newsreader, serif;font-size:18px;line-height:32px;color:#10233F;outline:none"></textarea>
+            <div onClick="{{ noteToTask }}" style="align-self:flex-end;min-height:44px;display:flex;align-items:center;color:#2D46AF;font-size:15px;font-weight:700;cursor:pointer">Make it a task →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:1440px;font-size:15px;line-height:1.45;color:#4A5A74">
+      <div><strong style="color:#10233F">Feels like home:</strong> "Shalom, Yonah" in a big JOC-blue band, with Shabbat marked on the week strip and the notebook as a taped-down page.</div>
+      <div><strong style="color:#10233F">Easy:</strong> the add box is the hero; tap anywhere on a task card to tick it off. A top bar replaces the sidebar, giving the work the full width.</div>
+      <div><strong style="color:#10233F">Fun:</strong> three bright counter tiles, slightly tilted task cards, and the whole week visible at a glance.</div>
+    </div>
+  </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    tasks: [
+      { id: 1, title: "Follow up with New School – they're in!", meta: 'FROM THE BUZZ · NEW SCHOOL', when: 'today', done: false },
+      { id: 2, title: 'Send the Kindness Booth kit list to Ramaz', meta: 'FOR ME · BY MONDAY', when: 'today', done: false },
+      { id: 3, title: 'Can you speak to Gilad about TABC and the Kindness booth?', meta: 'WITH GILAD · ASKED 2 DAYS AGO', when: 'waiting', who: 'G', done: false, nudged: false },
+      { id: 4, title: 'Draft the Chanukah program email', meta: 'LATER', when: 'later', done: false },
+    ],
+    draft: '', addWhen: 'today', note: '', nextId: 10,
+  };
+  upd(id, f) { this.setState(s => ({ tasks: s.tasks.map(t => t.id === id ? { ...t, ...f(t) } : t) })); }
+  addTask(title) {
+    const v = (title ?? this.state.draft).trim(); if (!v) return;
+    this.setState(s => ({ tasks: [...s.tasks, { id: s.nextId, title: v, meta: s.addWhen === 'today' ? 'FOR ME · TODAY' : 'LATER', when: s.addWhen, done: false }], nextId: s.nextId + 1, draft: title ? s.draft : '' }));
+  }
+  renderVals() {
+    const s = this.state;
+    const tilts = ['-0.4deg', '0.5deg', '-0.2deg', '0.3deg'];
+    const deco = (t, i) => ({
+      ...t,
+      toggle: () => this.upd(t.id, x => ({ done: !x.done })),
+      remove: () => this.setState(st => ({ tasks: st.tasks.filter(x => x.id !== t.id) })),
+      nudge: () => this.upd(t.id, () => ({ nudged: true })),
+      checkBg: t.done ? '#2FA457' : '#FFFFFF', checkBorder: t.done ? '#2FA457' : '#9AA6C2', checkIcon: t.done ? 'check' : '',
+      titleInk: t.done ? '#5A6782' : '#10233F', titleDeco: t.done ? 'line-through' : 'none',
+      cardBg: t.done ? '#E3F4E8' : '#FFFFFF', tilt: tilts[i % 4],
+      nudgeLabel: t.nudged ? 'Nudged' : 'Nudge Gilad', nudgeIcon: t.nudged ? 'check' : 'notifications_active',
+      nudgeBg: t.nudged ? '#E3F4E8' : '#E4E9F8', nudgeInk: t.nudged ? '#1D6B37' : '#2D46AF',
+    });
+    const today = s.tasks.filter(t => t.when === 'today').map(deco);
+    const waiting = s.tasks.filter(t => t.when === 'waiting').map(deco);
+    const later = s.tasks.filter(t => t.when === 'later');
+    const done = today.filter(t => t.done).length, open = today.length - done;
+    const words = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'];
+    const thing = n => `${words[n] || n} thing${n === 1 ? '' : 's'}`;
+    const summary = open === 0
+      ? `Today's list is clear${waiting.length ? `, and ${words[waiting.length].toLowerCase()} is waiting on Gilad` : ''}. Nobody's waiting on you. Go make some chesed.`
+      : `${thing(open)} for today${waiting.length ? `, ${words[waiting.length].toLowerCase()} waiting on Gilad` : ''}. Nobody's waiting on you.`;
+    const navItems = [['home', 'My desk', 'Desk'], ['apartment', 'The Office', 'Office'], ['school', 'Schools', 'Schools'], ['volunteer_activism', 'Programs', 'Programs'], ['groups', 'Admin meeting', 'Meeting'], ['menu_book', 'Teaching material', 'Teaching'], ['payments', 'Money', 'Money']];
+    const nav = navItems.map(([icon, label, short], i) => {
+      const on = i === 0;
+      return { icon, label, short, fill: on ? 1 : 0, fw: on ? 700 : 500,
+        bg: on ? '#FBF9F4' : 'transparent', fg: on ? '#10233F' : '#C6CFF0', iconInk: on ? '#2D46AF' : '#C6CFF0', hoverBg: on ? '#FBF9F4' : 'rgba(255,255,255,0.08)',
+        pillBg: on ? '#FFFFFF' : 'transparent', pillFg: on ? '#10233F' : '#C6CFF0', pillHover: on ? '#FFFFFF' : 'rgba(255,255,255,0.10)' };
+    });
+    const agenda = [
+      { dow: 'TODAY', num: 8, title: 'Nothing booked. Enjoy.', meta: 'KINDNESS BOOTH AT THE SHUK 2:00', icon: '', fw: 400, ink: '#4A5A74', dateBg: '#2D46AF', dateFg: '#FFFFFF', iconInk: '#A85B00' },
+      { dow: 'SUN', num: 11, title: 'Call Eva Kesselman', meta: '10:00 AM', icon: 'call', fw: 600, ink: '#10233F', dateBg: '#F4F7FD', dateFg: '#10233F', iconInk: '#2D46AF' },
+      { dow: 'MON', num: 12, title: 'Admin meeting', meta: '9:30 AM · THE OFFICE', icon: 'groups', fw: 600, ink: '#10233F', dateBg: '#F4F7FD', dateFg: '#10233F', iconInk: '#2D46AF' },
+      { dow: 'TUE', num: 13, title: 'Kindness Booth · Ramaz', meta: 'NEW YORK · 1:00 PM', icon: 'flag', fw: 600, ink: '#10233F', dateBg: '#F4F7FD', dateFg: '#10233F', iconInk: '#A3261A' },
+    ];
+    const W = (dow, num, ev, icon, iconInk, o = {}) => ({ dow, num, ev, icon, iconInk, bg: '#FFFFFF', fg: '#10233F', border: '#E3E6EF', labelInk: '#5A6782', evInk: '#10233F', ...o });
+    const week = [
+      W('TODAY', 8, 'Booth · Shuk', 'storefront', '#FFD8AE', { bg: '#2D46AF', fg: '#FFFFFF', border: '#2D46AF', labelInk: '#FFD8AE', evInk: '#FFFFFF' }),
+      W('FRI', 9, 'Pizza · Olim', 'local_pizza', '#A85B00'),
+      W('SHABBAT', 10, 'Shabbat shalom', 'light', '#A85B00', { bg: '#FFF0E0', border: '#FFD8AE' }),
+      W('SUN', 11, 'Call Eva', 'call', '#2D46AF'),
+      W('MON', 12, 'Admin meeting', 'groups', '#2D46AF'),
+      W('TUE', 13, 'Booth · Ramaz', 'flag', '#A3261A'),
+      W('WED', 14, 'Free', '', '#4A5A74', { evInk: '#5A6782' }),
+    ];
+    const tiles = [
+      { icon: 'task_alt', value: open, label: 'to do today', bg: '#FA912D', ink: '#10233F' },
+      { icon: 'event', value: 3, label: 'this week', bg: '#E3F4E8', ink: '#1D6B37' },
+      { icon: 'mark_email_unread', value: 0, label: 'for you', bg: '#E4E9F8', ink: '#2D46AF' },
+    ];
+    const seg = on => on ? ['#FFFFFF', '#10233F'] : ['transparent', '#4A5A74'];
+    const pill = on => on ? ['#10233F', '#FFFFFF'] : ['#F4F7FD', '#4A5A74'];
+    const [tb, tf] = seg(s.addWhen === 'today'), [lb, lf] = seg(s.addWhen === 'later');
+    const [ptb, ptf] = pill(s.addWhen === 'today'), [plb, plf] = pill(s.addWhen === 'later');
+    return {
+      nav, agenda, week, tiles, today, waiting, summary,
+      greeting: (() => { const hr = new Date().getHours(); return (hr < 12 ? 'Boker tov' : hr < 17 ? 'Good afternoon' : 'Erev tov') + ', Yonah'; })(),
+      todayCount: today.length, waitingCount: waiting.length,
+      laterLine: later.length ? `Later · ${thing(later.length).toLowerCase()} parked for another day` : 'Nothing parked for later',
+      progressLabel: `${done} OF ${today.length} DONE`,
+      progressPct: today.length ? Math.round(done / today.length * 100) + '%' : '0%',
+      cheer: done > 0, cheerText: open === 0 ? 'All done for today. Yasher koach!' : `Nice, that's ${words[done].toLowerCase()} off your plate.`,
+      draft: s.draft, note: s.note,
+      onDraft: e => this.setState({ draft: e.target.value }),
+      onKey: e => { if (e.key === 'Enter') this.addTask(); },
+      add: () => this.addTask(),
+      setToday: () => this.setState({ addWhen: 'today' }), setLater: () => this.setState({ addWhen: 'later' }),
+      segTodayBg: tb, segTodayFg: tf, segLaterBg: lb, segLaterFg: lf,
+      pillTodayBg: ptb, pillTodayFg: ptf, pillLaterBg: plb, pillLaterFg: plf,
+      onNote: e => this.setState({ note: e.target.value }),
+      noteToTask: () => { const line = s.note.split('\n').find(l => l.trim()); if (line) this.addTask(line); },
+    };
+  }
+}
+</script>
+</body>
+</html>

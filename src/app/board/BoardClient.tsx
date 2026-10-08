@@ -225,7 +225,7 @@ export function BoardClient({
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink, fontWeight: 600, border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "8px 14px", minHeight: "40px", backgroundColor: C.white, cursor: "pointer", outline: "none" }}
+            style={{ fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink, fontWeight: 600, border: `1px solid ${C.hairline}`, borderRadius: R.chip, padding: "8px 14px", minHeight: "40px", backgroundColor: C.white, cursor: "pointer" }}
           >
             {SORT_OPTIONS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
@@ -291,5 +291,5 @@ export function BoardClient({
 const inputStyle: React.CSSProperties = {
   backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px",
   padding: "12px 16px", fontSize: "15px", color: C.ink, fontFamily: "var(--font-outfit)",
-  width: "100%", boxSizing: "border-box", outline: "none", minHeight: "46px",
+  width: "100%", boxSizing: "border-box", minHeight: "46px",
 };

@@ -15,7 +15,9 @@ const WIDTH = "1180px";
  * Fallbacks. Every string below is editable at /admin/site — these are what
  * renders if a field was never edited, or if the database is unreachable.
  */
-const CARD_COLORS = [C.blue, C.orange, C.greenText, "#2C7AC9"];
+// Navy is a brand colour and the white headline on it is 15.74:1; on the
+// old fourth colour it was 4.44.
+const CARD_COLORS = [C.blue, C.orange, C.greenText, C.ink];
 
 const FALLBACK_INSIDE = [
   { value: "9", title: "Lesson plans", body: "Objectives, timed steps and discussion points. Print and teach." },

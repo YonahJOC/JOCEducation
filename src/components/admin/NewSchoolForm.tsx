@@ -19,7 +19,7 @@ const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
   fontSize: "14px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
-  padding: "10px 12px", outline: "none", minHeight: "42px",
+  padding: "10px 12px", minHeight: "42px",
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "12px", fontWeight: 600, color: C.muted, marginBottom: "5px",

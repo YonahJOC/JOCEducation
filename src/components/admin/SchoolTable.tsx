@@ -54,13 +54,17 @@ export function SchoolTable({ schools }: { schools: SchoolRow[] }) {
                 </span>
               </td>
               <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, whiteSpace: "nowrap" }}>
-                {s.plan ? PLAN_LABELS[s.plan] : <Absent>No plan</Absent>}
+                {s.plan ? PLAN_LABELS[s.plan] : (
+                  // Orange only when it contradicts the seats beside it.
+                  // Otherwise it's the normal state and the header counts it.
+                  <Absent tone={s.seats ? "flag" : "quiet"}>No plan</Absent>
+                )}
                 {s.grantedManually && (
                   <span style={{ display: "block", fontSize: "11px", color: C.greenText, fontWeight: 600 }}>granted</span>
                 )}
               </td>
               <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, fontVariantNumeric: "tabular-nums" }}>
-                {s.seats ?? <Absent>Not set</Absent>}
+                {s.seats ?? <Absent tone={s.plan ? "flag" : "quiet"}>Not set</Absent>}
               </td>
               <td style={{ padding: "12px 20px", borderBottom: `1px solid ${C.hairline}`, color: C.muted, fontVariantNumeric: "tabular-nums" }}>
                 {s.memberCount}

@@ -55,7 +55,7 @@ export function BuzzFilter({
               onClick={() => { setAll(t.set); setOpen(false); }}
               style={{
                 background: t.on ? "#fff" : "transparent",
-                color: t.on ? "#10233F" : "#5A6782",
+                color: t.on ? "#10233F" : C.faint,
                 border: 0, borderRadius: "8px", padding: "7px 11px",
                 font: `${t.on ? 600 : 500} 13px/1 var(--font-outfit)`,
                 boxShadow: t.on ? "0 1px 2px rgba(16,35,63,.08)" : "none",

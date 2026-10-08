@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { C, F } from "@/lib/joc-tokens";
-import { Panel, Empty, Meta, QUIET, FAINT, SOFT, RULE } from "./parts";
+import { Panel, Empty, Meta, removeBtn } from "./parts";
 import { addDeskEvent, dropDeskEvent } from "@/app/actions/my-desk";
 import type { DayItem } from "@/lib/my-desk";
 
@@ -79,7 +79,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
       {adding ? (
         <div style={{
           flex: "0 0 auto", margin: "10px 12px 6px",
-          border: `1.5px solid ${C.hairline}`, borderRadius: "12px", background: "#FCFCFD",
+          border: `1.5px solid ${C.hairline}`, borderRadius: "12px", background: C.white,
           padding: "12px",
         }}>
           {/* Every field says what it is above itself. With placeholders
@@ -95,8 +95,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
               aria-label="What is it"
               style={{
                 width: "100%", boxSizing: "border-box",
-                background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-                outline: 0, font: `500 15.5px/1.3 ${F.ui}`, color: C.ink, padding: "9px 11px",
+                background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px", font: `500 15.5px/1.3 ${F.ui}`, color: C.ink, padding: "9px 11px",
               }}
             />
           </Field>
@@ -112,7 +111,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
                     style={{
                       border: 0, borderRadius: "6px", padding: "6px 10px", cursor: "pointer",
                       background: when === v ? C.white : "transparent",
-                      color: when === v ? C.ink : QUIET,
+                      color: when === v ? C.ink : C.faint,
                       font: `${when === v ? 600 : 500} 12.5px/1 ${F.ui}`,
                       boxShadow: when === v ? "0 1px 2px rgba(16,35,63,.08)" : "none",
                     }}
@@ -156,8 +155,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
               aria-label="Who with, or where"
               style={{
                 width: "100%", boxSizing: "border-box",
-                background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-                outline: 0, font: `400 13.5px/1.3 ${F.ui}`, color: C.ink, padding: "8px 11px",
+                background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px", font: `400 13.5px/1.3 ${F.ui}`, color: C.ink, padding: "8px 11px",
               }}
             />
           </Field>
@@ -169,7 +167,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
             <span style={{
               flex: "1 1 120px",
               font: `500 10px/1.4 ${F.data}`, letterSpacing: ".06em",
-              color: error ? C.destructive : FAINT,
+              color: error ? C.destructive : C.faint,
             }}>
               {error ?? "ENTER ↵"}
             </span>
@@ -177,7 +175,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
               type="button"
               onClick={() => { setAdding(false); setError(null); }}
               style={{
-                background: "transparent", border: 0, color: FAINT,
+                background: "transparent", border: 0, color: C.faint,
                 font: `500 12.5px/1 ${F.ui}`, cursor: "pointer", padding: "5px 0",
               }}
             >
@@ -222,7 +220,7 @@ export function YourDay({ day }: { day: DayItem[] }) {
         <>
           <div style={{
             padding: "12px 18px 4px", font: `600 10.5px/1 ${F.data}`,
-            letterSpacing: ".1em", color: FAINT,
+            letterSpacing: ".1em", color: C.faint,
           }}>
             LATER
           </div>
@@ -244,13 +242,13 @@ function DayRow({ d, start, ruled }: {
     <div style={{
       display: "flex", gap: "14px", alignItems: "flex-start",
       padding: ruled ? "10px 18px" : "7px 18px",
-      borderBottom: ruled ? `1px solid ${RULE}` : undefined,
+      borderBottom: ruled ? `1px solid ${C.rule}` : undefined,
     }}>
       <span style={{
         flex: "0 0 52px",
         font: ruled ? `600 13px/1.45 ${F.data}` : `600 10.5px/1.7 ${F.data}`,
         letterSpacing: ruled ? 0 : ".06em",
-        color: ruled ? C.ink : QUIET,
+        color: ruled ? C.ink : C.faint,
       }}>
         {stamp}
       </span>
@@ -258,7 +256,7 @@ function DayRow({ d, start, ruled }: {
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{
           font: ruled ? `600 15px/1.3 ${F.ui}` : `400 15px/1.45 ${F.read}`,
-          color: ruled ? C.ink : "#1F304D",
+          color: ruled ? C.ink : C.ink,
         }}>
           {d.title}
         </div>
@@ -272,10 +270,7 @@ function DayRow({ d, start, ruled }: {
           type="button"
           aria-label="Remove from your day"
           onClick={() => start(() => { void dropDeskEvent(d.own!); })}
-          style={{
-            background: "transparent", border: 0, color: SOFT,
-            font: `400 18px/1 ${F.ui}`, cursor: "pointer", padding: "0 2px",
-          }}
+          style={removeBtn}
         >
           ×
         </button>
@@ -300,12 +295,12 @@ function Field({ label, hint, children }: {
       <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "4px" }}>
         <span style={{
           font: `600 10.5px/1 ${F.data}`, letterSpacing: ".08em",
-          color: QUIET, textTransform: "uppercase",
+          color: C.faint, textTransform: "uppercase",
         }}>
           {label}
         </span>
         {hint ? (
-          <span style={{ font: `400 11px/1 ${F.ui}`, color: FAINT }}>{hint}</span>
+          <span style={{ font: `400 11px/1 ${F.ui}`, color: C.faint }}>{hint}</span>
         ) : null}
       </div>
       {children}

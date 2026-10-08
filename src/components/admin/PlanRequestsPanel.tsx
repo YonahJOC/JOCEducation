@@ -115,7 +115,7 @@ function RequestRow({ request, disabled }: { request: PlanRequestRow; disabled?:
             style={{
               width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
               backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
-              padding: "11px 13px", outline: "none", resize: "vertical",
+              padding: "11px 13px", resize: "vertical",
             }}
           />
           <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>

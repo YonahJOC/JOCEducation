@@ -48,7 +48,9 @@ export const STATUS_LABELS: Record<SchoolStatus, string> = {
 
 export const STATUS_COLORS: Record<SchoolStatus, string> = {
   PROSPECT: C.muted,
-  DEMO_SCHEDULED: "#2C7AC9",
+  // Started, not finished — the same blue as ACTIVE's green is to TRIAL's
+  // orange: the stage is carried by the word, not by a hue of its own.
+  DEMO_SCHEDULED: C.blue,
   TRIAL: C.orange,
   ACTIVE: C.greenText,
   LAPSED: C.orangeText,

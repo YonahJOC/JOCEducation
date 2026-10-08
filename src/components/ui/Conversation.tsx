@@ -222,7 +222,7 @@ export function Conversation({
               if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); }
             }}
             style={{
-              flex: 1, minWidth: 0, resize: "none", border: "none", outline: "none",
+              flex: 1, minWidth: 0, resize: "none", border: "none",
               background: "transparent", fontFamily: F.read, fontSize: "16px",
               lineHeight: 1.5, color: C.ink, padding: "10px 0", maxHeight: "160px",
             }}

@@ -59,7 +59,7 @@ export function Desk({
         </h1>
         <p style={{
           fontFamily: F.read, fontSize: "clamp(17px, 2vw, 20px)", lineHeight: 1.45,
-          color: "#2C3C5A", margin: 0,
+          color: C.ink, margin: 0,
         }}>
           {summary}.
         </p>
@@ -162,11 +162,11 @@ export function Desk({
                   borderRadius: "8px", padding: "4px 8px", marginBottom: "9px",
                   font: "600 10.5px/1 var(--font-mono)", letterSpacing: ".08em",
                   textTransform: "uppercase",
-                  color: p.tone === "good" ? "#1D6B37" : "#5A6782",
+                  color: p.tone === "good" ? "#1D6B37" : C.faint,
                 }}>
                   <span aria-hidden="true" style={{
                     width: "7px", height: "7px", borderRadius: "50%",
-                    background: p.tone === "good" ? "#4FAE6E" : "#8A97B3",
+                    background: p.tone === "good" ? C.greenText : C.faint,
                   }} />
                   {p.status}
                 </span>
@@ -181,12 +181,12 @@ export function Desk({
                   <p key={f.key} style={{ margin: "0 0 4px", display: "flex", gap: "10px" }}>
                     <span style={{
                       font: "500 10px/1.5 var(--font-mono)", letterSpacing: ".08em",
-                      color: "#8A97B3", flex: "0 0 62px", textTransform: "uppercase",
+                      color: C.faint, flex: "0 0 62px", textTransform: "uppercase",
                     }}>
                       {f.key}
                     </span>
                     <span style={{
-                      font: "400 14px/1.45 var(--font-newsreader)", color: "#2C3C5A", minWidth: 0,
+                      font: "400 14px/1.45 var(--font-newsreader)", color: C.ink, minWidth: 0,
                     }}>
                       {f.value}
                     </span>
@@ -226,7 +226,7 @@ function SectionHead({ title, count }: { title: string; count?: string }) {
       {count && (
         <span style={{
           font: "500 11px/1 var(--font-mono)", letterSpacing: ".08em",
-          color: "#5A6782", textTransform: "uppercase",
+          color: C.faint, textTransform: "uppercase",
         }}>
           {count}
         </span>

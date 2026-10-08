@@ -287,7 +287,7 @@ function Hours({
           style={{
             width: "62px", fontFamily: "var(--font-outfit)", fontSize: "15px", fontWeight: 600,
             color: C.ink, backgroundColor: C.white, border: `1px solid ${C.hairline}`,
-            borderRadius: "8px", padding: "6px 8px", minHeight: "34px", outline: "none",
+            borderRadius: "8px", padding: "6px 8px", minHeight: "34px",
           }}
         />
         <span style={{ fontSize: "13px", color: C.muted }}>hours</span>

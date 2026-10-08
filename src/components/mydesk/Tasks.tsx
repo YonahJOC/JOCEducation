@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C, F } from "@/lib/joc-tokens";
-import {
-  Panel, GroupHead, Empty, Initial, Meta, row, linkBtn, QUIET, FAINT, SOFT, RULE,
-} from "./parts";
+import { C, F, HIT } from "@/lib/joc-tokens";
+import { Panel, GroupHead, Empty, Initial, Meta, row, linkBtn, removeBtn, rowBody } from "./parts";
 import { addTask, handOff, tickTask, moveTask, dropTask, nudge } from "@/app/actions/my-desk";
 import type { Task } from "@/lib/my-desk";
 
@@ -21,12 +19,12 @@ import type { Task } from "@/lib/my-desk";
  */
 
 const STATUS_TONE: Record<string, string> = {
-  "NOT OPENED": QUIET,
+  "NOT OPENED": C.faint,
   SEEN: C.blue,
   "ON THEIR LIST": C.blue,
   NUDGED: C.orangeText,
   DECLINED: C.destructive,
-  DONE: "#4FAE6E",
+  DONE: C.greenText,
 };
 
 export function Tasks({ tasks, handed, staff }: {
@@ -66,7 +64,7 @@ export function Tasks({ tasks, handed, staff }: {
       {/* ---- the add row -------------------------------------------- */}
       <div style={{
         flex: "0 0 auto", margin: "10px 12px 4px",
-        border: `1.5px solid ${C.hairline}`, borderRadius: "12px", background: "#FCFCFD",
+        border: `1.5px solid ${C.hairline}`, borderRadius: "12px", background: C.white,
       }}>
         <input
           value={draft}
@@ -75,7 +73,7 @@ export function Tasks({ tasks, handed, staff }: {
           placeholder={forId ? `What should ${forName} do?` : "Add a task…"}
           aria-label={forId ? `What should ${forName} do?` : "Add a task"}
           style={{
-            width: "100%", border: 0, outline: 0, background: "transparent",
+            width: "100%", border: 0, background: "transparent",
             font: `400 15.5px/1.3 ${F.ui}`, color: C.ink, padding: "10px 12px 6px",
           }}
         />
@@ -93,7 +91,7 @@ export function Tasks({ tasks, handed, staff }: {
               padding: "5px 9px", font: `500 12.5px/1 ${F.ui}`, color: C.ink, cursor: "pointer",
             }}
           >
-            <span style={{ font: `600 10px/1 ${F.data}`, letterSpacing: ".06em", color: FAINT }}>
+            <span style={{ font: `600 10px/1 ${F.data}`, letterSpacing: ".06em", color: C.faint }}>
               FOR
             </span>
             {forName} ▾
@@ -109,7 +107,7 @@ export function Tasks({ tasks, handed, staff }: {
                 style={{
                   border: 0, borderRadius: "6px", padding: "5px 9px", cursor: "pointer",
                   background: later === v ? C.white : "transparent",
-                  color: later === v ? C.ink : QUIET,
+                  color: later === v ? C.ink : C.faint,
                   font: `${later === v ? 600 : 500} 12.5px/1 ${F.ui}`,
                   boxShadow: later === v ? "0 1px 2px rgba(16,35,63,.08)" : "none",
                 }}
@@ -121,7 +119,7 @@ export function Tasks({ tasks, handed, staff }: {
 
           <span style={{
             marginLeft: "auto", font: `500 10px/1 ${F.data}`,
-            letterSpacing: ".06em", color: FAINT,
+            letterSpacing: ".06em", color: C.faint,
           }}>
             {forId ? `ENTER ↵ SENDS TO ${forName.toUpperCase()}` : "ENTER ↵"}
           </span>
@@ -140,7 +138,7 @@ export function Tasks({ tasks, handed, staff }: {
                   type="button"
                   onClick={() => { setForId(p.id); setPicking(false); }}
                   style={{
-                    background: on ? C.ink : "#F4F1E9", color: on ? C.white : C.ink,
+                    background: on ? C.ink : C.segment, color: on ? C.white : C.ink,
                     border: 0, borderRadius: "20px", padding: "6px 11px",
                     font: `${on ? 600 : 500} 12.5px/1 ${F.ui}`, cursor: "pointer",
                   }}
@@ -184,12 +182,12 @@ export function Tasks({ tasks, handed, staff }: {
 
       {finished.length ? (
         <>
-          <div style={{ padding: "8px 18px 12px", borderTop: `1px solid ${RULE}` }}>
+          <div style={{ padding: "8px 18px 12px", borderTop: `1px solid ${C.rule}` }}>
             <button
               type="button"
               onClick={() => setShowDone((d) => !d)}
               style={{
-                background: "transparent", border: 0, padding: "4px 0", color: QUIET,
+                background: "transparent", border: 0, padding: "4px 0", color: C.faint,
                 font: `500 10.5px/1 ${F.data}`, letterSpacing: ".06em", cursor: "pointer",
               }}
             >
@@ -219,21 +217,28 @@ function Row({ t, start }: { t: Task; start: (fn: () => void) => void }) {
           aria-label={t.done ? "Not done after all" : "Done"}
           onClick={run(() => tickTask(t.id, !t.done))}
           style={{
-            flex: "0 0 20px", height: "20px", marginTop: "1px", borderRadius: "50%",
-            cursor: "pointer", padding: 0,
-            border: t.done ? 0 : `1.5px solid ${C.ringQuiet}`,
-            background: t.done ? C.blue : C.white,
-            color: C.white, font: `600 11px/20px ${F.ui}`,
+            flex: `0 0 ${HIT}`, minHeight: HIT,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "transparent", border: 0, cursor: "pointer", padding: 0,
           }}
         >
-          {t.done ? "✓" : ""}
+          {/* 30px of circle inside 44px of tap. */}
+          <span style={{
+            width: "30px", height: "30px", borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: t.done ? 0 : `2px solid ${C.ringQuiet}`,
+            background: t.done ? C.green : "transparent",
+            color: C.white, font: `700 15px/1 ${F.ui}`,
+          }}>
+            {t.done ? "✓" : ""}
+          </span>
         </button>
       )}
 
-      <div style={{ minWidth: 0, flex: 1 }}>
+      <div style={rowBody}>
         <div style={{
           font: `${t.done ? 400 : 500} 15px/1.35 ${F.ui}`,
-          color: t.done ? FAINT : C.ink,
+          color: t.done ? C.faint : C.ink,
           textDecoration: t.done ? "line-through" : "none",
           textWrap: "pretty",
         }}>
@@ -242,7 +247,7 @@ function Row({ t, start }: { t: Task; start: (fn: () => void) => void }) {
         {t.handedTo ? (
           <Meta
             text={`${t.handedTo.name.toUpperCase()} · ${t.handedTo.status}`}
-            tone={STATUS_TONE[t.handedTo.status] ?? QUIET}
+            tone={STATUS_TONE[t.handedTo.status] ?? C.faint}
           />
         ) : t.meta ? (
           <Meta text={t.meta} />
@@ -263,10 +268,7 @@ function Row({ t, start }: { t: Task; start: (fn: () => void) => void }) {
         type="button"
         aria-label="Remove"
         onClick={run(() => dropTask(t.id))}
-        style={{
-          background: "transparent", border: 0, color: SOFT,
-          font: `400 18px/1 ${F.ui}`, cursor: "pointer", padding: "0 2px",
-        }}
+        style={removeBtn}
       >
         ×
       </button>

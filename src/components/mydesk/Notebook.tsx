@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { C, F } from "@/lib/joc-tokens";
-import { Panel, linkBtn, QUIET } from "./parts";
+import { Panel, linkBtn } from "./parts";
 import { savePageOrCreate, newPage, dropPage, pageToTask } from "@/app/actions/my-desk";
 import type { Page } from "@/lib/my-desk";
 
@@ -62,7 +62,7 @@ export function Notebook({ pages }: { pages: Page[] }) {
                 style={{
                   flex: "0 0 auto", maxWidth: on ? "170px" : "150px",
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  background: on ? C.ink : "#F4F1E9", color: on ? C.white : C.ink,
+                  background: on ? C.ink : C.segment, color: on ? C.white : C.ink,
                   border: 0, borderRadius: "8px", padding: "6px 10px",
                   font: `${on ? 600 : 500} 12.5px/1 ${F.ui}`, cursor: "pointer",
                 }}
@@ -91,7 +91,7 @@ export function Notebook({ pages }: { pages: Page[] }) {
         placeholder="Untitled"
         aria-label="Page title"
         style={{
-          flex: "0 0 auto", border: 0, outline: 0, background: "transparent",
+          flex: "0 0 auto", border: 0, background: "transparent",
           font: `600 20px/1.2 ${F.ui}`, letterSpacing: "-.01em", color: C.ink,
           padding: "12px 20px 4px",
         }}
@@ -102,9 +102,9 @@ export function Notebook({ pages }: { pages: Page[] }) {
         placeholder="This page is yours. Agendas, call notes, half-ideas. Nobody else sees it."
         aria-label="Page"
         style={{
-          flex: 1, minHeight: 0, border: 0, outline: 0, resize: "none",
+          flex: 1, minHeight: 0, border: 0, resize: "none",
           padding: "4px 20px 14px", font: `400 16px/1.55 ${F.read}`,
-          color: "#1F304D", background: "transparent",
+          color: C.ink, background: "transparent",
         }}
       />
       <div style={{
@@ -113,7 +113,7 @@ export function Notebook({ pages }: { pages: Page[] }) {
       }}>
         <span style={{
           font: `500 10px/1 ${F.data}`, letterSpacing: ".06em",
-          color: saved ? "#4FAE6E" : QUIET, flex: 1,
+          color: saved ? C.greenText : C.faint, flex: 1,
         }}>
           {saved ? "SAVED" : "SAVING…"}
         </span>

@@ -121,7 +121,7 @@ export function SchoolPlanPanel({
           style={{
             width: "100%", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
             backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "10px",
-            padding: "11px 13px", outline: "none", resize: "vertical", marginBottom: "10px",
+            padding: "11px 13px", resize: "vertical", marginBottom: "10px",
           }}
         />
 
@@ -135,7 +135,7 @@ export function SchoolPlanPanel({
               style={{
                 width: "72px", fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.ink,
                 backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-                padding: "8px 10px", outline: "none", marginLeft: "6px",
+                padding: "8px 10px", marginLeft: "6px",
               }}
             />
           </label>

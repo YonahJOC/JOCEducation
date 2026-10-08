@@ -9,7 +9,7 @@ const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
   fontSize: "15px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "11px",
-  padding: "12px 14px", minHeight: "46px", outline: "none",
+  padding: "12px 14px", minHeight: "46px",
 };
 
 export function FormFill({ form, paid }: { form: PublicForm; paid: boolean }) {

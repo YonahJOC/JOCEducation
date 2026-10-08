@@ -1,3 +1,4 @@
+import { C } from "@/lib/joc-tokens";
 import { ItemTools } from "@/components/buzz/ItemTools";
 import { Detail } from "@/components/buzz/Detail";
 import { TAG, ago } from "@/lib/school-update";
@@ -46,7 +47,7 @@ export function BuzzCard({
           {row.school.name}
         </div>
         <div style={{
-          font: "500 10.5px/1.3 var(--font-mono)", letterSpacing: ".05em", color: "#5A6782",
+          font: "500 10.5px/1.3 var(--font-mono)", letterSpacing: ".05em", color: C.faint,
           textTransform: "uppercase",
         }}>
           {ago(row.occurredAt, now)} · {TAG[row.type] ?? "UPDATE"}
@@ -54,7 +55,7 @@ export function BuzzCard({
         </div>
       </div>
 
-      <div style={{ font: "400 12.5px/1.3 var(--font-outfit)", color: "#5A6782", marginTop: "3px" }}>
+      <div style={{ font: "400 12.5px/1.3 var(--font-outfit)", color: C.faint, marginTop: "3px" }}>
         by {byMe ? "you" : first(row.author?.name ?? row.author?.email)}
       </div>
 

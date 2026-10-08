@@ -38,7 +38,6 @@ function RailCard({
         cursor: "pointer",
         boxShadow: active ? ROW_SHADOW : "none",
         transition: "all .2s",
-        outline: "none",
         userSelect: "none",
       }}
     >
@@ -430,7 +429,6 @@ export function CycleRailSection({ initialIndex, cycles: CYCLES }: { initialInde
           scrollbarWidth: "none",
           paddingBottom: "6px",
           cursor: "grab",
-          outline: "none",
         }}
       >
         {CYCLES.map((c, i) => (

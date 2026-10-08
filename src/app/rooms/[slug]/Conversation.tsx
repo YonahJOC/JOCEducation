@@ -21,7 +21,7 @@ const box: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
   fontSize: "15px", lineHeight: 1.55, color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "14px",
-  padding: "13px 15px", outline: "none", resize: "vertical",
+  padding: "13px 15px", resize: "vertical",
 };
 
 export function Conversation({

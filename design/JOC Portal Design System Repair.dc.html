@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>html,body{margin:0;background:#FBF9F4;color:#10233F;font-family:Outfit, sans-serif;-webkit-font-smoothing:antialiased}a{color:#2D46AF}a:hover{color:#223892}*{box-sizing:border-box}</style>
+</helmet>
+<div style="max-width:1200px;margin:0 auto;padding:56px 24px 120px;display:flex;flex-direction:column;gap:80px">
+
+<header style="display:flex;flex-direction:column;gap:14px;max-width:860px">
+  <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">JOC Education Portal · Design system repair · Read against YonahJOC/JOCEducation@1dcaba6</div>
+  <h1 style="margin:0;font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-0.03em">Repair, not redesign.</h1>
+  <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;text-wrap:pretty;max-width:68ch">Every value here is marked <strong style="color:#10233F">unchanged</strong> or carries a reason. Ratios are WCAG 2.x against white #FFFFFF / paper #FBF9F4. Specimens are drawn at the size they ship. Values come from <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">src/lib/joc-tokens.ts</span>, <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">mydesk/parts.tsx</span>, <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">admin/SchoolTable.tsx</span> and <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">globals.css</span>, not from the brief alone.</p>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:16px">
+  <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">00 · What the repo says that the brief doesn't</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px">
+    <sc-for list="{{ found }}" as="f" hint-placeholder-count="6">
+      <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:16px;font-weight:600;line-height:1.35">{{ f.head }}</div>
+        <div style="font-family:Newsreader, serif;font-size:16px;line-height:1.5;color:#4A5A74">{{ f.body }}</div>
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">{{ f.where }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="a" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">A · Grey ramp</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">Three text greys, four that are never text</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">The new <strong style="color:#10233F">faint</strong> is a grey you already ship: <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">QUIET #5A6782</span> from parts.tsx. It passes on every ground in the system, including blueTint (4.68:1) and segment (4.98:1), so there's no "except on tints" rule to remember. The ten QUIET uses don't change; the 26 old faint uses get darker.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);overflow:hidden">
+    <sc-for list="{{ greys }}" as="g" hint-placeholder-count="7">
+      <div style="display:grid;grid-template-columns:64px minmax(140px,1fr) minmax(0,2.2fr) 104px 104px;gap:18px;align-items:center;padding:14px 18px;border-top:1px solid #E3E6EF">
+        <div style="width:64px;height:44px;border-radius:8px;background:{{ g.hex }};box-shadow:inset 0 0 0 1px rgba(16,35,63,0.10)"></div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:16px;font-weight:600">C.{{ g.name }}</div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#4A5A74">{{ g.hex }}</div>
+          <div style="align-self:flex-start;font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:9999px;background:{{ g.tagBg }};color:{{ g.tagFg }}">{{ g.role }}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <div style="font-size:14px;font-weight:600;line-height:1.4">{{ g.job }}</div>
+          <div style="font-size:14px;color:#4A5A74;line-height:1.4">{{ g.why }}</div>
+        </div>
+        <div style="padding:8px 10px;border-radius:8px;background:#FFFFFF;border:1px solid #E3E6EF">
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">WHITE</div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:16px;font-weight:600;color:{{ g.passInk }}">{{ g.w }}</div>
+        </div>
+        <div style="padding:8px 10px;border-radius:8px;background:#FBF9F4;border:1px solid #E3E6EF">
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">PAPER</div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:16px;font-weight:600;color:{{ g.passInk }}">{{ g.p }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:16px;font-weight:600">Retired. Every one maps to a step; none is renamed.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px">
+      <sc-for list="{{ retired }}" as="r" hint-placeholder-count="10">
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:12px;background:#FFFFFF;border:1px solid #E3E6EF">
+          <div style="width:28px;height:28px;border-radius:8px;background:{{ r.from }};box-shadow:inset 0 0 0 1px rgba(16,35,63,0.10);flex:none"></div>
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+            <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:600"><span style="text-decoration:line-through;color:#5A6782">{{ r.from }}</span>  →  {{ r.to }}</div>
+            <div style="font-size:14px;color:#4A5A74;line-height:1.4">{{ r.why }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:16px;font-weight:600">The rest of the palette, checked</div>
+    <div style="display:flex;flex-direction:column;background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);overflow:hidden">
+      <sc-for list="{{ others }}" as="o" hint-placeholder-count="8">
+        <div style="display:grid;grid-template-columns:28px 150px minmax(0,1fr) 150px;gap:14px;align-items:center;padding:12px 18px;border-top:1px solid #E3E6EF">
+          <div style="width:28px;height:28px;border-radius:8px;background:{{ o.hex }}"></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">C.{{ o.name }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#4A5A74">{{ o.hex }}</div></div>
+          <div style="font-size:14px;line-height:1.4;color:#4A5A74"><strong style="color:{{ o.verdictInk }}">{{ o.verdict }}.</strong> {{ o.note }}</div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:600;text-align:right">{{ o.ratio }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="a2" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">A2 · #2C7AC9</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">Kill it. "Started" is shown by shape, not by a second blue.</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">It fails as text (4.44 / 4.22), and beside #2D46AF it reads as the same blue. Statuses that are started but not finished become TONE.info (blue on blueTint, 6.64:1) with a half-filled dot. Finished is solid blue. The difference survives greyscale and colour-blindness.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px">
+    <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:18px;display:flex;flex-direction:column;gap:14px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">NOW · ORDERS</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="padding:4px 10px;border-radius:9999px;background:#FFF0E0;color:#C96C00;font-size:14px;font-weight:600">New</div>
+        <div style="padding:4px 10px;border-radius:9999px;background:#2C7AC91a;color:#2C7AC9;font-size:14px;font-weight:600">Quoted</div>
+        <div style="padding:4px 10px;border-radius:9999px;background:#2D46AF1a;color:#2D46AF;font-size:14px;font-weight:600">Invoiced</div>
+      </div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">Quoted and Invoiced differ only in hue, and Quoted's text is 4.44:1.</div>
+    </div>
+    <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:18px;display:flex;flex-direction:column;gap:14px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">PROPOSED · ORDERS</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:7px;padding:4px 10px 4px 8px;border-radius:9999px;background:#FFF0E0;color:#A85B00;font-size:14px;font-weight:600"><div style="width:10px;height:10px;border-radius:50%;border:2px solid #A85B00"></div>New</div>
+        <div style="display:flex;align-items:center;gap:7px;padding:4px 10px 4px 8px;border-radius:9999px;background:#E4E9F8;color:#2D46AF;font-size:14px;font-weight:600"><div style="width:10px;height:10px;border-radius:50%;border:2px solid #2D46AF;background:linear-gradient(90deg,#2D46AF 50%,transparent 50%)"></div>Quoted</div>
+        <div style="display:flex;align-items:center;gap:7px;padding:4px 10px 4px 8px;border-radius:9999px;background:#2D46AF;color:#FFFFFF;font-size:14px;font-weight:600"><div style="width:10px;height:10px;border-radius:50%;background:#FFFFFF"></div>Invoiced</div>
+      </div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">An empty ring, then half, then full. Uses the one blue token.</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);overflow:hidden">
+    <sc-for list="{{ blue2 }}" as="b" hint-placeholder-count="5">
+      <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,0.8fr) minmax(0,1.6fr);gap:16px;padding:12px 18px;border-top:1px solid #E3E6EF;align-items:baseline">
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:500">{{ b.where }}</div>
+        <div style="font-size:14px;font-weight:600">{{ b.what }}</div>
+        <div style="font-size:14px;color:#4A5A74;line-height:1.4"><strong style="color:#10233F">{{ b.to }}</strong> {{ b.why }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="b" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">B · Type scale</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">38 sizes → 7</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">Five of the seven sizes are already tokens: pageTitle 30, sectionHeading 24, rowTitle 19, label 11 and the 44 hero. The two new steps, 16 and 14, absorb the fourteen half-pixel sizes between 12 and 18. Body is 16 rather than 15 because iOS Safari zooms the page when an input is smaller than 16px, and the add-task field is 15.5.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);overflow:hidden">
+    <sc-for list="{{ types }}" as="t" hint-placeholder-count="7">
+      <div style="display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;padding:20px 18px;border-top:1px solid #E3E6EF;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:16px;font-weight:600">T.{{ t.name }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:{{ t.stateInk }}">{{ t.state }}</div></div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;line-height:1.5;color:#4A5A74">{{ t.spec }}</div>
+          <div style="font-size:14px;line-height:1.4">{{ t.job }}</div>
+          <div style="font-size:14px;line-height:1.4;color:#4A5A74">{{ t.absorbs }}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0;padding-top:2px">
+          <div style="font-family:{{ t.ff }};font-size:{{ t.fs }};font-weight:{{ t.fw }};line-height:{{ t.lh }};letter-spacing:{{ t.ls }};color:{{ t.color }};text-wrap:pretty">{{ t.sample }}</div>
+          <sc-if value="{{ t.hasAlt }}" hint-placeholder-val="{{ false }}">
+            <div style="font-family:{{ t.altFf }};font-size:{{ t.fs }};font-weight:{{ t.altFw }};line-height:{{ t.altLh }};color:{{ t.altColor }};text-wrap:pretty;max-width:60ch">{{ t.alt }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px">
+    <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">THE HARD CASE · MONO META ON EVERY GROUND</div>
+      <sc-for list="{{ metaGrounds }}" as="m" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:12px;align-items:center;padding:10px 12px;border-radius:8px;background:{{ m.bg }};border:1px solid #E3E6EF">
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;line-height:1.35;color:#5A6782">FROM THE BUZZ · BERMAN HEBREW ACADEMY · BY MONDAY</div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:600;text-align:right;color:#1D6B37">{{ m.r }}</div>
+        </div>
+      </sc-for>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">11px, 500, faint #5A6782. If you keep 10px, the ratios are identical (contrast doesn't depend on size), but WCAG's 4.5 floor assumes text people can resolve. 10px Plex Mono caps are 7px tall, so 11 is the floor I'd sign off.</div>
+    </div>
+    <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;color:#5A6782">BEFORE → AFTER · THE SAME META LINE</div>
+      <div style="display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:8px;background:#FBF9F4">
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:10px;font-weight:500;letter-spacing:0.05em;color:#8A97B3">FROM THE BUZZ · BERMAN HEBREW ACADEMY · BY MONDAY</div>
+        <div style="font-size:14px;color:#A3261A;font-weight:600">10px · #8A97B3 · 2.79:1 on paper</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:8px;background:#FBF9F4">
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">FROM THE BUZZ · BERMAN HEBREW ACADEMY · BY MONDAY</div>
+        <div style="font-size:14px;color:#1D6B37;font-weight:600">11px · #5A6782 · 5.40:1 on paper</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="c" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">C · Radii</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">20 radii → 5 values, and every existing name kept</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">One new name, <strong style="color:#10233F">R.sm</strong>, for the small controls inside a row: desk buttons, segmented grounds, the swatches on this page. A control nested inside a padded one takes the outer radius minus the padding (the 2px-padded segment thumb is 8 − 2 = 6). That's a rule, not a sixth token. 0 isn't a radius; it's the absence of one.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+    <sc-for list="{{ radii }}" as="r" hint-placeholder-count="5">
+      <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="height:88px;border-radius:{{ r.v }};background:#E4E9F8;border:2px solid #2D46AF"></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><div style="font-size:16px;font-weight:600">R.{{ r.name }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:12px;font-weight:600">{{ r.v }}</div></div>
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:{{ r.stateInk }}">{{ r.state }}</div>
+        <div style="font-size:14px;line-height:1.4">{{ r.job }}</div>
+        <div style="font-size:14px;line-height:1.4;color:#4A5A74">{{ r.from }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="d" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">D · Focus ring</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">The rule you already wrote, made global</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">It's two rings. An ink outline that shows on light grounds, and a white halo inside it that shows on dark and blue ones. On every ground at least one ring is above 8:1, and both are at least 2px, which is the WCAG 2.2 focus-appearance minimum.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+    <div style="border-radius:16px;background:#FFFFFF;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:28px 20px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">WHITE CARD · SECONDARY BUTTON</div>
+      <div style="display:flex;align-items:center;min-height:46px;padding:0 18px;border-radius:12px;border:2px solid #2D46AF;color:#2D46AF;font-size:16px;font-weight:700;outline:3px solid #10233F;outline-offset:2px;box-shadow:0 0 0 2px #FFFFFF">Let’s review</div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">Ink ring on white: <strong style="color:#10233F">15.74:1</strong></div>
+    </div>
+    <div style="border-radius:16px;background:#FBF9F4;border:1px solid #E3E6EF;padding:28px 20px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">PAPER · INLINE VERB</div>
+      <div style="display:flex;align-items:center;min-height:44px;padding:0 10px;border-radius:8px;color:#2D46AF;font-size:14px;font-weight:600;outline:3px solid #10233F;outline-offset:2px;box-shadow:0 0 0 2px #FFFFFF">Nudge</div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">Ink ring on paper: <strong style="color:#10233F">14.96:1</strong></div>
+    </div>
+    <div style="border-radius:16px;background:#10233F;padding:28px 20px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#FFD8AE">NAVY RAIL · NAV ITEM</div>
+      <div style="display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;color:#FFFFFF;font-size:16px;font-weight:600;outline:3px solid #10233F;outline-offset:2px;box-shadow:0 0 0 2px #FFFFFF">Schools</div>
+      <div style="font-size:14px;color:#C6CFF0;line-height:1.4">The ink ring disappears; the white halo carries it at <strong style="color:#FFFFFF">15.74:1</strong></div>
+    </div>
+    <div style="border-radius:16px;background:#FFFFFF;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:28px 20px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">ON A FILLED BLUE BUTTON</div>
+      <div style="display:flex;align-items:center;min-height:46px;padding:0 18px;border-radius:12px;background:#2D46AF;color:#FFFFFF;font-size:16px;font-weight:700;outline:3px solid #10233F;outline-offset:2px;box-shadow:0 0 0 2px #FFFFFF">Reach out</div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">White halo against blue: <strong style="color:#10233F">8.06:1</strong>. Ink ring against the card: 15.74:1</div>
+    </div>
+  </div>
+  <div style="background:#10233F;color:#FFFFFF;border-radius:16px;padding:20px 22px;font-family:'IBM Plex Mono', monospace;font-size:13px;line-height:1.7;white-space:pre-wrap">/* globals.css — replaces .joc-program a:focus-visible (line 277). */
+/* !important because 59 inline outline:none styles outrank any stylesheet. */
+:focus-visible {
+  outline: 3px solid #10233F !important;   /* C.ink */
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px #FFFFFF !important; /* C.white — fills the offset gap */
+}
+/* Fields keep their own border-colour change and add the ring as well. */
+input:focus-visible, textarea:focus-visible, select:focus-visible { border-color: #2D46AF; }</div>
+  <div style="font-size:14px;color:#4A5A74;line-height:1.45;max-width:80ch">Side effect: while focused, a row card swaps its shadow for the halo. That's intended, because the focused card should look different. Then delete every inline <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">outline: none</span> / <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">outline: 0</span> (Tasks.tsx's add field is one) so the rule isn't relying on !important forever.</div>
+</section>
+
+<section id="e" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">E · Buttons and hit areas</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">Boxed buttons are 44 tall. Small controls stretch to fill their row.</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">Two rules. A button with a visible box is never shorter than 44px, because a box that looks 30px but taps 44 overlaps its neighbour. A control without a box (Today, Nudge, ×, the tick) has its hit area grown by the row, not by negative margins into the row above. The row gets <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">minHeight: 44</span>, and each control <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">alignSelf: stretch</span> with <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">margin: −8px 0</span> to cancel the row's 8px padding. Shaded areas below are the real hit areas.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+    <sc-for list="{{ buttons }}" as="b" hint-placeholder-count="4">
+      <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><div style="font-size:16px;font-weight:600">{{ b.name }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:{{ b.stateInk }}">{{ b.state }}</div></div>
+        <div style="height:80px;display:flex;align-items:center;justify-content:center;background:#FBF9F4;border-radius:12px">
+          <div style="display:flex;align-items:center;justify-content:center;min-height:{{ b.h }};padding:{{ b.pad }};border-radius:12px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};font-family:Outfit, sans-serif;font-size:{{ b.fs }};font-weight:{{ b.fw }};text-decoration:{{ b.td }};box-shadow:inset 0 0 0 9999px {{ b.hit }}">{{ b.label }}</div>
+        </div>
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:12px;line-height:1.55;color:#4A5A74">{{ b.spec }}</div>
+        <div style="font-size:14px;line-height:1.4;color:#4A5A74">{{ b.why }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:12px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#A3261A">NOW · TASK ROW, 375PX PHONE · HIT AREAS SHADED</div>
+      <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);max-width:375px;overflow:hidden">
+        <div style="display:flex;gap:11px;align-items:flex-start;padding:8px 18px;border-top:1px solid #F0F2F7">
+          <div style="flex:0 0 20px;height:20px;margin-top:1px;border-radius:50%;border:1.5px solid #9AA6C2;box-shadow:0 0 0 0 transparent;background:rgba(216,65,47,0.18)"></div>
+          <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500;line-height:1.35">Call Rabbi Adler about the booth</div><div style="font-family:'IBM Plex Mono', monospace;font-size:10px;font-weight:500;letter-spacing:0.05em;color:#8A97B3;margin-top:3px">LATER · FROM THE BUZZ</div></div>
+          <div style="font-size:12.5px;font-weight:600;color:#2D46AF;padding:3px 0;background:rgba(216,65,47,0.18)">Today</div>
+          <div style="font-size:18px;line-height:1;color:#B4BCCE;padding:0 2px;background:rgba(216,65,47,0.18)">×</div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">Tick 20×20 · Today ≈ 34×19 · × ≈ 13×18. Three targets inside 30px of each other.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#1D6B37">PROPOSED · SAME ROW · HIT AREAS SHADED</div>
+      <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);max-width:375px;overflow:hidden">
+        <div style="display:flex;gap:4px;align-items:flex-start;padding:8px 6px 8px 6px;min-height:44px;border-top:1px solid #F0F2F7">
+          <div style="flex:0 0 44px;align-self:stretch;margin:-8px 0;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;background:rgba(47,164,87,0.16)"><div style="width:20px;height:20px;border-radius:50%;border:1.5px solid #9AA6C2;background:#FFFFFF"></div></div>
+          <div style="flex:1;min-width:0;padding:2px 0"><div style="font-size:16px;font-weight:500;line-height:1.4">Call Rabbi Adler about the booth</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782;margin-top:3px">LATER · FROM THE BUZZ</div></div>
+          <div style="align-self:stretch;margin:-8px 0;min-width:44px;padding:0 8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#2D46AF;background:rgba(47,164,87,0.16)">Today</div>
+          <div style="align-self:stretch;margin:-8px 0;width:44px;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;color:#4A5A74;background:rgba(47,164,87,0.10)">×</div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:#4A5A74;line-height:1.4">Tick 44 × row · Today 58 × row · × 44 × row. The row is ≥ 58px with a meta line, never under 44. Gutters move from row padding into the controls (18 → 6 + the 44px tick column), so the text doesn't move.</div>
+    </div>
+  </div>
+  <div style="background:#10233F;color:#FFFFFF;border-radius:16px;padding:20px 22px;font-family:'IBM Plex Mono', monospace;font-size:13px;line-height:1.7;white-space:pre-wrap">// parts.tsx
+export const row = { display: "flex", gap: "4px", alignItems: "flex-start",
+  padding: "8px 6px", minHeight: "44px", borderTop: `1px solid ${C.rule}` };
+
+/** Today · Nudge · Decline · Move to today. Looks like text; taps like a button. */
+export const linkBtn = { ...T.small, color: C.blue, background: "transparent", border: 0,
+  alignSelf: "stretch", margin: "-8px 0", padding: "0 8px", minWidth: "44px",
+  display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" };
+
+export const removeBtn = { ...linkBtn, color: C.muted, width: "44px", padding: 0, fontSize: "20px" };
+export const tickHit  = { ...linkBtn, flex: "0 0 44px", alignItems: "flex-start", paddingTop: "12px" };</div>
+</section>
+
+<section id="f" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">F · Absence in a table</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">Still written out. Only orange when it's a problem.</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">The rule "absence is written in words" stays. What changes is that orange now means <em>this absence contradicts something</em>: seats with no plan, a plan with no seats. Absence that is simply the normal state is written in faint at 400. The column header says how normal it is, so nobody mistakes quiet for "fine".</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#A3261A">NOW · SchoolTable.tsx AS SHIPPED</div>
+    <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);overflow:hidden">
+      <div style="display:grid;grid-template-columns:minmax(0,2.2fr) 1.1fr 1fr 0.8fr 0.6fr 1fr;background:#F4F7FD;border-bottom:1px solid #E3E6EF">
+        <sc-for list="{{ colsNow }}" as="h" hint-placeholder-count="6"><div style="padding:10px 16px;font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:#4A5A74;white-space:nowrap">{{ h }}</div></sc-for>
+      </div>
+      <sc-for list="{{ schools }}" as="s" hint-placeholder-count="10">
+        <div style="display:grid;grid-template-columns:minmax(0,2.2fr) 1.1fr 1fr 0.8fr 0.6fr 1fr;border-bottom:1px solid #E3E6EF;align-items:center;font-size:15px">
+          <div style="padding:10px 16px;min-width:0"><div style="font-weight:600">{{ s.name }}</div><div style="font-size:12px;color:#4A5A74;margin-top:2px">{{ s.place }}</div></div>
+          <div style="padding:10px 16px"><span style="display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:9999px;color:{{ s.stNowFg }};background:{{ s.stNowBg }}">{{ s.status }}</span></div>
+          <div style="padding:10px 16px;color:{{ s.planNowInk }};font-weight:{{ s.planNowW }}">{{ s.planNow }}</div>
+          <div style="padding:10px 16px;color:{{ s.seatsNowInk }};font-weight:{{ s.seatsNowW }}">{{ s.seatsNow }}</div>
+          <div style="padding:10px 16px;color:#4A5A74">{{ s.staff }}</div>
+          <div style="padding:10px 16px;color:#4A5A74">{{ s.ago }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#1D6B37">PROPOSED · SAME TEN ROWS · THIS IS ALSO THE ≥ 760PX LAYOUT FOR G</div>
+    <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);overflow:hidden">
+      <div style="display:grid;grid-template-columns:minmax(0,2.2fr) 1.1fr 1fr 0.8fr 0.6fr 1fr;background:#F4F7FD;border-bottom:1px solid #E3E6EF">
+        <sc-for list="{{ colsNew }}" as="h" hint-placeholder-count="6"><div style="padding:10px 16px;display:flex;flex-direction:column;gap:2px"><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:#4A5A74;white-space:nowrap">{{ h.t }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782;white-space:nowrap">{{ h.c }}</div></div></sc-for>
+      </div>
+      <sc-for list="{{ schools }}" as="s" hint-placeholder-count="10">
+        <div style="display:grid;grid-template-columns:minmax(0,2.2fr) 1.1fr 1fr 0.8fr 0.6fr 1fr;border-bottom:1px solid #E3E6EF;align-items:center;font-size:16px">
+          <div style="padding:10px 16px;min-width:0"><div style="font-weight:600">{{ s.name }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782;margin-top:3px">{{ s.placeMeta }}</div></div>
+          <div style="padding:10px 16px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:3px 10px 3px 8px;border-radius:9999px;color:{{ s.stFg }};background:{{ s.stBg }}"><span style="width:9px;height:9px;border-radius:50%;border:2px solid {{ s.stDot }};background:{{ s.stFill }}"></span>{{ s.status }}</span></div>
+          <div style="padding:10px 16px;font-size:{{ s.planFs }};color:{{ s.planInk }};font-weight:{{ s.planW }};line-height:1.3">{{ s.planNew }}</div>
+          <div style="padding:10px 16px;font-size:{{ s.seatsFs }};color:{{ s.seatsInk }};font-weight:{{ s.seatsW }};font-variant-numeric:tabular-nums;line-height:1.3">{{ s.seatsNew }}</div>
+          <div style="padding:10px 16px;color:#4A5A74;font-variant-numeric:tabular-nums">{{ s.staff }}</div>
+          <div style="padding:10px 16px;font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ s.agoMeta }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="background:#10233F;color:#FFFFFF;border-radius:16px;padding:20px 22px;font-family:'IBM Plex Mono', monospace;font-size:13px;line-height:1.7;white-space:pre-wrap">{{ absentCode }}</div>
+</section>
+
+<section id="g" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">G · A table that becomes cards</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">Below 760px, each row becomes a card</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">Not 700: the codebase already switches at 759/760 (<span style="font-family:'IBM Plex Mono', monospace;font-size:13px">.joc-hide-sm</span> / <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">.joc-only-sm</span>, the messaging card). A second phone breakpoint 60px away would be drift of its own. Name it <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">BP.cards = 760</span>. The desktop layout is the proposed table in F. The 720px <span style="font-family:'IBM Plex Mono', monospace;font-size:13px">minWidth</span> and the horizontal scroller go away.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:375px minmax(0,1fr);gap:28px;align-items:start">
+    <div style="width:375px;background:#FBF9F4;border-radius:20px;border:1px solid #CBD3EE;padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782;padding:0 2px">375PX · SCHOOLS · 10 · PLAN 3 OF 10</div>
+      <sc-for list="{{ phoneSchools }}" as="s" hint-placeholder-count="4">
+        <div style="background:#FFFFFF;border-radius:16px;box-shadow:0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-height:44px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+            <div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="font-size:19px;font-weight:700;letter-spacing:-0.02em;line-height:1.25">{{ s.name }}</div><div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ s.placeMeta }}</div></div>
+            <span style="flex:none;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:3px 10px 3px 8px;border-radius:9999px;color:{{ s.stFg }};background:{{ s.stBg }}"><span style="width:9px;height:9px;border-radius:50%;border:2px solid {{ s.stDot }};background:{{ s.stFill }}"></span>{{ s.status }}</span>
+          </div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px solid #F0F2F7">
+            <div style="font-size:16px;line-height:1.35;color:{{ s.cardInk }};font-weight:{{ s.cardW }}">{{ s.cardLine }}</div>
+            <div style="flex:none;font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.04em;color:#5A6782">{{ s.agoMeta }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-size:16px;font-weight:600">What survives the cut</div>
+      <sc-for list="{{ survive }}" as="v" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:120px 110px minmax(0,1fr);gap:14px;align-items:baseline;padding:12px 16px;background:#FFFFFF;border-radius:12px;border:1px solid #E3E6EF">
+          <div style="font-size:16px;font-weight:600">{{ v.field }}</div>
+          <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:600;letter-spacing:0.04em;color:{{ v.ink }}">{{ v.fate }}</div>
+          <div style="font-size:14px;line-height:1.4;color:#4A5A74">{{ v.how }}</div>
+        </div>
+      </sc-for>
+      <div style="font-size:14px;line-height:1.45;color:#4A5A74">The whole card is the link (<span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">.joc-card-link::after</span>, already in globals.css), so the tap target is the card. The table and the cards are the same component, switched by <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">.joc-hide-sm</span> / <span style="font-family:'IBM Plex Mono', monospace;font-size:13px;color:#10233F">.joc-only-sm</span>. No JS width check, no new CSS.</div>
+    </div>
+  </div>
+</section>
+
+<section id="h" style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">H · Tokens</div>
+    <h2 style="margin:0;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-0.03em">joc-tokens.ts, ready to paste</h2>
+    <p style="margin:0;font-family:Newsreader, serif;font-size:16px;line-height:1.6;color:#4A5A74;max-width:68ch">The changed values are commented. Then delete the five grey exports from parts.tsx, and either delete the @theme block in globals.css or generate it from this file.</p>
+  </div>
+  <div style="background:#10233F;color:#FFFFFF;border-radius:16px;padding:22px 24px;font-family:'IBM Plex Mono', monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-x:auto">export const C = {
+  ink: "#10233F",
+  paper: "#FBF9F4",
+  white: "#FFFFFF",
+  panel: "#F4F7FD",
+
+  blue: "#2D46AF",
+  blueHover: "#223892",
+  blueTint: "#E4E9F8",
+  orange: "#FA912D",          // a fill only — ink on it, 6.86:1
+  orangeText: "#A85B00",      // CHANGED from #C96C00 (3.73:1) → 5.05 white / 4.80 paper / 4.52 orangeTint
+  orangeTint: "#FFF0E0",
+  green: "#2FA457",           // a fill and a dot only (3.20:1)
+  greenText: "#1D6B37",
+  greenTint: "#E3F4E8",
+  red: "#D8412F",             // a fill and a dot only (4.45:1)
+  redText: "#A3261A",
+  redTint: "#FBE6E3",
+  destructive: "#B4541A",
+
+  // Text greys — all ≥ 4.5:1 on white, paper, panel, segment and every tint
+  muted: "#4A5A74",           // 6.99 / 6.64 — absorbs #3B4A66 (SUB)
+  faint: "#5A6782",           // CHANGED from #8A97B3 (2.93:1) → 5.68 / 5.40 — was QUIET in parts.tsx
+
+  // Never text
+  ringQuiet: "#9AA6C2",
+  outline: "#CBD3EE",         // absorbs #B9C3DD
+  hairline: "#E3E6EF",
+  rule: "#F0F2F7",            // NEW NAME for parts.tsx RULE — the in-panel row divider
+  segment: "#EEF0F5",         // absorbs #F4F1E9
+
+  onDarkLabel: "#FFD8AE",     // 11.76:1 on ink
+  onDarkBody: "#C6CFF0",      // 10.18:1 on ink
+} as const;
+
+export const R = {
+  sm: "8px",                  // NEW — small controls inside a row; nested = outer − padding
+  form: "12px",
+  button: "12px",
+  row: "16px",
+  hero: "20px",
+  chip: "9999px",
+} as const;
+
+const ui = "var(--font-outfit)", read = "var(--font-newsreader)", data = "var(--font-mono)";
+
+export const T = {
+  hero:    { fontFamily: ui,   fontSize: "44px", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.03em" },
+  title:   { fontFamily: ui,   fontSize: "30px", fontWeight: 600, lineHeight: 1.1,  letterSpacing: "-0.03em" },
+  section: { fontFamily: ui,   fontSize: "24px", fontWeight: 700, lineHeight: 1.2,  letterSpacing: "-0.02em" },
+  name:    { fontFamily: ui,   fontSize: "19px", fontWeight: 700, lineHeight: 1.25, letterSpacing: "-0.02em" },
+  body:    { fontFamily: ui,   fontSize: "16px", fontWeight: 500, lineHeight: 1.4,  letterSpacing: "0" },
+  read:    { fontFamily: read, fontSize: "16px", fontWeight: 400, lineHeight: 1.6,  letterSpacing: "0" },
+  small:   { fontFamily: ui,   fontSize: "14px", fontWeight: 600, lineHeight: 1.35, letterSpacing: "0" },
+  meta:    { fontFamily: data, fontSize: "11px", fontWeight: 500, lineHeight: 1.35, letterSpacing: "0.04em", color: C.faint },
+} as const;
+// T.read is T.body's size in the reading face — seven sizes, eight styles.
+
+export const BP = { cards: 760, desk: 980 } as const;   // cards: = .joc-hide-sm / .joc-only-sm
+export const HIT = "44px";
+export const ROW_SHADOW = "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)";   // unchanged</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:12px">
+  <div style="font-family:'IBM Plex Mono', monospace;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:#5A6782">Migration, in order</div>
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:820px">
+    <sc-for list="{{ steps }}" as="st" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:baseline;padding:12px 16px;background:#FFFFFF;border-radius:12px;border:1px solid #E3E6EF">
+        <div style="font-family:'IBM Plex Mono', monospace;font-size:13px;font-weight:600;color:#2D46AF">{{ st.n }}</div>
+        <div style="font-size:16px;line-height:1.45">{{ st.t }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const ok = '#1D6B37', no = '#A3261A';
+    const text = { tagBg: '#E3F4E8', tagFg: '#1D6B37', passInk: ok };
+    const nontext = { tagBg: '#FBE6E3', tagFg: '#A3261A', passInk: no };
+    const found = [
+      { head: 'Tailwind is still imported.', body: 'globals.css opens with @import "tailwindcss" and an @theme block that "mirrors" joc-tokens.ts, but its radii have drifted (26/20/18/12/8) and it has no faint, outline or segment. Generate it from the TS file, or delete it.', where: 'src/app/globals.css:1–45' },
+      { head: 'The greys live in parts.tsx, not in the tokens.', body: 'SUB #3B4A66, QUIET #5A6782, FAINT #8A97B3, SOFT #B4BCCE and RULE #F0F2F7 are exported from the desk\'s own file, so the desk drifts even when joc-tokens.ts is correct.', where: 'src/components/mydesk/parts.tsx:16–23' },
+      { head: '#2C7AC9 is not only a status.', body: 'Three of five uses are statuses (QUOTED, CONTACTED) or a role (SCHOOL_ADMIN). The other two are a resource category ("Activity") and the fourth marketing card colour. Each one needs its own replacement.', where: 'OrdersClient · DemoTable · PeopleTable · ResourceLibrary · app/page.tsx' },
+      { head: 'One focus rule already exists, and it\'s right.', body: '.joc-program a:focus-visible uses a 3px ink outline, a 2px offset and a white 2px halo. Promote it to a global rule. Inline outline:none beats any stylesheet, so it has to carry !important.', where: 'globals.css:277' },
+      { head: 'A sixth green.', body: 'STATUS_TONE.DONE is #4FAE6E (2.76:1), set at 10px mono. It folds into greenText.', where: 'mydesk/Tasks.tsx:24' },
+      { head: 'The desk\'s verbs are 19px tall.', body: 'linkBtn is 12.5px with 3px vertical padding, and × is 18px with 2px horizontal padding. On a phone, Today, Nudge and × sit within 30px of each other.', where: 'mydesk/parts.tsx:146 · Tasks.tsx:250' },
+    ];
+    const greys = [
+      { name: 'ink', hex: '#10233F', role: 'text · unchanged', job: 'Names, task lines, headings, table values, inputs.', why: 'Absorbs #1F304D and #2C3C5A. At reading size nobody can tell them apart from ink.', w: '15.74', p: '14.96', ...text },
+      { name: 'muted', hex: '#4A5A74', role: 'text · unchanged', job: 'Secondary prose, row reasons, empty states, column headers, and the × remove control.', why: 'Absorbs SUB #3B4A66. Remove is a control, not decoration, so it gets a text colour.', w: '6.99', p: '6.64', ...text },
+      { name: 'faint', hex: '#5A6782', role: 'text · changed', job: 'Meta: the 11px mono line, group counts, "ENTER ↵", "ONLY YOU SEE THIS", finished tasks.', why: 'Was #8A97B3 (2.93 / 2.79). This is QUIET from parts.tsx, already in 10 places. 4.68 on blueTint, 4.98 on segment.', w: '5.68', p: '5.40', ...text },
+      { name: 'ringQuiet', hex: '#9AA6C2', role: 'never text · unchanged', job: 'An unticked checkbox ring, the dashed + of an add row.', why: 'Decoration only: the control is always labelled and always 44px.', w: '2.44', p: '2.32', ...nontext },
+      { name: 'outline', hex: '#CBD3EE', role: 'never text · unchanged', job: 'Field and quiet-button borders, the composer at rest (#B9C3DD merges here).', why: 'Never text. "ONLY YOU SEE THIS" moves to faint.', w: '1.49', p: '1.42', ...nontext },
+      { name: 'hairline', hex: '#E3E6EF', role: 'never text · unchanged', job: 'Card borders, table rules, the row-shadow offset.', why: 'Absorbs --border-subtle rgba(16,35,63,.10), which renders as roughly the same grey.', w: '1.25', p: '1.19', ...nontext },
+      { name: 'rule', hex: '#F0F2F7', role: 'never text · newly declared', job: 'The hairline between rows inside a desk panel, lighter on purpose.', why: 'Already shipping as RULE in parts.tsx, with a written reason. Declared here, not invented.', w: '1.12', p: '1.06', ...nontext },
+    ];
+    const retired = [
+      { from: '#1F304D', to: 'C.ink', why: '13.22:1. 5 uses; same job as ink.' },
+      { from: '#2C3C5A', to: 'C.ink', why: '11.05:1. 4 uses; same job as ink.' },
+      { from: '#3B4A66', to: 'C.muted', why: 'SUB. Empty-state prose and quiet-button text, which is muted\'s job. 6 uses.' },
+      { from: '#5A6782', to: 'C.faint', why: 'QUIET becomes the token. Same value, so nothing moves visually.' },
+      { from: '#8A97B3', to: 'C.faint', why: 'Old faint, 2.93:1. All 26 text uses darken to #5A6782.' },
+      { from: '#B4BCCE', to: 'faint / muted', why: 'SOFT, 1.90:1. Group counts go to faint; the × control goes to muted.' },
+      { from: '#B9C3DD', to: 'C.outline', why: 'The composer border. A second outline grey with no reason given.' },
+      { from: '#4FAE6E', to: 'C.greenText', why: 'DONE status, 2.76:1 at 10px. Becomes 6.54:1.' },
+      { from: '#FCFCFD', to: 'C.white', why: 'The add-row ground. Indistinguishable from white.' },
+      { from: '#F4F1E9', to: 'C.segment', why: 'The person-picker chips. A warm grey nowhere else in the system.' },
+    ];
+    const others = [
+      { name: 'orangeText', hex: '#A85B00', verdict: 'Changed', verdictInk: no, note: 'Was #C96C00 (3.73 / 3.55), used at 10–15px. Darkened in the same hue until it passes on orangeTint as well (4.52).', ratio: '5.05 / 4.80' },
+      { name: 'blue', hex: '#2D46AF', verdict: 'Unchanged', verdictInk: ok, note: 'Text, fills, links. White on blue is 8.06:1.', ratio: '8.06 / 7.66' },
+      { name: 'blueHover', hex: '#223892', verdict: 'Unchanged', verdictInk: ok, note: 'White on it is 10.25:1.', ratio: '10.25 / 9.74' },
+      { name: 'orange', hex: '#FA912D', verdict: 'Unchanged', verdictInk: ok, note: 'Fill only, with ink on it (6.86:1). Never text: 2.29:1.', ratio: 'fill' },
+      { name: 'greenText', hex: '#1D6B37', verdict: 'Unchanged', verdictInk: ok, note: 'green #2FA457 (3.20:1) stays a fill and a dot.', ratio: '6.54 / 6.22' },
+      { name: 'redText', hex: '#A3261A', verdict: 'Unchanged', verdictInk: ok, note: 'red #D8412F (4.45:1) stays a fill and a dot.', ratio: '7.37 / 7.00' },
+      { name: 'destructive', hex: '#B4541A', verdict: 'Unchanged', verdictInk: ok, note: 'Passes as text. Keep it separate from redText: it means "undoes someone\'s work", not "error".', ratio: '4.97 / 4.73' },
+      { name: 'onDarkLabel', hex: '#FFD8AE', verdict: 'Unchanged', verdictInk: ok, note: '11.76:1 on ink. onDarkBody #C6CFF0 is 10.18:1 on ink.', ratio: 'on ink' },
+    ];
+    const blue2 = [
+      { where: 'admin/orders/OrdersClient.tsx:14', what: 'QUOTED status', to: 'TONE.info + half dot.', why: 'Started, not finished.' },
+      { where: 'admin/DemoTable.tsx:10', what: 'CONTACTED status', to: 'TONE.info + half dot.', why: 'Same meaning, same treatment.' },
+      { where: 'admin/PeopleTable.tsx:12', what: 'SCHOOL_ADMIN role', to: 'C.blue on blueTint, no dot.', why: 'A role isn\'t a stage; it doesn\'t need the dot. TEACHER stays muted on panel.' },
+      { where: 'resources/ResourceLibrary.tsx:10', what: '"Activity" category', to: 'C.greenText on greenTint.', why: 'The other categories already use blue and orange. Green is the one brand hue left that passes as text.' },
+      { where: 'app/page.tsx:18', what: '4th marketing card colour', to: 'C.ink.', why: 'Navy is a brand colour; the white headline on it is 15.74:1. White on #2C7AC9 is 4.44.' },
+    ];
+    const ui = 'Outfit, sans-serif', rd = 'Newsreader, serif', mono = "'IBM Plex Mono', monospace";
+    const types = [
+      { name: 'hero', state: 'UNCHANGED', stateInk: ok, spec: 'Outfit 800 · 44 / 1.05 · −0.03em', job: 'The blue hero headline. Public pages may scale it: clamp(44px, 6vw, 88px).', absorbs: 'Absorbs 36–96.', ff: ui, fs: '44px', fw: 800, lh: 1.05, ls: '-0.03em', color: '#10233F', sample: 'Kindness Booth', hasAlt: false },
+      { name: 'title', state: 'UNCHANGED', stateInk: ok, spec: 'Outfit 600 · 30 / 1.1 · −0.03em', job: 'pageTitle and the desk header. bandFigure uses this size at 800.', absorbs: 'Absorbs 26–34; the desk\'s clamp(24px, 2.6cqw, 30px) stays as is.', ff: ui, fs: '30px', fw: 600, lh: 1.1, ls: '-0.03em', color: '#10233F', sample: 'Rivka’s desk', hasAlt: false },
+      { name: 'section', state: 'UNCHANGED', stateInk: ok, spec: 'Outfit 700 · 24 / 1.2 · −0.02em', job: 'sectionHeading. A band figure that\'s a word ("Being set up").', absorbs: 'Absorbs 20–22. Band words go from 22 to 24; "Being set up" is 152px wide, which fits the 170px band.', ff: ui, fs: '24px', fw: 700, lh: 1.2, ls: '-0.02em', color: '#10233F', sample: 'Schools in Kindness Booth', hasAlt: false },
+      { name: 'name', state: 'UNCHANGED', stateInk: ok, spec: 'Outfit 700 · 19 / 1.25 · −0.02em', job: 'rowTitle, and a desk panel title at 600.', absorbs: 'Absorbs 17–20. Panel titles go from 17 to 19 so a panel heading and a row heading are the same thing.', ff: ui, fs: '19px', fw: 600, lh: 1.25, ls: '-0.02em', color: '#10233F', sample: 'Tasks', hasAlt: false },
+      { name: 'body', state: 'NEW STEP', stateInk: no, spec: 'Outfit 500 · 16 / 1.4 · 0  —  read: Newsreader 400 · 16 / 1.6', job: 'Task lines, fields, buttons. The same size in Newsreader is prose: row reasons, empty states, descriptions.', absorbs: 'Absorbs 15, 15.5, 16, 16.5, 17, 17.5 (prose 17 → 16 at 1.6; the extra line height carries the Newsreader).', ff: ui, fs: '16px', fw: 500, lh: 1.4, ls: '0', color: '#10233F', sample: 'Send Kindness Booth kit list to Rabbi Adler', hasAlt: true, alt: 'Type above to add your first task. Things people ask you to do, and notes you move off the Buzz, land here too.', altFf: rd, altFw: 400, altLh: 1.6, altColor: '#4A5A74' },
+      { name: 'small', state: 'NEW STEP', stateInk: no, spec: 'Outfit 600 · 14 / 1.35 · 0', job: 'Inline verbs (Today, Nudge, Decline), chips, field hints, filter chips.', absorbs: 'Absorbs 12, 12.5, 13, 13.5, 14, 14.5. linkBtn goes from 12.5 to 14; chip from 12 to 14 (filterChip is already 14).', ff: ui, fs: '14px', fw: 600, lh: 1.35, ls: '0', color: '#2D46AF', sample: 'Today   Nudge   Decline   Move to today', hasAlt: false },
+      { name: 'meta', state: 'UNCHANGED (= label)', stateInk: ok, spec: 'IBM Plex Mono 500 · 11 / 1.35 · 0.04em · faint', job: 'Every mono line: the meta under a task, group heads, panel counts, dates, codes. Uppercase is in the data, not the token.', absorbs: 'Absorbs 9, 10, 10.5, 11.5, 12 mono (Meta 10, GroupHead 10.5, datum 12).', ff: mono, fs: '11px', fw: 500, lh: 1.35, ls: '0.04em', color: '#5A6782', sample: 'FROM THE BUZZ · BERMAN HEBREW ACADEMY · BY MONDAY', hasAlt: false },
+    ];
+    const metaGrounds = [
+      { bg: '#FFFFFF', r: '5.68' }, { bg: '#FBF9F4', r: '5.40' }, { bg: '#F4F7FD', r: '5.29' }, { bg: '#EEF0F5', r: '4.98' }, { bg: '#E4E9F8', r: '4.68' },
+    ];
+    const radii = [
+      { name: 'sm', v: '8px', state: 'NEW NAME', stateInk: no, job: 'Small controls inside a row: desk buttons, segmented ground, picker chips, swatches, tooltips.', from: 'From 2, 3, 4, 5, 6, 8. --radius-chip 8 becomes this (it was never used for chips).' },
+      { name: 'form · R.button', v: '12px', state: 'UNCHANGED', stateInk: ok, job: 'Fields, buttons, notes, the add-task box. Two names for one value, kept so nothing has to migrate.', from: 'From 9, 10, 11, 12. btn.base 10 → 12.' },
+      { name: 'row', v: '16px', state: 'UNCHANGED', stateInk: ok, job: 'Row cards, desk panels, tables, the messaging card.', from: 'From 14, 16, 18. Panel 18 → 16; stage card 14 → 16; --radius-inner 18 is removed.' },
+      { name: 'hero', v: '20px', state: 'UNCHANGED', stateInk: ok, job: 'The blue hero, sheets and dialogs.', from: 'From 20, 22, 24, 26. --radius-card-lg 26 is removed.' },
+      { name: 'chip', v: '9999px', state: 'UNCHANGED', stateInk: ok, job: 'Status chips, filter chips, pills, avatars.', from: 'From 999, 9999, and the picker\'s 20.' },
+    ];
+    const hit = 'rgba(47,164,87,0.0)';
+    const buttons = [
+      { name: 'Primary', state: 'UNCHANGED BUT 16PX', stateInk: ok, label: 'Reach out', h: '46px', pad: '0 18px', bg: '#2D46AF', fg: '#FFFFFF', border: '2px solid #2D46AF', fs: '16px', fw: 700, td: 'none', hit, spec: 'primaryButton · 46 tall · 0 18 · R.button · T.body 700', why: 'Visual 46 = hit 46. Text 15 → 16 to sit on the scale. White on blue is 8.06:1.' },
+      { name: 'Secondary', state: 'UNCHANGED', stateInk: ok, label: 'Let’s review', h: '46px', pad: '0 18px', bg: '#FFFFFF', fg: '#2D46AF', border: '2px solid #2D46AF', fs: '16px', fw: 700, td: 'none', hit, spec: 'secondaryButton · 2px C.blue border · white fill', why: 'Desk btn.quiet (outline border, SUB text, 29px tall) merges into this at 44.' },
+      { name: 'Quiet', state: 'UNCHANGED', stateInk: ok, label: 'Never mind', h: '44px', pad: '0 12px', bg: 'transparent', fg: '#4A5A74', border: '0', fs: '16px', fw: 500, td: 'none', hit: 'rgba(47,164,87,0.16)', spec: 'quietButton · 44 · muted · no box', why: 'Cancel and dismiss. btn.bare (FAINT, 12.5px) merges here; it becomes muted, because a control isn\'t meta.' },
+      { name: 'Inline verb', state: 'CHANGED', stateInk: no, label: 'Nudge', h: '44px', pad: '0 8px', bg: 'transparent', fg: '#2D46AF', border: '0', fs: '14px', fw: 600, td: 'none', hit: 'rgba(47,164,87,0.16)', spec: 'linkBtn · T.small 600 · stretch to row · min 44 × 44', why: 'Was 12.5px with 3px padding (≈19px tall). It looks the same, as blue words, but now taps at full row height.' },
+    ];
+    const raw = [
+      ['Berman Hebrew Academy', 'Rockville, MD', 640, 'Active', 'Full year', 120, 6, '2d ago'],
+      ['Ramaz Upper School', 'New York, NY', 520, 'Active', 'Program only', null, 4, 'today'],
+      ['Maimonides School', 'Brookline, MA', 410, 'Contacted', null, null, 3, '12d ago'],
+      ['Maayanot', 'Teaneck, NJ', 380, 'Lead', null, 60, 2, '3mo ago'],
+      ['Shalhevet High School', 'Los Angeles, CA', 290, 'Contacted', null, null, 2, '5d ago'],
+      ['Margolin Hebrew Academy', 'Memphis, TN', 340, 'Active', 'Full year', 80, 5, 'yesterday'],
+      ['YTA', null, null, 'Lead', null, null, 0, null],
+      ['Kohelet Yeshiva', 'Merion Station, PA', 300, 'Lead', null, null, 1, '1mo ago'],
+      ['NEJA', 'West Hartford, CT', 260, 'Paused', null, null, 1, '1y ago'],
+      ['ICJA', 'Atlanta, GA', 210, 'Lead', null, null, 1, '2mo ago'],
+    ];
+    const stNow = { Active: '#2FA457', Contacted: '#2C7AC9', Lead: '#FA912D', Paused: '#4A5A74' };
+    const stNew = {
+      Active: { stFg: '#1D6B37', stBg: '#E3F4E8', stDot: '#1D6B37', stFill: '#1D6B37' },
+      Contacted: { stFg: '#2D46AF', stBg: '#E4E9F8', stDot: '#2D46AF', stFill: 'linear-gradient(90deg,#2D46AF 50%,transparent 50%)' },
+      Lead: { stFg: '#4A5A74', stBg: '#F4F7FD', stDot: '#4A5A74', stFill: 'transparent' },
+      Paused: { stFg: '#4A5A74', stBg: '#EEF0F5', stDot: '#9AA6C2', stFill: '#9AA6C2' },
+    };
+    const flag = { ink: '#A85B00', w: 600 }, quiet = { ink: '#5A6782', w: 400 }, val = { ink: '#10233F', w: 500 };
+    const schools = raw.map(([name, city, students, status, plan, seats, staff, ago]) => {
+      const pT = plan ? val : seats ? flag : quiet;
+      const sT = seats ? val : plan ? flag : quiet;
+      let cardLine, cT;
+      if (plan && seats) { cardLine = `${plan} · ${seats} seats`; cT = val; }
+      else if (plan) { cardLine = `${plan} · seats not set`; cT = flag; }
+      else if (seats) { cardLine = `No plan · ${seats} seats`; cT = flag; }
+      else { cardLine = 'No plan yet'; cT = quiet; }
+      return {
+        name, status, staff,
+        place: (city || 'Place not recorded') + (students ? ` · ${students} students` : ''),
+        placeMeta: ((city || 'Place not recorded') + (students ? ` · ${students} students` : '')).toUpperCase(),
+        stNowFg: stNow[status], stNowBg: stNow[status] + '1a',
+        planNow: plan || 'No plan', planNowInk: plan ? '#4A5A74' : '#C96C00', planNowW: plan ? 400 : 600,
+        seatsNow: seats ?? 'Not set', seatsNowInk: seats ? '#4A5A74' : '#C96C00', seatsNowW: seats ? 400 : 600,
+        ago: ago || 'Not set', agoMeta: (ago || 'No contact yet').toUpperCase(),
+        ...stNew[status],
+        planNew: plan || 'No plan', planInk: pT.ink, planW: pT.w, planFs: '16px',
+        seatsNew: seats ?? 'Not set', seatsInk: sT.ink, seatsW: sT.w, seatsFs: '16px',
+        cardLine, cardInk: cT.ink, cardW: cT.w,
+      };
+    });
+    const phoneSchools = [schools[0], schools[1], schools[2], schools[3]];
+    const colsNow = ['School', 'Status', 'Plan', 'Seats', 'Staff', 'Last contact'];
+    const colsNew = [{ t: 'School', c: '10 SCHOOLS' }, { t: 'Status', c: '3 ACTIVE' }, { t: 'Plan', c: '3 OF 10' }, { t: 'Seats', c: '3 OF 10' }, { t: 'Staff', c: '' }, { t: 'Last contact', c: '' }];
+    const survive = [
+      { field: 'School', fate: 'KEPT · TITLE', ink: ok, how: 'T.name 19/700. The whole card is the link.' },
+      { field: 'Place, students', fate: 'KEPT · META', ink: ok, how: 'The mono line under the name. "Place not recorded" is still written out, in faint.' },
+      { field: 'Status', fate: 'KEPT · CHIP', ink: ok, how: 'Top right, with the ring / half / full dot, so it reads at a glance.' },
+      { field: 'Plan + Seats', fate: 'MERGED', ink: ok, how: 'One line: "Full year · 120 seats". The F rule applies: quiet "No plan yet" when both are missing, orange when only one is.' },
+      { field: 'Last contact', fate: 'KEPT · META', ink: ok, how: 'Mono, at the right of the plan line.' },
+      { field: 'Staff', fate: 'DROPPED', ink: no, how: 'A count of portal users. It\'s the field least used to decide anything while scanning on a phone, and it\'s one tap away on the school page.' },
+    ];
+    const absentCode = "// components/Absent.tsx\n/** \"quiet\": absence is the normal state here (the column header carries the count).\n *  \"flag\":  absence contradicts another field, or blocks the next step. Default. */\nexport function Absent({ children, tone = \"flag\" }: { children: React.ReactNode; tone?: \"flag\" | \"quiet\" }) {\n  return tone === \"flag\"\n    ? <span style={{ color: C.orangeText, fontWeight: 600 }}>{children}</span>\n    : <span style={{ color: C.faint, fontWeight: 400 }}>{children}</span>;\n}\n// SchoolTable: Plan is quiet unless s.seats; Seats is quiet unless s.plan.";
+    const steps = [
+      { n: '01', t: 'Paste the tokens. faint and orangeText change value everywhere at once; nothing else moves.' },
+      { n: '02', t: 'Delete SUB, QUIET, FAINT, SOFT and RULE from parts.tsx and import C.muted, C.faint and C.rule. Replace the four undeclared greys and #4FAE6E using the retired list in A.' },
+      { n: '03', t: 'Add the global :focus-visible rule, then remove inline outline:none file by file.' },
+      { n: '04', t: 'Make row and linkBtn stretch to the row (E). That fixes Today, Nudge, Decline, Move to today and × in one file.' },
+      { n: '05', t: 'Add the tone prop to Absent and pass tone="quiet" in SchoolTable\'s Plan and Seats cells unless the other field is set.' },
+      { n: '06', t: 'Replace #2C7AC9 in its five files (A2). Then snap font sizes to T and radii to R; that last step is a find-and-replace, not a review.' },
+    ];
+    return { found, greys, retired, others, blue2, types, metaGrounds, radii, buttons, schools, phoneSchools, colsNow, colsNew, survive, steps, absentCode };
+  }
+}
+</script>
+</body>
+</html>

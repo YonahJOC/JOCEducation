@@ -8,8 +8,7 @@ import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
   fontSize: "15px", color: C.ink, backgroundColor: C.panel,
-  border: `1px solid ${C.hairline}`, borderRadius: "10px",
-  outline: "none", fontFamily: "var(--font-outfit)",
+  border: `1px solid ${C.hairline}`, borderRadius: "10px", fontFamily: "var(--font-outfit)",
 };
 
 /**

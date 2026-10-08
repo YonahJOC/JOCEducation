@@ -48,7 +48,7 @@ export async function BuzzStrip() {
         </h2>
         <span style={{
           font: "500 11px/1 var(--font-mono)", letterSpacing: ".08em",
-          color: "#5A6782", textTransform: "uppercase",
+          color: C.faint, textTransform: "uppercase",
         }}>
           {week} this week{unread > 0 ? ` · ${unread} unread` : ""}
         </span>

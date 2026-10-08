@@ -187,7 +187,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
             style={{
               width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "13px",
               color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "10px",
-              padding: "12px", outline: "none", resize: "vertical", marginBottom: "14px",
+              padding: "12px", resize: "vertical", marginBottom: "14px",
             }}
           />
 
@@ -209,7 +209,7 @@ export function BulkImport({ cycles, disabled }: { cycles: CycleRef[]; disabled?
                       style={{
                         fontFamily: "var(--font-outfit)", fontSize: "13px", color: C.ink,
                         backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "9px",
-                        padding: "8px 10px", minHeight: "40px", outline: "none",
+                        padding: "8px 10px", minHeight: "40px",
                       }}
                     >
                       {FIELDS.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}

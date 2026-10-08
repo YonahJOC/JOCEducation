@@ -101,7 +101,7 @@ export function FilePicker({
           width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
           fontSize: "15px", color: C.ink, backgroundColor: isUpload ? C.paper : C.white,
           border: `1px solid ${C.hairline}`, borderRadius: "10px",
-          padding: "10px 12px", minHeight: "42px", outline: "none",
+          padding: "10px 12px", minHeight: "42px",
         }}
       />
 

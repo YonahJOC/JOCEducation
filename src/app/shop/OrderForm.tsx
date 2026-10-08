@@ -8,7 +8,7 @@ const field: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", fontFamily: "var(--font-outfit)",
   fontSize: "15px", color: C.ink, backgroundColor: C.white,
   border: `1px solid ${C.hairline}`, borderRadius: "10px",
-  padding: "11px 13px", minHeight: "44px", outline: "none",
+  padding: "11px 13px", minHeight: "44px",
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "13px", fontWeight: 600,

@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { C, F, R, label, ROW_SHADOW } from "@/lib/joc-tokens";
-import { btn, SUB } from "./parts";
+import { btn } from "./parts";
 import type { TodayRow } from "@/lib/today";
 
 const DOT: Record<string, string> = {
-  red: "#D8412F", orange: "#FA912D", blue: "#2D46AF", green: "#2FA457", grey: "#8A97B3",
+  red: "#D8412F", orange: "#FA912D", blue: "#2D46AF", green: "#2FA457", grey: C.faint,
 };
 
 /**
@@ -71,7 +71,7 @@ export function Health({ rows }: { rows: TodayRow[] }) {
                   {r.title}
                 </p>
                 {r.line ? (
-                  <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: SUB, margin: "2px 0 0" }}>
+                  <p style={{ fontFamily: F.read, fontSize: "15px", lineHeight: 1.5, color: C.muted, margin: "2px 0 0" }}>
                     {r.line}
                   </p>
                 ) : null}

@@ -10,7 +10,7 @@
   --color-blue-hover:   #223892;
   --color-blue-tint:    #E4E9F8;
   --color-orange:       #FA912D;
-  --color-orange-text:  #C96C00;
+  --color-orange-text:  #A85B00;
   --color-orange-tint:  #FFF0E0;
   --color-muted:        #4A5A74;
   --color-paper:        #FBF9F4;
@@ -24,19 +24,28 @@
   --color-red-tint:     #FBE6E3;
   --color-red-text:     #A3261A;
   --color-white:        #FFFFFF;
+  /* The greys. These were missing here, which is half of why a second set of
+     them grew up inside the desk's own file. */
+  --color-faint:        #5A6782;
+  --color-ring-quiet:   #9AA6C2;
+  --color-outline:      #CBD3EE;
+  --color-rule:         #F0F2F7;
+  --color-segment:      #EEF0F5;
+  --color-destructive:  #B4541A;
 
   /* Typography */
   --font-outfit:      'Outfit', sans-serif;
   --font-newsreader:  'Newsreader', serif;
   --font-mono:        'IBM Plex Mono', ui-monospace, monospace;
 
-  /* Border radius */
-  --radius-pill:   9999px;
-  --radius-card-lg: 26px;
-  --radius-card:    20px;
-  --radius-inner:   18px;
-  --radius-input:   12px;
-  --radius-chip:    8px;
+  /* Border radius — the five in R, and nothing else. These had drifted to
+     26/20/18/12/8 against R's 20/16/12/12/9999, which is how a panel ends up
+     two pixels off every other panel. */
+  --radius-sm:   8px;
+  --radius-form: 12px;
+  --radius-row:  16px;
+  --radius-hero: 20px;
+  --radius-chip: 9999px;
 
   /* Shadow */
   --shadow-hover: 0 10px 26px rgba(16,35,63,.11);
@@ -273,12 +282,35 @@ body {
   .joc-program-side { position: sticky; top: 24px; }
 }
 
-/* Focus has to be visible on paper, on white cards and on the coloured hero. */
-.joc-program a:focus-visible {
-  outline: 3px solid #10233F;
-  outline-offset: 2px;
+/* Focus has to be visible on paper, on white cards, on the navy rail and on
+   the coloured hero.
+
+   This rule was written once, for links inside a program band, and it was
+   right — so it is now every focusable thing on the site. Ink outline for the
+   contrast, a 2px offset so it never sits on the glyph, and a white halo
+   outside it so the ring survives on navy and on a filled blue button.
+
+   `!important` because an inline `outline: none` beats any stylesheet, and
+   there were 59 of them. They are being removed file by file, but a keyboard
+   user should not have to wait for that. */
+:focus-visible {
+  outline: 3px solid #10233F !important;
+  outline-offset: 2px !important;
   box-shadow: 0 0 0 2px #fff;
   border-radius: 4px;
+}
+
+/* On the navy rail the ink ring would disappear into the background, so the
+   two colours swap: the halo does the work and the ring frames it. */
+.joc-shell-rail :focus-visible,
+.joc-lobby-admin .a-side :focus-visible {
+  outline-color: #fff !important;
+  box-shadow: 0 0 0 2px rgba(16, 35, 63, 0.9);
+}
+
+/* A mouse user never sees any of this. */
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* School status board: the seven cells wrap rather than scroll sideways —

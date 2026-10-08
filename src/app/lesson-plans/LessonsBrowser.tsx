@@ -51,7 +51,7 @@ export function LessonsBrowser({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by topic, theme, or keyword…"
-            style={{ width: "100%", boxSizing: "border-box", paddingLeft: "38px", paddingRight: "14px", paddingTop: "11px", paddingBottom: "11px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)" }}
+            style={{ width: "100%", boxSizing: "border-box", paddingLeft: "38px", paddingRight: "14px", paddingTop: "11px", paddingBottom: "11px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px", fontFamily: "var(--font-outfit)" }}
           />
         </div>
 

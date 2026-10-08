@@ -7,7 +7,9 @@ import { C, R } from "@/lib/joc-tokens";
 
 const TAG_COLORS: Record<string, string> = {
   "Worksheet": C.blue,
-  "Activity": "#2C7AC9",
+  // Blue and orange are taken by the other categories; green is the one
+  // brand hue left that passes as text.
+  "Activity": C.greenText,
   "Design": C.orange,
   "Video": C.ink,
   "Source sheet": C.greenText,
@@ -81,7 +83,7 @@ export function ResourceLibrary({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search resources…"
-          style={{ width: "100%", boxSizing: "border-box", padding: "11px 14px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px", outline: "none", fontFamily: "var(--font-outfit)", minHeight: "44px" }}
+          style={{ width: "100%", boxSizing: "border-box", padding: "11px 14px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "12px", fontFamily: "var(--font-outfit)", minHeight: "44px" }}
         />
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
           <Chip label="All" active={tag === "All"} onClick={() => setTag("All")} />

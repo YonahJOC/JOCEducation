@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { setDemoStatus, convertDemoToSchool } from "@/app/actions/admin";
 
 const STATUS_COLOR: Record<string, string> = {
-  NEW: C.orange, CONTACTED: "#2C7AC9", SCHEDULED: C.blue,
+  // Same meaning as a quoted order, so the same treatment.
+  NEW: C.orange, CONTACTED: C.blue, SCHEDULED: C.blue,
   COMPLETED: C.greenText, CONVERTED: C.greenText, LOST: C.muted,
 };
 
@@ -130,7 +131,7 @@ function Row({ demo, disabled }: { demo: DemoRowT; disabled?: boolean }) {
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
               color: STATUS_COLOR[status] ?? C.ink, backgroundColor: C.white,
               border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
-              minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+              minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer",
             }}
           >
             {STATUSES.map((s) => (

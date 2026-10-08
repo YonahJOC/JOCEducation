@@ -9,7 +9,7 @@ import { passwordProblem } from "@/lib/password";
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink,
   backgroundColor: C.white, border: `1px solid ${C.hairline}`, borderRadius: "12px",
-  padding: "12px 14px", outline: "none", minHeight: "46px",
+  padding: "12px 14px", minHeight: "46px",
 };
 const label: React.CSSProperties = {
   display: "block", fontSize: "13px", fontWeight: 600, color: C.muted, marginBottom: "6px",

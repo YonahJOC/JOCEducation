@@ -5,7 +5,7 @@ import { getOffice } from "@/lib/office";
 import { BuzzStrip } from "@/components/admin/BuzzStrip";
 import { TheBoard } from "@/components/desk/TheBoard";
 import { Health } from "@/components/mydesk/Health";
-import { Panel, Empty, Meta, btn, SUB } from "@/components/mydesk/parts";
+import { Panel, Empty, Meta, btn } from "@/components/mydesk/parts";
 import { C, F, label } from "@/lib/joc-tokens";
 
 /**
@@ -34,7 +34,7 @@ export default async function Office() {
             ← Back to my desk
           </Link>
         </div>
-        <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.55, color: SUB, margin: "6px 0 0" }}>
+        <p style={{ fontFamily: F.read, fontSize: "17px", lineHeight: 1.55, color: C.muted, margin: "6px 0 0" }}>
           {office.summary}
         </p>
       </header>
@@ -85,7 +85,7 @@ export default async function Office() {
                   {e.day}
                 </span>
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: e.today ? C.ink : SUB, margin: 0 }}>
+                  <p style={{ fontFamily: F.ui, fontSize: "14px", fontWeight: 600, color: e.today ? C.ink : C.muted, margin: 0 }}>
                     {e.title}
                   </p>
                   {e.meta ? <Meta text={e.meta} /> : null}

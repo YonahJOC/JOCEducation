@@ -131,4 +131,4 @@ export default function SignupPage() {
 function Required() { return <span style={{ color: C.orangeText, marginLeft: "2px" }}>*</span>; }
 
 const labelStyle: React.CSSProperties = { display: "block", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "6px" };
-const inputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "12px 14px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "10px", outline: "none", fontFamily: "var(--font-outfit)" };
+const inputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "12px 14px", fontSize: "15px", color: C.ink, backgroundColor: C.panel, border: `1px solid ${C.hairline}`, borderRadius: "10px", fontFamily: "var(--font-outfit)" };

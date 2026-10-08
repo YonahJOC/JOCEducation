@@ -65,7 +65,7 @@ async function Inner(searchParams: Search) {
           style={{
             flex: "1 1 220px", maxWidth: "320px", fontFamily: "var(--font-outfit)", fontSize: "14px",
             padding: "10px 14px", borderRadius: "10px", border: `1px solid ${C.hairline}`,
-            backgroundColor: C.white, color: C.ink, outline: "none", minHeight: "40px",
+            backgroundColor: C.white, color: C.ink, minHeight: "40px",
           }}
         />
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>

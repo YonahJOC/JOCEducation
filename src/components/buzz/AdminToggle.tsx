@@ -50,7 +50,7 @@ export function AdminToggle({ dark = false }: { dark?: boolean }) {
         display: "flex", alignItems: "center", gap: "8px",
         background: "transparent", border: 0, cursor: "pointer",
         font: "500 13px/1 var(--font-outfit)",
-        color: dark ? "#DCE2EE" : "#3B4A66",
+        color: dark ? "#DCE2EE" : C.muted,
         padding: "4px 0",
       }}
     >

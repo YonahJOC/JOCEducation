@@ -1,4 +1,4 @@
-import { C, F } from "@/lib/joc-tokens";
+import { C, F, R, T, HIT, ROW_SHADOW } from "@/lib/joc-tokens";
 
 /**
  * The furniture every quarter of the desk is built from, to the v5 handoff.
@@ -14,14 +14,15 @@ import { C, F } from "@/lib/joc-tokens";
  * the header rather than beside the title.
  */
 
-export const SUB = "#3B4A66";
-export const QUIET = "#5A6782";
-export const FAINT = "#8A97B3";
-/** The inside hairline. Lighter than the console's, because a card that is
- *  mostly rows turns into a table when every row is drawn in full. */
-export const RULE = "#F0F2F7";
-export const SOFT = "#B4BCCE";
-export const CARD_SHADOW = "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)";
+/**
+ * The desk's five greys used to be declared right here — SUB, QUIET, FAINT,
+ * SOFT and RULE — which meant the desk could drift away from the tokens even
+ * while joc-tokens.ts was perfectly correct. It did: two of them failed
+ * contrast and one was a second name for a colour the tokens already had.
+ *
+ * They now live in `C`, and so does every colour on this page.
+ */
+export const CARD_SHADOW = ROW_SHADOW;
 
 export function Panel({
   title, count, tools, children, flush,
@@ -56,7 +57,7 @@ export function Panel({
           justifyContent: tools ? "flex-start" : "space-between",
           gap: tools ? "6px" : "10px",
           padding: tools ? "11px 12px 10px" : "15px 18px 10px",
-          borderBottom: `1px solid ${RULE}`,
+          borderBottom: `1px solid ${C.rule}`,
           overflowX: tools ? "auto" : undefined,
         }}
       >
@@ -68,7 +69,7 @@ export function Panel({
         </h2>
         {tools}
         {count ? (
-          <span style={{ font: `500 10.5px/1 ${F.data}`, letterSpacing: ".08em", color: QUIET }}>
+          <span style={{ font: `500 10.5px/1 ${F.data}`, letterSpacing: ".08em", color: C.faint }}>
             {count}
           </span>
         ) : null}
@@ -88,12 +89,12 @@ export function GroupHead({ text, count }: { text: string; count?: number }) {
     <div style={{ display: "flex", alignItems: "baseline", gap: "8px", padding: "12px 18px 5px" }}>
       <span style={{
         font: `600 10.5px/1 ${F.data}`, letterSpacing: ".1em",
-        color: QUIET, textTransform: "uppercase",
+        color: C.faint, textTransform: "uppercase",
       }}>
         {text}
       </span>
       {count !== undefined ? (
-        <span style={{ font: `500 10.5px/1 ${F.data}`, color: SOFT }}>{count}</span>
+        <span style={{ font: `500 10.5px/1 ${F.data}`, color: C.muted }}>{count}</span>
       ) : null}
     </div>
   );
@@ -114,7 +115,7 @@ export function Empty({ head, line }: { head?: string; line: string }) {
         <div style={{ font: `600 15px/1.3 ${F.ui}`, color: C.ink }}>{head}</div>
       ) : null}
       <div style={{
-        font: `400 15px/1.5 ${F.read}`, color: SUB,
+        font: `400 15px/1.5 ${F.read}`, color: C.muted,
         marginTop: head ? "4px" : 0, textWrap: "pretty",
       }}>
         {line}
@@ -141,25 +142,50 @@ export function Initial({ letter, size = 20 }: { letter: string; size?: number }
 }
 
 /** A row in a quarter: 18px gutters, hairline above. */
+/**
+ * A row in a quarter: 18px gutters, a hairline above.
+ *
+ * `stretch` rather than `flex-start` so the controls at the end of the row
+ * fill its height. That is what makes Today, Nudge, Decline and × tappable:
+ * they look like small words and they hit like a 44px target.
+ */
 export const row: React.CSSProperties = {
-  display: "flex", gap: "11px", alignItems: "flex-start",
-  padding: "8px 18px", borderTop: `1px solid ${RULE}`,
+  display: "flex", gap: "11px", alignItems: "stretch",
+  padding: "0 18px", borderTop: `1px solid ${C.rule}`,
+  minHeight: HIT,
 };
 
-/** The small blue verb at the end of a row — Today, Nudge, Reply. */
+/** The part of a row that holds the text, which sets the row's height. */
+export const rowBody: React.CSSProperties = {
+  flex: 1, minWidth: 0, display: "flex", flexDirection: "column",
+  justifyContent: "center", padding: "9px 0",
+};
+
+/**
+ * The small blue verb at the end of a row — Today, Nudge, Reply.
+ *
+ * It was 12.5px with 3px of vertical padding, which is a control 19px tall;
+ * on a phone Today, Nudge and × sat within 30px of each other. It reads the
+ * same — blue words — and now taps at the full height of its row.
+ */
 export const linkBtn: React.CSSProperties = {
+  display: "inline-flex", alignItems: "center",
   background: "transparent", border: 0, color: C.blue,
-  font: `600 12.5px/1 ${F.ui}`, cursor: "pointer", padding: "3px 0",
+  ...T.small, cursor: "pointer",
+  padding: "0 8px", minHeight: HIT, minWidth: HIT, justifyContent: "center",
 };
 
 export const quietBtn: React.CSSProperties = {
-  background: "transparent", border: 0, color: FAINT,
-  font: `500 12.5px/1 ${F.ui}`, cursor: "pointer", padding: "3px 0",
+  ...linkBtn,
+  // A control, not meta: `muted` rather than `faint`.
+  color: C.muted, fontWeight: 500,
 };
 
 export const fillBtn: React.CSSProperties = {
-  background: C.blue, color: C.white, border: 0, borderRadius: "8px",
-  padding: "7px 10px", font: `600 12.5px/1 ${F.ui}`, cursor: "pointer",
+  display: "inline-flex", alignItems: "center", justifyContent: "center",
+  ...T.small,
+  background: C.blue, color: C.white, border: 0, borderRadius: R.sm,
+  padding: "0 12px", minHeight: HIT, cursor: "pointer",
 };
 
 /** The mono line under a row. */
@@ -167,7 +193,7 @@ export function Meta({ text, tone }: { text: string; tone?: string }) {
   return (
     <div style={{
       font: `500 10px/1.3 ${F.data}`, letterSpacing: ".05em",
-      color: tone ?? QUIET, marginTop: "3px",
+      color: tone ?? C.faint, marginTop: "3px",
     }}>
       {text}
     </div>
@@ -184,9 +210,24 @@ export const btn = {
     cursor: "pointer", border: "1px solid transparent",
   } as React.CSSProperties,
   primary: { background: C.blue, color: C.white } as React.CSSProperties,
-  quiet: { background: C.white, color: SUB, border: `1px solid ${C.outline}` } as React.CSSProperties,
+  quiet: { background: C.white, color: C.muted, border: `1px solid ${C.outline}` } as React.CSSProperties,
   bare: {
-    background: "transparent", color: FAINT, border: "none",
+    background: "transparent", color: C.faint, border: "none",
     padding: "4px 6px", font: `500 12.5px/1 ${F.ui}`,
   } as React.CSSProperties,
+};
+
+/**
+ * The × that takes a row away.
+ *
+ * It looks like a small grey glyph and it taps like a 44px square, which is
+ * the whole point: on a phone it used to sit 2px from "Nudge". Muted rather
+ * than a decoration grey, because removing something is a control, not
+ * furniture.
+ */
+export const removeBtn: React.CSSProperties = {
+  display: "inline-flex", alignItems: "center", justifyContent: "center",
+  background: "transparent", border: 0, color: C.muted,
+  font: `400 18px/1 ${F.ui}`, cursor: "pointer",
+  minWidth: HIT, minHeight: HIT, padding: 0, flex: "0 0 auto",
 };

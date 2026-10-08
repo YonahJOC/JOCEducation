@@ -9,7 +9,8 @@ import { ROLE_LABELS, ROLE_DESCRIPTIONS, ASSIGNABLE_ROLES, type Role } from "@/l
 
 export const ROLE_COLOR: Record<string, string> = {
   SUPER_ADMIN: C.redText, ADMIN: C.blue, STAFF: C.greenText,
-  SCHOOL_ADMIN: "#2C7AC9", TEACHER: C.muted,
+  // A role isn't a stage, so it needs no second blue and no dot.
+  SCHOOL_ADMIN: C.blue, TEACHER: C.muted,
 };
 
 export type PersonRow = {
@@ -248,7 +249,7 @@ function Row({
                   color: C.muted, backgroundColor: "transparent",
                   border: `1px dashed ${C.hairline}`, borderRadius: R.chip,
                   padding: "4px 11px", lineHeight: 1.5,
-                  cursor: disabled || pending ? "not-allowed" : "pointer", outline: "none",
+                  cursor: disabled || pending ? "not-allowed" : "pointer",
                 }}
               >
                 <option value="">{runs.length === 0 ? "+ Add a program" : "+ Add"}</option>
@@ -291,7 +292,7 @@ function Row({
                 fontFamily: "var(--font-outfit)", fontSize: "13px",
                 color: schoolId ? C.ink : C.orangeText, backgroundColor: C.white,
                 border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
-                minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer",
                 maxWidth: "180px",
               }}
             >
@@ -317,7 +318,7 @@ function Row({
               fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
               color: ROLE_COLOR[role] ?? C.ink, backgroundColor: C.white,
               border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
-              minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+              minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer",
             }}
           >
             {ASSIGNABLE_ROLES.map((r) => (
@@ -361,7 +362,7 @@ function Row({
                   fontFamily: "var(--font-outfit)", fontSize: "13px", fontWeight: 600,
                   color: adminType ? C.ink : C.muted, backgroundColor: C.white,
                   border: `1px solid ${C.hairline}`, borderRadius: "9px", padding: "7px 9px",
-                  minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer", outline: "none",
+                  minHeight: "38px", cursor: disabled ? "not-allowed" : "pointer",
                 }}
               >
                 <option value="">None</option>

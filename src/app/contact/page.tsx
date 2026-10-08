@@ -176,5 +176,4 @@ const inputStyle: React.CSSProperties = {
   color: C.ink,
   fontFamily: "var(--font-outfit)",
   boxSizing: "border-box",
-  outline: "none",
 };

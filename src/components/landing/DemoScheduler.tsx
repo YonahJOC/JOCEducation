@@ -30,7 +30,6 @@ const inputStyle: React.CSSProperties = {
   border: `1px solid ${C.hairline}`,
   borderRadius: "12px",
   padding: "13px 14px",
-  outline: "none",
 };
 
 export function DemoScheduler({ days }: { days: DemoDay[] }) {

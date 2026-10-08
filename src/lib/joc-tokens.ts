@@ -13,7 +13,12 @@ export const C = {
   blueTint: "#E4E9F8",
   /** A fill only. Orange text on paper is `orangeText`. */
   orange: "#FA912D",
-  orangeText: "#C96C00",
+  /**
+   * Changed from #C96C00, which was 3.73:1 — large-text-only, and used at
+   * 10–15px throughout. Darkened in the same hue until it passes on
+   * orangeTint too (4.52:1), because `Absent` sits on that ground.
+   */
+  orangeText: "#A85B00",
   orangeTint: "#FFF0E0",
   ink: "#10233F",
   muted: "#4A5A74",
@@ -32,10 +37,31 @@ export const C = {
    * `muted` is for a line somebody reads; these are for the furniture around
    * it — the mono line under a to-do, an unticked checkbox, a dashed +.
    */
-  faint: "#8A97B3",
+  /**
+   * Meta. The 11px mono line, group counts, "ENTER ↵", a finished task.
+   *
+   * Changed from #8A97B3, which was 2.93:1 — the smallest text on the page in
+   * the lowest-contrast colour. This value is the grey the desk was already
+   * shipping as QUIET, so the ten places that used it do not move; the 26
+   * that used the old faint simply get darker. It passes on every ground in
+   * the system, including blueTint (4.68) and segment (4.98), so there is no
+   * "except on tints" rule for anyone to remember.
+   */
+  faint: "#5A6782",
+
+  // ── Never text ────────────────────────────────────────────────────────
+  // Every one of these is below 2.5:1. They are rings, borders and rules.
+  /** An unticked checkbox ring, the dashed + of an add row. */
   ringQuiet: "#9AA6C2",
-  /** A secondary button's outline, and the segmented control's ground. */
+  /** A secondary button's outline, and a field's border at rest. */
   outline: "#CBD3EE",
+  /**
+   * The hairline between rows *inside* a panel — lighter than `hairline` on
+   * purpose, because a card that is mostly rows turns into a table when every
+   * row is drawn in full. Shipped as RULE in mydesk/parts.tsx; declared here
+   * so the desk cannot drift from the tokens again.
+   */
+  rule: "#F0F2F7",
   segment: "#EEF0F5",
   /** Remove, and anything else that undoes somebody else's work. */
   destructive: "#B4541A",
@@ -54,7 +80,25 @@ export const R = {
   form: "12px",
   button: "12px",
   chip: "9999px",
+  /**
+   * Small controls inside a row: a desk button, the segmented ground, a
+   * picker chip. Collects the eight radii between 2 and 8 that existed for no
+   * reason. A nested radius is the outer one minus its padding.
+   */
+  sm: "8px",
 } as const;
+
+/**
+ * The two widths the whole portal changes shape at.
+ *
+ * `cards` is where a table stops being a table; `desk` is where the four
+ * panels stop being a grid. Written down because they were typed into media
+ * queries by hand and had started to disagree.
+ */
+export const BP = { cards: 760, desk: 980 } as const;
+
+/** Nothing you can tap is smaller than this. It may *look* smaller. */
+export const HIT = "44px";
 
 /** Rows sit on the paper background, not on a white sheet. */
 export const ROW_SHADOW = "0 2px 0 #E3E6EF, 0 6px 18px rgba(16,35,63,.05)";
@@ -81,6 +125,41 @@ export const F = {
 } as const;
 
 const font = F.ui;
+
+/**
+ * The type scale. Seven sizes, eight styles.
+ *
+ * There were 38 distinct font sizes on this site, including 12, 12.5, 13,
+ * 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17 and 17.5. Nobody can tell 15 from
+ * 15.5; what they can tell is that two cards which should match don't.
+ *
+ * Five of these were already tokens under other names (pageTitle, section
+ * heading, rowTitle, label, the hero). The two new steps — 16 and 14 — absorb
+ * the fourteen half-pixel sizes in between. Body is 16 rather than 15 because
+ * iOS Safari zooms the page when a focused input is under 16px, and the
+ * add-task field was 15.5.
+ *
+ * `read` is `body`'s size in the reading face: same step, different voice.
+ */
+export const T = {
+  /** The blue hero headline. Public pages may scale it with clamp(). */
+  hero: { fontFamily: F.ui, fontSize: "44px", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.03em" },
+  /** A page title, and the desk header. */
+  title: { fontFamily: F.ui, fontSize: "30px", fontWeight: 600, lineHeight: 1.1, letterSpacing: "-0.03em" },
+  /** A section heading. */
+  section: { fontFamily: F.ui, fontSize: "24px", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em" },
+  /** A row title, and a panel title — so a panel heading and a row heading
+   *  are recognisably the same thing. */
+  name: { fontFamily: F.ui, fontSize: "19px", fontWeight: 600, lineHeight: 1.25, letterSpacing: "-0.02em" },
+  /** Task lines, fields, buttons. */
+  body: { fontFamily: F.ui, fontSize: "16px", fontWeight: 500, lineHeight: 1.4, letterSpacing: "0" },
+  /** The same step in the reading face: prose, reasons, empty states. */
+  read: { fontFamily: F.read, fontSize: "16px", fontWeight: 400, lineHeight: 1.6, letterSpacing: "0" },
+  /** Inline verbs (Today, Nudge, Decline), chips, hints. */
+  small: { fontFamily: F.ui, fontSize: "14px", fontWeight: 600, lineHeight: 1.35, letterSpacing: "0" },
+  /** Every mono line. Uppercase lives in the data, not in the token. */
+  meta: { fontFamily: F.data, fontSize: "11px", fontWeight: 500, lineHeight: 1.35, letterSpacing: "0.04em", color: C.faint },
+} as const satisfies Record<string, React.CSSProperties>;
 
 /**
  * The one uppercase label.
