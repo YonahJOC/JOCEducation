@@ -40,6 +40,7 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capabil
     { href: "/admin/board", label: "Teachers' Board", need: "board" },
     { href: "/admin/rooms", label: "Discussion rooms", need: "rooms" },
     { href: "/admin/site", label: "Words on the site", need: "site" },
+    { href: "/admin/lobby", label: "Lobby screen", need: "lobby" },
   ],
   money: [
     { href: "/admin/pricing", label: "Pricing", need: "pricing" },

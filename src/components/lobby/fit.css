@@ -1,0 +1,64 @@
+/* Fitting the lobby panel inside the console.
+
+   The panel was its own site, so it brought its own navy rail with the JOC
+   wordmark at the top — which inside the console put two navy rails and two
+   wordmarks side by side, and left somebody guessing which one they were
+   reading. Its own rail is the right thing to keep: it says where you are
+   within the lobby screen, which the console's rail cannot. It just has to
+   stop pretending to be the top-level navigation.
+
+   So: the duplicate wordmark goes, and the rail becomes a quiet second column
+   on paper rather than a second slab of navy. Nothing else about the panel
+   is touched. */
+
+.joc-lobby-admin .a-app {
+  /* The console's rail already holds the left edge of the window. */
+  min-height: calc(100vh - 1px);
+}
+
+.joc-lobby-admin .a-side {
+  background: #fff;
+  border-right: 1px solid #e3e6ef;
+  color: #10233f;
+  width: 212px;
+  padding: 18px 12px 16px;
+}
+
+.joc-lobby-admin .a-app { grid-template-columns: 212px minmax(0, 1fr); }
+.joc-lobby-admin .a-app.is-wide {
+  grid-template-columns: 212px minmax(0, 1fr) clamp(420px, 32vw, 580px);
+}
+
+/* One wordmark on a page is enough. The section's name takes its place. */
+.joc-lobby-admin .a-side-brand img { display: none; }
+.joc-lobby-admin .a-side-brand {
+  border-bottom: 1px solid #e3e6ef;
+  padding: 0 10px 12px;
+}
+.joc-lobby-admin .a-side-brand span { color: #8a97b3; }
+
+.joc-lobby-admin .a-side ul a { color: #3b4a66; font-size: 15px; height: 42px; }
+.joc-lobby-admin .a-side ul a:hover { background: #f0f2f7; color: #10233f; }
+.joc-lobby-admin .a-side ul a[aria-current="page"] {
+  background: #e4e9f8;
+  color: #2d46af;
+  box-shadow: none;
+}
+
+.joc-lobby-admin .a-side-foot { border-top: 1px solid #e3e6ef; }
+.joc-lobby-admin .a-side-link { color: #5a6782; }
+.joc-lobby-admin .a-side-link:hover { background: #f0f2f7; color: #10233f; }
+
+/* On a phone the console collapses its rail into tabs and the panel puts up
+   its own navy bar, so the JOC wordmark appeared twice, one under the other.
+   The console's bar is the one that belongs to the window; this one keeps the
+   save state and the way back and says which section it is. */
+.joc-lobby-admin .a-topbar img { display: none; }
+.joc-lobby-admin .a-topbar::before {
+  content: "Lobby screen";
+  flex: 1;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: #fff;
+}

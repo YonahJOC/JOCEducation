@@ -546,6 +546,7 @@ model User {
   buzzDone         BuzzDone[]
   inTrayCleared    InTrayCleared[]
   diary            DeskEvent[]
+  lobbyEdits       LobbyDoc[]
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2543,6 +2544,24 @@ model DeskEvent {
   createdAt DateTime @default(now())
 
   @@index([userId, startsAt])
+}
+
+/// Everything the lobby TV shows, as one JSON document (LobbyDoc in
+/// src/lib/lobby/types.ts): the programs staff type in, the impact counters
+/// and the screen settings.
+///
+/// One row, id "singleton". `version` is the optimistic lock: a save that
+/// quotes a stale version is refused with a 409 and handed the newer copy,
+/// so two people editing the schedule at once cannot silently overwrite each
+/// other. Read by the screens without a session; written only with the lobby
+/// permission.
+model LobbyDoc {
+  id          String   @id
+  version     Int      @default(0)
+  data        Json
+  updatedAt   DateTime @default(now())
+  updatedById String?
+  updatedBy   User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
 }
 
 model NotebookPage {

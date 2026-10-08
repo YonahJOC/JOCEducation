@@ -198,7 +198,7 @@ export function isInternal(user: U): boolean {
 export const CAPABILITIES = [
   // Educational material
   "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity",
-  "set_program_light",
+  "set_program_light", "lobby",
   // The calendar
   "programming", "cycles", "coordinators",
   // School accounts
@@ -219,7 +219,7 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
     label: "Educational material",
     capabilities: [
       "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
-      "app_activity", "set_program_light",
+      "app_activity", "set_program_light", "lobby",
     ],
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
@@ -238,6 +238,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   forms: "Forms and their answers",
   app_activity: "JOC App activity",
   set_program_light: "The traffic light",
+  lobby: "The lobby screen",
   run_admin_agenda: "The admin meeting",
   programming: "Programming calendar",
   cycles: "Chesed Cycle dates",
@@ -269,6 +270,8 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   app_activity: "What every school is doing in the JOC App, and who needs a call about it.",
   set_program_light:
     "Overrule the traffic light on a school: hold a program off, or clear one to be approached. A coordinator can act on a light without this; only this changes one.",
+  lobby:
+    "What the TV in the lobby shows — today's programs, what is coming up, and the impact counters.",
   run_admin_agenda:
     "Run the admin meeting — the schools coordinators have sent for a decision, and what was decided about each.",
   programming: "What is running and where — the events at each school.",
@@ -293,7 +296,7 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
  */
 const CONTENT: Capability[] = [
   "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
-  "app_activity", "set_program_light",
+  "app_activity", "set_program_light", "lobby",
 ];
 const CALENDAR: Capability[] = ["programming", "cycles", "coordinators"];
 const ACCOUNTS: Capability[] = ["schools", "demos", "orders", "pricing"];

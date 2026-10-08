@@ -106,6 +106,7 @@ export function jocNav(
   if (can(user, "cycles")) {
     items.push({ label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes, their dates and their weeks" });
   }
+  if (can(user, "lobby")) items.push({ label: "Lobby screen", href: "/admin/lobby", hint: "What the TV in the lobby shows" });
   if (can(user, "orders") || can(user, "pricing")) items.push({ label: "Money", href: "/admin/orders", hint: "Orders and pricing" });
   if (can(user, "users")) items.push({ label: "People & access", href: "/admin/users", hint: "Accounts, roles and passwords" });
 
@@ -126,7 +127,7 @@ export function jocNav(
   // one with the most other ways in — a row on Today whenever a school
   // writes, and the Schools hub. People & access has neither, which is why it
   // is never in this list.
-  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages"];
+  const DROPPABLE = ["Lobby screen", "Calendar", "Chesed Cycles", "Messages"];
   for (const label of DROPPABLE) {
     if (items.length <= 7) break;
     const i = items.findIndex((x) => x.label === label);

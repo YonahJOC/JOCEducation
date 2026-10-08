@@ -73,6 +73,12 @@ const PUBLIC_PREFIXES = [
   // enforced when it is submitted — not something the gate decides.
   "/forms",
   "/brand", "/_next",
+  // The lobby TV. A television cannot sign in, and the screen and its two
+  // files show only what anybody standing in the lobby can already read off
+  // the wall. /api/lobby/doc, which edits it, is not here — that one checks
+  // the session and the lobby permission itself.
+  "/lobby",
+  "/api/lobby/display",
   // Somebody an administrator issued a password to has to be able to change
   // it. Only that page — /account itself sits behind the gate like the rest.
   "/account/password",
