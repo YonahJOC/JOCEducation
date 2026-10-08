@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSettings } from '@/lib/lobby/config';
-import { abbrMap, classifyVenue, expandProgram, isExcluded, parseTitle, venueInfo } from '@/lib/lobby/parse';
+import { VENUE_PALETTE, abbrMap, classifyVenue, expandProgram, isExcluded, parseTitle, venueInfo } from '@/lib/lobby/parse';
 
 const s = defaultSettings();
 const abbr = abbrMap(s.abbreviations);
@@ -88,7 +88,7 @@ describe('classifyVenue', () => {
 describe('venueInfo', () => {
   it('shows the first part of an off-site location', () => {
     const v = venueInfo('Shaare Zedek Hospital, Jerusalem', 'auto', s);
-    expect(v).toMatchObject({ type: 'other', short: 'Off-site', place: 'Shaare Zedek Hospital', chip: 'Shaare Zedek Hospital', icon: 'location_on', color: '#7a4fe0' });
+    expect(v).toMatchObject({ type: 'other', short: 'Off-site', place: 'Shaare Zedek Hospital', chip: 'Shaare Zedek Hospital', icon: 'location_on', color: VENUE_PALETTE.other.color });
   });
   it('uses the center name with no place line', () => {
     expect(venueInfo('', 'auto', s)).toMatchObject({ type: 'center', short: 'JOC Center', place: '', chip: 'JOC Center', icon: 'home_pin' });

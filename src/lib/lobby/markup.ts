@@ -64,10 +64,10 @@ export function dayHTML(d: WeekDay): string {
 }
 
 export const STATS: Array<{ key: CounterKey; icon: string; color: string; ink: string; label: string }> = [
-  { key: 'acts', icon: 'volunteer_activism', color: '#ffd166', ink: '#e0a000', label: 'Acts of chesed' },
-  { key: 'beds', icon: 'bed', color: '#7fd3ff', ink: '#1450d2', label: 'Beds given out' },
-  { key: 'challahs', icon: 'bakery_dining', color: '#b8f0c8', ink: '#16924a', label: 'Challahs baked' },
-  { key: 'pizzas', icon: 'local_pizza', color: '#ffa25e', ink: '#e2560f', label: 'Pizzas made' },
+  { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#FA912D', label: 'Acts of chesed' },
+  { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#2D46AF', label: 'Beds given out' },
+  { key: 'challahs', icon: 'bakery_dining', color: '#E3F4E8', ink: '#2FA457', label: 'Challahs baked' },
+  { key: 'pizzas', icon: 'local_pizza', color: '#FBE6E3', ink: '#D8412F', label: 'Pizzas made' },
 ];
 
 export function statHTML(s: (typeof STATS)[number], value: string): string {

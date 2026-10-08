@@ -11,7 +11,9 @@ const num = (v: string | undefined, fallback: number) => {
   return v && Number.isFinite(n) && n > 0 ? n : fallback;
 };
 
-export const LOGO_URL = 'https://justonechesed.org/wp-content/uploads/2021/10/JOC-Logo-White-Tight-2025-scaled.png';
+// Served from our own public/, so the screen works with the internet down
+// and never shows a gap where the wordmark should be.
+export const LOGO_URL = '/brand/joc-wordmark-white.png';
 
 /** Fallback impact numbers when nothing is configured */
 export const DEFAULT_COUNTERS: Counters['values'] = {

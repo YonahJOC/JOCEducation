@@ -1,10 +1,12 @@
 import type { Abbreviation, Settings, VenueChoice, VenueType } from './types';
 
 export const VENUE_PALETTE: Record<VenueType, { color: string; light: string; tint: string }> = {
-  center: { color: '#1450d2', light: '#7cc4ff', tint: '#e3ecfd' },
-  shuk: { color: '#e8690a', light: '#ffb066', tint: '#fff0e2' },
-  usa: { color: '#e2334a', light: '#ff8fa3', tint: '#fde6ea' },
-  other: { color: '#7a4fe0', light: '#c9b6ff', tint: '#efe8ff' },
+  // JOC's own colours. `color` is the strong one — a fill, and text on the
+  // tint; `light` is what sits on the strong one; `tint` is the quiet ground.
+  center: { color: '#2D46AF', light: '#C6CFF0', tint: '#E4E9F8' },
+  shuk: { color: '#A85B00', light: '#FFD8AE', tint: '#FFF0E0' },
+  usa: { color: '#A3261A', light: '#FBE6E3', tint: '#FBE6E3' },
+  other: { color: '#1D6B37', light: '#E3F4E8', tint: '#E3F4E8' },
 };
 
 export const VENUE_ICONS: Record<VenueType, string> = {
