@@ -32,11 +32,13 @@ export type DayItem = {
   title: string;
   meta: string | null;
   today: boolean;
+  /** A diary entry this person added, which they can also remove. */
+  own?: string;
 };
 
 export type TrayItem = {
   id: string;
-  kind: "mention" | "message" | "ask";
+  kind: "mention" | "message" | "ask" | "task";
   initial: string;
   who: string;
   verb: string;
@@ -49,9 +51,22 @@ export type Page = { id: string; title: string; body: string };
 
 const DAY = 86400000;
 
-/** SENT until they open their desk, then SEEN; NUDGED if chased since. */
-function handoffStatus(t: { seenAt: Date | null; nudgedAt: Date | null; doneAt: Date | null }): string {
+/**
+ * Where a handed-off task has got to, from the sender's side.
+ *
+ * NOT OPENED → SEEN → ACCEPTED or DECLINED → DONE, with NUDGED standing in
+ * whenever the sender has chased since the other person last looked. Decline
+ * is reported rather than hidden: the whole point of handing something over
+ * is knowing whether it is being done, and a silent refusal is worse than no
+ * answer at all.
+ */
+function handoffStatus(t: {
+  seenAt: Date | null; nudgedAt: Date | null; doneAt: Date | null;
+  acceptedAt: Date | null; declinedAt: Date | null;
+}): string {
   if (t.doneAt) return "DONE";
+  if (t.declinedAt) return "DECLINED";
+  if (t.acceptedAt) return "ON THEIR LIST";
   if (t.nudgedAt && (!t.seenAt || t.nudgedAt > t.seenAt)) return "NUDGED";
   if (t.seenAt) return "SEEN";
   return "NOT OPENED";
@@ -74,14 +89,23 @@ export async function getMyDesk() {
   if (!isDatabaseConfigured() || !me?.id) return empty;
   const mine = me.id;
 
-  const [ownRows, handedRows, events, mentions, messages, asks, cleared, pages, staff] =
+  const [ownRows, handedRows, events, mentions, messages, asks, offers, diary, cleared, pages, staff] =
     await Promise.all([
       // Mine to do.
       prisma.deskTodo.findMany({
-        where: { userId: mine, OR: [{ doneAt: null }, { doneAt: { gte: midnight } }] },
+        where: {
+          userId: mine,
+          // An offer nobody has taken on is not yet a task; it waits in the
+          // tray. One they declined is gone from here for good.
+          declinedAt: null,
+          AND: [
+            { OR: [{ assignedById: null }, { acceptedAt: { not: null } }] },
+            { OR: [{ doneAt: null }, { doneAt: { gte: midnight } }] },
+          ],
+        },
         orderBy: [{ doneAt: "asc" }, { createdAt: "desc" }],
         select: {
-          id: true, text: true, source: true, whenBucket: true, due: true, doneAt: true,
+          id: true, text: true, source: true, whenBucket: true, due: true, doneAt: true, createdAt: true,
           activity: { select: { school: { select: { name: true } } } },
           assignedBy: { select: { name: true, email: true } },
         },
@@ -96,6 +120,7 @@ export async function getMyDesk() {
         orderBy: [{ doneAt: "asc" }, { createdAt: "desc" }],
         select: {
           id: true, text: true, due: true, doneAt: true, seenAt: true, nudgedAt: true,
+          acceptedAt: true, declinedAt: true,
           user: { select: { name: true, email: true } },
         },
       }).catch(() => []),
@@ -144,6 +169,24 @@ export async function getMyDesk() {
           id: true, detail: true, topic: true, createdAt: true,
           school: { select: { name: true } },
         },
+      }).catch(() => []),
+
+      prisma.deskTodo.findMany({
+        where: { userId: mine, assignedById: { not: null }, acceptedAt: null, declinedAt: null, doneAt: null },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true, text: true, createdAt: true,
+          assignedBy: { select: { name: true, email: true } },
+        },
+      }).catch(() => []),
+
+      prisma.deskEvent.findMany({
+        where: {
+          userId: mine,
+          startsAt: { gte: midnight, lt: new Date(midnight.getTime() + 14 * DAY) },
+        },
+        orderBy: { startsAt: "asc" },
+        select: { id: true, title: true, note: true, startsAt: true, allDay: true },
       }).catch(() => []),
 
       prisma.inTrayCleared.findMany({
@@ -219,6 +262,17 @@ export async function getMyDesk() {
       meta: (e.program?.name ?? "No program").toUpperCase(),
       today: e.occurredAt < new Date(midnight.getTime() + DAY),
     })),
+    ...diary.map((d) => ({
+      id: `d${d.id}`,
+      when: d.startsAt,
+      time: d.allDay
+        ? null
+        : d.startsAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" }),
+      title: d.title,
+      meta: d.note?.toUpperCase() ?? null,
+      today: d.startsAt < new Date(midnight.getTime() + DAY),
+      own: d.id,
+    })),
     ...dated.map((t) => ({
       id: `t${t.id}`,
       when: t.due!,
@@ -250,6 +304,16 @@ export async function getMyDesk() {
         source: `${n.activity.school.name} · ${ago(n.createdAt, now)}`.toUpperCase(),
         canReply: false,
       })),
+    ...offers.map((o) => ({
+      id: o.id,
+      kind: "task" as const,
+      initial: firstName(o.assignedBy?.name ?? o.assignedBy?.email).slice(0, 1).toUpperCase(),
+      who: firstName(o.assignedBy?.name ?? o.assignedBy?.email),
+      verb: "asked you to do something",
+      quote: o.text,
+      source: `HANDED TO YOU · ${ago(o.createdAt, now)}`.toUpperCase(),
+      canReply: false,
+    })),
     ...messages
       .filter((m) => !isCleared.has(`message:${m.id}`))
       .map((m) => ({
@@ -327,7 +391,7 @@ export async function deskBadges(): Promise<{ desk: number; office: number }> {
   const firstWord = firstName(me.name ?? me.email ?? "").toLowerCase();
 
   try {
-    const [mentions, messages, asks, cleared, notes, seen] = await Promise.all([
+    const [mentions, messages, asks, offers, cleared, notes, seen] = await Promise.all([
       firstWord.length > 2
         ? prisma.buzzNote.findMany({
             where: {
@@ -346,6 +410,9 @@ export async function deskBadges(): Promise<{ desk: number; office: number }> {
         where: { inbound: true, answeredAt: null, school: { isTest: false } },
         select: { id: true },
       }),
+      prisma.deskTodo.count({
+        where: { userId: mine, assignedById: { not: null }, acceptedAt: null, declinedAt: null, doneAt: null },
+      }),
       prisma.inTrayCleared.findMany({ where: { userId: mine }, select: { kind: true, refId: true } }),
       prisma.buzzNote.findMany({
         where: { authorId: { not: mine }, activity: { removedAt: null, school: { isTest: false } } },
@@ -356,6 +423,7 @@ export async function deskBadges(): Promise<{ desk: number; office: number }> {
 
     const gone = new Set(cleared.map((c) => `${c.kind}:${c.refId}`));
     const desk =
+      offers +
       mentions.filter((m) => !gone.has(`mention:${m.id}`)).length +
       messages.filter((m) => !gone.has(`message:${m.id}`)).length +
       asks.filter((a) => !gone.has(`ask:${a.id}`)).length;

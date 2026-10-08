@@ -545,6 +545,7 @@ model User {
   notebook         NotebookPage[]
   buzzDone         BuzzDone[]
   inTrayCleared    InTrayCleared[]
+  diary            DeskEvent[]
   answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
   sentMessages       SchoolMessage[]   @relation("MessageAuthor")
   programPosts       ProgramPost[]     @relation("PostAuthor")
@@ -2471,9 +2472,15 @@ model DeskTodo {
   /// TODAY or LATER. Which pile it sits in, not when it is due.
   whenBucket   String          @default("TODAY")
   /// A handed-off task: when the recipient first opened their desk with it
-  /// on, and when the sender last chased. SENT → SEEN → NUDGED → DONE.
+  /// on, and when the sender last chased.
   seenAt       DateTime?
   nudgedAt     DateTime?
+  /// Handing somebody a task is an offer. It waits in their For you until
+  /// they take it on, and only then joins their list — otherwise anybody
+  /// could write on anybody else's day. The sender is told either way:
+  /// SENT → SEEN → ACCEPTED or DECLINED → DONE.
+  acceptedAt   DateTime?
+  declinedAt   DateTime?
   doneAt       DateTime?
   createdAt    DateTime        @default(now())
 
@@ -2513,6 +2520,31 @@ model NoticeRead {
 
 
 /// A private page. Nobody else ever reads it.
+/// One person's own diary entry: a meeting, a call, anything they put in
+/// their day themselves.
+///
+/// Deliberately not a SchoolActivity. That table is JOC's record of what has
+/// happened with a school and everybody reads it; a dentist appointment and a
+/// one-to-one belong to the person whose day they are, and nobody else sees
+/// these rows.
+///
+/// startsAt holds the wall-clock time pinned to UTC, the same convention the
+/// school update form uses: a 10:30 meeting reads 10:30 to everybody who can
+/// see it, rather than drifting with whatever timezone the reader is in.
+model DeskEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  note      String?
+  startsAt  DateTime
+  /// No time given — it sits at the top of the day rather than in the column.
+  allDay    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, startsAt])
+}
+
 model NotebookPage {
   id        String   @id @default(cuid())
   userId    String

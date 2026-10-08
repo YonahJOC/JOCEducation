@@ -23,7 +23,9 @@ import type { Task } from "@/lib/my-desk";
 const STATUS_TONE: Record<string, string> = {
   "NOT OPENED": QUIET,
   SEEN: C.blue,
+  "ON THEIR LIST": C.blue,
   NUDGED: C.orangeText,
+  DECLINED: C.destructive,
   DONE: "#4FAE6E",
 };
 

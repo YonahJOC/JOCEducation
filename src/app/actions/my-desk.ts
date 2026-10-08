@@ -283,6 +283,43 @@ export async function clearFromTray(kind: string, refId: string): Promise<R> {
   }
 }
 
+/**
+ * Take on a task somebody handed you.
+ *
+ * It is already a row on this desk — unaccepted, so it has been sitting in
+ * For you rather than on the list. Accepting moves it across; nothing is
+ * created, so the sender keeps watching the same row.
+ */
+export async function acceptTask(todoId: string): Promise<R> {
+  const id = await meId();
+  if (!id) return { ok: false, error: "Sign in first." };
+  const n = await prisma.deskTodo.updateMany({
+    where: { id: todoId, userId: id, acceptedAt: null },
+    data: { acceptedAt: new Date(), declinedAt: null },
+  }).catch(() => ({ count: 0 }));
+  if (!n.count) return { ok: false, error: "That isn't waiting for you." };
+  done();
+  return { ok: true };
+}
+
+/**
+ * Say no.
+ *
+ * The row stays, marked, so the person who asked sees DECLINED rather than
+ * watching NOT OPENED forever and assuming it is in hand.
+ */
+export async function declineTask(todoId: string): Promise<R> {
+  const id = await meId();
+  if (!id) return { ok: false, error: "Sign in first." };
+  const n = await prisma.deskTodo.updateMany({
+    where: { id: todoId, userId: id, acceptedAt: null },
+    data: { declinedAt: new Date() },
+  }).catch(() => ({ count: 0 }));
+  if (!n.count) return { ok: false, error: "That isn't waiting for you." };
+  done();
+  return { ok: true };
+}
+
 /** "Add to my tasks" on a For you card — take it, and clear it. */
 export async function trayToTask(kind: string, refId: string, text: string): Promise<R> {
   const id = await meId();
@@ -301,4 +338,54 @@ export async function trayToTask(kind: string, refId: string, text: string): Pro
   } catch {
     return { ok: false, error: "That didn't save." };
   }
+}
+
+/* ----------------------------------------------------------- your day --- */
+
+/**
+ * Put something in your own day.
+ *
+ * The time is stored as the wall clock pinned to UTC and read back the same
+ * way, which is the convention the school update form already uses: a 10:30
+ * meeting reads 10:30 to whoever looks, rather than sliding by an hour in
+ * March and back again in November.
+ *
+ * `when` is a plain YYYY-MM-DD and `time` an HH:MM or empty for all day.
+ */
+export async function addDeskEvent(
+  title: string, when: string, time: string, note: string,
+): Promise<R> {
+  if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
+  const id = await meId();
+  if (!id) return { ok: false, error: "Sign in first." };
+
+  const text = title.trim().slice(0, 200);
+  if (!text) return { ok: false, error: "Give it a name first." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(when)) return { ok: false, error: "Pick a date." };
+  if (time && !/^\d{2}:\d{2}$/.test(time)) return { ok: false, error: "That isn't a time." };
+
+  const startsAt = new Date(time ? `${when}T${time}:00.000Z` : `${when}T00:00:00.000Z`);
+  if (Number.isNaN(startsAt.getTime())) return { ok: false, error: "Pick a date." };
+
+  try {
+    const made = await prisma.deskEvent.create({
+      data: { userId: id, title: text, note: note.trim().slice(0, 300) || null, startsAt, allDay: !time },
+      select: { id: true },
+    });
+    done();
+    return { ok: true, id: made.id };
+  } catch {
+    return { ok: false, error: "That didn't save." };
+  }
+}
+
+/** Take it back out. Yours only — the where clause carries the owner. */
+export async function dropDeskEvent(eventId: string): Promise<R> {
+  const id = await meId();
+  if (!id) return { ok: false, error: "Sign in first." };
+  const n = await prisma.deskEvent.deleteMany({ where: { id: eventId, userId: id } })
+    .catch(() => ({ count: 0 }));
+  if (!n.count) return { ok: false, error: "That isn't in your diary." };
+  done();
+  return { ok: true };
 }

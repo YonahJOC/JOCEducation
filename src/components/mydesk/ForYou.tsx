@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { C, F } from "@/lib/joc-tokens";
 import { Panel, Empty, Initial, fillBtn, linkBtn, quietBtn, QUIET, RULE } from "./parts";
-import { clearFromTray, trayToTask } from "@/app/actions/my-desk";
+import { clearFromTray, trayToTask, acceptTask, declineTask } from "@/app/actions/my-desk";
 import type { TrayItem } from "@/lib/my-desk";
 
 /**
@@ -57,10 +57,16 @@ export function ForYou({ tray }: { tray: TrayItem[] }) {
               }}>
                 {f.source}
               </span>
+              {/* A task somebody handed over is already a row on this desk,
+                  waiting to be taken on. Everything else becomes a new one. */}
               <button
                 type="button"
                 disabled={pending}
-                onClick={run(() => trayToTask(f.kind, f.id, `${f.who}: ${f.quote.slice(0, 80)}`))}
+                onClick={run(() =>
+                  f.kind === "task"
+                    ? acceptTask(f.id)
+                    : trayToTask(f.kind, f.id, `${f.who}: ${f.quote.slice(0, 80)}`),
+                )}
                 style={fillBtn}
               >
                 Add to my tasks
@@ -70,8 +76,13 @@ export function ForYou({ tray }: { tray: TrayItem[] }) {
                   Reply
                 </Link>
               ) : null}
-              <button type="button" disabled={pending} onClick={run(() => clearFromTray(f.kind, f.id))} style={quietBtn}>
-                Clear
+              <button
+                type="button"
+                disabled={pending}
+                onClick={run(() => (f.kind === "task" ? declineTask(f.id) : clearFromTray(f.kind, f.id)))}
+                style={quietBtn}
+              >
+                {f.kind === "task" ? "Decline" : "Clear"}
               </button>
             </div>
           </div>
