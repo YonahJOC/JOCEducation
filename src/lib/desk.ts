@@ -61,43 +61,10 @@ function ago(d: Date, from: Date): string {
   return `${Math.round(days / 7)} weeks ago`;
 }
 
-/** First name only. */
-export function firstName(who: string | null | undefined): string {
-  if (!who) return "there";
-  return who.includes("@") ? who.split("@")[0] : who.split(/\s+/)[0];
-}
-
-/** Morning until noon, afternoon until six, evening after. */
-export function greeting(now: Date): string {
-  const h = now.getHours();
-  if (h < 12) return "Good morning";
-  if (h < 18) return "Good afternoon";
-  return "Good evening";
-}
-
-/**
- * The date line: Gregorian, then the Hebrew date.
- *
- * Intl does the Hebrew calendar, so there is no table to keep and no library
- * to go stale. It rolls at midnight rather than nightfall — the honest
- * version needs a location and a sunset, and a console is not a siddur.
- */
-export function dateLine(now: Date): string {
-  const greg = now.toLocaleDateString("en-GB", {
-    weekday: "long", day: "numeric", month: "long",
-  }).toUpperCase();
-
-  let hebrew = "";
-  try {
-    hebrew = new Intl.DateTimeFormat("en-u-ca-hebrew", {
-      day: "numeric", month: "long",
-    }).format(now).toUpperCase();
-  } catch {
-    // An engine without the Hebrew calendar: the Gregorian date alone.
-  }
-
-  return hebrew ? `${greg} · ${hebrew}` : greg;
-}
+// These three are pure, and live in desk-words.ts so a test of them does not
+// have to boot Prisma and NextAuth. Re-exported here so nothing has to move.
+export { firstName, greeting, dateLine } from "./desk-words";
+import { firstName } from "./desk-words";
 
 export async function getDesk() {
   const session = await safeAuth();

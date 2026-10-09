@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C, F } from "@/lib/joc-tokens";
-import { Panel, Empty, Meta, removeBtn } from "./parts";
+import { C, F, R, T, HIT } from "@/lib/joc-tokens";
+import { Panel, Empty, removeBtn } from "./parts";
 import { addDeskEvent, dropDeskEvent } from "@/app/actions/my-desk";
 import type { DayItem } from "@/lib/my-desk";
 
@@ -72,8 +72,23 @@ export function YourDay({ day }: { day: DayItem[] }) {
 
   return (
     <Panel
-      title="Your day"
+      title="This week"
       count={today.length ? `${today.length === 1 ? "1 THING" : `${today.length} THINGS`} TODAY` : ""}
+      tools={!adding ? (
+        <button
+          type="button"
+          onClick={() => setAdding(true)}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "4px",
+            minHeight: HIT, padding: "0 8px", marginLeft: "auto",
+            background: "transparent", border: 0, color: C.blue,
+            ...T.small, cursor: "pointer",
+          }}
+        >
+          <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "19px" }}>add</span>
+          Add
+        </button>
+      ) : undefined}
     >
       {/* ---- add something of your own ------------------------------- */}
       {adding ? (
@@ -194,27 +209,13 @@ export function YourDay({ day }: { day: DayItem[] }) {
             </button>
           </div>
         </div>
-      ) : (
-        <div style={{ padding: "10px 18px 2px" }}>
-          <button
-            type="button"
-            onClick={() => setAdding(true)}
-            style={{
-              display: "flex", alignItems: "center", gap: "7px", width: "100%",
-              background: "transparent", border: `1px dashed ${C.outline}`, borderRadius: "10px",
-              padding: "8px 11px", color: C.blue, font: `600 13px/1 ${F.ui}`, cursor: "pointer",
-            }}
-          >
-            + Add a meeting or event
-          </button>
-        </div>
-      )}
+      ) : null}
 
       {day.length === 0 ? (
         <Empty line="Nothing booked this week. Add your own meetings above; events you book with a school show up here too." />
       ) : null}
 
-      {today.map((d) => <DayRow key={d.id} d={d} start={start} ruled />)}
+      {today.map((d) => <DayRow key={d.id} d={d} start={start} />)}
 
       {rest.length ? (
         <>
@@ -231,37 +232,63 @@ export function YourDay({ day }: { day: DayItem[] }) {
   );
 }
 
-function DayRow({ d, start, ruled }: {
-  d: DayItem; start: (fn: () => void) => void; ruled?: boolean;
-}) {
-  const stamp = ruled
-    ? (d.time ?? "ALL DAY")
-    : d.when.toLocaleDateString("en-US", { weekday: "short", day: "numeric" }).toUpperCase();
+/** The icon beside a row, by what kind of thing it is. */
+const KIND_ICON: Record<DayItem["kind"], string> = {
+  event: "location_on",
+  call: "call",
+  meeting: "groups",
+  task: "task_alt",
+};
+
+/**
+ * One line of the week: a date block, what it is, and how to reach it.
+ *
+ * Today's block is filled blue, so the eye lands on it before reading a word.
+ * Everything else is a quiet stack of weekday and number — a calendar's two
+ * useful facts, in the order people say them.
+ */
+function DayRow({ d, start }: { d: DayItem; start: (fn: () => void) => void }) {
+  const weekday = d.today
+    ? "TODAY"
+    : d.when.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
 
   return (
     <div style={{
-      display: "flex", gap: "14px", alignItems: "flex-start",
-      padding: ruled ? "10px 18px" : "7px 18px",
-      borderBottom: ruled ? `1px solid ${C.rule}` : undefined,
+      display: "flex", gap: "12px", alignItems: "center",
+      padding: "8px 16px", borderTop: `1px solid ${C.rule}`, minHeight: HIT,
     }}>
-      <span style={{
-        flex: "0 0 52px",
-        font: ruled ? `600 13px/1.45 ${F.data}` : `600 10.5px/1.7 ${F.data}`,
-        letterSpacing: ruled ? 0 : ".06em",
-        color: ruled ? C.ink : C.faint,
-      }}>
-        {stamp}
-      </span>
+      <div
+        aria-hidden="true"
+        style={{
+          flex: "0 0 42px", borderRadius: R.sm, padding: "5px 0",
+          textAlign: "center",
+          background: d.today ? C.blue : C.segment,
+          color: d.today ? C.white : C.faint,
+        }}
+      >
+        <div style={{ ...T.meta, color: "inherit", fontSize: "9.5px" }}>{weekday}</div>
+        <div style={{
+          ...T.body, fontWeight: 700, fontSize: "17px", lineHeight: 1.1,
+          color: d.today ? C.white : C.ink,
+        }}>
+          {d.when.getDate()}
+        </div>
+      </div>
 
       <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{
-          font: ruled ? `600 15px/1.3 ${F.ui}` : `400 15px/1.45 ${F.read}`,
-          color: ruled ? C.ink : C.ink,
-        }}>
-          {d.title}
+        <div style={{ ...T.body, fontWeight: 600, color: C.ink }}>{d.title}</div>
+        <div style={{ ...T.meta, marginTop: "2px" }}>
+          {[d.time ?? (d.today ? "ALL DAY" : null), d.meta].filter(Boolean).join(" · ")}
         </div>
-        {d.meta ? <Meta text={d.meta} /> : null}
       </div>
+
+      <span
+        aria-hidden="true"
+        className="material-symbols-rounded"
+        style={{ color: C.ringQuiet, fontSize: "20px", flex: "0 0 auto" }}
+      >
+        {KIND_ICON[d.kind]}
+      </span>
 
       {/* Only your own entries can be taken out; a booking with a school is
           the school's record, and it leaves through the school's page. */}

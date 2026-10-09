@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { C, F, HIT } from "@/lib/joc-tokens";
+import { C, F, R, T, HIT } from "@/lib/joc-tokens";
 import { Panel, GroupHead, Empty, Initial, Meta, row, linkBtn, removeBtn, rowBody } from "./parts";
 import { addTask, handOff, tickTask, moveTask, dropTask, nudge } from "@/app/actions/my-desk";
 import type { Task } from "@/lib/my-desk";
@@ -35,6 +35,14 @@ export function Tasks({ tasks, handed, staff }: {
   const [later, setLater] = useState(false);
   const [picking, setPicking] = useState(false);
   const [showDone, setShowDone] = useState(false);
+  /**
+   * A word when something comes off the list.
+   *
+   * It lasts for this visit only — there is no row for it anywhere, and it
+   * disappears on the next render that doesn't set it. Ticking a thing off
+   * should feel like something, and the page otherwise just gets quieter.
+   */
+  const [praise, setPraise] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
   const forName = staff.find((s) => s.id === forId)?.name ?? "Me";
@@ -49,6 +57,13 @@ export function Tasks({ tasks, handed, staff }: {
     ? `${today.length} TODAY · ${open.length + openHanded.length} OPEN`
     : "";
 
+  /** Called the moment a tick is clicked, before the save round-trips. */
+  function cheer(nowDone: boolean) {
+    if (!nowDone) { setPraise(null); return; }
+    const leftToday = today.filter((t) => !t.done).length - 1;
+    setPraise(leftToday <= 0 ? "All done for today. Yasher koach!" : "Nice, that's one off your plate.");
+  }
+
   function submit() {
     const text = draft.trim();
     if (!text || pending) return;
@@ -60,23 +75,32 @@ export function Tasks({ tasks, handed, staff }: {
   }
 
   return (
-    <Panel title="Tasks" count={count}>
+    <Panel title="Your list" count={count}>
       {/* ---- the add row -------------------------------------------- */}
       <div style={{
-        flex: "0 0 auto", margin: "10px 12px 4px",
-        border: `1.5px solid ${C.hairline}`, borderRadius: "12px", background: C.white,
+        flex: "0 0 auto", margin: "12px 16px 4px",
+        border: `1.5px solid ${C.outline}`, borderRadius: R.form, background: C.panel,
       }}>
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } }}
-          placeholder={forId ? `What should ${forName} do?` : "Add a task…"}
-          aria-label={forId ? `What should ${forName} do?` : "Add a task"}
-          style={{
-            width: "100%", border: 0, background: "transparent",
-            font: `400 15.5px/1.3 ${F.ui}`, color: C.ink, padding: "10px 12px 6px",
-          }}
-        />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "4px 12px 0" }}>
+          <span
+            aria-hidden="true"
+            className="material-symbols-rounded"
+            style={{ color: C.ringQuiet, fontSize: "22px", flex: "0 0 auto" }}
+          >
+            add_circle
+          </span>
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } }}
+            placeholder={forId ? `What should ${forName} do?` : "What do you need to do?"}
+            aria-label={forId ? `What should ${forName} do?` : "What do you need to do?"}
+            style={{
+              flex: 1, minWidth: 0, border: 0, background: "transparent",
+              ...T.body, fontSize: "18px", color: C.ink, padding: "12px 0 10px",
+            }}
+          />
+        </div>
 
         <div style={{
           display: "flex", flexWrap: "wrap", alignItems: "center",
@@ -85,30 +109,31 @@ export function Tasks({ tasks, handed, staff }: {
           <button
             type="button"
             onClick={() => setPicking((p) => !p)}
+            aria-expanded={picking}
             style={{
-              display: "flex", alignItems: "center", gap: "6px",
-              background: C.white, border: `1px solid ${C.hairline}`, borderRadius: "8px",
-              padding: "5px 9px", font: `500 12.5px/1 ${F.ui}`, color: C.ink, cursor: "pointer",
+              display: "flex", alignItems: "center", gap: "6px", minHeight: HIT,
+              background: C.white, border: `1px solid ${C.outline}`, borderRadius: R.sm,
+              padding: "0 11px", ...T.small, color: C.ink, cursor: "pointer",
             }}
           >
-            <span style={{ font: `600 10px/1 ${F.data}`, letterSpacing: ".06em", color: C.faint }}>
-              FOR
-            </span>
+            <span style={{ ...T.meta }}>FOR</span>
             {forName} ▾
           </button>
 
           {/* Today / Later, as a segmented control. */}
-          <div style={{ display: "flex", background: C.segment, borderRadius: "8px", padding: "2px", gap: "2px" }}>
+          <div style={{ display: "flex", background: C.segment, borderRadius: R.sm, padding: "3px", gap: "2px" }}>
             {([["Today", false], ["Later", true]] as const).map(([text, v]) => (
               <button
                 key={String(v)}
                 type="button"
                 onClick={() => setLater(v)}
+                aria-pressed={later === v}
                 style={{
-                  border: 0, borderRadius: "6px", padding: "5px 9px", cursor: "pointer",
+                  border: 0, borderRadius: "6px", padding: "0 12px", minHeight: "38px",
+                  cursor: "pointer",
                   background: later === v ? C.white : "transparent",
                   color: later === v ? C.ink : C.faint,
-                  font: `${later === v ? 600 : 500} 12.5px/1 ${F.ui}`,
+                  ...T.small, fontWeight: later === v ? 600 : 500,
                   boxShadow: later === v ? "0 1px 2px rgba(16,35,63,.08)" : "none",
                 }}
               >
@@ -117,12 +142,19 @@ export function Tasks({ tasks, handed, staff }: {
             ))}
           </div>
 
-          <span style={{
-            marginLeft: "auto", font: `500 10px/1 ${F.data}`,
-            letterSpacing: ".06em", color: C.faint,
-          }}>
-            {forId ? `ENTER ↵ SENDS TO ${forName.toUpperCase()}` : "ENTER ↵"}
-          </span>
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!draft.trim() || pending}
+            style={{
+              marginLeft: "auto", minHeight: HIT, padding: "0 18px",
+              background: draft.trim() ? C.blue : C.outline, color: C.white,
+              border: 0, borderRadius: R.sm, ...T.small, fontWeight: 700,
+              cursor: draft.trim() ? "pointer" : "default",
+            }}
+          >
+            {forId ? `Send to ${forName}` : "Add"}
+          </button>
         </div>
 
         {picking ? (
@@ -151,6 +183,15 @@ export function Tasks({ tasks, handed, staff }: {
         ) : null}
       </div>
 
+      {praise ? (
+        <div style={{
+          margin: "8px 16px 0", padding: "9px 12px", borderRadius: R.sm,
+          background: C.greenTint, color: C.greenText, ...T.small,
+        }}>
+          {praise}
+        </div>
+      ) : null}
+
       {/* ---- the groups ---------------------------------------------- */}
       {nothing ? (
         <Empty
@@ -162,14 +203,14 @@ export function Tasks({ tasks, handed, staff }: {
       {today.length ? (
         <>
           <GroupHead text="Today" count={today.length} />
-          {today.map((t) => <Row key={t.id} t={t} start={start} />)}
+          {today.map((t) => <Row key={t.id} t={t} start={start} onTick={cheer} />)}
         </>
       ) : null}
 
       {laterOnes.length ? (
         <>
           <GroupHead text="Later" count={laterOnes.length} />
-          {laterOnes.map((t) => <Row key={t.id} t={t} start={start} />)}
+          {laterOnes.map((t) => <Row key={t.id} t={t} start={start} onTick={cheer} />)}
         </>
       ) : null}
 
@@ -201,7 +242,9 @@ export function Tasks({ tasks, handed, staff }: {
   );
 }
 
-function Row({ t, start }: { t: Task; start: (fn: () => void) => void }) {
+function Row({ t, start, onTick }: {
+  t: Task; start: (fn: () => void) => void; onTick?: (done: boolean) => void;
+}) {
   const run = (fn: () => Promise<unknown>) => () => start(() => { void fn(); });
 
   return (
@@ -215,7 +258,7 @@ function Row({ t, start }: { t: Task; start: (fn: () => void) => void }) {
         <button
           type="button"
           aria-label={t.done ? "Not done after all" : "Done"}
-          onClick={run(() => tickTask(t.id, !t.done))}
+          onClick={() => { onTick?.(!t.done); run(() => tickTask(t.id, !t.done))(); }}
           style={{
             flex: `0 0 ${HIT}`, minHeight: HIT,
             display: "flex", alignItems: "center", justifyContent: "center",

@@ -34,6 +34,11 @@ export type DayItem = {
   today: boolean;
   /** A diary entry this person added, which they can also remove. */
   own?: string;
+  /**
+   * What kind of thing it is, for the icon beside it: a school booking
+   * (which wears its venue's icon), a call, a meeting, or a task with a date.
+   */
+  kind: "event" | "call" | "meeting" | "task";
 };
 
 export type TrayItem = {
@@ -261,6 +266,7 @@ export async function getMyDesk() {
       title: e.school.name,
       meta: (e.program?.name ?? "No program").toUpperCase(),
       today: e.occurredAt < new Date(midnight.getTime() + DAY),
+      kind: "event" as const,
     })),
     ...diary.map((d) => ({
       id: `d${d.id}`,
@@ -272,6 +278,7 @@ export async function getMyDesk() {
       meta: d.note?.toUpperCase() ?? null,
       today: d.startsAt < new Date(midnight.getTime() + DAY),
       own: d.id,
+      kind: /call|phone/i.test(`${d.title} ${d.note ?? ""}`) ? ("call" as const) : ("meeting" as const),
     })),
     ...dated.map((t) => ({
       id: `t${t.id}`,
@@ -280,6 +287,7 @@ export async function getMyDesk() {
       title: t.text,
       meta: null,
       today: t.due! < new Date(midnight.getTime() + DAY),
+      kind: "task" as const,
     })),
   ].sort((a, b) => a.when.getTime() - b.when.getTime());
 

@@ -25,23 +25,29 @@ import { C, F, R, T, HIT, ROW_SHADOW } from "@/lib/joc-tokens";
 export const CARD_SHADOW = ROW_SHADOW;
 
 export function Panel({
-  title, count, tools, children, flush,
+  title, count, tools, children, flush, rail, note,
 }: {
   title: string;
-  /** The mono line at the far right — "3 TODAY · 7 OPEN". */
+  /** The mono line beside the title — "3 TODAY · 7 OPEN". */
   count?: string;
-  /** Replaces the count: the notebook's page tabs live up here. */
+  /** An action at the far right of the header, such as "+ Add". */
   tools?: React.ReactNode;
   children: React.ReactNode;
   /** The notebook lays itself out; everything else gets a scrolling body. */
   flush?: boolean;
+  /** The notebook's page tabs: a scrolling row beside the title, not an
+   *  action pinned to the right. */
+  rail?: boolean;
+  /** A card that isn't white — the scratchpad's paper. */
+  note?: React.CSSProperties;
 }) {
   return (
     <section
       style={{
         background: C.white,
-        borderRadius: "18px",
+        borderRadius: R.row,
         boxShadow: CARD_SHADOW,
+        ...note,
         display: "flex",
         flexDirection: "column",
         minHeight: 0,
@@ -53,26 +59,23 @@ export function Panel({
         style={{
           flex: "0 0 auto",
           display: "flex",
-          alignItems: tools ? "center" : "baseline",
-          justifyContent: tools ? "flex-start" : "space-between",
-          gap: tools ? "6px" : "10px",
-          padding: tools ? "11px 12px 10px" : "15px 18px 10px",
+          alignItems: "center",
+          gap: rail ? "6px" : "10px",
+          padding: rail ? "11px 12px 10px" : "12px 16px 10px",
           borderBottom: `1px solid ${C.rule}`,
-          overflowX: tools ? "auto" : undefined,
+          overflowX: rail ? "auto" : undefined,
         }}
       >
         <h2 style={{
-          font: `600 17px/1 ${F.ui}`, color: C.ink, margin: 0,
-          padding: tools ? "0 8px 0 6px" : 0, flex: "0 0 auto",
+          ...T.name, color: C.ink, margin: 0,
+          padding: rail ? "0 8px 0 6px" : 0, flex: "0 0 auto",
         }}>
           {title}
         </h2>
-        {tools}
         {count ? (
-          <span style={{ font: `500 10.5px/1 ${F.data}`, letterSpacing: ".08em", color: C.faint }}>
-            {count}
-          </span>
+          <span style={{ ...T.meta, flex: "0 0 auto" }}>{count}</span>
         ) : null}
+        {tools}
       </header>
 
       {/* min-height:0 is what lets this scroll instead of stretching the grid. */}

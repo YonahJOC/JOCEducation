@@ -83,6 +83,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   );
 
   return (
+    <>
+      {/* The console's icon font. React hoists this into the head, and it is
+          asked for on console pages only — the public site has no icons. */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0&display=block"
+      />
     <PortalShell
       side="joc"
       /* Their name, with the address as the fallback: the rail is where you
@@ -121,5 +128,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       )}
       {children}
     </PortalShell>
+    </>
   );
 }

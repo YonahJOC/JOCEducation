@@ -25,6 +25,9 @@ export type NavItem = {
   need?: number;
   /** Orange for work waiting on this person, blue for news. */
   tone?: "orange" | "blue";
+  /** A Material Symbols Rounded name. The rail draws it; the nav names it,
+   *  because what a page is about is this file's business. */
+  icon?: string;
 };
 
 type U = Parameters<typeof can>[0];
@@ -61,8 +64,8 @@ export function jocNav(
   // the console gets both, including a coordinator who gets nothing else —
   // the Buzz inside it is still gated on its own permission.
   const items: NavItem[] = [
-    { label: "My desk", href: "/admin", hint: "Your own work", need: opts.badges?.desk, tone: "orange" },
-    { label: "The Office", href: "/admin/office", hint: "The Buzz, schools, the board", need: opts.badges?.office, tone: "blue" },
+    { label: "My desk", href: "/admin", hint: "Your own work", need: opts.badges?.desk, tone: "orange", icon: "home" },
+    { label: "The Office", href: "/admin/office", hint: "The Buzz, schools, the board", need: opts.badges?.office, tone: "blue", icon: "apartment" },
   ];
   const programs = opts.programs ?? [];
 
@@ -83,32 +86,32 @@ export function jocNav(
         need: p.need,
       });
     }
-    items.push({ label: "My meeting items", href: "/admin/meetings", hint: "What you sent for a decision" });
+    items.push({ label: "My meeting items", href: "/admin/meetings", hint: "What you sent for a decision", icon: "groups" });
     return items;
   }
 
-  if (can(user, "schools")) items.push({ label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history" });
+  if (can(user, "schools")) items.push({ label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history", icon: "school" });
   // What the schools have written. A row on Today saying somebody wrote in
   // needs somewhere to land, and the schools list is not it.
   if (can(user, "schools") || can(user, "app_activity")) {
-    items.push({ label: "Messages", href: "/admin/messages", hint: "What schools have written in" });
+    items.push({ label: "Messages", href: "/admin/messages", hint: "What schools have written in", icon: "forum" });
   }
   if (can(user, "programs") || can(user, "coordinators") || programs.length > 0) {
-    items.push({ label: "Programs", href: "/admin/my-programs", hint: "Each program's own console" });
+    items.push({ label: "Programs", href: "/admin/my-programs", hint: "Each program's own console", icon: "volunteer_activism" });
   }
-  if (can(user, "programming")) items.push({ label: "Calendar", href: "/admin/programming", hint: "What is running, and where" });
-  if (can(user, "run_admin_agenda")) items.push({ label: "Admin meeting", href: "/admin/meetings", hint: "Schools sent for a decision" });
-  if (can(user, "lessons")) items.push({ label: "Teaching material", href: "/admin/lessons", hint: "Lessons, resources and cycles" });
+  if (can(user, "programming")) items.push({ label: "Calendar", href: "/admin/programming", hint: "What is running, and where", icon: "calendar_month" });
+  if (can(user, "run_admin_agenda")) items.push({ label: "Admin meeting", href: "/admin/meetings", hint: "Schools sent for a decision", icon: "groups" });
+  if (can(user, "lessons")) items.push({ label: "Teaching material", href: "/admin/lessons", hint: "Lessons, resources and cycles", icon: "menu_book" });
   // The Cycles are their own job, not a corner of the teaching material.
   // Folding them under it cost the person who actually keeps them — the
   // dates, the themes, the guiding questions — her one-click way in, and
   // she is in there more often than anyone is in the lesson library.
   if (can(user, "cycles")) {
-    items.push({ label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes, their dates and their weeks" });
+    items.push({ label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes, their dates and their weeks", icon: "calendar_month" });
   }
-  if (can(user, "lobby")) items.push({ label: "Lobby screen", href: "/admin/lobby", hint: "What the TV in the lobby shows" });
-  if (can(user, "orders") || can(user, "pricing")) items.push({ label: "Money", href: "/admin/orders", hint: "Orders and pricing" });
-  if (can(user, "users")) items.push({ label: "People & access", href: "/admin/users", hint: "Accounts, roles and passwords" });
+  if (can(user, "lobby")) items.push({ label: "Lobby screen", href: "/admin/lobby", hint: "What the TV in the lobby shows", icon: "tv" });
+  if (can(user, "orders") || can(user, "pricing")) items.push({ label: "Money", href: "/admin/orders", hint: "Orders and pricing", icon: "payments" });
+  if (can(user, "users")) items.push({ label: "People & access", href: "/admin/users", hint: "Accounts, roles and passwords", icon: "badge" });
 
   // At most seven — but the one that goes is never the keys to everything.
   //

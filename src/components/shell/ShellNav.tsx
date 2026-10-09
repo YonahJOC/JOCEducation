@@ -36,20 +36,33 @@ export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "sch
                now opens with two items a person switches between all day, and
                a left border on both of them read as a bracket. */
             style={{
-              display: "flex", alignItems: "center", gap: "9px",
-              padding: "10px 12px", minHeight: "40px", margin: "0 0 2px",
-              fontFamily: F.ui, fontSize: "15px", fontWeight: active ? 600 : 400,
-              color: dark
-                ? active ? C.white : "#DCE2EE"
-                : active ? C.ink : C.muted,
+              display: "flex", alignItems: "center", gap: "12px",
+              padding: "0 14px", minHeight: "48px", margin: "0 0 2px",
+              fontFamily: F.ui, fontSize: "15px", fontWeight: active ? 700 : 500,
+              color: active ? C.ink : dark ? "#DCE2EE" : C.muted,
               textDecoration: "none",
-              backgroundColor: active
-                ? dark ? "rgba(255,255,255,.1)" : C.white
-                : "transparent",
-              borderRadius: "10px",
+              // Paper, and square on the right, so the active tab joins the
+              // page it opens rather than floating on the rail.
+              backgroundColor: active ? C.paper : "transparent",
+              borderRadius: "12px",
+              borderTopRightRadius: active ? 0 : "12px",
+              borderBottomRightRadius: active ? 0 : "12px",
+              marginRight: active ? "-14px" : 0,
               transition: "background-color .12s",
             }}
           >
+            {i.icon ? (
+              <span
+                aria-hidden="true"
+                className="material-symbols-rounded"
+                style={{
+                  fontSize: "21px", flexShrink: 0,
+                  color: active ? C.blue : dark ? "#9DA9C3" : C.muted,
+                }}
+              >
+                {i.icon}
+              </span>
+            ) : null}
             {i.dot && (
               <span
                 aria-hidden="true"
