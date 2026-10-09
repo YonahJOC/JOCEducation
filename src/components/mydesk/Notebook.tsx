@@ -57,9 +57,14 @@ export function Notebook({ pages }: { pages: Page[] }) {
     <Panel
       title="Scratchpad"
       flush
-      rail
       note={NOTE}
+      count=""
       tools={
+        <span style={{ ...T.meta, color: C.orangeText, marginLeft: "auto" }}>
+          ONLY YOU SEE THIS
+        </span>
+      }
+      tabs={
         <>
           {list.map((p) => {
             const on = p.id === page.id;
@@ -71,9 +76,10 @@ export function Notebook({ pages }: { pages: Page[] }) {
                 style={{
                   flex: "0 0 auto", maxWidth: on ? "170px" : "150px",
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  background: on ? C.ink : "rgba(255,255,255,.65)", color: on ? C.white : C.ink,
-                  border: 0, borderRadius: "8px", padding: "6px 10px",
-                  font: `${on ? 600 : 500} 12.5px/1 ${F.ui}`, cursor: "pointer",
+                  background: on ? C.ink : "rgba(255,255,255,.7)", color: on ? C.white : C.ink,
+                  border: 0, borderRadius: "10px", minHeight: "40px", padding: "0 14px",
+                  fontFamily: F.ui, fontSize: "14px", fontWeight: on ? 700 : 500,
+                  cursor: "pointer",
                 }}
               >
                 {p.title || "Untitled"}
@@ -86,7 +92,7 @@ export function Notebook({ pages }: { pages: Page[] }) {
             style={{
               flex: "0 0 auto", background: "transparent",
               border: `1px dashed ${C.orangeText}`, color: C.orangeText,
-              borderRadius: R.sm, padding: "0 10px", minHeight: HIT,
+              borderRadius: "10px", padding: "0 12px", minHeight: "40px",
               ...T.small, cursor: "pointer", marginLeft: "auto",
             }}
           >
@@ -121,18 +127,15 @@ export function Notebook({ pages }: { pages: Page[] }) {
         flex: "0 0 auto", display: "flex", flexWrap: "wrap", alignItems: "center",
         gap: "6px 16px", padding: "9px 18px", borderTop: `1px solid ${C.hairline}`,
       }}>
-        <span style={{ ...T.meta, color: C.orangeText, flex: 1 }}>
-          ONLY YOU SEE THIS
-        </span>
-        <span style={{ ...T.meta, color: saved ? C.greenText : C.faint }}>
+        <span style={{ ...T.meta, color: saved ? C.greenText : C.faint, flex: 1 }}>
           {saved ? "SAVED" : "SAVING…"}
         </span>
         <button
           type="button"
           onClick={() => start(() => { void pageToTask(page.title || page.body.split("\n")[0] || ""); })}
-          style={{ ...linkBtn, font: `600 13px/1 ${F.ui}` }}
+          style={{ ...linkBtn, color: C.orangeText, fontSize: "15px", fontWeight: 700 }}
         >
-          Make this a task
+          Make it a task →
         </button>
         {list.length > 1 && page.id ? (
           <button

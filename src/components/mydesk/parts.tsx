@@ -25,7 +25,7 @@ import { C, F, R, T, HIT, ROW_SHADOW } from "@/lib/joc-tokens";
 export const CARD_SHADOW = ROW_SHADOW;
 
 export function Panel({
-  title, count, tools, children, flush, rail, note,
+  title, count, tools, children, flush, rail, note, icon, iconTint, tabs,
 }: {
   title: string;
   /** The mono line beside the title — "3 TODAY · 7 OPEN". */
@@ -40,12 +40,18 @@ export function Panel({
   rail?: boolean;
   /** A card that isn't white — the scratchpad's paper. */
   note?: React.CSSProperties;
+  /** A Material Symbols name for the tile beside the title. Decoration. */
+  icon?: string;
+  /** [icon colour, tile colour] for that tile. */
+  iconTint?: [string, string];
+  /** A row of its own under the header — the notebook's pages. */
+  tabs?: React.ReactNode;
 }) {
   return (
     <section
       style={{
         background: C.white,
-        borderRadius: R.row,
+        borderRadius: R.hero,
         boxShadow: CARD_SHADOW,
         ...note,
         display: "flex",
@@ -55,32 +61,63 @@ export function Panel({
         overflow: "hidden",
       }}
     >
+      {/* No rule under the header: the card is one surface, and a line
+          across it made every panel look like a table with a caption. */}
       <header
         style={{
           flex: "0 0 auto",
           display: "flex",
           alignItems: "center",
-          gap: rail ? "6px" : "10px",
-          padding: rail ? "11px 12px 10px" : "12px 16px 10px",
-          borderBottom: `1px solid ${C.rule}`,
+          gap: rail ? "6px" : "12px",
+          padding: rail ? "20px 20px 0" : "26px 26px 0",
           overflowX: rail ? "auto" : undefined,
         }}
       >
+        {icon ? (
+          <span
+            aria-hidden="true"
+            className="material-symbols-rounded"
+            style={{
+              flex: "0 0 40px", width: "40px", height: "40px", borderRadius: "12px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: iconTint?.[1] ?? C.blueTint,
+              color: iconTint?.[0] ?? C.blue,
+              fontSize: "22px",
+              fontVariationSettings: '"FILL" 1, "wght" 600, "GRAD" 0, "opsz" 24',
+            }}
+          >
+            {icon}
+          </span>
+        ) : null}
+
         <h2 style={{
-          ...T.name, color: C.ink, margin: 0,
+          ...T.section, color: C.ink, margin: 0,
           padding: rail ? "0 8px 0 6px" : 0, flex: "0 0 auto",
         }}>
           {title}
         </h2>
+
+        {/* The count sits at the far end, ahead of any action. */}
         {count ? (
-          <span style={{ ...T.meta, flex: "0 0 auto" }}>{count}</span>
+          <span style={{ ...T.meta, flex: "0 0 auto", marginLeft: "auto" }}>{count}</span>
         ) : null}
         {tools}
       </header>
 
       {/* min-height:0 is what lets this scroll instead of stretching the grid. */}
+      {tabs ? (
+        <div style={{
+          flex: "0 0 auto", display: "flex", alignItems: "center", gap: "6px",
+          padding: "14px 20px 0", overflowX: "auto",
+        }}>
+          {tabs}
+        </div>
+      ) : null}
+
       {flush ? children : (
-        <div style={{ flex: 1, minHeight: 0, overflow: "auto" }}>{children}</div>
+        <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "18px 26px 22px" }}>
+          {children}
+        </div>
       )}
     </section>
   );
@@ -89,16 +126,8 @@ export function Panel({
 /** A heading inside a panel body — TODAY, LATER, HANDED OFF. */
 export function GroupHead({ text, count }: { text: string; count?: number }) {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", gap: "8px", padding: "12px 18px 5px" }}>
-      <span style={{
-        font: `600 10.5px/1 ${F.data}`, letterSpacing: ".1em",
-        color: C.faint, textTransform: "uppercase",
-      }}>
-        {text}
-      </span>
-      {count !== undefined ? (
-        <span style={{ font: `500 10.5px/1 ${F.data}`, color: C.muted }}>{count}</span>
-      ) : null}
+    <div style={{ ...T.meta, textTransform: "uppercase", padding: "12px 0 6px" }}>
+      {count === undefined ? text : `${text} · ${count}`}
     </div>
   );
 }
@@ -153,15 +182,19 @@ export function Initial({ letter, size = 20 }: { letter: string; size?: number }
  * they look like small words and they hit like a 44px target.
  */
 export const row: React.CSSProperties = {
-  display: "flex", gap: "11px", alignItems: "stretch",
-  padding: "0 18px", borderTop: `1px solid ${C.rule}`,
-  minHeight: HIT,
+  display: "grid",
+  gridTemplateColumns: "52px minmax(0, 1fr) auto",
+  alignItems: "center",
+  minHeight: "64px",
+  borderTop: `1px solid ${C.rule}`,
+  // No side padding: the panel's own 26px is the gutter, so a row's hairline
+  // runs the full width of the card rather than stopping short of it.
 };
 
 /** The part of a row that holds the text, which sets the row's height. */
 export const rowBody: React.CSSProperties = {
-  flex: 1, minWidth: 0, display: "flex", flexDirection: "column",
-  justifyContent: "center", padding: "9px 0",
+  minWidth: 0, display: "flex", flexDirection: "column",
+  justifyContent: "center", padding: "10px 0",
 };
 
 /**

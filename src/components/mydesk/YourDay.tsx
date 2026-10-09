@@ -73,6 +73,9 @@ export function YourDay({ day }: { day: DayItem[] }) {
   return (
     <Panel
       title="This week"
+      icon="calendar_month"
+      iconTint={[C.greenText, C.white]}
+      note={{ background: C.greenTint, boxShadow: "0 2px 0 #C9E6D2" }}
       count={today.length ? `${today.length === 1 ? "1 THING" : `${today.length} THINGS`} TODAY` : ""}
       tools={!adding ? (
         <button
@@ -81,8 +84,8 @@ export function YourDay({ day }: { day: DayItem[] }) {
           style={{
             display: "inline-flex", alignItems: "center", gap: "4px",
             minHeight: HIT, padding: "0 8px", marginLeft: "auto",
-            background: "transparent", border: 0, color: C.blue,
-            ...T.small, cursor: "pointer",
+            background: "transparent", border: 0, color: C.greenText,
+            ...T.small, fontSize: "15px", cursor: "pointer", borderRadius: "10px",
           }}
         >
           <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "19px" }}>add</span>
@@ -217,27 +220,25 @@ export function YourDay({ day }: { day: DayItem[] }) {
 
       {today.map((d) => <DayRow key={d.id} d={d} start={start} />)}
 
-      {rest.length ? (
-        <>
-          <div style={{
-            padding: "12px 18px 4px", font: `600 10.5px/1 ${F.data}`,
-            letterSpacing: ".1em", color: C.faint,
-          }}>
-            LATER
-          </div>
-          {rest.map((d) => <DayRow key={d.id} d={d} start={start} />)}
-        </>
-      ) : null}
+      {rest.map((d) => <DayRow key={d.id} d={d} start={start} />)}
     </Panel>
   );
 }
 
 /** The icon beside a row, by what kind of thing it is. */
 const KIND_ICON: Record<DayItem["kind"], string> = {
-  event: "location_on",
+  event: "flag",
   call: "call",
   meeting: "groups",
   task: "task_alt",
+};
+
+/** Each kind keeps its own colour, so the column reads at a glance. */
+const KIND_INK: Record<DayItem["kind"], string> = {
+  event: C.redText,
+  call: C.blue,
+  meeting: C.blue,
+  task: C.greenText,
 };
 
 /**
@@ -247,6 +248,13 @@ const KIND_ICON: Record<DayItem["kind"], string> = {
  * Everything else is a quiet stack of weekday and number — a calendar's two
  * useful facts, in the order people say them.
  */
+/**
+ * One line of the week: when, what, and how you reach it.
+ *
+ * The rows sit straight on the green with no card and no hairline between
+ * them — the date blocks already separate one day from the next, and a rule
+ * as well turned a short list into a timetable.
+ */
 function DayRow({ d, start }: { d: DayItem; start: (fn: () => void) => void }) {
   const weekday = d.today
     ? "TODAY"
@@ -254,54 +262,66 @@ function DayRow({ d, start }: { d: DayItem; start: (fn: () => void) => void }) {
 
   return (
     <div style={{
-      display: "flex", gap: "12px", alignItems: "center",
-      padding: "8px 16px", borderTop: `1px solid ${C.rule}`, minHeight: HIT,
+      display: "grid", gridTemplateColumns: "56px minmax(0, 1fr) auto",
+      gap: "14px", alignItems: "center", padding: "7px 0", minHeight: HIT,
     }}>
       <div
         aria-hidden="true"
         style={{
-          flex: "0 0 42px", borderRadius: R.sm, padding: "5px 0",
-          textAlign: "center",
-          background: d.today ? C.blue : C.segment,
-          color: d.today ? C.white : C.faint,
+          borderRadius: "12px", padding: "6px 0", textAlign: "center",
+          background: d.today ? C.blue : C.white,
+          color: d.today ? C.white : C.ink,
         }}
       >
-        <div style={{ ...T.meta, color: "inherit", fontSize: "9.5px" }}>{weekday}</div>
         <div style={{
-          ...T.body, fontWeight: 700, fontSize: "17px", lineHeight: 1.1,
-          color: d.today ? C.white : C.ink,
+          fontFamily: F.data, fontSize: "11px", fontWeight: 600,
+          color: d.today ? C.white : C.faint,
         }}>
-          {d.when.getDate()}
+          {weekday}
+        </div>
+        <div style={{ fontFamily: F.ui, fontSize: "22px", fontWeight: 700, lineHeight: 1.1 }}>
+          {/* Today's block shows the time if there is one: on the day itself
+              the number is the one thing you already know. */}
+          {d.today && d.time ? d.time.replace(/s?[AP]M$/i, "") : d.when.getDate()}
         </div>
       </div>
 
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ ...T.body, fontWeight: 600, color: C.ink }}>{d.title}</div>
-        <div style={{ ...T.meta, marginTop: "2px" }}>
-          {[d.time ?? (d.today ? "ALL DAY" : null), d.meta].filter(Boolean).join(" · ")}
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 600, color: C.ink }}>
+          {d.title}
         </div>
+        {[d.time && !d.today ? d.time : null, d.meta].filter(Boolean).length ? (
+          <div style={{ ...T.meta, marginTop: "2px" }}>
+            {[d.time && !d.today ? d.time : null, d.meta].filter(Boolean).join(" · ")}
+          </div>
+        ) : null}
       </div>
 
-      <span
-        aria-hidden="true"
-        className="material-symbols-rounded"
-        style={{ color: C.ringQuiet, fontSize: "20px", flex: "0 0 auto" }}
-      >
-        {KIND_ICON[d.kind]}
-      </span>
-
-      {/* Only your own entries can be taken out; a booking with a school is
-          the school's record, and it leaves through the school's page. */}
-      {d.own ? (
-        <button
-          type="button"
-          aria-label="Remove from your day"
-          onClick={() => start(() => { void dropDeskEvent(d.own!); })}
-          style={removeBtn}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <span
+          aria-hidden="true"
+          className="material-symbols-rounded"
+          style={{
+            fontSize: "22px", color: KIND_INK[d.kind],
+            fontVariationSettings: '"FILL" 1, "wght" 600, "GRAD" 0, "opsz" 24',
+          }}
         >
-          ×
-        </button>
-      ) : null}
+          {KIND_ICON[d.kind]}
+        </span>
+
+        {/* Only your own entries can be taken out; a booking with a school is
+            the school's record, and it leaves through the school's page. */}
+        {d.own ? (
+          <button
+            type="button"
+            aria-label="Remove from your day"
+            onClick={() => start(() => { void dropDeskEvent(d.own!); })}
+            style={removeBtn}
+          >
+            ×
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }

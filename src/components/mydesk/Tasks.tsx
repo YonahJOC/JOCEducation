@@ -34,6 +34,7 @@ export function Tasks({ tasks, handed, staff }: {
   const [forId, setForId] = useState<string | null>(null);
   const [later, setLater] = useState(false);
   const [picking, setPicking] = useState(false);
+  const [focused, setFocused] = useState(false);
   const [showDone, setShowDone] = useState(false);
   /**
    * A word when something comes off the list.
@@ -43,6 +44,8 @@ export function Tasks({ tasks, handed, staff }: {
    * should feel like something, and the page otherwise just gets quieter.
    */
   const [praise, setPraise] = useState<string | null>(null);
+  /** Which hand-offs have been chased this visit, so the pill can say so. */
+  const [nudged, setNudged] = useState<Record<string, boolean>>({});
   const [pending, start] = useTransition();
 
   const forName = staff.find((s) => s.id === forId)?.name ?? "Me";
@@ -75,17 +78,19 @@ export function Tasks({ tasks, handed, staff }: {
   }
 
   return (
-    <Panel title="Your list" count={count}>
+    <Panel title="Your list" count={count} icon="task_alt" iconTint={[C.blue, C.blueTint]}>
       {/* ---- the add row -------------------------------------------- */}
-      <div style={{
-        flex: "0 0 auto", margin: "12px 16px 4px",
-        border: `1.5px solid ${C.outline}`, borderRadius: R.form, background: C.panel,
+      <div className="joc-add-row" style={{
+        flex: "0 0 auto", marginBottom: "4px",
+        border: `1.5px solid ${focused ? C.blue : C.outline}`, borderRadius: "16px",
+        background: C.panel, padding: "8px 8px 8px 18px",
+        boxShadow: focused ? `0 0 0 4px ${C.blueTint}` : "none",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "4px 12px 0" }}>
+        <div className="joc-add-line" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span
             aria-hidden="true"
             className="material-symbols-rounded"
-            style={{ color: C.ringQuiet, fontSize: "22px", flex: "0 0 auto" }}
+            style={{ color: C.blue, fontSize: "24px", flex: "0 0 auto" }}
           >
             add_circle
           </span>
@@ -95,17 +100,15 @@ export function Tasks({ tasks, handed, staff }: {
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } }}
             placeholder={forId ? `What should ${forName} do?` : "What do you need to do?"}
             aria-label={forId ? `What should ${forName} do?` : "What do you need to do?"}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             style={{
-              flex: 1, minWidth: 0, border: 0, background: "transparent",
-              ...T.body, fontSize: "18px", color: C.ink, padding: "12px 0 10px",
+              flex: 1, minWidth: "120px", border: 0, background: "transparent",
+              ...T.body, fontSize: "18px", color: C.ink, height: "44px", padding: 0,
             }}
           />
-        </div>
 
-        <div style={{
-          display: "flex", flexWrap: "wrap", alignItems: "center",
-          gap: "8px", padding: "0 8px 8px",
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "0 0 auto" }}>
           <button
             type="button"
             onClick={() => setPicking((p) => !p)}
@@ -147,15 +150,23 @@ export function Tasks({ tasks, handed, staff }: {
             onClick={submit}
             disabled={!draft.trim() || pending}
             style={{
-              marginLeft: "auto", minHeight: HIT, padding: "0 18px",
+              minHeight: "46px", padding: "0 20px",
               background: draft.trim() ? C.blue : C.outline, color: C.white,
-              border: 0, borderRadius: R.sm, ...T.small, fontWeight: 700,
+              border: 0, borderRadius: R.form,
+              fontFamily: F.ui, fontSize: "16px", fontWeight: 700,
               cursor: draft.trim() ? "pointer" : "default",
             }}
           >
             {forId ? `Send to ${forName}` : "Add"}
           </button>
         </div>
+        </div>
+
+        {forId ? (
+          <div style={{ ...T.meta, padding: "8px 0 2px" }}>
+            ENTER ↵ SENDS TO {forName.toUpperCase()}
+          </div>
+        ) : null}
 
         {picking ? (
           <div style={{
@@ -203,21 +214,21 @@ export function Tasks({ tasks, handed, staff }: {
       {today.length ? (
         <>
           <GroupHead text="Today" count={today.length} />
-          {today.map((t) => <Row key={t.id} t={t} start={start} onTick={cheer} />)}
+          {today.map((t) => <Row key={t.id} t={t} start={start} onTick={cheer} nudged={nudged} setNudged={setNudged} />)}
         </>
       ) : null}
 
       {laterOnes.length ? (
         <>
           <GroupHead text="Later" count={laterOnes.length} />
-          {laterOnes.map((t) => <Row key={t.id} t={t} start={start} onTick={cheer} />)}
+          {laterOnes.map((t) => <Row key={t.id} t={t} start={start} onTick={cheer} nudged={nudged} setNudged={setNudged} />)}
         </>
       ) : null}
 
       {openHanded.length ? (
         <>
           <GroupHead text="Handed off · waiting on others" count={openHanded.length} />
-          {openHanded.map((t) => <Row key={t.id} t={t} start={start} />)}
+          {openHanded.map((t) => <Row key={t.id} t={t} start={start} nudged={nudged} setNudged={setNudged} />)}
         </>
       ) : null}
 
@@ -235,15 +246,27 @@ export function Tasks({ tasks, handed, staff }: {
               {finished.length} DONE {showDone ? "▴" : "▾"}
             </button>
           </div>
-          {showDone ? finished.map((t) => <Row key={t.id} t={t} start={start} />) : null}
+          {showDone ? finished.map((t) => <Row key={t.id} t={t} start={start} nudged={nudged} setNudged={setNudged} />) : null}
         </>
       ) : null}
     </Panel>
   );
 }
 
-function Row({ t, start, onTick }: {
+/** A pill: a small word that taps like a target. */
+function pill(bg: string, ink: string): React.CSSProperties {
+  return {
+    display: "inline-flex", alignItems: "center", gap: "6px",
+    minHeight: HIT, padding: "0 16px", borderRadius: "9999px",
+    background: bg, color: ink, border: 0,
+    fontFamily: F.ui, fontSize: "15px", fontWeight: 600, cursor: "pointer",
+  };
+}
+
+function Row({ t, start, onTick, nudged, setNudged }: {
   t: Task; start: (fn: () => void) => void; onTick?: (done: boolean) => void;
+  nudged: Record<string, boolean>;
+  setNudged: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }) {
   const run = (fn: () => Promise<unknown>) => () => start(() => { void fn(); });
 
@@ -253,7 +276,14 @@ function Row({ t, start, onTick }: {
           is finished: the circle here is never yours to tick, because the
           task is theirs. */}
       {t.handedTo ? (
-        <Initial letter={t.handedTo.initial} />
+        <span style={{
+          width: "34px", height: "34px", borderRadius: "50%",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: C.greenTint, color: C.greenText,
+          fontFamily: F.ui, fontWeight: 700, fontSize: "15px",
+        }}>
+          {t.handedTo.initial}
+        </span>
       ) : (
         <button
           type="button"
@@ -271,16 +301,20 @@ function Row({ t, start, onTick }: {
             display: "flex", alignItems: "center", justifyContent: "center",
             border: t.done ? 0 : `2px solid ${C.ringQuiet}`,
             background: t.done ? C.green : "transparent",
-            color: C.white, font: `700 15px/1 ${F.ui}`,
+            color: C.white,
           }}>
-            {t.done ? "✓" : ""}
+            {t.done ? (
+              <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "19px" }}>
+                check
+              </span>
+            ) : null}
           </span>
         </button>
       )}
 
       <div style={rowBody}>
         <div style={{
-          font: `${t.done ? 400 : 500} 15px/1.35 ${F.ui}`,
+          font: `${t.done ? 400 : 500} 18px/1.35 ${F.ui}`,
           color: t.done ? C.faint : C.ink,
           textDecoration: t.done ? "line-through" : "none",
           textWrap: "pretty",
@@ -298,13 +332,21 @@ function Row({ t, start, onTick }: {
       </div>
 
       {t.later && !t.done ? (
-        <button type="button" onClick={run(() => moveTask(t.id, false))} style={linkBtn}>
+        <button type="button" onClick={run(() => moveTask(t.id, false))} style={pill(C.blueTint, C.blue)}>
+          <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "18px" }}>today</span>
           Today
         </button>
       ) : null}
       {t.handedTo && !t.done ? (
-        <button type="button" onClick={run(() => nudge(t.id))} style={linkBtn}>
-          Nudge
+        <button
+          type="button"
+          onClick={() => { setNudged((n) => ({ ...n, [t.id]: true })); run(() => nudge(t.id))(); }}
+          style={nudged[t.id] ? pill(C.greenTint, C.greenText) : pill(C.blueTint, C.blue)}
+        >
+          <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "18px" }}>
+            {nudged[t.id] ? "check" : "notifications_active"}
+          </span>
+          {nudged[t.id] ? "Nudged" : `Nudge ${t.handedTo?.name ?? ""}`}
         </button>
       ) : null}
       <button

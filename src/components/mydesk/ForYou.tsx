@@ -20,7 +20,7 @@ export function ForYou({ tray }: { tray: TrayItem[] }) {
   const run = (fn: () => Promise<unknown>) => () => start(() => { void fn(); });
 
   return (
-    <Panel title="For you" count={tray.length ? `${tray.length} NEW` : ""}>
+    <Panel title="For you" count={tray.length ? `${tray.length} NEW` : ""} icon="mark_email_unread" iconTint={[C.orangeText, C.orangeTint]}>
       {tray.length === 0 ? (
         <Empty line="Nobody's waiting on you. Mentions, messages and asks addressed to you land here." />
       ) : null}

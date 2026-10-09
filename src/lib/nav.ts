@@ -225,6 +225,6 @@ export function schoolNav(
 
 /** The two sides of the portal, which differ only in colour. */
 export const SIDE = {
-  joc: { rail: C.ink, railText: C.white, accent: C.orange, wordmark: "/brand/joc-wordmark-white.png" },
+  joc: { rail: C.onDarkBody, railText: C.ink, accent: C.orangeText, wordmark: "/brand/joc-wordmark.png" },
   school: { rail: C.panel, railText: C.ink, accent: C.orangeText, wordmark: "/brand/joc-wordmark.png" },
 } as const;

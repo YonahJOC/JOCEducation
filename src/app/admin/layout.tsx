@@ -97,25 +97,40 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       who={me?.name?.trim() || me?.email || "Nobody signed in"}
       role={openForReview ? "Console" : roleLabel(me, { leadsPrograms: mine.length })}
       items={jocNav(me, { programs, badges })}
+      /* Leaving the console. Its own link, under the card — going back to
+         the site is not signing out, and the two should not look alike. */
       action={
-        <div style={{ display: "grid", gap: "8px" }}>
-          <ShellExit side="joc" href="/home">Back to the site</ShellExit>
-          {me && (
-            <form action={signOutAction}>
-              <button
-                type="submit"
-                style={{
-                  fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
-                  width: "100%", color: "rgba(255,255,255,.7)",
-                  background: "none", border: "none", cursor: "pointer",
-                  minHeight: "44px", textAlign: "left", padding: 0,
-                }}
-              >
-                Sign out
-              </button>
-            </form>
-          )}
-        </div>
+        <Link
+          href="/home"
+          style={{
+            display: "inline-flex", alignItems: "center", minHeight: "44px",
+            padding: "0 12px", fontFamily: F.ui, fontSize: "14px", fontWeight: 600,
+            color: C.blue, textDecoration: "none",
+          }}
+        >
+          Back to the site
+        </Link>
+      }
+      signOut={
+        me ? (
+          <form action={signOutAction}>
+            <button
+              type="submit"
+              aria-label="Sign out"
+              title="Sign out"
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                width: "44px", height: "44px", flex: "0 0 44px",
+                background: "none", border: "none", cursor: "pointer",
+                color: C.muted, borderRadius: "10px",
+              }}
+            >
+              <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "22px" }}>
+                logout
+              </span>
+            </button>
+          </form>
+        ) : null
       }
     >
       {usingSampleData && (

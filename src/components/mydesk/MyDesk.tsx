@@ -1,4 +1,4 @@
-import { C, T, R, ROW_SHADOW } from "@/lib/joc-tokens";
+import { C, F, T, R } from "@/lib/joc-tokens";
 import { Tasks } from "./Tasks";
 import { YourDay } from "./YourDay";
 import { ForYou } from "./ForYou";
@@ -29,17 +29,35 @@ export function MyDesk({ desk, joc }: {
   const name = who ? firstName(who) : null;
 
   return (
-    <div className="joc-bleed joc-desk" style={{ padding: "22px 24px 20px" }}>
-      <header className="joc-desk-head">
+    <div className="joc-bleed joc-desk" style={{ padding: "36px 44px" }}>
+      {/* One saturated fill on the page, and this is it: the band that says
+          good morning and what today looks like. Everything else is a tint. */}
+      <header
+        className="joc-desk-head"
+        style={{
+          background: C.blue, borderRadius: R.hero, color: C.white,
+          padding: "24px 30px",
+          display: "grid",
+          gridTemplateColumns: joc ? "minmax(0,1fr) 360px" : "minmax(0,1fr)",
+          gap: "32px", alignItems: "center",
+        }}
+      >
         <div style={{ minWidth: 0 }}>
           {/* Both calendars, the way the console has always shown the date. */}
-          <div style={{ ...T.meta, letterSpacing: ".1em", marginBottom: "6px" }}>
+          <div style={{ ...T.meta, fontSize: "12px", color: C.onDarkLabel }}>
             {dateLine(desk.now)}
           </div>
-          <h1 style={{ ...T.title, margin: 0, color: C.ink }}>
+          <h1 style={{
+            fontFamily: F.ui, fontSize: "40px", fontWeight: 800,
+            letterSpacing: "-0.03em", lineHeight: 1.05,
+            color: C.white, margin: "10px 0 0",
+          }}>
             {name ? `${greeting(desk.now)}, ${name}` : "Your desk"}
           </h1>
-          <p style={{ ...T.read, color: C.muted, margin: "6px 0 0", maxWidth: "52ch" }}>
+          <p style={{
+            fontFamily: F.read, fontSize: "19px", lineHeight: 1.5,
+            color: C.onDarkBody, margin: "8px 0 0", maxWidth: "52ch",
+          }}>
             {recap(desk)}
           </p>
         </div>
@@ -74,30 +92,29 @@ export function MyDesk({ desk, joc }: {
 function TodayAtJocCard({ joc }: { joc: TodayAtJoc }) {
   return (
     <aside style={{
-      flex: "0 0 auto", maxWidth: "340px",
-      background: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW,
-      padding: "12px 14px",
+      background: C.orangeTint, borderRadius: "16px", padding: "18px 20px",
     }}>
-      <div style={{ ...T.meta, marginBottom: "8px" }}>TODAY AT JOC</div>
-      <div style={{ display: "flex", gap: "11px", alignItems: "flex-start" }}>
+      <div style={{ ...T.meta, color: C.orangeText, marginBottom: "10px" }}>TODAY AT JOC</div>
+      <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
         <span
           aria-hidden="true"
           className="material-symbols-rounded"
           style={{
-            flex: "0 0 38px", height: "38px", borderRadius: R.sm,
-            background: joc.tint, color: joc.color,
+            flex: "0 0 48px", height: "48px", borderRadius: "14px",
+            background: C.white, color: joc.color,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "21px",
+            fontSize: "26px",
+            fontVariationSettings: '"FILL" 1, "wght" 600, "GRAD" 0, "opsz" 24',
           }}
         >
           {joc.icon}
         </span>
         <div style={{ minWidth: 0 }}>
-          <div style={{ ...T.body, fontWeight: 700, color: C.ink }}>
+          <div style={{ fontFamily: F.ui, fontSize: "17px", fontWeight: 600, color: C.ink, lineHeight: 1.3 }}>
             {joc.title}
-            {joc.group ? <span style={{ color: C.muted, fontWeight: 500 }}> · {joc.group}</span> : null}
+            {joc.group ? ` · ${joc.group}` : ""}
           </div>
-          <div style={{ ...T.meta, marginTop: "3px" }}>{joc.meta}</div>
+          <div style={{ ...T.meta, color: C.ink, marginTop: "4px" }}>{joc.meta}</div>
         </div>
       </div>
     </aside>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavItem } from "@/lib/nav";
-import { C, F, label } from "@/lib/joc-tokens";
+import { C, F, R, label } from "@/lib/joc-tokens";
 
 /**
  * The rail's links.
@@ -12,19 +12,41 @@ import { C, F, label } from "@/lib/joc-tokens";
  * it is seven identical links and nothing says which one you clicked.
  *
  * No group headings any more. Seven items do not need to be filed.
+ *
+ * On the JOC side each section carries its own colour — a tinted tile behind
+ * its icon, which lights up when you are in it. That is what a light rail
+ * buys you that a navy one cannot: the sections stop being seven identical
+ * words and start being places, recognisable before they are read.
  */
+
+/** Icon colour, and the tile it sits on when the section is open. */
+const SECTION: Record<string, { ink: string; tint: string }> = {
+  "My desk": { ink: C.blue, tint: C.blueTint },
+  "The Office": { ink: C.orangeText, tint: C.orangeTint },
+  Schools: { ink: C.greenText, tint: C.greenTint },
+  Programs: { ink: C.redText, tint: C.redTint },
+  "Admin meeting": { ink: C.blue, tint: C.blueTint },
+  "Teaching material": { ink: C.orangeText, tint: C.orangeTint },
+  Money: { ink: C.greenText, tint: C.greenTint },
+};
+
+/** Anything else the nav returns — a coordinator's programs — reads as one. */
+const OTHER = { ink: C.redText, tint: C.redTint };
+
 export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "school" }) {
   const pathname = usePathname();
-  const dark = side === "joc";
+  const joc = side === "joc";
 
   return (
     <nav aria-label="Sections" style={{ display: "flex", flexDirection: "column" }}>
       {items.map((i) => {
-        // The Today item must not light up for every page beneath it.
+        // The desk item must not light up for every page beneath it.
         const root = i.href === "/admin" || i.href === "/school";
         const active = root
           ? pathname === i.href
           : pathname === i.href || pathname.startsWith(`${i.href}/`);
+
+        const tone = SECTION[i.label] ?? OTHER;
 
         return (
           <Link
@@ -32,49 +54,69 @@ export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "sch
             href={i.href}
             aria-current={active ? "page" : undefined}
             title={i.hint}
-            /* A rounded pill rather than a tab with an orange edge: the rail
-               now opens with two items a person switches between all day, and
-               a left border on both of them read as a bracket. */
-            style={{
-              display: "flex", alignItems: "center", gap: "12px",
-              padding: "0 14px", minHeight: "48px", margin: "0 0 2px",
-              fontFamily: F.ui, fontSize: "15px", fontWeight: active ? 700 : 500,
-              color: active ? C.ink : dark ? "#DCE2EE" : C.muted,
-              textDecoration: "none",
-              // Paper, and square on the right, so the active tab joins the
-              // page it opens rather than floating on the rail.
-              backgroundColor: active ? C.paper : "transparent",
-              borderRadius: "12px",
-              borderTopRightRadius: active ? 0 : "12px",
-              borderBottomRightRadius: active ? 0 : "12px",
-              marginRight: active ? "-14px" : 0,
-              transition: "background-color .12s",
-            }}
+            className={joc ? "joc-rail-item" : undefined}
+            style={
+              joc
+                ? {
+                    display: "flex", alignItems: "center", gap: "10px",
+                    minHeight: "46px", padding: "0 8px", margin: "0 0 2px",
+                    borderRadius: "12px", textDecoration: "none",
+                    background: active ? C.white : "transparent",
+                    color: C.ink,
+                    fontFamily: F.ui, fontSize: "15px",
+                    fontWeight: active ? 700 : 500,
+                    transition: "background-color .12s",
+                  }
+                : {
+                    display: "flex", alignItems: "center", gap: "9px",
+                    padding: "10px 20px", minHeight: "44px",
+                    fontFamily: F.ui, fontSize: "15px", fontWeight: active ? 700 : 400,
+                    color: active ? C.ink : C.muted,
+                    textDecoration: "none",
+                    backgroundColor: active ? C.white : "transparent",
+                    borderLeft: `3px solid ${active ? C.orange : "transparent"}`,
+                    borderTopRightRadius: R.form,
+                    borderBottomRightRadius: R.form,
+                    marginRight: "10px",
+                    transition: "background-color .12s",
+                  }
+            }
           >
-            {i.icon ? (
+            {joc && i.icon ? (
               <span
                 aria-hidden="true"
                 className="material-symbols-rounded"
                 style={{
-                  fontSize: "21px", flexShrink: 0,
-                  color: active ? C.blue : dark ? "#9DA9C3" : C.muted,
+                  flex: "0 0 32px", width: "32px", height: "32px",
+                  borderRadius: "10px",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: active ? tone.tint : C.white,
+                  color: tone.ink,
+                  fontSize: "21px",
+                  // Filled when you are in it, outlined when you are not.
+                  fontVariationSettings: `"FILL" ${active ? 1 : 0}, "wght" 600, "GRAD" 0, "opsz" 24`,
                 }}
               >
                 {i.icon}
               </span>
             ) : null}
+
             {i.dot && (
               <span
                 aria-hidden="true"
                 style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: i.dot, flexShrink: 0 }}
               />
             )}
-            <span style={{ flex: 1, minWidth: 0 }}>{i.label}</span>
+
+            <span style={{ flex: 1, minWidth: 0, whiteSpace: joc ? "nowrap" : undefined }}>
+              {i.label}
+            </span>
+
             {i.need != null && i.need > 0 && (
               <span style={{
                 ...label, fontWeight: 600, fontSize: "11px", letterSpacing: 0,
-                color: i.tone === "blue" ? C.white : dark ? C.ink : C.white,
-                backgroundColor: i.tone === "blue" ? C.blue : dark ? C.orange : C.orangeText,
+                color: i.tone === "blue" ? C.white : joc ? C.ink : C.white,
+                backgroundColor: i.tone === "blue" ? C.blue : joc ? C.orange : C.orangeText,
                 borderRadius: "20px", padding: "4px 7px", flexShrink: 0,
               }}>
                 {i.need}

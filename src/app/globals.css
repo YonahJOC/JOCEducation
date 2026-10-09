@@ -784,7 +784,7 @@ body {
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   flex: 1;
   min-height: 0;
-  gap: 16px;
+  gap: 24px;
 }
 
 /* The right-hand column stacks, and scrolls as one rather than giving each
@@ -792,7 +792,7 @@ body {
 .joc-desk-side {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   min-height: 0;
   overflow-y: auto;
   /* Never sideways: a card that is one pixel wide too many should wrap, not
@@ -801,14 +801,7 @@ body {
 }
 .joc-desk-side > section { flex: 0 0 auto; }
 
-.joc-desk-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px 24px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
+.joc-desk-head { margin-bottom: 28px; }
 
 /* One column below a laptop, and the page scrolls again: four quarters at
    375px would be four letterboxes. */
@@ -854,4 +847,16 @@ body {
   -webkit-font-smoothing: antialiased;
   font-variation-settings: "FILL" 1, "wght" 600, "GRAD" 0, "opsz" 24;
   user-select: none;
+}
+
+/* The JOC rail's hover. Inline styles cannot carry one. */
+.joc-rail-item:hover { background: rgba(255, 255, 255, 0.55) !important; }
+.joc-rail-item[aria-current="page"]:hover { background: #FFFFFF !important; }
+
+/* The add row is one line on a laptop and wraps on a phone. A media query
+   rather than flex-wrap alone, so the Add button never ends up alone on a
+   line of its own at an awkward width. */
+@media (max-width: 639px) {
+  .joc-add-line { flex-wrap: wrap; }
+  .joc-add-line > input { flex: 1 1 100% !important; }
 }
