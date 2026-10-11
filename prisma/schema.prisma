@@ -2735,6 +2735,8 @@ model ShoutOut {
   createdAt   DateTime         @default(now())
 
   @@index([schoolId, status, createdAt])
+}
+
 // ─── Experiences ─────────────────────────────────────────────────────────────
 //
 // The department that hosts groups for a chesed experience — a family, a tour,
