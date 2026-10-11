@@ -32,12 +32,18 @@ export type NavItem = {
 
 type U = Parameters<typeof can>[0];
 
+/** The Experiences department's one item, wherever in the rail it lands. */
+const EXPERIENCES: NavItem = {
+  label: "Experiences", href: "/admin/experiences", hint: "Clients and what happened with each", icon: "celebration",
+};
+
 /** What to call the person's role in the rail, in one word or two. */
 export function roleLabel(user: U, opts: { leadsPrograms: number }): string {
   if (can(user, "users")) return "Super admin";
   if (can(user, "programming") && can(user, "schools")) return "Programming team";
   if (can(user, "lessons")) return "Educational team";
   if (opts.leadsPrograms > 0) return "Program coordinator";
+  if (can(user, "experiences")) return "Experiences";
   return "JOC staff";
 }
 
@@ -87,6 +93,10 @@ export function jocNav(
       });
     }
     items.push({ label: "My meeting items", href: "/admin/meetings", hint: "What you sent for a decision", icon: "groups" });
+    // A coordinator who also works in Experiences. Rare, but this branch
+    // returns early, and without it their department would vanish from the
+    // rail the day they were given a program.
+    if (can(user, "experiences")) items.push(EXPERIENCES);
     return items;
   }
 
@@ -99,6 +109,9 @@ export function jocNav(
   if (can(user, "programs") || can(user, "coordinators") || programs.length > 0) {
     items.push({ label: "Programs", href: "/admin/my-programs", hint: "Each program's own console", icon: "volunteer_activism" });
   }
+  // The Experiences department. Somebody who holds only this gets My desk,
+  // The Office and this — three items, which is the whole of their job.
+  if (can(user, "experiences")) items.push(EXPERIENCES);
   if (can(user, "programming")) items.push({ label: "Calendar", href: "/admin/programming", hint: "What is running, and where", icon: "calendar_month" });
   if (can(user, "run_admin_agenda")) items.push({ label: "Admin meeting", href: "/admin/meetings", hint: "Schools sent for a decision", icon: "groups" });
   if (can(user, "lessons")) items.push({ label: "Teaching material", href: "/admin/lessons", hint: "Lessons, resources and cycles", icon: "menu_book" });
@@ -134,7 +147,13 @@ export function jocNav(
   // The Lobby screen is not on that list. It was first to go, so the people
   // who keep the TV — every one of them holding enough else to build eight —
   // never saw it, and the screen could only be reached by typing its address.
-  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages"];
+  //
+  // Experiences goes after those, and only if still over. It is in the rail
+  // for the three people in the department, none of whom hold enough else to
+  // build eight; somebody who does is not in the department, and it is on the
+  // Programs hub for them. Left off this list, a super admin's new eighth item
+  // would have pushed the Admin meeting off the end instead.
+  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages", "Experiences"];
   for (const label of DROPPABLE) {
     if (items.length <= 7) break;
     const i = items.findIndex((x) => x.label === label);

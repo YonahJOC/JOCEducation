@@ -203,6 +203,8 @@ export const CAPABILITIES = [
   "programming", "cycles", "coordinators",
   // School accounts
   "schools", "demos", "orders", "pricing", "money_view", "money_record", "messages", "buzz",
+  // The Experiences department
+  "experiences",
   // Access
   "users", "run_admin_agenda",
 ] as const;
@@ -224,6 +226,9 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
   { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing", "money_view", "money_record", "messages", "buzz"] },
+  // Its own heading: the department works with families and groups, not
+  // schools, and ticking it should not read as access to the schools list.
+  { label: "Experiences", capabilities: ["experiences"] },
   { label: "Access", capabilities: ["users", "run_admin_agenda"] },
 ];
 
@@ -251,6 +256,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   money_record: "Record a payment",
   messages: "Messages from schools",
   buzz: "The Buzz",
+  experiences: "Experiences",
   users: "People and access",
 };
 
@@ -283,6 +289,8 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
   pricing: "What a plan or a program costs.",
   buzz:
     "See the Buzz — every meeting, call and event anybody at JOC has written down, across all schools. Read only, and no console needed: it is for the people who run programs rather than the people who run the schools list.",
+  experiences:
+    "The Experiences department’s clients — families, groups and organisations hosted for a chesed experience — and every call, meeting and booking written down against them.",
   users: "Who has an account, what they can do, and passwords. The keys to everything else.",
 };
 
@@ -394,7 +402,10 @@ export function canAccessConsole(user: U): boolean {
     canManageContent(user) ||
     canManageCalendar(user) ||
     canManageAccounts(user) ||
-    can(user, "run_admin_agenda")
+    can(user, "run_admin_agenda") ||
+    // The Experiences department works entirely in the console, and holds
+    // nothing else that would let them in.
+    can(user, "experiences")
   );
 }
 
