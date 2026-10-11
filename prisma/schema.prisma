@@ -572,6 +572,12 @@ model User {
   agendaRaised     AdminMeetingItem[]   @relation("AgendaRaisedBy")
   agendaDecided    AdminMeetingItem[]   @relation("AgendaDecidedBy")
 
+  /// The Experiences department: the clients this person looks after, what
+  /// they wrote down about any client, and what they said under it.
+  experienceClientsOwned ExperienceClient[]   @relation("ExperienceClientOwner")
+  experienceActivities   ExperienceActivity[] @relation("ExperienceActivityAuthor")
+  experienceNotes        ExperienceNote[]     @relation("ExperienceNoteAuthor")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -2601,4 +2607,94 @@ model InTrayCleared {
   clearedAt DateTime @default(now())
 
   @@unique([userId, kind, refId])
+}
+
+// ─── Experiences ─────────────────────────────────────────────────────────────
+//
+// The department that hosts groups for a chesed experience — a family, a tour,
+// an organisation, a bar or bat mitzvah group. Kept apart from School on
+// purpose: a client is not a school, has no plan, no seats and no program
+// enrolment, and folding them in would put a family's bat mitzvah on the
+// schools board.
+
+/// Where a client stands with us. Four, because that is what the department
+/// actually says out loud: still talking, in the diary, comes back, gone quiet.
+enum ExperienceClientStatus {
+  LEAD
+  BOOKED
+  REGULAR
+  DORMANT
+}
+
+/// What happened. The first five are talking; the last two are the experience
+/// itself, in the diary or behind us.
+enum ExperienceActivityType {
+  NOTE
+  CALL
+  EMAIL
+  WHATSAPP
+  MEETING
+  EXPERIENCE_BOOKED
+  EXPERIENCE_DONE
+}
+
+/// A group the Experiences department hosts, or might.
+model ExperienceClient {
+  id          String                 @id @default(cuid())
+  name        String
+  /// Free text — family, organisation, school group, tour. A list would be
+  /// wrong by the second month.
+  kind        String?
+  contactName String?
+  email       String?
+  phone       String?
+  notes       String?                @db.Text
+  status      ExperienceClientStatus @default(LEAD)
+  ownerId     String?
+  owner       User?                  @relation("ExperienceClientOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @default(now()) @updatedAt
+  /// Off the lists, never deleted: the history is still the history.
+  archivedAt  DateTime?
+
+  activities ExperienceActivity[]
+
+  @@index([archivedAt, name])
+}
+
+/// One thing that happened with a client. The department's own Buzz row.
+model ExperienceActivity {
+  id         String                 @id @default(cuid())
+  clientId   String
+  client     ExperienceClient       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  type       ExperienceActivityType
+  summary    String
+  detail     String?                @db.Text
+  /// Wall clock pinned to UTC, as on the School Update Form.
+  occurredAt DateTime
+  /// Only for the experience itself, booked or done. Always an estimate.
+  groupSize  Int?
+  authorId   String?
+  author     User?                  @relation("ExperienceActivityAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  /// Taken off the feed by its author or a super admin. Never a DELETE.
+  removedAt  DateTime?
+  createdAt  DateTime               @default(now())
+
+  notes ExperienceNote[]
+
+  @@index([clientId, occurredAt])
+  @@index([occurredAt])
+}
+
+/// A comment under one activity.
+model ExperienceNote {
+  id         String             @id @default(cuid())
+  activityId String
+  activity   ExperienceActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?              @relation("ExperienceNoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  body       String             @db.Text
+  createdAt  DateTime           @default(now())
+
+  @@index([activityId, createdAt])
 }

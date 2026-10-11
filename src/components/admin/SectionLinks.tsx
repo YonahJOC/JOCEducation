@@ -17,7 +17,7 @@ import { C, R, F } from "@/lib/joc-tokens";
  * refuses you reads as broken rather than as not yours.
  */
 
-type SectionKey = "schools" | "material" | "money" | "access" | "programs";
+type SectionKey = "schools" | "material" | "money" | "access" | "programs" | "experiences";
 
 const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capability }[]> = {
   schools: [
@@ -55,6 +55,14 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capabil
     // The rail drops Calendar for somebody who holds every capability, so
     // this is their way in. The programming team keeps it in the rail.
     { href: "/admin/programming", label: "Calendar", need: "programming" },
+    // The rail drops Experiences for somebody who holds nearly everything —
+    // they are not in the department — so this is their way in.
+    { href: "/admin/experiences", label: "Experiences", need: "experiences" },
+  ],
+  // The department's own two pages, each linking to the other.
+  experiences: [
+    { href: "/admin/experiences", label: "What's been happening", need: "experiences" },
+    { href: "/admin/experiences/clients", label: "Clients", need: "experiences" },
   ],
 };
 
