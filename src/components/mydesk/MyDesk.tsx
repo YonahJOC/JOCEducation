@@ -1,5 +1,6 @@
 import { C, F, T, R } from "@/lib/joc-tokens";
 import { Tasks } from "./Tasks";
+import { ColleaguesWeek } from "./ColleaguesWeek";
 import { YourDay } from "./YourDay";
 import { ForYou } from "./ForYou";
 import { Notebook } from "./Notebook";
@@ -73,6 +74,8 @@ export function MyDesk({ desk, joc }: {
               the recap above, not a panel saying it has nothing in it. */}
           {desk.tray.length > 0 ? <ForYou tray={desk.tray} /> : null}
           <YourDay day={desk.day} />
+          {/* Everybody else's diary, to pick from. Hidden when there is none. */}
+          {desk.colleagues.length > 0 ? <ColleaguesWeek items={desk.colleagues} /> : null}
           {/* Keyed on the set of pages: adding or deleting one is the only
               moment the tabs should reset, and nothing else remounts it. */}
           <Notebook key={desk.pages.map((p) => p.id).join(",")} pages={desk.pages} />

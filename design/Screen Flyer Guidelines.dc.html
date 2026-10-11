@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+<style>html,body{margin:0;background:#F4F7FD;font-family:Montserrat, sans-serif;color:#214ba5}a{color:#214ba5}a:hover{color:#186fae}</style>
+</helmet>
+<div style="max-width:1080px;margin:0 auto;padding:56px 28px 96px;display:flex;flex-direction:column;gap:40px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#ff8e00">JOC school screen · slideshow</div>
+    <div style="font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-0.02em">Flyer guidelines</div>
+    <div style="font-size:18px;font-weight:700;line-height:1.55;max-width:70ch">Flyers rotate in the photo panel on the left of the school screen. Students see each one for about 8 seconds while walking past, from 2–4 metres away. A flyer has one job: get them to remember the name and the date, or scan the code.</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+    <sc-for list="{{ rules }}" as="r" hint-placeholder-count="8">
+      <div style="background:#ffffff;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:12px;background:#FFF0E0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#ff8e00;flex:none">{{ r.n }}</div>
+          <div style="font-size:20px;font-weight:800">{{ r.title }}</div>
+        </div>
+        <sc-for list="{{ r.lines }}" as="l" hint-placeholder-count="3">
+          <div style="font-size:15px;font-weight:700;line-height:1.5">{{ l }}</div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <div style="font-size:24px;font-weight:800">The two flyer templates</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+      <div style="background:#ffffff;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:18px;font-weight:800;color:#ff8e00">A · Photo flyer (events with a picture)</div>
+        <div style="aspect-ratio:1/1;max-width:320px;border-radius:18px;overflow:hidden;position:relative;background:#214ba5">
+          <div style="position:absolute;left:0;right:0;top:0;height:60%;background:#C6CFF0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">Photo · top 60%</div>
+          <div style="position:absolute;left:12px;top:12px;width:70px;height:70px;border-radius:50%;background:#ff8e00;border:3px solid #ffffff;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;text-align:center;transform:rotate(-8deg)">Date<br>sticker</div>
+          <div style="position:absolute;left:0;right:0;bottom:0;height:42%;border-radius:22px 22px 0 0;background:#214ba5;color:#ffffff;padding:14px 16px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;color:#FFD8AE">KICKER LINE</div>
+            <div style="font-size:24px;font-weight:800;line-height:1">EVENT NAME</div>
+            <div style="display:flex;gap:6px"><div style="background:#ffffff;color:#214ba5;border-radius:99px;padding:3px 8px;font-size:9px;font-weight:800">Time</div><div style="background:#ffffff;color:#214ba5;border-radius:99px;padding:3px 8px;font-size:9px;font-weight:800">Place</div></div>
+          </div>
+        </div>
+        <div style="font-size:15px;font-weight:700;line-height:1.5">Used for Kindness Booth, Bake 4 Chesed and Run for Chesed. A QR code is optional, bottom right of the blue panel.</div>
+      </div>
+      <div style="background:#ffffff;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:18px;font-weight:800;color:#ff8e00">B · Type flyer (launches, programs, no photo)</div>
+        <div style="aspect-ratio:1/1;max-width:320px;border-radius:18px;overflow:hidden;position:relative;background:#ff8e00;color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center">
+          <div style="position:absolute;right:14px;top:14px;width:62px;height:62px;border-radius:50%;background:#214ba5;border:3px solid #ffffff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;transform:rotate(8deg)">Date</div>
+          <div style="width:44px;height:44px;border-radius:12px;background:#ffffff"></div>
+          <div style="font-size:30px;font-weight:800;line-height:0.95;color:#214ba5">PROGRAM<br>NAME</div>
+          <div style="font-size:11px;font-weight:800">One short line</div>
+          <div style="background:#ffffff;color:#214ba5;border-radius:10px;padding:6px 10px;font-size:10px;font-weight:800">Scan to … + QR</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;line-height:1.5">Used for Just One Tutor and The Chesed Minute (in blue). One big icon, the program name huge, one line, one QR code.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:24px;font-weight:800">Checklist before a flyer goes on screen</div>
+    <div style="background:#ffffff;border-radius:22px;padding:20px 24px;display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ checks }}" as="c" hint-placeholder-count="8">
+        <div style="display:flex;align-items:flex-start;gap:12px;font-size:16px;font-weight:700;line-height:1.45"><div style="width:22px;height:22px;border-radius:6px;border:3px solid #ff8e00;flex:none;margin-top:1px"></div>{{ c }}</div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      rules: [
+        { n: '1', title: 'Size', lines: ['Design at 745 × 752 px (almost square). That’s the photo panel on a 1920 × 1080 screen.', 'Keep 40px clear on every side. Nothing important in the corners — the screen rounds them by 28px.'] },
+        { n: '2', title: '12 words, maximum', lines: ['Name, date, time, place. That’s it.', 'No paragraphs, no “how it works” steps, no fine print. Details live behind the QR code.'] },
+        { n: '3', title: 'Type sizes', lines: ['Program or event name: 60–130px, Montserrat ExtraBold, capitals.', 'Everything else: 20px minimum. Anything smaller can’t be read from the hallway.'] },
+        { n: '4', title: 'Colours', lines: ['Only #214ba5 blue, #ff8e00 orange, white, and light tints (#FFF0E0, #E4E9F8, #FFD8AE).', 'Never put orange text on white below 40px — it’s too faint. Use blue.'] },
+        { n: '5', title: 'One date sticker', lines: ['A tilted circle (about ±8°), white border: day + date, or a 2-word call like “Join the team”.', 'Only one tilted element per flyer.'] },
+        { n: '6', title: 'One QR code', lines: ['At least 100px of code, on white or #FFF0E0, with a 2–3 word label: “Scan to sign up”.', 'Link to a page that works on a phone — never a PDF.'] },
+        { n: '7', title: 'Photos', lines: ['Real JOC or school photos only. Faces of students need a signed media consent.', 'The photo fills the top 60%; keep heads out of the date sticker’s corner.'] },
+        { n: '8', title: 'Fun, but calm', lines: ['2–3 small dots or circles for playfulness. No confetti, no gradients-on-gradients, no clip-art.', 'No animation inside a flyer; the slideshow already moves.'] },
+      ],
+      checks: [
+        'Name readable at a glance (60px+), and fits on one line — or one line per word.',
+        'Date and time on the flyer, or the flyer says “Launching …”.',
+        '12 words or fewer, not counting the date.',
+        'Only brand colours; no small orange text on white.',
+        'QR code scans from 1 metre and opens a phone-friendly page.',
+        'Photo has consent for every student face.',
+        'Comes down the day after the event.',
+        'Tested in the real screen file (JOC School Screen) — nothing cut off.',
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

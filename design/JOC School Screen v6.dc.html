@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0&display=block" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>@keyframes jocMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}html,body{margin:0;height:100%;background:#222898;overflow:hidden}a{color:#214ba5}a:hover{color:#186fae}</style>
+</helmet>
+<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#222898;font-family:Montserrat, sans-serif">
+<div style="width:1920px;height:1080px;flex:none;transform:scale({{ scale }});transform-origin:center;background:linear-gradient(135deg,#186fae 0%,#222898 100%);color:#214ba5;display:grid;grid-template-rows:112px minmax(0,1fr) 104px;gap:24px;padding:32px 40px;box-sizing:border-box;overflow:hidden">
+
+  <div data-screen-label="Header" style="display:grid;grid-template-columns:112px auto minmax(0,1fr) auto;align-items:center;gap:28px;color:#ffffff">
+    <div style="width:112px;height:112px;border-radius:50%;background:#ffffff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 10px 30px rgba(12,20,90,0.3)">{{ schoolLogoImg }}</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:64px;font-weight:800;line-height:1;letter-spacing:-0.025em;white-space:nowrap">{{ schoolShort }} <span style="color:#ff8e00">Chesed</span></div>
+      <div style="font-size:21px;font-weight:700;color:#FFD8AE;white-space:nowrap">{{ schoolActs }} acts of chesed · {{ schoolHrs }} hours this year</div>
+    </div>
+    <div style="justify-self:end;background:#ffffff;border-radius:22px;padding:14px 24px;display:flex;flex-direction:column;gap:4px;min-width:0;box-shadow:0 10px 30px rgba(12,20,90,0.25)">
+      <div style="font-size:19px;font-weight:800;line-height:1.3;color:#214ba5;white-space:nowrap">Today’s chesed is dedicated to a refuah shleima for <span dir="rtl" style="font-family:'Frank Ruhl Libre', serif;font-size:24px;color:#ff8e00;unicode-bidi:isolate">{{ dedication }}</span></div>
+      <sc-if value="{{ showSponsor }}" hint-placeholder-val="{{ true }}"><div style="font-size:16px;font-weight:700;color:#214ba5">Sponsor a day · dedications@justonechesed.org</div></sc-if>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-left:4px">
+      <div style="font-size:56px;font-weight:800;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ clock }}</div>
+      <div style="font-size:19px;font-weight:700;color:#C6CFF0;white-space:nowrap">{{ dateShort }}</div>
+      <div style="font-size:19px;font-weight:700;color:#FFD8AE;white-space:nowrap">{{ hebrewDate }}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,0.82fr) minmax(0,1.18fr);gap:24px;min-height:0">
+
+    <div data-screen-label="Photos" style="position:relative;border-radius:28px;overflow:hidden;background:#E4E9F8;box-shadow:0 16px 40px rgba(12,20,90,0.28);min-height:0">
+      <div style="position:absolute;inset:0;opacity:{{ photoOp0 }};transition:opacity 1.2s ease"><image-slot id="v5-photo-1" shape="rect" placeholder="Chesed photo 1" src="https://justonechesed.org/wp-content/uploads/2025/08/IMG-20250806-WA0013-768x576.jpg"></image-slot></div>
+      <div style="position:absolute;inset:0;opacity:{{ photoOp1 }};transition:opacity 1.2s ease"><image-slot id="v5-photo-2" shape="rect" placeholder="Chesed photo 2" src="https://justonechesed.org/wp-content/uploads/2025/04/GIVING-BEDS-TO-THOSE-IN-NEED-2.jpeg"></image-slot></div>
+      <div style="position:absolute;inset:0;opacity:{{ photoOp2 }};transition:opacity 1.2s ease;background:#214ba5;overflow:hidden">
+        <div style="position:absolute;left:0;right:0;top:0;height:72%"><image-slot id="v6-event-1" shape="rect" placeholder="Event photo" src="https://justonechesed.org/wp-content/uploads/2025/01/Kindness-Booth-.jpeg"></image-slot></div>
+        <div style="position:absolute;left:28px;top:28px;pointer-events:none;width:176px;height:176px;border-radius:50%;background:#ff8e00;color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg);box-shadow:0 12px 30px rgba(12,20,90,0.35);border:6px solid #ffffff">
+          <div style="font-size:22px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase">{{ ev.dow }}</div>
+          <div style="font-size:72px;font-weight:800;line-height:0.95">{{ ev.day }}</div>
+          <div style="font-size:22px;font-weight:800;text-transform:uppercase">{{ ev.mon }}</div>
+        </div>
+        <div style="position:absolute;right:24px;bottom:calc(33% + 38px);pointer-events:none;display:flex;align-items:center;gap:12px;background:#ffffff;color:#214ba5;border-radius:18px;padding:10px 18px 10px 12px;box-shadow:0 8px 24px rgba(12,20,90,0.25)">
+          <div style="width:40px;height:40px;border-radius:50%;background:#FFF0E0;display:flex;align-items:center;justify-content:center;flex:none"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#ff8e00">waving_hand</span></div>
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <div style="font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#ff8e00">Ask our ambassadors</div>
+            <div style="font-size:20px;font-weight:800;white-space:nowrap">{{ ev.amb }}</div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:33%;pointer-events:none;background:#214ba5;border-radius:40px 40px 0 0;padding:24px 40px 24px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:10px;color:#ffffff">
+          <div style="position:absolute;right:36px;top:-22px;width:44px;height:44px;border-radius:50%;background:#ff8e00"></div>
+          <div style="position:absolute;right:92px;top:-10px;width:20px;height:20px;border-radius:50%;background:#FFD8AE"></div>
+          <div style="position:absolute;right:40px;bottom:34px;width:14px;height:14px;border-radius:50%;background:#FFD8AE;opacity:0.7"></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FFD8AE"><span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1;color:#ff8e00">celebration</span>Coming up at {{ schoolShort }}</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:{{ ev.size }};font-weight:800;line-height:0.95;letter-spacing:-0.03em;text-transform:uppercase;white-space:nowrap">{{ ev.title }}</div>
+            <div style="width:160px;height:10px;border-radius:9999px;background:#ff8e00"></div>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:10px 20px 10px 14px;font-size:22px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#ff8e00">schedule</span>{{ ev.time }}</div>
+            <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:10px 20px 10px 14px;font-size:22px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#ff8e00">location_on</span>{{ ev.place }}</div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;opacity:{{ photoOp4 }};transition:opacity 1.2s ease;background:#214ba5;overflow:hidden">
+        <div style="position:absolute;left:0;right:0;top:0;height:72%"><image-slot id="v6-event-2" shape="rect" placeholder="Event photo" src="https://justonechesed.org/wp-content/uploads/2026/05/Hafrashat-Challah-5-scaled.jpg"></image-slot></div>
+        <div style="position:absolute;left:28px;top:28px;pointer-events:none;width:176px;height:176px;border-radius:50%;background:#ff8e00;color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(7deg);box-shadow:0 12px 30px rgba(12,20,90,0.35);border:6px solid #ffffff">
+          <div style="font-size:22px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase">{{ ev2.dow }}</div>
+          <div style="font-size:72px;font-weight:800;line-height:0.95">{{ ev2.day }}</div>
+          <div style="font-size:22px;font-weight:800;text-transform:uppercase">{{ ev2.mon }}</div>
+        </div>
+        <div style="position:absolute;right:24px;bottom:calc(33% + 38px);pointer-events:none;display:flex;align-items:center;gap:12px;background:#ffffff;color:#214ba5;border-radius:18px;padding:10px 18px 10px 12px;box-shadow:0 8px 24px rgba(12,20,90,0.25)">
+          <div style="width:40px;height:40px;border-radius:50%;background:#FFF0E0;display:flex;align-items:center;justify-content:center;flex:none"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#ff8e00">waving_hand</span></div>
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <div style="font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#ff8e00">Ask our ambassadors</div>
+            <div style="font-size:20px;font-weight:800;white-space:nowrap">{{ ev2.amb }}</div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:33%;pointer-events:none;background:#214ba5;border-radius:40px 40px 0 0;padding:24px 40px 24px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:10px;color:#ffffff">
+          <div style="position:absolute;right:36px;top:-22px;width:44px;height:44px;border-radius:50%;background:#ff8e00"></div>
+          <div style="position:absolute;right:92px;top:-10px;width:20px;height:20px;border-radius:50%;background:#FFD8AE"></div>
+          <div style="position:absolute;right:40px;bottom:34px;width:14px;height:14px;border-radius:50%;background:#FFD8AE;opacity:0.7"></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FFD8AE"><span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1;color:#ff8e00">celebration</span>Coming up at {{ schoolShort }}</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:{{ ev2.size }};font-weight:800;line-height:0.95;letter-spacing:-0.03em;text-transform:uppercase;white-space:nowrap">{{ ev2.title }}</div>
+            <div style="width:160px;height:10px;border-radius:9999px;background:#ff8e00"></div>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:10px 20px 10px 14px;font-size:22px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#ff8e00">schedule</span>{{ ev2.time }}</div>
+            <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:10px 20px 10px 14px;font-size:22px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#ff8e00">location_on</span>{{ ev2.place }}</div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;opacity:{{ photoOp5 }};transition:opacity 1.2s ease;background:#ff8e00;color:#ffffff;overflow:hidden;padding:40px 44px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;text-align:center">
+        <div style="position:absolute;left:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.14)"></div>
+        <div style="position:absolute;right:24px;bottom:200px;width:72px;height:72px;border-radius:50%;background:rgba(33,75,165,0.18)"></div>
+        <div style="position:absolute;right:40px;top:40px;width:150px;height:150px;border-radius:50%;background:#214ba5;color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(8deg);border:6px solid #ffffff;box-shadow:0 12px 30px rgba(12,20,90,0.3)">
+          <div style="font-size:16px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase">Launching</div>
+          <div style="font-size:52px;font-weight:800;line-height:0.95">Nov 1</div>
+        </div>
+        <div style="width:120px;height:120px;border-radius:32px;background:#ffffff;display:flex;align-items:center;justify-content:center;transform:rotate(-6deg);box-shadow:0 12px 30px rgba(12,20,90,0.25)"><span style="font-family:'Material Symbols Rounded';font-size:76px;line-height:1;color:#ff8e00">school</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div style="font-size:56px;font-weight:800;line-height:0.95;letter-spacing:-0.02em">JUST ONE</div>
+          <div style="font-size:132px;font-weight:800;line-height:0.9;letter-spacing:-0.03em;color:#214ba5">TUTOR</div>
+        </div>
+        <div style="font-size:32px;font-weight:800;line-height:1.2">Share what you know.<br>Help someone learn.</div>
+        <div style="display:flex;align-items:center;gap:18px;background:#ffffff;color:#214ba5;border-radius:22px;padding:14px 14px 14px 26px">
+          <div style="font-size:24px;font-weight:800;line-height:1.2;text-align:left">Scan to<br>sign up</div>
+          <div style="width:120px;height:120px;border-radius:14px;background:#FFF0E0;padding:10px;box-sizing:border-box">{{ tutorQr }}</div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;opacity:{{ photoOp6 }};transition:opacity 1.2s ease;background:#214ba5;overflow:hidden">
+        <div style="position:absolute;left:0;right:0;top:0;height:58%"><image-slot id="v6-run-photo" shape="rect" fit="contain" placeholder="Run for Chesed photo" src="https://0ab29db0a9a02c1375f1-d896f5c7a5487159a09b237eef05acf5.ssl.cf1.rackcdn.com/whatsapp_image_2025-09-28_at_12_18_09_jpeg-1759052654_large"></image-slot></div>
+        
+        <div style="position:absolute;left:0;right:0;bottom:0;height:47%;pointer-events:none;background:#214ba5;border-radius:44px 44px 0 0;padding:28px 36px 28px 40px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:16px;color:#ffffff">
+          <div style="position:absolute;right:36px;top:-22px;width:44px;height:44px;border-radius:50%;background:#ff8e00"></div>
+          <div style="position:absolute;right:92px;top:-10px;width:20px;height:20px;border-radius:50%;background:#FFD8AE"></div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center">
+            <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+              <div style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FFD8AE;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1;color:#ff8e00">celebration</span>Join the team</div>
+              <div style="display:flex;flex-direction:column;letter-spacing:-0.03em;text-transform:uppercase;white-space:nowrap">
+                <div style="font-size:44px;font-weight:800;line-height:1.05">Run for</div>
+                <div style="font-size:72px;font-weight:800;line-height:1.05;color:#ff8e00">Chesed</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="width:124px;height:124px;border-radius:16px;background:#ffffff;padding:10px;box-sizing:border-box">{{ runQr }}</div>
+              <div style="font-size:16px;font-weight:800;white-space:nowrap">Scan to join</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:9px 18px 9px 12px;font-size:20px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#ff8e00">landscape</span>Dead Sea Marathon</div>
+            <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:9px 18px 9px 12px;font-size:20px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#ff8e00">hiking</span>Boots for Israel</div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;opacity:{{ photoOp3 }};transition:opacity 1.2s ease;background:#214ba5;color:#ffffff;overflow:hidden;padding:40px 44px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;text-align:center">
+        <div style="position:absolute;left:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08)"></div>
+        <div style="position:absolute;right:28px;bottom:210px;width:64px;height:64px;border-radius:50%;background:rgba(255,142,0,0.35)"></div>
+        <div style="position:absolute;right:40px;top:40px;width:150px;height:150px;border-radius:50%;background:#ff8e00;color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(8deg);border:6px solid #ffffff;box-shadow:0 12px 30px rgba(12,20,90,0.3)">
+          <span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:#ffffff">confirmation_number</span>
+          <div style="font-size:18px;font-weight:800;line-height:1.05;text-transform:uppercase;margin-top:4px">Win a<br>raffle ticket</div>
+        </div>
+        <div style="width:120px;height:120px;border-radius:32px;background:#ffffff;display:flex;align-items:center;justify-content:center;transform:rotate(-6deg);box-shadow:0 12px 30px rgba(12,20,90,0.3)"><span style="font-family:'Material Symbols Rounded';font-size:76px;line-height:1;color:#ff8e00">mic</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div style="font-size:56px;font-weight:800;line-height:0.95;letter-spacing:-0.02em">THE CHESED</div>
+          <div style="font-size:124px;font-weight:800;line-height:0.9;letter-spacing:-0.03em;color:#ff8e00">MINUTE</div>
+        </div>
+        <div style="font-size:34px;font-weight:800;line-height:1.2">1 video<span style="color:#ff8e00">.</span> 60 seconds<span style="color:#ff8e00">.</span></div>
+        <div style="display:flex;align-items:center;gap:18px;background:#ffffff;color:#214ba5;border-radius:22px;padding:14px 14px 14px 26px">
+          <div style="font-size:24px;font-weight:800;line-height:1.2;text-align:left">Scan to<br>upload</div>
+          <div style="width:120px;height:120px;border-radius:14px;background:#FFF0E0;padding:10px;box-sizing:border-box">{{ minuteQr }}</div>
+        </div>
+      </div>
+      <sc-if value="{{ showCaption }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:20px;right:20px;bottom:20px;pointer-events:none;background:#ffffff;border-radius:20px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(12,20,90,0.18)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#214ba5"><span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1;color:#ff8e00">photo_camera</span>{{ schoolShort }} students in action</div>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ photoDots }}" as="d" hint-placeholder-count="5"><div style="height:10px;width:{{ d.w }};border-radius:9999px;background:{{ d.bg }};transition:all 400ms"></div></sc-for>
+          </div>
+        </div>
+        <div style="font-size:32px;font-weight:800;line-height:1.2;color:#214ba5;text-wrap:pretty">{{ photoCaption }}</div>
+      </div></sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:24px;min-height:0">
+
+      <div data-screen-label="Shout-out" style="position:relative;flex:1;min-height:0;background:#ff8e00;color:#ffffff;border-radius:28px;padding:26px 32px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 16px 40px rgba(12,20,90,0.28);overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div style="display:flex;align-items:center;gap:12px;font-size:24px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:34px;line-height:1">{{ post.icon }}</span>{{ post.kind }}</div>
+          <div style="display:flex;align-items:center;gap:8px;background:#ffffff;color:#214ba5;border-radius:9999px;padding:6px 16px 6px 12px;font-size:17px;font-weight:800;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#ff8e00">today</span>{{ todayTopic }}</div>
+        </div>
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:0 196px;overflow:hidden">
+          <div style="font-size:{{ post.size }};font-weight:800;line-height:1.18;letter-spacing:-0.015em;text-wrap:balance">“{{ post.text }}”</div>
+          <div style="font-size:20px;font-weight:700">{{ post.from }}</div>
+        </div>
+        <div style="position:absolute;right:24px;bottom:24px;display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="font-size:16px;font-weight:800;line-height:1.2;text-align:center;white-space:nowrap">Scan to share yours</div>
+          <div style="width:112px;height:112px;border-radius:16px;background:#ffffff;padding:10px;box-sizing:border-box">{{ qrImg }}</div>
+        </div>
+      </div>
+
+      <div data-screen-label="Hours by grade" style="flex:none;background:#ffffff;border-radius:28px;padding:24px 32px 22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 16px 40px rgba(12,20,90,0.22)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#214ba5;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1;color:#ff8e00">flag</span>{{ monthName }} goal: {{ gradeGoal }} hours per grade</div>
+          <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap"><div style="font-size:36px;font-weight:800;line-height:1;letter-spacing:-0.02em;color:#214ba5;font-variant-numeric:tabular-nums">{{ monthTotal }}</div><div style="font-size:18px;font-weight:700;color:#214ba5">of {{ monthGoal }} hours</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+          <sc-for list="{{ grades }}" as="g" hint-placeholder-count="4">
+            <div style="background:{{ g.tileBg }};color:{{ g.tileFg }};border-radius:22px;padding:24px 24px 22px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <div style="font-size:24px;font-weight:800;white-space:nowrap">{{ g.label }}</div>
+                <sc-if value="{{ g.reached }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1">rocket_launch</span></sc-if>
+              </div>
+              <div style="font-size:72px;font-weight:800;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ g.hours }}</div>
+              <div style="font-size:18px;font-weight:800;white-space:nowrap">{{ g.pct }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div data-screen-label="JOC worldwide" style="background:#ffffff;border-radius:28px;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;padding:0 32px;box-shadow:0 16px 40px rgba(12,20,90,0.22)">
+    <div style="display:flex;flex-direction:column;gap:6px;padding-right:32px">
+      <img src="./public/brand/joc-wordmark.png" alt="Just One Chesed" style="height:52px;width:auto;object-fit:contain;align-self:flex-start">
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;padding:0 32px;border-left:2px solid #E4E9F8;height:68px;min-width:0">
+      <div style="width:52px;height:52px;border-radius:16px;background:#FFF0E0;display:flex;align-items:center;justify-content:center;flex:none"><span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1;color:#ff8e00">menu_book</span></div>
+      <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+        <div style="font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#214ba5;white-space:nowrap">{{ networkSchools }} schools learning</div>
+        <div style="font-size:24px;font-weight:800;line-height:1.1;color:#214ba5;white-space:nowrap">{{ theme }}</div>
+        <div dir="rtl" style="font-family:'Frank Ruhl Libre', serif;font-size:20px;font-weight:700;line-height:1.1;color:#ff8e00;text-align:left;unicode-bidi:plaintext;white-space:nowrap">{{ themeHe }}</div>
+      </div>
+    </div>
+    <div data-screen-label="Around JOC schools" style="display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 32px;border-left:2px solid #E4E9F8;height:68px;width:560px;box-sizing:content-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;white-space:nowrap">
+        <div style="font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#214ba5">Around JOC schools · {{ monthName }}</div>
+
+      </div>
+      <div style="height:46px;overflow:hidden;border-radius:14px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)">{{ netMarquee }}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding:0 32px;border-left:2px solid #E4E9F8;height:68px">
+      <span style="font-family:'Material Symbols Rounded';font-size:36px;line-height:1;color:#ff8e00">public</span>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <div style="font-size:30px;font-weight:800;line-height:1;letter-spacing:-0.02em;color:#214ba5;font-variant-numeric:tabular-nums;white-space:nowrap">{{ worldHours }}</div>
+        <div style="font-size:16px;font-weight:700;color:#214ba5;white-space:nowrap">hours of chesed worldwide</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;schoolShort&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;HAFTR&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;School&quot;},&quot;schoolLogo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://www.haftr.org/wp-content/uploads/logos1/round-blue-logo-150x150.png&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;School&quot;},&quot;dedication&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;איתמר לביא בן עינב&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;School&quot;},&quot;showSponsorLine&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;School&quot;},&quot;shabbatMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;on&quot;,&quot;off&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;School&quot;},&quot;shoutoutUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://app.justonechesed.org/shout-out&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Shout-out&quot;},&quot;photoSeconds&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:8,&quot;min&quot;:4,&quot;max&quot;:30,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Photos&quot;},&quot;gradeGoal&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:250,&quot;min&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Grades&quot;},&quot;gradeHours&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;9th:231, 10th:204, 11th:176, 12th:262&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Grades&quot;},&quot;localArea&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Five Towns&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Local schools&quot;},&quot;localHours&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;DRS:842/620, HAFTR:819/480, SKA:774/510, Shulamith:612/390&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Local schools&quot;},&quot;currentTheme&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2,&quot;min&quot;:1,&quot;max&quot;:9,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Learning&quot;},&quot;schoolActs&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3490,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;From the app&quot;},&quot;studentsOnApp&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:412,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;From the app&quot;},&quot;worldHours&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:245453,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;From the app&quot;},&quot;networkSchools&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:120,&quot;min&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;From the app&quot;}}">
+class Component extends DCLogic {
+  state = { barsOn: false, scale: 0.5, now: new Date(), slide: 0, t0: Date.now() };
+  componentDidMount() {
+    this.fit = () => this.forceUpdate();
+    this.fit(); window.addEventListener('resize', this.fit); window.addEventListener('load', this.fit);
+    requestAnimationFrame(this.fit); setTimeout(this.fit, 300);
+    if (window.ResizeObserver) { this.ro = new ResizeObserver(this.fit); this.ro.observe(document.documentElement); }
+    setTimeout(() => this.setState({ barsOn: true }), 600);
+    this.barsT = setInterval(() => { this.setState({ barsOn: false }); setTimeout(() => this.setState({ barsOn: true }), 700); }, 45000);
+    this.clockT = setInterval(() => this.setState({ now: new Date() }), 15000);
+    this.boot = setInterval(this.fit, 1000); setTimeout(() => clearInterval(this.boot), 12000);
+    this.slider = setInterval(() => this.setState(s => ({ slide: s.slide + 1 })), Math.max(4, this.props.photoSeconds ?? 8) * 1000);
+    const anim = () => { this.forceUpdate(); if (Date.now() - this.state.t0 < 2100) requestAnimationFrame(anim); };
+    requestAnimationFrame(anim);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.fit); window.removeEventListener('load', this.fit); if (this.ro) this.ro.disconnect(); clearInterval(this.clockT); clearInterval(this.barsT); clearInterval(this.boot); clearInterval(this.slider); }
+  count(n) { const p = Math.min(1, (Date.now() - this.state.t0) / 2000); return Math.round(n * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US'); }
+  renderVals() {
+    const { now } = this.state;
+    const short = this.props.schoolShort ?? 'HAFTR';
+    const themes = [
+      ['Bein Adam LaChaveiro', 'בין אדם לחבירו', 'Ask your teacher: what does it mean to really listen?'],
+      ['Hachnasas Orchim', 'הכנסת אורחים', 'Ask your teacher: why did Avraham run?'],
+      ['Tzedakah', 'צדקה', 'Ask your teacher: what can you give that isn’t money?'],
+      ['Bikur Cholim', 'ביקור חולים', 'Ask your teacher: who is the visit really for?'],
+      ['Hakaras Hatov', 'הכרת הטוב', 'Ask your teacher: who helped you get here today?'],
+      ['Chesed in Halacha', 'חסד בהלכה', 'Ask your teacher: is chesed a choice or a duty?'],
+      ['Ahavas Yisrael', 'אהבת ישראל', 'Ask your teacher: can you love someone you’ve never met?'],
+      ['Kindness in Action', 'חסד במעשה', 'Ask your teacher: what’s the smallest chesed you’ve seen?'],
+      ['Middos', 'מידות', 'Ask your teacher: which middah makes chesed easier?'],
+    ];
+    const ti = Math.max(0, Math.min(8, (this.props.currentTheme ?? 2) - 1));
+    const ideas = [
+      { icon: 'campaign', text: 'Give a shout-out to a teacher who helped you this week.' },
+      { icon: 'favorite', text: 'Tell a teacher what you loved about their class.' },
+      { icon: 'school', text: 'Thank the teacher who made a hard subject click.' },
+      { icon: 'volunteer_activism', text: 'Send a shout-out to a staff member who keeps our school running.' },
+      { icon: 'star', text: 'Give a shout-out to a classmate who was kind to you.' },
+    ];
+    const shabbatIdeas = [
+      { icon: 'campaign', text: 'Before Shabbos, thank a teacher who made your week better.' },
+      { icon: 'favorite', text: 'Send a Good Shabbos shout-out to a teacher you appreciate.' },
+      { icon: 'star', text: 'Give a Shabbos shout-out to a friend who helped you.' },
+    ];
+    const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+    const mode = this.props.shabbatMode ?? 'auto';
+    const fri = mode === 'on' || (mode === 'auto' && now.getDay() === 5);
+    const caps = [
+      'Packing chesed packages for families in need in Israel',
+      'Building beds for families who need a safe place to sleep',
+      'Coming up',
+      'The Chesed Minute',
+      'Coming up',
+      'Just One Tutor',
+      'Run for Chesed',
+    ];
+    const k = this.state.slide % caps.length, op = {};
+    caps.forEach((_, i) => { op['photoOp' + i] = i === k ? 1 : 0; });
+    const goal = this.props.challengeGoal ?? 1000, done = this.props.challengeDone ?? 642;
+    const p = Math.min(1, (Date.now() - this.state.t0) / 2000), ease = 1 - Math.pow(1 - p, 3);
+    const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=214ba5&bgcolor=FFFFFF&data=' + encodeURIComponent(this.props.shoutoutUrl ?? 'https://app.justonechesed.org/shout-out');
+    let heb = ''; try { heb = new Intl.DateTimeFormat('en-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' }).format(now); } catch (e) {}
+    return {
+      ...op, showCaption: k < 2,
+      ev: { dow: 'Thu', day: 23, mon: 'Oct', title: 'Kindness Booth', amb: 'Maya K. · Eli R.', size: Math.min(72, Math.floor(900 / 'Kindness Booth'.length)) + 'px', time: '12:30 – 1:30 PM', place: 'Main lobby' },
+      ev2: { dow: 'Thu', day: 30, mon: 'Oct', title: 'Bake 4 Chesed', amb: 'Tamar G. · Josh F.', size: Math.min(72, Math.floor(900 / 'Bake 4 Chesed'.length)) + 'px', time: '2:00 – 3:30 PM', place: 'Cafeteria' },
+      evNext: [ { date: 'Thu, Oct 30', title: 'Bake 4 Chesed · challah for soldiers' }, { date: 'Sun, Nov 2', title: 'Build A Bed · 10th grade' }, { date: 'Tue, Nov 11', title: 'Chesed Packing · packages for Israel' } ],
+      scale: (() => { const de = document.documentElement; const w = de.clientWidth || window.innerWidth, hh = de.clientHeight || window.innerHeight; return w && hh ? Math.min(w / 1920, hh / 1080) : 0.5; })(), schoolShort: short,
+      schoolLogoImg: React.createElement('img', { src: this.props.schoolLogo ?? 'https://www.haftr.org/wp-content/uploads/logos1/round-blue-logo-150x150.png', alt: short + ' logo', style: { width: 100, height: 100, objectFit: 'contain', display: 'block' } }),
+      dedication: this.props.dedication ?? 'איתמר לביא בן עינב',
+      showSponsor: this.props.showSponsorLine ?? true,
+      clock: now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      dateShort: now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }),
+      schoolActs: this.count(this.props.schoolActs ?? 3490), schoolHrs: this.count(this.props.schoolHours ?? 13578),
+      worldHours: this.count(this.props.worldHours ?? 245453),
+      networkSchools: this.props.networkSchools ?? 120,
+      networkCountries: (this.props.networkCountries ?? 6) + ' ',
+      dateLong: now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+      hebrewDate: heb,
+      photoCaption: caps[k],
+      photoDots: caps.map((_, i) => ({ w: i === k ? '34px' : '10px', bg: i === k ? '#ff8e00' : '#E4E9F8' })),
+      idea: fri ? shabbatIdeas[Math.floor(doy / 7) % 3] : ideas[doy % ideas.length],
+      ideaSize: ((fri ? shabbatIdeas[Math.floor(doy / 7) % 3] : ideas[doy % ideas.length]).text.length > 52 ? 40 : 46) + 'px',
+      ...(() => {
+        const content = [
+          ['Listen to someone today with your full attention.', 'Mrs. Klein stopped everything to hear about my rough morning. I felt really seen.', 'In recess a 9th grader noticed I was quiet and asked if I was OK. We talked the whole break.'],
+          ['Share how someone made you feel welcome.', 'Rabbi Stern, thank you for saving me a seat on my first day. I felt at home right away.', 'Our class threw a welcome lunch for the new student from Israel. Now she sits with us every day.'],
+          ['Share a chesed that wasn’t about money.', 'Mr. Gold gave up his lunch to tutor me for my test. Thank you!', 'We spent Sunday sorting clothes at the gemach. No money, just time, and it made a real difference.'],
+          ['Share a time someone visited or cared for a person who was sick.', 'Thank you Mrs. Weiss for the card when I was home sick. It made my week.', 'Our 10th grade made cards for kids in the hospital. A nurse sent back a photo of them hanging up.'],
+          ['Thank someone who helped you get here today.', 'To our bus driver Mr. Ruiz: thank you for always waiting when we’re running late!', 'We wrote thank-you notes to the custodians. One of them taped his to the supply closet door.'],
+          ['Share a chesed you did because it was right, not easy.', 'Mrs. Levi, thank you for teaching us that chesed is something we owe each other.', 'I didn’t feel like helping my brother with homework, but I did anyway. He got an A.'],
+          ['Share a chesed for a Jew you’ve never met.', 'Rabbi Cohen, thank you for connecting our class with soldiers in Israel.', 'Our grade packed 300 Shabbos meals for families of reservists we’ve never met.'],
+          ['Share a small act that made a big difference.', 'Thank you Ms. Adler for always smiling at us in the hallway. It changes my day.', 'Someone held the door for me with my hands full of books. Small thing, big difference.'],
+          ['Share a middah you saw in action.', 'Mr. Berg, thank you for your patience every single day. We notice.', 'My friend let me go first even though she was waiting longer. That’s real humility.'],
+        ][ti];
+        const posts = [
+          { kind: 'Chesed shout-out', icon: 'campaign', text: content[1], from: '— Rivka L., 9th grade' },
+        ];
+        const post = posts[this.state.slide % posts.length];
+        const topics = ['Someone who really listened', 'Someone who made you feel welcome', 'A chesed that wasn’t money', 'Someone who cared when you were sick', 'Someone to thank', 'Doing what’s right', 'Chesed for a Jew you’ve never met', 'A small act, big difference', 'A middah in action'];
+        return { todayTopic: topics[ti], themePrompt: content[0], post: { ...post, size: (post.text.length > 95 ? 34 : 40) + 'px' } };
+      })(),
+      shoutSize: ((this.props.sampleShout ?? 'Mrs. Klein, thank you for staying after class to help me with Chumash. It finally makes sense!').length > 90 ? 36 : 42) + 'px',
+      monthName: now.toLocaleDateString('en-US', { month: 'long' }),
+      ...(() => {
+        const net = [
+          ['MS', 'Maimonides School', 'Brookline, MA', 1204],
+          ['RA', 'Ramaz', 'New York, NY', 1530],
+          ['MY', 'Maayanot', 'Teaneck, NJ', 968],
+          ['BH', 'Berman Hebrew Academy', 'Rockville, MD', 1112],
+          ['SH', 'Shalhevet', 'Los Angeles, CA', 845],
+          ['MH', 'Margolin Hebrew Academy', 'Memphis, TN', 702],
+        ];
+        const i = this.state.slide % net.length;
+        return {
+          netMarquee: (() => {
+            const E = React.createElement;
+            const card = ([, school, , hrs], k) => E('div', { key: k, style: { flex: '0 0 auto', height: '100%', boxSizing: 'border-box', background: '#F4F7FD', borderRadius: 14, padding: '0 16px', marginRight: 12, display: 'flex', alignItems: 'center', gap: 14, whiteSpace: 'nowrap' } },
+              E('div', { style: { fontSize: 16, fontWeight: 800, color: '#214ba5' } }, school),
+              E('div', { style: { display: 'flex', alignItems: 'baseline', gap: 4 } },
+                E('div', { style: { fontSize: 22, fontWeight: 800, lineHeight: 1, color: '#ff8e00', fontVariantNumeric: 'tabular-nums' } }, hrs.toLocaleString('en-US')),
+                E('div', { style: { fontSize: 13, fontWeight: 700, color: '#214ba5' } }, 'hrs')));
+            return E('div', { style: { display: 'flex', width: 'max-content', height: '100%', animation: 'jocMarquee ' + (this.props.marqueeSeconds ?? 40) + 's linear infinite' } }, [...net, ...net].map(card));
+          })(),
+          netDots: net.map((_, j) => ({ w: j === i ? '18px' : '6px', bg: j === i ? '#ff8e00' : '#E4E9F8' })),
+        };
+      })(),
+      localArea: this.props.localArea ?? 'Five Towns',
+      localTotal: this.count((this.props.localHours ?? 'DRS:842/620, HAFTR:819/480, SKA:774/510, Shulamith:612/390').split(',').reduce((a, x) => a + (parseFloat((x.split(':')[1] || '').split('/')[0]) || 0), 0)),
+      localSchools: (() => {
+        const rows = (this.props.localHours ?? 'DRS:842/620, HAFTR:819/480, SKA:774/510, Shulamith:612/390').split(',').map(x => x.split(':')).map(([n, v]) => { const [hrs, st] = (v || '').split('/'); return { name: (n || '').trim(), v: (parseFloat(hrs) || 0) / Math.max(1, parseFloat(st) || 1) }; });
+        const max = Math.max(1, ...rows.map(r => r.v));
+        return rows.map(r => { const me = r.name.toUpperCase() === short.toUpperCase();
+          return { name: r.name, hours: r.v.toFixed(1), fw: me ? 800 : 700, bar: me ? '#ff8e00' : '#9fb3dd', w: (this.state.barsOn ? Math.round(r.v / max * 100) : 0) + '%' }; });
+      })(),
+      ...(() => {
+        const goalEach = Math.max(1, this.props.gradeGoal ?? 250);
+        const raw = (this.props.gradeHours ?? '9th:231, 10th:204, 11th:176, 12th:262').split(',').map(x => x.split(':')).map(([l, v]) => ({ label: (l || '').trim(), v: parseFloat(v) || 0, goal: goalEach }));
+        return {
+          monthTotal: this.count(raw.reduce((a, r) => a + r.v, 0)),
+          monthGoal: raw.reduce((a, r) => a + r.goal, 0).toLocaleString('en-US'), gradeGoal: goalEach.toLocaleString('en-US'),
+          grades: raw.map(r => {
+            const pct = r.v / r.goal, reached = pct >= 1;
+            return { label: r.label + ' grade', hours: this.count(r.v), goal: r.goal.toLocaleString('en-US'), reached,
+              h: Math.round(Math.min(1, pct) * 100 * ease) + '%', bg: reached ? '#ff8e00' : '#214ba5',
+              pct: reached ? 'Bonus round · +' + (r.v - r.goal).toLocaleString('en-US') : 'hours', pctInk: reached ? '#ff8e00' : '#214ba5',
+              tileBg: reached ? '#ff8e00' : '#F4F7FD', tileFg: reached ? '#ffffff' : '#214ba5' };
+          }),
+        };
+      })(),
+      sampleShout: this.props.sampleShout ?? 'Mrs. Klein, thank you for staying after class to help me with Chumash. It finally makes sense!',
+      sampleShoutFrom: this.props.sampleShoutFrom ?? 'From a 7th grader, to Mrs. Klein',
+      ideaLabel: fri ? 'Shabbos shout-out' : 'Shout-out of the day',
+      challengeTitle: this.props.challengeTitle ?? '1,000 acts of chesed before Chanukah',
+      challengeEnds: this.props.challengeEnds ?? 'Ends 25 Kislev',
+      challengeGoal: goal.toLocaleString('en-US'),
+      challengeDone: Math.round(done * ease).toLocaleString('en-US'),
+      challengeLeft: Math.max(0, goal - done).toLocaleString('en-US'),
+      challengePct: Math.round(Math.min(1, done / goal) * 100 * ease) + '%',
+      minuteQr: React.createElement('img', { src: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=214ba5&bgcolor=FFF0E0&data=' + encodeURIComponent(this.props.chesedMinuteUrl ?? 'https://justonechesed.org/chesedminute'), alt: 'QR code: upload your Chesed Minute video', style: { width: 100, height: 100, display: 'block' } }),
+      tutorQr: React.createElement('img', { src: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=214ba5&bgcolor=FFF0E0&data=' + encodeURIComponent(this.props.tutorUrl ?? 'https://justonechesed.org/tutor'), alt: 'QR code: sign up for Just One Tutor', style: { width: 100, height: 100, display: 'block' } }),
+      runQr: React.createElement('img', { src: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&color=214ba5&bgcolor=FFFFFF&data=' + encodeURIComponent(this.props.runUrl ?? 'https://secure.qgiv.com/event/deadseamarathon/'), alt: 'QR code: join the Run for Chesed team', style: { width: 104, height: 104, display: 'block' } }),
+      qrImg: React.createElement('img', { src: qr, alt: 'QR code: send a shout-out to a teacher', style: { width: 92, height: 92, display: 'block' } }),
+      theme: themes[ti][0], themeHe: themes[ti][1], themeAsk: themes[ti][2],
+      networkLine: (this.props.networkSchools ?? 120) + ' schools · ' + (this.props.networkCountries ?? 6) + ' countries',
+      impact: [
+        { icon: 'volunteer_activism', value: this.count(this.props.schoolActs ?? 3490), label: 'Acts of chesed at ' + short },
+        { icon: 'groups', value: this.count(this.props.studentsOnApp ?? 412), label: short + ' students taking part' },
+        { icon: 'public', value: this.count(this.props.worldHours ?? 245453), label: 'Hours worldwide' },
+      ],
+      lastActivity: this.props.lastActivity ?? 'Went to the special children center',
+    };
+  }
+}
+</script>
+</body>
+</html>

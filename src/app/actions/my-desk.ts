@@ -389,3 +389,42 @@ export async function dropDeskEvent(eventId: string): Promise<R> {
   done();
   return { ok: true };
 }
+
+/**
+ * Copy a colleague's diary entry into your own week.
+ *
+ * A copy rather than a link: once it is in your week it is yours, to keep or
+ * take out, and their changing their mind does not quietly empty your day.
+ * The note says whose it was, so it still reads as their meeting.
+ */
+export async function addColleagueEvent(eventId: string): Promise<R> {
+  if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
+  const id = await meId();
+  if (!id) return { ok: false, error: "Sign in first." };
+
+  const src = await prisma.deskEvent.findFirst({
+    where: { id: eventId, userId: { not: id }, user: { schoolId: null } },
+    select: { title: true, note: true, startsAt: true, allDay: true, user: { select: { name: true, email: true } } },
+  }).catch(() => null);
+  if (!src) return { ok: false, error: "That entry has gone." };
+
+  const already = await prisma.deskEvent.findFirst({
+    where: { userId: id, title: src.title, startsAt: src.startsAt },
+    select: { id: true },
+  }).catch(() => null);
+  if (already) { done(); return { ok: true, id: already.id }; }
+
+  const who = (src.user.name ?? src.user.email ?? "").split(/[\s@]/)[0];
+  const note = [who ? `With ${who}` : null, src.note].filter(Boolean).join(" · ").slice(0, 300) || null;
+
+  try {
+    const made = await prisma.deskEvent.create({
+      data: { userId: id, title: src.title, note, startsAt: src.startsAt, allDay: src.allDay },
+      select: { id: true },
+    });
+    done();
+    return { ok: true, id: made.id };
+  } catch {
+    return { ok: false, error: "That didn't save." };
+  }
+}

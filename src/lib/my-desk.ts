@@ -41,6 +41,36 @@ export type DayItem = {
   kind: "event" | "call" | "meeting" | "task";
 };
 
+/** A colleague's diary entry, offered to add to your own week. */
+export type ColleagueItem = {
+  id: string;
+  who: string;
+  when: Date;
+  time: string | null;
+  title: string;
+  meta: string | null;
+  today: boolean;
+  kind: DayItem["kind"];
+};
+
+type DiaryRow = { title: string; note: string | null; startsAt: Date; allDay: boolean };
+
+/** Diary times are the wall clock pinned to UTC; see addDeskEvent. */
+function diaryTime(d: DiaryRow): string | null {
+  return d.allDay
+    ? null
+    : d.startsAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+}
+
+function diaryKind(d: DiaryRow): DayItem["kind"] {
+  return /call|phone/i.test(`${d.title} ${d.note ?? ""}`) ? "call" : "meeting";
+}
+
+/** Two entries are the same thing if they have the same name at the same moment. */
+function sameEntry(d: DiaryRow): string {
+  return `${d.title.trim().toLowerCase()}|${d.startsAt.getTime()}`;
+}
+
 export type TrayItem = {
   id: string;
   kind: "mention" | "message" | "ask" | "task";
@@ -87,7 +117,7 @@ export async function getMyDesk() {
   const empty = {
     me: me ?? null, superAdmin, now,
     tasks: [] as Task[], handed: [] as Task[],
-    day: [] as DayItem[], tray: [] as TrayItem[],
+    day: [] as DayItem[], colleagues: [] as ColleagueItem[], tray: [] as TrayItem[],
     pages: [] as Page[], staff: [] as { id: string; name: string }[],
   };
 
@@ -185,13 +215,24 @@ export async function getMyDesk() {
         },
       }).catch(() => []),
 
+      /**
+       * The week's diary — everybody's, not only this person's.
+       *
+       * It was mine-only, so a meeting Dalia booked with a school sat on her
+       * desk and nobody else's, and the office lost sight of what the office
+       * was doing. Mine go in This week; everybody else's go in a card of
+       * their own beside it, and each person picks what to add to their week.
+       */
       prisma.deskEvent.findMany({
         where: {
-          userId: mine,
+          user: { schoolId: null },
           startsAt: { gte: midnight, lt: new Date(midnight.getTime() + 14 * DAY) },
         },
         orderBy: { startsAt: "asc" },
-        select: { id: true, title: true, note: true, startsAt: true, allDay: true },
+        select: {
+          id: true, title: true, note: true, startsAt: true, allDay: true, userId: true,
+          user: { select: { name: true, email: true } },
+        },
       }).catch(() => []),
 
       prisma.inTrayCleared.findMany({
@@ -256,6 +297,24 @@ export async function getMyDesk() {
   }));
 
   const dated = ownRows.filter((t) => t.due && !t.doneAt);
+
+  const myDiary = diary.filter((d) => d.userId === mine);
+  // Once somebody has added a colleague's entry it is in their own week, so
+  // it leaves this card rather than showing twice. Same name, same moment.
+  const inMine = new Set(myDiary.map((d) => sameEntry(d)));
+  const colleagues: ColleagueItem[] = diary
+    .filter((d) => d.userId !== mine && !inMine.has(sameEntry(d)))
+    .map((d) => ({
+      id: d.id,
+      who: firstName(d.user.name ?? d.user.email),
+      when: d.startsAt,
+      time: diaryTime(d),
+      title: d.title,
+      meta: d.note?.toUpperCase() ?? null,
+      today: d.startsAt < new Date(midnight.getTime() + DAY),
+      kind: diaryKind(d),
+    }));
+
   const day: DayItem[] = [
     ...events.map((e) => ({
       id: `e${e.id}`,
@@ -268,17 +327,15 @@ export async function getMyDesk() {
       today: e.occurredAt < new Date(midnight.getTime() + DAY),
       kind: "event" as const,
     })),
-    ...diary.map((d) => ({
+    ...myDiary.map((d) => ({
       id: `d${d.id}`,
       when: d.startsAt,
-      time: d.allDay
-        ? null
-        : d.startsAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" }),
+      time: diaryTime(d),
       title: d.title,
       meta: d.note?.toUpperCase() ?? null,
       today: d.startsAt < new Date(midnight.getTime() + DAY),
       own: d.id,
-      kind: /call|phone/i.test(`${d.title} ${d.note ?? ""}`) ? ("call" as const) : ("meeting" as const),
+      kind: diaryKind(d),
     })),
     ...dated.map((t) => ({
       id: `t${t.id}`,
@@ -350,7 +407,7 @@ export async function getMyDesk() {
 
   return {
     me, superAdmin, now,
-    tasks, handed, day, tray,
+    tasks, handed, day, colleagues, tray,
     pages: pages as Page[],
     // One row per address: the same person has two accounts in a couple of
     // cases, and a picker offering "Wayne" twice is a picker nobody trusts.

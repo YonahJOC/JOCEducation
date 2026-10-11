@@ -130,14 +130,24 @@ export function jocNav(
   // one with the most other ways in — a row on Today whenever a school
   // writes, and the Schools hub. People & access has neither, which is why it
   // is never in this list.
-  const DROPPABLE = ["Lobby screen", "Calendar", "Chesed Cycles", "Messages"];
+  //
+  // The Lobby screen is not on that list. It was first to go, so the people
+  // who keep the TV — every one of them holding enough else to build eight —
+  // never saw it, and the screen could only be reached by typing its address.
+  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages"];
   for (const label of DROPPABLE) {
     if (items.length <= 7) break;
     const i = items.findIndex((x) => x.label === label);
     if (i >= 0) items.splice(i, 1);
   }
 
-  return items.slice(0, 7);
+  // Still over: take from the end, but never the keys or the lobby.
+  const KEEP = new Set(["My desk", "The Office", "People & access", "Lobby screen"]);
+  for (let i = items.length - 1; items.length > 7 && i >= 0; i--) {
+    if (!KEEP.has(items[i].label)) items.splice(i, 1);
+  }
+
+  return items;
 }
 
 /** The school side. Two audiences, and the money is only one of them. */
