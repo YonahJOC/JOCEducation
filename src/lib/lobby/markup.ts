@@ -63,16 +63,17 @@ export function dayHTML(d: WeekDay): string {
 </div>`;
 }
 
+// The screen draws all four boxes alike (white, orange icon); `color` and `ink` tint the admin panel's counters.
 export const STATS: Array<{ key: CounterKey; icon: string; color: string; ink: string; label: string }> = [
-  { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#FA912D', label: 'Acts of chesed' },
-  { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#2D46AF', label: 'Beds given out' },
+  { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#ff8e00', label: 'Acts of chesed' },
+  { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#214ba5', label: 'Beds given out' },
   { key: 'challahs', icon: 'bakery_dining', color: '#E3F4E8', ink: '#2FA457', label: 'Challahs baked' },
-  { key: 'pizzas', icon: 'local_pizza', color: '#FBE6E3', ink: '#D8412F', label: 'Pizzas made' },
+  { key: 'pizzas', icon: 'local_pizza', color: '#E4E9F8', ink: '#ff8e00', label: 'Pizzas made' },
 ];
 
 export function statHTML(s: (typeof STATS)[number], value: string): string {
-  return `<div class="stat" style="background:${s.color}">
-  <div class="stat-icon">${icon(s.icon, `color:${s.ink}`)}</div>
+  return `<div class="stat">
+  <div class="stat-icon">${icon(s.icon)}</div>
   <div class="stat-text"><div class="stat-value" data-stat="${s.key}">${esc(value)}</div><div class="stat-label">${esc(s.label)}</div></div>
 </div>`;
 }
