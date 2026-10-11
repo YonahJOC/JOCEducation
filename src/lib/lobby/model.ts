@@ -83,7 +83,7 @@ export function buildView(events: CalEvent[], settings: Settings, now: Date): Sc
     return {
       ...e,
       label: on ? 'Happening now' : e === firstUpcoming ? 'Next up' : 'Later today',
-      labelInk: on ? '#A85B00' : '#2D46AF',
+      labelInk: on ? '#ff8e00' : '#214ba5',
     };
   });
 
