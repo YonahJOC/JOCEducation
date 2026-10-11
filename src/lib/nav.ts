@@ -200,6 +200,9 @@ export function schoolNav(
     // linked to it.
     items.push({ label: "Cycle progress", href: "/school/cycles" });
     items.push({ label: "Ambassadors", href: "/school/ambassadors" });
+    // The hallway TV: what goes on it, and what ambassadors and students
+    // have sent for it to approve.
+    items.push({ label: "Live screen", href: "/school/screen" });
   }
 
   // An app admin is a teacher looking after what students are doing. What the
@@ -215,7 +218,7 @@ export function schoolNav(
   // somebody looks at when nothing needs them. Ambassadors and Chesed
   // activity both live one click inside Today.
   // Messages is never dropped: it is the only way a school can reach a person.
-  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity"]) {
+  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity", "Live screen"]) {
     if (items.length <= MAX) break;
     const i = items.findIndex((it) => it.label === label);
     if (i >= 0) items.splice(i, 1);

@@ -37,6 +37,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     staticGenerationRetryCount: 2,
+    // School screen pictures arrive through a server action. The editor shrinks
+    // them to 1600px in the browser first, so 3MB is room to spare, and it
+    // stays under the 4.5MB a Vercel function will accept.
+    serverActions: { bodySizeLimit: "3mb" },
   },
 
   outputFileTracingExcludes: {

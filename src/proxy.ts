@@ -79,6 +79,11 @@ const PUBLIC_PREFIXES = [
   // the session and the lobby permission itself.
   "/lobby",
   "/api/lobby/display",
+  // A school's hallway TV, its data and its pictures: the same reason. The
+  // data route returns only what is on that wall, and the picture route
+  // serves a file to strangers only while it is approved for one.
+  "/school-screen/",
+  "/api/school-screen/",
   // Somebody an administrator issued a password to has to be able to change
   // it. Only that page — /account itself sits behind the gate like the rest.
   "/account/password",

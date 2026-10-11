@@ -79,22 +79,33 @@ model School {
   ///
   /// Kept in step with studentListState: set when it becomes UPLOADED and
   /// cleared on NOT_SENT, because the status board and Today both read it.
-  studentListAt DateTime?
+  studentListAt      DateTime?
   /// When the JOC live screen went up in the building.
-  liveScreenAt  DateTime?
+  liveScreenAt       DateTime?
   /// Where that screen lives, so the school can open their own.
   ///
   /// liveScreenAt recorded that a screen existed and never said where, which
   /// is a date nobody can act on. Null here means JOC has not been given the
   /// link yet, and every screen says exactly that rather than hiding the row.
-  liveScreenUrl String?
+  liveScreenUrl      String?
+  /// The school's hallway TV (/school-screen/[slug]). The name it goes by on
+  /// the screen ("HAFTR"), its logo, the hours goal every grade shares, and
+  /// the email domains a student must sign in with to send a shout-out.
+  screenShortName    String?
+  screenLogoUrl      String?
+  screenGradeGoal    Int?
+  screenEmailDomains String[]           @default([])
+  screenDedications  ScreenDedication[]
+  screenFlyers       ScreenFlyer[]
+  screenPhotos       ScreenPhoto[]
+  shoutOuts          ShoutOut[]
   /// When their school store opened.
-  storeOpenAt   DateTime?
+  storeOpenAt        DateTime?
 
   /// Chesed hours logged in the JOC App and waiting for somebody to approve
   /// them. This lives in the app, not here, so it carries the moment it was
   /// last read — a number with no date is a number nobody can trust.
-  unapprovedHours   Int?
+  unapprovedHours     Int?
   unapprovedCheckedAt DateTime?
 
   /// JOC staff member who owns this relationship
@@ -125,12 +136,12 @@ model School {
   appMessages   AppSchoolMessage[]
   messages      SchoolMessage[]
 
-  programLights SchoolProgramLight[]
-  inquiries     Inquiry[]
-  payments      Payment[]
-  agendaItems   AdminMeetingItem[]
-  enrollments   ProgramEnrollment[]
-  ambassadors   ProgramAmbassador[]
+  programLights     SchoolProgramLight[]
+  inquiries         Inquiry[]
+  payments          Payment[]
+  agendaItems       AdminMeetingItem[]
+  enrollments       ProgramEnrollment[]
+  ambassadors       ProgramAmbassador[]
   ambassadorInvites AmbassadorInvite[]
 
   @@index([status])
@@ -195,19 +206,19 @@ model SchoolActivity {
 
   /// Everybody can see this one is finished with, as against one person
   /// having picked it up.
-  doneAt   DateTime?
-  doneById String?
-  doneBy   User?     @relation("ActivityDoneBy", fields: [doneById], references: [id], onDelete: SetNull)
+  doneAt      DateTime?
+  doneById    String?
+  doneBy      User?      @relation("ActivityDoneBy", fields: [doneById], references: [id], onDelete: SetNull)
   /// Closed for everybody, by a super admin. Distinct from one person being
   /// finished with it, which is BuzzDone.
-  closedAt   DateTime?
-  closedById String?
-  closedBy   User?     @relation("ActivityClosedBy", fields: [closedById], references: [id], onDelete: SetNull)
+  closedAt    DateTime?
+  closedById  String?
+  closedBy    User?      @relation("ActivityClosedBy", fields: [closedById], references: [id], onDelete: SetNull)
   doneByUsers BuzzDone[]
-  todos    DeskTodo[]
+  todos       DeskTodo[]
 
   /// The thread under it. Anybody who can read the Buzz can add to one.
-  notes BuzzNote[]
+  notes  BuzzNote[]
   /// Who has opened that thread, and when.
   seenBy BuzzSeen[]
   likes  BuzzLike[]
@@ -327,11 +338,9 @@ enum PlanRequestStatus {
 /// sales pipeline, before a School record exists.
 /**
  * A school asking for something it does not have yet.
- *
  * The only thing that travels from a school to JOC. It is filed against the
  * school and read on a console; nothing is sent to the school in return, and
  * the answer happens outside the portal.
- *
  * One open inquiry per school per thing, so asking twice does not file twice.
  */
 model Inquiry {
@@ -351,11 +360,11 @@ model Inquiry {
   askedById String?
   askedBy   User?   @relation("InquiryAsker", fields: [askedById], references: [id], onDelete: SetNull)
 
-  status      InquiryStatus @default(OPEN)
+  status       InquiryStatus @default(OPEN)
   /// What JOC did about it, in the words they chose to share.
-  response    String?       @db.Text
+  response     String?       @db.Text
   answeredById String?
-  answeredBy   User?        @relation("InquiryAnswerer", fields: [answeredById], references: [id], onDelete: SetNull)
+  answeredBy   User?         @relation("InquiryAnswerer", fields: [answeredById], references: [id], onDelete: SetNull)
   answeredAt   DateTime?
 
   createdAt DateTime @default(now())
@@ -374,12 +383,10 @@ enum InquiryStatus {
 
 /**
  * One movement of money.
- *
  * Every figure on every money screen is a query over this table. Nothing
  * before it could answer "what did the Kindness Booth bring in" — a
  * subscription is per school with no program, an order is shop products, and
  * a program fee was a boolean with no amount and no date.
- *
  * A refund is a new row pointing at what it refunds, never an edit to the
  * original. A grant is a row of zero with a reason and a name against it,
  * which is not the same thing as nothing.
@@ -505,12 +512,12 @@ model User {
   savedLessons  SavedLesson[]
   boardPosts    BoardPost[]
   boardLikes    BoardLike[]
-  uploadedFiles StoredFile[]  @relation("UploadedFiles")
+  uploadedFiles StoredFile[]   @relation("UploadedFiles")
   orders        Order[]
   roomMessages  RoomMessage[]
   roomMembers   RoomMember[]
   formResponses FormResponse[] @relation("FormResponses")
-  programsLed   ProgramPage[] @relation("ProgramLeads")
+  programsLed   ProgramPage[]  @relation("ProgramLeads")
 
   /// A teacher who runs their school's JOC App: sees their own school's
   /// sign-ups and activity, and not the plan or the seats. Deliberately not
@@ -522,55 +529,62 @@ model User {
   /// an admin type, because it is a list somebody decided on, not a rank.
   buzzAccess Boolean @default(false)
 
-  managedSchools   School[]            @relation("AccountManager")
+  managedSchools School[] @relation("AccountManager")
   /// Where somebody books time with this person.
   ///
   /// Theirs to keep current, because a stale calendar link wastes a school's
   /// afternoon and only the person whose calendar it is knows it moved.
-  bookingUrl String?
+  bookingUrl     String?
 
-  loggedActivities SchoolActivity[]    @relation("ActivityAuthor")
+  loggedActivities     SchoolActivity[]    @relation("ActivityAuthor")
   /// School updates they took off the Buzz to deal with.
-  takenActivities  SchoolActivity[]    @relation("ActivityTaken")
-  buzzNotes        BuzzNote[]
-  buzzSeen         BuzzSeen[]
-  buzzLikes        BuzzLike[]
-  buzzInvitesSent  BuzzInvite[]        @relation("BuzzInvitedBy")
-  todos            DeskTodo[]          @relation("DeskTodoOwner")
-  todosAssigned    DeskTodo[]          @relation("DeskTodoAssigner")
-  notices          Notice[]            @relation("NoticeAuthor")
-  noticeReads      NoticeRead[]
-  activitiesDone   SchoolActivity[]    @relation("ActivityDoneBy")
-  activitiesClosed SchoolActivity[]    @relation("ActivityClosedBy")
-  notebook         NotebookPage[]
-  buzzDone         BuzzDone[]
-  inTrayCleared    InTrayCleared[]
-  diary            DeskEvent[]
-  lobbyEdits       LobbyDoc[]
-  answeredActivities SchoolActivity[]  @relation("ActivityAnswerer")
-  sentMessages       SchoolMessage[]   @relation("MessageAuthor")
-  programPosts       ProgramPost[]     @relation("PostAuthor")
-  boardChecksTicked  BoardCheckMark[]  @relation("BoardCheckBy")
-  studentListsUploaded StudentListFile[] @relation("StudentListUploader")
-  sentInvitations  Invitation[]        @relation("Inviter")
-  editedFields     SiteField[]         @relation("FieldEditor")
-  publishedFields  SiteFieldHistory[]  @relation("FieldPublisher")
-  planRequests     PlanChangeRequest[] @relation("PlanRequester")
-  planResponses    PlanChangeRequest[] @relation("PlanResponder")
-  accessGrants     Subscription[]      @relation("AccessGranter")
+  takenActivities      SchoolActivity[]    @relation("ActivityTaken")
+  buzzNotes            BuzzNote[]
+  buzzSeen             BuzzSeen[]
+  buzzLikes            BuzzLike[]
+  buzzInvitesSent      BuzzInvite[]        @relation("BuzzInvitedBy")
+  todos                DeskTodo[]          @relation("DeskTodoOwner")
+  todosAssigned        DeskTodo[]          @relation("DeskTodoAssigner")
+  notices              Notice[]            @relation("NoticeAuthor")
+  noticeReads          NoticeRead[]
+  activitiesDone       SchoolActivity[]    @relation("ActivityDoneBy")
+  activitiesClosed     SchoolActivity[]    @relation("ActivityClosedBy")
+  notebook             NotebookPage[]
+  buzzDone             BuzzDone[]
+  inTrayCleared        InTrayCleared[]
+  diary                DeskEvent[]
+  lobbyEdits           LobbyDoc[]
+  answeredActivities   SchoolActivity[]    @relation("ActivityAnswerer")
+  sentMessages         SchoolMessage[]     @relation("MessageAuthor")
+  programPosts         ProgramPost[]       @relation("PostAuthor")
+  boardChecksTicked    BoardCheckMark[]    @relation("BoardCheckBy")
+  studentListsUploaded StudentListFile[]   @relation("StudentListUploader")
+  sentInvitations      Invitation[]        @relation("Inviter")
+  editedFields         SiteField[]         @relation("FieldEditor")
+  publishedFields      SiteFieldHistory[]  @relation("FieldPublisher")
+  planRequests         PlanChangeRequest[] @relation("PlanRequester")
+  planResponses        PlanChangeRequest[] @relation("PlanResponder")
+  accessGrants         Subscription[]      @relation("AccessGranter")
 
-  lightsSet        SchoolProgramLight[] @relation("LightSetBy")
+  lightsSet SchoolProgramLight[] @relation("LightSetBy")
 
   /// Programs this student runs at their school, and the ones they supervise.
-  ambassadorships  ProgramAmbassador[]  @relation("AmbassadorUser")
-  supervising      ProgramAmbassador[]  @relation("AmbassadorSupervisor")
-  ambassadorInvites AmbassadorInvite[]  @relation("AmbassadorInviter")
-  inquiriesAsked    Inquiry[]  @relation("InquiryAsker")
-  inquiriesAnswered Inquiry[]  @relation("InquiryAnswerer")
-  paymentsDecided   Payment[]  @relation("PaymentDecider")
-  paymentsRecorded  Payment[]  @relation("PaymentRecorder")
-  agendaRaised     AdminMeetingItem[]   @relation("AgendaRaisedBy")
-  agendaDecided    AdminMeetingItem[]   @relation("AgendaDecidedBy")
+  ambassadorships      ProgramAmbassador[] @relation("AmbassadorUser")
+  supervising          ProgramAmbassador[] @relation("AmbassadorSupervisor")
+  ambassadorInvites    AmbassadorInvite[]  @relation("AmbassadorInviter")
+  inquiriesAsked       Inquiry[]           @relation("InquiryAsker")
+  inquiriesAnswered    Inquiry[]           @relation("InquiryAnswerer")
+  paymentsDecided      Payment[]           @relation("PaymentDecider")
+  paymentsRecorded     Payment[]           @relation("PaymentRecorder")
+  agendaRaised         AdminMeetingItem[]  @relation("AgendaRaisedBy")
+  agendaDecided        AdminMeetingItem[]  @relation("AgendaDecidedBy")
+  screenDedicationsSet ScreenDedication[]  @relation("ScreenDedicationBy")
+  screenFlyersMade     ScreenFlyer[]       @relation("ScreenFlyerBy")
+  screenFlyersDecided  ScreenFlyer[]       @relation("ScreenFlyerDecidedBy")
+  screenPhotosMade     ScreenPhoto[]       @relation("ScreenPhotoBy")
+  screenPhotosDecided  ScreenPhoto[]       @relation("ScreenPhotoDecidedBy")
+  shoutOutsSent        ShoutOut[]          @relation("ShoutOutBy")
+  shoutOutsDecided     ShoutOut[]          @relation("ShoutOutDecidedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1066,6 +1080,8 @@ model StoredFile {
 
   reportPhotos EventReport[]     @relation("ReportPhoto")
   studentLists StudentListFile[] @relation("StudentList")
+  screenFlyers ScreenFlyer[]     @relation("ScreenFlyerImage")
+  screenPhotos ScreenPhoto[]     @relation("ScreenPhotoImage")
 
   createdAt DateTime @default(now())
 
@@ -1134,7 +1150,7 @@ model ProgramPage {
   /// The chips on the Ask button, for the same reason. Empty falls back to a
   /// general set.
   askTopics String[] @default([])
-  cta          String  @default("Register your school")
+  cta       String   @default("Register your school")
 
   published Boolean @default(false)
 
@@ -1146,7 +1162,7 @@ model ProgramPage {
   /// The form shown on this program's own page — a registration, a sign-up.
   /// Null means the page keeps its plain Register button.
   formId String?
-  form   Form?  @relation("ProgramForm", fields: [formId], references: [id], onDelete: SetNull)
+  form   Form?   @relation("ProgramForm", fields: [formId], references: [id], onDelete: SetNull)
 
   /// Who runs this program. A lead sees this one program's settings and its
   /// form answers without needing the run of the whole console.
@@ -1155,23 +1171,23 @@ model ProgramPage {
   sort Int @default(0)
 
   /// Whether each school may be approached about this program, and why.
-  lights      SchoolProgramLight[]
-  agendaItems AdminMeetingItem[]
-  enrollments ProgramEnrollment[]
-  ambassadors ProgramAmbassador[]
+  lights            SchoolProgramLight[]
+  agendaItems       AdminMeetingItem[]
+  enrollments       ProgramEnrollment[]
+  ambassadors       ProgramAmbassador[]
   ambassadorInvites AmbassadorInvite[]
 
   /// A promo video for the top of the program page. YouTube, Vimeo or a
   /// direct file — whatever the team has.
-  videoUrl String?
-  steps ProgramStep[]
-  activities ProgramActivity[]
-  inquiries Inquiry[]
-  payments  Payment[]
-  asks      SchoolActivity[] @relation("ActivityProgram")
-  threadMessages SchoolMessage[] @relation("MessageProgram")
-  posts          ProgramPost[]   @relation("ProgramPosts")
-  events ProgramEvent[]
+  videoUrl       String?
+  steps          ProgramStep[]
+  activities     ProgramActivity[]
+  inquiries      Inquiry[]
+  payments       Payment[]
+  asks           SchoolActivity[]  @relation("ActivityProgram")
+  threadMessages SchoolMessage[]   @relation("MessageProgram")
+  posts          ProgramPost[]     @relation("ProgramPosts")
+  events         ProgramEvent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1179,7 +1195,6 @@ model ProgramPage {
 
 /**
  * One thing a student can actually do in this program.
- *
  * The Kindness Booth offers four — write a note, take a candy, say a
  * Tehillim, help someone — and they are the programme, not a detail of it. A
  * school deciding whether to run it is deciding about these.
@@ -1197,17 +1212,17 @@ model ProgramActivity {
 }
 
 model ProgramStep {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   programId   Int
   /// "01", "02" — shown as written.
   step        String
   title       String
-  description String @db.Text
+  description String  @db.Text
   /// Optional call to action on the stage — "Book a time", "Register and pay".
   linkLabel   String?
   /// Where it goes. "{form}" resolves to this program's own sign-up form.
   linkUrl     String?
-  order       Int    @default(0)
+  order       Int     @default(0)
 
   program ProgramPage @relation(fields: [programId], references: [id], onDelete: Cascade)
 
@@ -1519,7 +1534,7 @@ model ProgramEvent {
   location String?
   /// "Grades 3–5", "Whole school", "Staff only".
   audience String?
-  detail   String  @db.Text @default("")
+  detail   String  @default("") @db.Text
   /// Who at JOC is running it.
   lead     String?
 
@@ -1604,26 +1619,26 @@ model Form {
   title String
 
   /// Shown above the fields.
-  description String @db.Text @default("")
+  description String @default("") @db.Text
   /// Shown after somebody submits. Where to say "we will be in touch".
-  thankYou    String @db.Text @default("Thank you — we have your answers.")
+  thankYou    String @default("Thank you — we have your answers.") @db.Text
 
-  published Boolean @default(false)
+  published      Boolean @default(false)
   /// A form that has closed says so, rather than vanishing. Somebody sent a
   /// link to a school last week and needs to be told it has shut, not shown
   /// a page that is not found.
-  closed    Boolean @default(false)
+  closed         Boolean @default(false)
   /// Only signed-in people may submit. Off for anything a parent fills in.
   requiresSignIn Boolean @default(false)
 
   /// What it costs to submit, in cents. Null means free. Nothing is charged
   /// until Stripe is connected — see src/lib/payments.ts.
-  feeCents    Int?
-  feeLabel    String?
+  feeCents Int?
+  feeLabel String?
 
   fields    FormField[]
   responses FormResponse[]
-  programs  ProgramPage[] @relation("ProgramForm")
+  programs  ProgramPage[]  @relation("ProgramForm")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1689,9 +1704,9 @@ model FormResponse {
   answers Json
 
   /// Only meaningful on a form with a fee.
-  paid          Boolean @default(false)
-  paymentRef    String?
-  amountCents   Int?
+  paid        Boolean @default(false)
+  paymentRef  String?
+  amountCents Int?
 
   createdAt DateTime @default(now())
 
@@ -1702,7 +1717,6 @@ model FormResponse {
   @@index([schoolId])
   @@index([userId])
 }
-
 
 // ─── JOC App activity ─────────────────────────────────────────────────────────
 //
@@ -1728,13 +1742,13 @@ model AppSchoolStats {
   unapprovedOldestAt DateTime?
   /// Age buckets, so the panel does not have to hold every entry to say
   /// how bad it is.
-  unapprovedThisWeek Int @default(0)
-  unapprovedOneToTwo Int @default(0)
-  unapprovedOverTwo  Int @default(0)
+  unapprovedThisWeek Int       @default(0)
+  unapprovedOneToTwo Int       @default(0)
+  unapprovedOverTwo  Int       @default(0)
 
   /// A student who logged anything in the last 30 days.
-  activeStudents      Int @default(0)
-  activeStudentsLast  Int @default(0)
+  activeStudents     Int @default(0)
+  activeStudentsLast Int @default(0)
 
   opportunitiesOpen      Int @default(0)
   opportunitiesThisWeek  Int @default(0)
@@ -1797,8 +1811,8 @@ model AppChallengeStat {
   title          String
   /// The Chesed Cycle it belongs to, where the app says so.
   cycleSlug      String?
-  joined         Int    @default(0)
-  finished       Int    @default(0)
+  joined         Int     @default(0)
+  finished       Int     @default(0)
   running        Boolean @default(true)
 
   syncedAt DateTime
@@ -1812,14 +1826,14 @@ model AppSchoolMessage {
   schoolId String
   school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
-  appMessageId String @unique
+  appMessageId String   @unique
   /// Who at the school wrote it. A name is allowed here because somebody has
   /// to be rung back; the panel shows no student names anywhere else.
-  fromName  String?
-  body      String   @db.Text
-  sentAt    DateTime
+  fromName     String?
+  body         String   @db.Text
+  sentAt       DateTime
   /// Answered inside the app. Unanswered is what raises the flag.
-  answered  Boolean  @default(false)
+  answered     Boolean  @default(false)
 
   syncedAt DateTime
 
@@ -1861,7 +1875,7 @@ enum AppSyncStatus {
 /// Most rows are written by the nightly rules. A row somebody set by hand
 /// beats the rules and stays until it is changed or until `until` passes.
 model SchoolProgramLight {
-  id        String  @id @default(cuid())
+  id        String @id @default(cuid())
   schoolId  String
   programId Int
 
@@ -1875,7 +1889,7 @@ model SchoolProgramLight {
 
   /// Who set it, for a manual light. Null for the rules.
   setById String?
-  setBy   User?   @relation("LightSetBy", fields: [setById], references: [id], onDelete: SetNull)
+  setBy   User?    @relation("LightSetBy", fields: [setById], references: [id], onDelete: SetNull)
   setAt   DateTime @default(now())
 
   /// A manual light may be temporary — "hold off until after Pesach". When
@@ -1950,7 +1964,7 @@ model AdminMeetingItem {
   note String @db.Text
 
   createdById String?
-  createdBy   User?   @relation("AgendaRaisedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy   User?    @relation("AgendaRaisedBy", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
 
   /// What the admins decided. Null until the meeting works through it.
@@ -2002,10 +2016,10 @@ model ProgramEnrollment {
   schoolId  String
   programId Int
 
-  stage EnrollmentStage @default(INTRODUCED)
+  stage      EnrollmentStage @default(INTRODUCED)
   /// When it reached this stage. A stage with no date cannot answer "how long
   /// has this school been sitting at registered", which is the useful question.
-  stageSince DateTime @default(now())
+  stageSince DateTime        @default(now())
 
   /// The person at the school who runs this program. Their own contact row,
   /// so the account team and the coordinator are ringing the same person.
@@ -2140,7 +2154,7 @@ model EventReport {
   /// the most valuable thing this table records.
   eventId Int?
 
-  occurredOn DateTime
+  occurredOn   DateTime
   /// The student's own estimate, and labelled as one everywhere it is shown.
   /// A CRM figure that reads as measured and is not is worse than no figure.
   participants Int?
@@ -2152,8 +2166,8 @@ model EventReport {
   /// Optional, and a photo of a school event has other people's children in
   /// it. Visible to the supervising teacher; reaches JOC only when the
   /// teacher says it may.
-  photoId       String?
-  photoShared   Boolean @default(false)
+  photoId     String?
+  photoShared Boolean @default(false)
 
   submittedAt        DateTime  @default(now())
   /// Set when the supervising teacher has read it.
@@ -2243,7 +2257,7 @@ model ProgramPost {
   /// The headline, or the question.
   title String
   /// The note, the answer, or one line about what the resource is.
-  body String @db.Text
+  body  String @db.Text
 
   /// Where a RESOURCE points. Null on an update or a question.
   ///
@@ -2519,7 +2533,6 @@ model NoticeRead {
   @@unique([userId, noticeId])
 }
 
-
 /// A private page. Nobody else ever reads it.
 /// One person's own diary entry: a meeting, a call, anything they put in
 /// their day themselves.
@@ -2601,4 +2614,119 @@ model InTrayCleared {
   clearedAt DateTime @default(now())
 
   @@unique([userId, kind, refId])
+}
+
+// ─── School live screen ───────────────────────────────────────────────────────
+// The TV each school puts in its hallway (/school-screen/[slug]). Everything
+// here is something anybody standing in that hallway could read off the wall,
+// and nothing a student or ambassador adds reaches it until a teacher or JOC
+// has approved it.
+
+enum ScreenItemStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ScreenFlyerTemplate {
+  /// A photo on top, a tilted date sticker, the name, time and place.
+  EVENT
+  /// No photo: one big icon, the program name huge, one line, one QR code.
+  PROGRAM
+  /// A finished piece of artwork shown whole, never covered.
+  BANNER
+}
+
+/// Who today's chesed is dedicated to. A null school means every school.
+model ScreenDedication {
+  id         String   @id @default(cuid())
+  schoolId   String?
+  school     School?  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  /// The day it is for, as a date with no time.
+  date       DateTime @db.Date
+  hebrewName String
+  text       String?
+  setById    String?
+  setBy      User?    @relation("ScreenDedicationBy", fields: [setById], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@index([date, schoolId])
+}
+
+/// A slide in the screen's slideshow. A null school means every school.
+model ScreenFlyer {
+  id          String              @id @default(cuid())
+  schoolId    String?
+  school      School?             @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  template    ScreenFlyerTemplate
+  title       String
+  /// The small line above the title on an event, or the one line under a program.
+  line        String?
+  startsAt    DateTime?
+  time        String?
+  place       String?
+  ambassadors String?
+  /// A Material Symbols name for a program flyer's big icon.
+  icon        String?
+  imageId     String?
+  image       StoredFile?         @relation("ScreenFlyerImage", fields: [imageId], references: [id], onDelete: SetNull)
+  qrUrl       String?
+  qrLabel     String?
+  showFrom    DateTime
+  showUntil   DateTime
+  sort        Int                 @default(0)
+  status      ScreenItemStatus    @default(PENDING)
+  createdById String?
+  createdBy   User?               @relation("ScreenFlyerBy", fields: [createdById], references: [id], onDelete: SetNull)
+  decidedById String?
+  decidedBy   User?               @relation("ScreenFlyerDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt   DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([schoolId, status])
+}
+
+/// A photo of students doing chesed, uploaded by an ambassador or a teacher.
+model ScreenPhoto {
+  id           String           @id @default(cuid())
+  schoolId     String
+  school       School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  imageId      String
+  image        StoredFile       @relation("ScreenPhotoImage", fields: [imageId], references: [id], onDelete: Cascade)
+  caption      String?
+  /// The uploader confirmed every student in it has media consent on file.
+  consent      Boolean          @default(false)
+  status       ScreenItemStatus @default(PENDING)
+  uploadedById String?
+  uploadedBy   User?            @relation("ScreenPhotoBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+  decidedById  String?
+  decidedBy    User?            @relation("ScreenPhotoDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt    DateTime?
+  createdAt    DateTime         @default(now())
+
+  @@index([schoolId, status])
+}
+
+/// A student's chesed shout-out, sent from the QR code on the screen.
+model ShoutOut {
+  id          String           @id @default(cuid())
+  schoolId    String
+  school      School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  text        String
+  firstName   String
+  lastInitial String
+  grade       String
+  /// The student said their name may be shown. Without it, only the grade is.
+  showName    Boolean          @default(false)
+  authorId    String?
+  author      User?            @relation("ShoutOutBy", fields: [authorId], references: [id], onDelete: SetNull)
+  authorEmail String
+  status      ScreenItemStatus @default(PENDING)
+  decidedById String?
+  decidedBy   User?            @relation("ShoutOutDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt   DateTime?
+  createdAt   DateTime         @default(now())
+
+  @@index([schoolId, status, createdAt])
 }

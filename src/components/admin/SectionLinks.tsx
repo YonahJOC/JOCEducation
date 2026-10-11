@@ -30,6 +30,7 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capabil
     { href: "/admin/my-updates", label: "My Buzz items" },
     { href: "/admin/messages", label: "Messages", need: "schools" },
     { href: "/admin/schools/status", label: "Status board", need: "schools" },
+    { href: "/admin/school-screens", label: "School screens", need: "schools" },
     { href: "/admin/demos", label: "Demo requests", need: "demos" },
   ],
   material: [

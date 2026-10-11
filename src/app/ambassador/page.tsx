@@ -64,5 +64,26 @@ export default async function AmbassadorPage() {
       ).map((e) => ({ id: e.id, title: e.title, startsAt: e.startsAt }))
     : [];
 
-  return <AmbassadorHome scope={mine} reports={reports} runs={runs} />;
+  return (
+    <>
+      <AmbassadorHome scope={mine} reports={reports} runs={runs} />
+      {/* The school's hallway TV: flyers for what they run, photos of it
+          happening. A teacher approves before anything goes up. */}
+      <Link
+        href="/ambassador/screen"
+        style={{
+          display: "flex", alignItems: "center", gap: "14px", marginTop: "24px",
+          backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "18px 20px",
+          textDecoration: "none", color: C.ink, minHeight: "47px",
+        }}
+      >
+        <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "28px", color: C.orange }}>tv</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontFamily: "var(--font-outfit)", fontSize: "17px", fontWeight: 700 }}>Your school&rsquo;s screen</span>
+          <span style={{ display: "block", fontSize: "14px", color: C.muted, marginTop: "2px" }}>Add a flyer or a photo. Your teacher approves it before it goes up.</span>
+        </span>
+        <span aria-hidden="true" style={{ color: C.blue, fontWeight: 700 }}>→</span>
+      </Link>
+    </>
+  );
 }
