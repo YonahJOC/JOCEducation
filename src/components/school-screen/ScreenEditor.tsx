@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { C, F, R, T } from "@/lib/joc-tokens";
 import {
   decideFlyer, decidePhoto, decideShoutOut, deleteDedication, deleteFlyer, deletePhoto,
-  saveScreenSettings, setDedication, setUpScreen, uploadScreenPhoto,
+  saveScreenSettings, setDedication, uploadScreenPhoto,
 } from "@/app/actions/school-screen";
 import type { ScreenEditorData, EditorFlyer } from "@/lib/school-screen/editor-data";
 import { dayKey, shortName, shoutOutFrom } from "@/lib/school-screen/rules";
@@ -65,8 +65,9 @@ export function ScreenEditor({ data, staff }: { data: ScreenEditorData; staff?: 
           Open the screen
           <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "18px" }}>open_in_new</span>
         </a>
-        {staff && !school.screenUp ? (
-          <Btn tone="quiet" disabled={pending} onClick={() => run(() => setUpScreen(school.id))}>Mark the screen as up</Btn>
+        {/* The switch itself is beside the school's name in the list on the left. */}
+        {staff ? (
+          <StatusChip status={school.screenUp ? "APPROVED" : "REJECTED"} label={school.screenUp ? "Screen up" : "Not up yet"} />
         ) : null}
       </div>
 

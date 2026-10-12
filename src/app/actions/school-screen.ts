@@ -322,10 +322,14 @@ export async function saveScreenSettings(form: FormData): Promise<R> {
 }
 
 /**
- * Put a school's screen up: set the address the school's own "Your live
- * screen" link opens, and the date it went up.
+ * Mark a school's screen up, or take it down.
+ *
+ * Up sets the address the school's own "Your live screen" link opens and the
+ * date it went up, and puts the school in every other screen's ticker. Down
+ * clears both. The TV itself keeps working at its address either way — this
+ * is JOC's record of which hallways have one, not a switch on the set.
  */
-export async function setUpScreen(schoolId: string): Promise<R> {
+export async function setScreenUp(schoolId: string, up: boolean): Promise<R> {
   const session = await safeAuth();
   if (!isScreenStaff(session?.user)) return { ok: false, error: "JOC sets a screen up." };
   const school = await prisma.school.findUnique({
@@ -333,19 +337,23 @@ export async function setUpScreen(schoolId: string): Promise<R> {
   }).catch(() => null);
   if (!school) return { ok: false, error: "No such school." };
 
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host");
-  const proto = h.get("x-forwarded-proto") ?? "https";
-  if (!host) return { ok: false, error: "Couldn't work out the site's address." };
+  let liveScreenUrl: string | null = null;
+  if (up) {
+    const h = await headers();
+    const host = h.get("x-forwarded-host") ?? h.get("host");
+    const proto = h.get("x-forwarded-proto") ?? "https";
+    if (!host) return { ok: false, error: "Couldn't work out the site's address." };
+    liveScreenUrl = `${proto}://${host}/school-screen/${school.slug}`;
+  }
 
   await prisma.school.update({
     where: { id: schoolId },
-    data: {
-      liveScreenUrl: `${proto}://${host}/school-screen/${school.slug}`,
-      liveScreenAt: school.liveScreenAt ?? new Date(),
-    },
+    data: up
+      ? { liveScreenUrl, liveScreenAt: school.liveScreenAt ?? new Date() }
+      : { liveScreenUrl: null, liveScreenAt: null },
   }).catch(() => null);
   done();
+  revalidatePath("/admin/lobby");
   revalidatePath("/admin/schools", "layout");
   return { ok: true };
 }
