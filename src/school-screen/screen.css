@@ -151,7 +151,7 @@
 /* ---- bottom band ---- */
 .ss-band { background: #fff; border-radius: 28px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; padding: 0 32px; box-shadow: 0 16px 40px rgba(12,20,90,.22); }
 .ss-band-logo { padding-right: 32px; }
-.ss-band-logo img { height: 52px; width: auto; display: block; }
+.ss-band-logo img { height: 52px; width: auto; max-width: 240px; object-fit: contain; object-position: left center; display: block; }
 .ss-sect { display: flex; align-items: center; gap: 16px; padding: 0 32px; border-left: 2px solid #E4E9F8; height: 68px; min-width: 0; }
 .ss-sect-ic { width: 52px; height: 52px; border-radius: 16px; background: #FFF0E0; display: flex; align-items: center; justify-content: center; flex: none; }
 .ss-sect-ic .ss-ms { font-size: 30px; color: #ff8e00; }
