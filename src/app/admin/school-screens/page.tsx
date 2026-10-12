@@ -3,6 +3,7 @@ import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isScreenStaff } from "@/lib/school-screen/access";
 import { shortName } from "@/lib/school-screen/rules";
+import { ScreensTabs } from "@/components/admin/ScreensTabs";
 import { C, F, R, T, pageTitle } from "@/lib/joc-tokens";
 
 /**
@@ -53,8 +54,10 @@ export default async function SchoolScreensPage() {
   const up = rows.filter((r) => r.liveScreenUrl).length;
 
   return (
-    <div style={{ padding: "32px 28px 60px", maxWidth: "1100px" }}>
-      <div style={{ ...T.meta }}>THE OFFICE · SCHOOLS</div>
+    <>
+    <ScreensTabs active="schools" />
+    <div style={{ padding: "24px 28px 60px", maxWidth: "1100px" }}>
+      <div style={{ ...T.meta }}>LIVE SCREENS</div>
       <h1 style={{ ...pageTitle, color: C.ink, margin: "6px 0 6px" }}>School screens</h1>
       <p style={{ ...T.read, color: C.muted, margin: "0 0 22px", maxWidth: "70ch" }}>
         The TV in each school&rsquo;s hallway. {up} of {rows.length} are up. Open a school to change its flyers,
@@ -91,6 +94,7 @@ export default async function SchoolScreensPage() {
         Sample screen with the design&rsquo;s data: <a href="/school-screen/demo?demo=1" target="_blank" rel="noreferrer" style={{ color: C.blue }}>/school-screen/demo?demo=1</a>
       </p>
     </div>
+    </>
   );
 }
 

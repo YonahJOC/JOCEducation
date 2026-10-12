@@ -2,6 +2,7 @@ import Link from "next/link";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { LobbyAdmin } from "@/components/lobby/LobbyAdmin";
+import { ScreensTabs } from "@/components/admin/ScreensTabs";
 import { C, F, R, pageTitle } from "@/lib/joc-tokens";
 
 /**
@@ -45,5 +46,10 @@ export default async function LobbyPage() {
     );
   }
 
-  return <LobbyAdmin />;
+  return (
+    <>
+      <ScreensTabs active="lobby" />
+      <LobbyAdmin />
+    </>
+  );
 }

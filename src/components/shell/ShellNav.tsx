@@ -44,7 +44,7 @@ export function ShellNav({ items, side }: { items: NavItem[]; side: "joc" | "sch
         const root = i.href === "/admin" || i.href === "/school";
         const active = root
           ? pathname === i.href
-          : pathname === i.href || pathname.startsWith(`${i.href}/`);
+          : [i.href, ...(i.also ?? [])].some((h) => pathname === h || pathname.startsWith(`${h}/`));
 
         const tone = SECTION[i.label] ?? OTHER;
 

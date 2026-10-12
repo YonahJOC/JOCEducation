@@ -28,6 +28,8 @@ export type NavItem = {
   /** A Material Symbols Rounded name. The rail draws it; the nav names it,
    *  because what a page is about is this file's business. */
   icon?: string;
+  /** Other pages that belong to this item, so it stays lit on them. */
+  also?: string[];
 };
 
 type U = Parameters<typeof can>[0];
@@ -122,7 +124,17 @@ export function jocNav(
   if (can(user, "cycles")) {
     items.push({ label: "Chesed Cycles", href: "/admin/cycles", hint: "The eight themes, their dates and their weeks", icon: "calendar_month" });
   }
-  if (can(user, "lobby")) items.push({ label: "Lobby screen", href: "/admin/lobby", hint: "What the TV in the lobby shows", icon: "tv" });
+  // Every TV JOC looks after, in one place: the lobby's, and each school's
+  // hallway screen. It opens on whichever of the two this person can change.
+  if (can(user, "lobby") || can(user, "schools")) {
+    items.push({
+      label: "Live screens",
+      href: can(user, "lobby") ? "/admin/lobby" : "/admin/school-screens",
+      hint: "The lobby TV and every school's screen",
+      icon: "tv",
+      also: ["/admin/lobby", "/admin/school-screens"],
+    });
+  }
   if (can(user, "orders") || can(user, "pricing")) items.push({ label: "Money", href: "/admin/orders", hint: "Orders and pricing", icon: "payments" });
   if (can(user, "users")) items.push({ label: "People & access", href: "/admin/users", hint: "Accounts, roles and passwords", icon: "badge" });
 
@@ -144,7 +156,7 @@ export function jocNav(
   // writes, and the Schools hub. People & access has neither, which is why it
   // is never in this list.
   //
-  // The Lobby screen is not on that list. It was first to go, so the people
+  // Live screens (once just the Lobby screen) is not on that list. It was first to go, so the people
   // who keep the TV — every one of them holding enough else to build eight —
   // never saw it, and the screen could only be reached by typing its address.
   //
@@ -161,7 +173,7 @@ export function jocNav(
   }
 
   // Still over: take from the end, but never the keys or the lobby.
-  const KEEP = new Set(["My desk", "The Office", "People & access", "Lobby screen"]);
+  const KEEP = new Set(["My desk", "The Office", "People & access", "Live screens"]);
   for (let i = items.length - 1; items.length > 7 && i >= 0; i--) {
     if (!KEEP.has(items[i].label)) items.splice(i, 1);
   }

@@ -5,6 +5,7 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isScreenStaff } from "@/lib/school-screen/access";
 import { screenEditorData } from "@/lib/school-screen/editor-data";
 import { ScreenEditor } from "@/components/school-screen/ScreenEditor";
+import { ScreensTabs } from "@/components/admin/ScreensTabs";
 import { C, F, pageTitle } from "@/lib/joc-tokens";
 
 /** One school's screen, from JOC's side: everything, any school, and approvals. */
@@ -35,12 +36,15 @@ export default async function SchoolScreenAdminPage({ params }: { params: Promis
   if (!data) notFound();
 
   return (
-    <div style={{ padding: "28px 28px 60px", maxWidth: "1100px" }}>
+    <>
+    <ScreensTabs active="schools" />
+    <div style={{ padding: "20px 28px 60px", maxWidth: "1100px" }}>
       <Link href="/admin/school-screens" style={{ fontFamily: F.ui, fontSize: "14px", color: C.blue, textDecoration: "none" }}>
         ← All school screens
       </Link>
       <div style={{ height: "14px" }} />
       <ScreenEditor data={data} staff />
     </div>
+    </>
   );
 }
