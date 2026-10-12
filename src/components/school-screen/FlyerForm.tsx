@@ -67,11 +67,6 @@ export function FlyerForm({ schoolId, short, flyer, canChooseEvery, approves, on
 
   useEffect(() => () => { if (localUrl) URL.revokeObjectURL(localUrl); }, [localUrl]);
 
-  // An event comes down the day after it happens, so the date sets the
-  // window's end unless somebody has already chosen one.
-  useEffect(() => {
-    if (template === "EVENT" && date && !flyer) setShowUntil(date);
-  }, [date, template, flyer]);
 
   const imageUrl = dropImage ? null : localUrl ?? flyer?.imageUrl ?? null;
   const startsAt = date ? new Date(`${date}T12:00:00Z`).toISOString() : null;
@@ -160,7 +155,12 @@ export function FlyerForm({ schoolId, short, flyer, canChooseEvery, approves, on
 
           {template !== "BANNER" ? (
             <Field label={template === "EVENT" ? "Date of the event" : "Launch date"} hint={template === "EVENT" ? "" : "optional"}>
-              <input type="date" style={input} value={date} onChange={(e) => setDate(e.target.value)} />
+              <input type="date" style={input} value={date} onChange={(e) => {
+                setDate(e.target.value);
+                // An event comes down the day after it happens, so on a new
+                // flyer its date sets the window's end too.
+                if (template === "EVENT" && e.target.value && !flyer) setShowUntil(e.target.value);
+              }} />
             </Field>
           ) : null}
           {template !== "PROGRAM" ? (

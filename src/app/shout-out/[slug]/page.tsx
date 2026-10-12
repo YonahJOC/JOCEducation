@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
@@ -58,7 +59,7 @@ export default async function ShoutOutPage({ params }: { params: Promise<{ slug:
           ) : !allowed ? (
             <p style={{ ...T.read, color: C.ink }}>
               You&rsquo;re signed in as <strong>{email}</strong>. Shout-outs for {short} come from a school address
-              (@{school.screenEmailDomains[0]}). <a href="/api/auth/signout" style={{ color: C.blue }}>Sign out</a> and sign in with that one.
+              (@{school.screenEmailDomains[0]}). <Link href="/api/auth/signout" prefetch={false} style={{ color: C.blue }}>Sign out</Link> and sign in with that one.
             </p>
           ) : (
             <ShoutOutForm slug={slug} short={short} email={email} />
