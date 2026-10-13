@@ -71,7 +71,7 @@ export async function logExperience(
 ): Promise<LogExperienceResult> {
   if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
   const { user, ok } = await member();
-  if (!ok) return { ok: false, error: "You don't have Experiences. Ask a super admin to switch it on." };
+  if (!ok) return { ok: false, error: "You don't have Client relations. Ask a super admin to switch it on." };
 
   const type = parseType(form.get("type"));
   if (!type) return { ok: false, error: "Pick what kind of interaction it was." };
@@ -151,7 +151,7 @@ export async function saveClient(
 ): Promise<SaveClientResult> {
   if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
   const { ok } = await member();
-  if (!ok) return { ok: false, error: "You don't have Experiences." };
+  if (!ok) return { ok: false, error: "You don't have Client relations." };
 
   const id = str(form, "id", 60);
   const name = str(form, "name", 120);
@@ -205,7 +205,7 @@ export async function saveClient(
 /** Load the entry and say whether this person may change it. */
 async function mine(activityId: string) {
   const { user, ok, superAdmin } = await member();
-  if (!ok) return { allowed: false as const, error: "You don't have Experiences." };
+  if (!ok) return { allowed: false as const, error: "You don't have Client relations." };
   const row = await prisma.experienceActivity.findUnique({
     where: { id: activityId }, select: { authorId: true, type: true, client: { select: { name: true } } },
   }).catch(() => null);
@@ -270,7 +270,7 @@ export async function removeExperience(activityId: string, removed: boolean): Pr
 export async function addExperienceNote(activityId: string, body: string): Promise<ExperienceResult> {
   if (!isDatabaseConfigured()) return { ok: false, error: "No database." };
   const { user, ok } = await member();
-  if (!ok) return { ok: false, error: "You don't have Experiences." };
+  if (!ok) return { ok: false, error: "You don't have Client relations." };
 
   const text = body.trim();
   if (!text) return { ok: false, error: "Write something first." };

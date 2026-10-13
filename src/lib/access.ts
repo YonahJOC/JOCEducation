@@ -228,7 +228,7 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
   { label: "School accounts", capabilities: ["schools", "demos", "orders", "pricing", "money_view", "money_record", "messages", "buzz"] },
   // Its own heading: the department works with families and groups, not
   // schools, and ticking it should not read as access to the schools list.
-  { label: "Experiences", capabilities: ["experiences"] },
+  { label: "Client relations", capabilities: ["experiences"] },
   { label: "Access", capabilities: ["users", "run_admin_agenda"] },
 ];
 
@@ -256,7 +256,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   money_record: "Record a payment",
   messages: "Messages from schools",
   buzz: "The Buzz",
-  experiences: "Experiences",
+  experiences: "Client relations",
   users: "People and access",
 };
 

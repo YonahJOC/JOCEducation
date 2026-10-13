@@ -24,7 +24,7 @@ import { C, F, datum, label, pageTitle, filterChip, field } from "@/lib/joc-toke
  * not asking what is coming up.
  */
 
-export const metadata = { title: "Experiences — JOC Console" };
+export const metadata = { title: "Client relations — JOC Console" };
 export const dynamic = "force-dynamic";
 
 const FEED = 120;
@@ -45,7 +45,7 @@ export default async function ExperiencesPage({
   if (!isDatabaseConfigured()) {
     return (
       <div>
-        <h1 style={pageTitle}>Experiences</h1>
+        <h1 style={pageTitle}>Client relations</h1>
         <p style={{ fontFamily: F.read, fontSize: "17px", color: C.orangeText, margin: 0 }}>
           No database, so there is nothing to show.
         </p>
@@ -80,7 +80,7 @@ export default async function ExperiencesPage({
     <div style={{ maxWidth: "760px" }}>
       <div className="joc-page-head">
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>Experiences</h1>
+          <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>Client relations</h1>
           <p style={{ ...datum, color: C.muted, margin: 0 }}>
             {clients.length} {clients.length === 1 ? "CLIENT" : "CLIENTS"}
             {ahead.length > 0 ? ` · ${ahead.length} IN THE DIARY` : ""}

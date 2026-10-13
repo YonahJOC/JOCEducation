@@ -34,9 +34,12 @@ export type NavItem = {
 
 type U = Parameters<typeof can>[0];
 
-/** The Experiences department's one item, wherever in the rail it lands. */
+/**
+ * Client relations: the clients JOC hosts, and every call, meeting and
+ * booking with each. One item wherever in the rail it lands.
+ */
 const EXPERIENCES: NavItem = {
-  label: "Experiences", href: "/admin/experiences", hint: "Clients and what happened with each", icon: "celebration",
+  label: "Client relations", href: "/admin/experiences", hint: "Clients and what happened with each", icon: "handshake",
 };
 
 /** What to call the person's role in the rail, in one word or two. */
@@ -45,7 +48,7 @@ export function roleLabel(user: U, opts: { leadsPrograms: number }): string {
   if (can(user, "programming") && can(user, "schools")) return "Programming team";
   if (can(user, "lessons")) return "Educational team";
   if (opts.leadsPrograms > 0) return "Program coordinator";
-  if (can(user, "experiences")) return "Experiences";
+  if (can(user, "experiences")) return "Client relations";
   return "JOC staff";
 }
 
@@ -160,21 +163,20 @@ export function jocNav(
   // who keep the TV — every one of them holding enough else to build eight —
   // never saw it, and the screen could only be reached by typing its address.
   //
-  // Experiences goes after those, and only if still over. It is in the rail
-  // for the three people in the department, none of whom hold enough else to
-  // build eight; somebody who does is not in the department, and it is on the
-  // Programs hub for them. Left off this list, a super admin's new eighth item
-  // would have pushed the Admin meeting off the end instead.
-  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages", "Experiences"];
+  // Client relations is not on that list either: it is a place people work
+  // every day, not a page with another way in. The rail holds eight for it,
+  // so giving it a place took nothing away from anybody.
+  const MAX = 8;
+  const DROPPABLE = ["Calendar", "Chesed Cycles", "Messages"];
   for (const label of DROPPABLE) {
-    if (items.length <= 7) break;
+    if (items.length <= MAX) break;
     const i = items.findIndex((x) => x.label === label);
     if (i >= 0) items.splice(i, 1);
   }
 
   // Still over: take from the end, but never the keys or the lobby.
-  const KEEP = new Set(["My desk", "The Office", "People & access", "Live screens"]);
-  for (let i = items.length - 1; items.length > 7 && i >= 0; i--) {
+  const KEEP = new Set(["My desk", "The Office", "People & access", "Live screens", "Client relations"]);
+  for (let i = items.length - 1; items.length > MAX && i >= 0; i--) {
     if (!KEEP.has(items[i].label)) items.splice(i, 1);
   }
 

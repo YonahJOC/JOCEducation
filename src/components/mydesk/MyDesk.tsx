@@ -5,7 +5,6 @@ import { YourDay } from "./YourDay";
 import { ForYou } from "./ForYou";
 import { Notebook } from "./Notebook";
 import { firstName, dateLine, greeting } from "@/lib/desk";
-import { recap } from "@/lib/desk-recap";
 import type { TodayAtJoc } from "@/lib/desk-today-at-joc";
 import type { getMyDesk } from "@/lib/my-desk";
 
@@ -14,8 +13,8 @@ import type { getMyDesk } from "@/lib/my-desk";
  *
  * It used to be four equal quarters, each announcing its own emptiness at the
  * same volume — four bold "nothing here" headlines in four corners, which is
- * what a new person's desk looked like. Now one sentence says where you
- * stand, the list you actually work from takes the wide column, and the
+ * what a new person's desk looked like. Now the greeting is the whole band,
+ * the list you actually work from takes the wide column, and the
  * panels that have nothing in them shrink or disappear rather than shouting.
  *
  * The page still doesn't scroll and each card still scrolls inside itself.
@@ -55,12 +54,6 @@ export function MyDesk({ desk, joc }: {
           }}>
             {name ? `${greeting(desk.now)}, ${name}` : "Your desk"}
           </h1>
-          <p style={{
-            fontFamily: F.read, fontSize: "19px", lineHeight: 1.5,
-            color: C.onDarkBody, margin: "8px 0 0", maxWidth: "52ch",
-          }}>
-            {recap(desk)}
-          </p>
         </div>
 
         {joc ? <TodayAtJocCard joc={joc} /> : null}
@@ -70,8 +63,8 @@ export function MyDesk({ desk, joc }: {
         <Tasks tasks={desk.tasks} handed={desk.handed} staff={desk.staff} />
 
         <div className="joc-desk-side">
-          {/* For you has no permanent quarter: an empty tray is a sentence in
-              the recap above, not a panel saying it has nothing in it. */}
+          {/* For you has no permanent quarter: it shows only when something
+              is in it, rather than as a panel saying it has nothing. */}
           {desk.tray.length > 0 ? <ForYou tray={desk.tray} /> : null}
           <YourDay day={desk.day} />
           {/* Everybody else's diary, to pick from. Hidden when there is none. */}

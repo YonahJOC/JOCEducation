@@ -57,7 +57,7 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capabil
     { href: "/admin/programming", label: "Calendar", need: "programming" },
     // The rail drops Experiences for somebody who holds nearly everything —
     // they are not in the department — so this is their way in.
-    { href: "/admin/experiences", label: "Experiences", need: "experiences" },
+    { href: "/admin/experiences", label: "Client relations", need: "experiences" },
   ],
   // The department's own two pages, each linking to the other.
   experiences: [
