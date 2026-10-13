@@ -29,7 +29,6 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capabil
     // checks that itself. A coordinator holds nothing from this list.
     { href: "/admin/my-updates", label: "My Buzz items" },
     { href: "/admin/messages", label: "Messages", need: "schools" },
-    { href: "/admin/schools/status", label: "Status board", need: "schools" },
     { href: "/admin/demos", label: "Demo requests", need: "demos" },
   ],
   material: [
@@ -55,9 +54,6 @@ const SECTIONS: Record<SectionKey, { href: string; label: string; need?: Capabil
     // The rail drops Calendar for somebody who holds every capability, so
     // this is their way in. The programming team keeps it in the rail.
     { href: "/admin/programming", label: "Calendar", need: "programming" },
-    // The rail drops Experiences for somebody who holds nearly everything —
-    // they are not in the department — so this is their way in.
-    { href: "/admin/experiences", label: "Client relations", need: "experiences" },
   ],
   // The department's own two pages, each linking to the other.
   experiences: [

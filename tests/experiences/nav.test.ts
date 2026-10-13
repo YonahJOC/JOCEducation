@@ -22,15 +22,24 @@ describe("jocNav and Client relations", () => {
     expect(l.indexOf("Client relations")).toBe(l.indexOf("Programs") + 1);
   });
 
-  it("is in the rail of somebody who holds everything, and takes nothing out of it", () => {
-    // The seven a super admin had before Client relations, in order.
-    expect(labels([...CAPABILITIES])).toEqual([
-      "My desk", "The Office", "Schools", "Programs", "Client relations",
-      "Admin meeting", "Live screens", "People & access",
+  it("is one item for somebody who holds everything, where Schools was", () => {
+    const all = labels([...CAPABILITIES]);
+    expect(all).toEqual([
+      "My desk", "The Office", "Client relations", "Programs",
+      "Admin meeting", "Teaching material", "Live screens", "People & access",
     ]);
+    expect(all.filter((l) => l === "Client relations")).toHaveLength(1);
   });
 
-  it("is not in anybody's rail without the permission", () => {
-    expect(labels(["schools"])).not.toContain("Client relations");
+  it("opens on the schools for the schools team, on the department's log for Experiences", () => {
+    const nav = (caps: string[]) =>
+      jocNav({ email: "someone@example.com", role: "STAFF", capabilities: caps }).find((i) => i.label === "Client relations");
+    expect(nav(["schools"])?.href).toBe("/admin/schools");
+    expect(nav(["experiences"])?.href).toBe("/admin/experiences");
+    expect(nav(["schools", "experiences"])?.also).toContain("/admin/experiences");
+  });
+
+  it("is not in anybody's rail without either permission", () => {
+    expect(labels(["programs"])).not.toContain("Client relations");
   });
 });

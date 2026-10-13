@@ -23,7 +23,7 @@ import { C, F, R, label } from "@/lib/joc-tokens";
 const SECTION: Record<string, { ink: string; tint: string }> = {
   "My desk": { ink: C.blue, tint: C.blueTint },
   "The Office": { ink: C.orangeText, tint: C.orangeTint },
-  Schools: { ink: C.greenText, tint: C.greenTint },
+  "Client relations": { ink: C.greenText, tint: C.greenTint },
   Programs: { ink: C.redText, tint: C.redTint },
   "Admin meeting": { ink: C.blue, tint: C.blueTint },
   "Teaching material": { ink: C.orangeText, tint: C.orangeTint },

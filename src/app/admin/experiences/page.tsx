@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isDatabaseConfigured } from "@/lib/prisma";
 import { SectionLinks } from "@/components/admin/SectionLinks";
+import { ClientTabs } from "@/components/admin/ClientTabs";
 import { LogForm } from "@/components/experiences/LogForm";
 import { EntryCard } from "@/components/experiences/EntryCard";
 import { experiencesViewer, experienceRows, clientOptions } from "@/lib/experiences-data";
@@ -78,6 +79,7 @@ export default async function ExperiencesPage({
 
   return (
     <div style={{ maxWidth: "760px" }}>
+      <ClientTabs active="experiences" />
       <div className="joc-page-head">
         <div style={{ minWidth: 0 }}>
           <h1 style={{ ...pageTitle, margin: "0 0 6px" }}>Client relations</h1>

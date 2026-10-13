@@ -105,7 +105,15 @@ export function jocNav(
     return items;
   }
 
-  if (can(user, "schools")) items.push({ label: "Schools", href: "/admin/schools", hint: "Plans, seats, contacts, history", icon: "school" });
+  // Client relations: everyone JOC has a relationship with. The schools are
+  // most of it and open first; the Experiences department's clients are a
+  // tab beside them (ClientTabs), so somebody with both has one item, not two.
+  if (can(user, "schools")) {
+    items.push({
+      label: "Client relations", href: "/admin/schools", hint: "Every school, one card each", icon: "handshake",
+      also: ["/admin/experiences"],
+    });
+  }
   // What the schools have written. A row on Today saying somebody wrote in
   // needs somewhere to land, and the schools list is not it.
   if (can(user, "schools") || can(user, "app_activity")) {
@@ -116,7 +124,8 @@ export function jocNav(
   }
   // The Experiences department. Somebody who holds only this gets My desk,
   // The Office and this — three items, which is the whole of their job.
-  if (can(user, "experiences")) items.push(EXPERIENCES);
+  // Somebody who also holds schools already has Client relations above.
+  if (can(user, "experiences") && !can(user, "schools")) items.push(EXPERIENCES);
   if (can(user, "programming")) items.push({ label: "Calendar", href: "/admin/programming", hint: "What is running, and where", icon: "calendar_month" });
   if (can(user, "run_admin_agenda")) items.push({ label: "Admin meeting", href: "/admin/meetings", hint: "Schools sent for a decision", icon: "groups" });
   if (can(user, "lessons")) items.push({ label: "Teaching material", href: "/admin/lessons", hint: "Lessons, resources and cycles", icon: "menu_book" });
