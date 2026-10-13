@@ -102,11 +102,15 @@ export async function tickTask(todoId: string, isDone: boolean): Promise<R> {
   const id = await meId();
   if (!id) return { ok: false, error: "Sign in first." };
 
+  // Yours, or one you handed to somebody. The person who handed it over can
+  // close it too: "Uriel told me it's done" should not need Uriel to open
+  // his desk before the sender's list stops saying it is waiting.
   const row = await prisma.deskTodo.findFirst({
-    where: { id: todoId, userId: id },
-    select: { id: true, activityId: true },
+    where: { id: todoId, OR: [{ userId: id }, { assignedById: id }] },
+    select: { id: true, activityId: true, userId: true },
   }).catch(() => null);
   if (!row) return { ok: false, error: "That isn't on your desk." };
+  const owner = row.userId;
 
   try {
     await prisma.deskTodo.update({
@@ -114,15 +118,16 @@ export async function tickTask(todoId: string, isDone: boolean): Promise<R> {
       data: { doneAt: isDone ? new Date() : null },
     });
     // Taken off the Buzz: ticking it here is what "I dealt with it" means.
+    // It is the task's owner who has dealt with it, whoever did the ticking.
     if (row.activityId) {
       await prisma.buzzDone.upsert({
-        where: { userId_activityId: { userId: id, activityId: row.activityId } },
-        create: { userId: id, activityId: row.activityId },
+        where: { userId_activityId: { userId: owner, activityId: row.activityId } },
+        create: { userId: owner, activityId: row.activityId },
         update: {},
       }).catch(() => null);
       if (!isDone) {
         await prisma.buzzDone.deleteMany({
-          where: { userId: id, activityId: row.activityId },
+          where: { userId: owner, activityId: row.activityId },
         }).catch(() => null);
       }
     }

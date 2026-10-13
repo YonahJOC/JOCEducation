@@ -273,8 +273,9 @@ function Row({ t, start, onTick, nudged, setNudged }: {
   return (
     <div style={row}>
       {/* A hand-off keeps the other person in front of it whether or not it
-          is finished: the circle here is never yours to tick, because the
-          task is theirs. */}
+          is finished: their initial, not a tick circle. Closing it from this
+          side is the Mark done pill, so it reads as yours deciding, not a
+          slip of the thumb. */}
       {t.handedTo ? (
         <span style={{
           width: "34px", height: "34px", borderRadius: "50%",
@@ -347,6 +348,20 @@ function Row({ t, start, onTick, nudged, setNudged }: {
             {nudged[t.id] ? "check" : "notifications_active"}
           </span>
           {nudged[t.id] ? "Nudged" : `Nudge ${t.handedTo?.name ?? ""}`}
+        </button>
+      ) : null}
+      {/* The sender can close a hand-off too — when they hear it's done
+          before the other person has opened their desk. And undo it. */}
+      {t.handedTo ? (
+        <button
+          type="button"
+          onClick={run(() => tickTask(t.id, !t.done))}
+          style={t.done ? pill(C.panel, C.muted) : pill(C.greenTint, C.greenText)}
+        >
+          <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "18px" }}>
+            {t.done ? "undo" : "check"}
+          </span>
+          {t.done ? "Not done" : "Mark done"}
         </button>
       ) : null}
       <button
