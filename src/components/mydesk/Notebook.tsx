@@ -59,11 +59,6 @@ export function Notebook({ pages }: { pages: Page[] }) {
       flush
       note={NOTE}
       count=""
-      tools={
-        <span style={{ ...T.meta, color: C.orangeText, marginLeft: "auto" }}>
-          ONLY YOU SEE THIS
-        </span>
-      }
       tabs={
         <>
           {list.map((p) => {
