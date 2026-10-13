@@ -110,7 +110,7 @@ export function Notebook({ pages }: { pages: Page[] }) {
       <textarea
         value={page.body}
         onChange={(e) => edit({ body: e.target.value })}
-        placeholder="This page is yours. Agendas, call notes, half-ideas. Nobody else sees it."
+        placeholder="Agendas, call notes, half-ideas."
         aria-label="Page"
         style={{
           flex: 1, minHeight: 0, border: 0, resize: "none",
