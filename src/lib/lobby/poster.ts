@@ -1,3 +1,4 @@
+import { VENUE_ICON_PATHS } from './venue-icons';
 import type { WeekSheet } from './week-sheet';
 
 /**
@@ -29,6 +30,7 @@ const MUTED = '#5a6782';
 const NAME_SIZE = 34;
 const META_SIZE = 23;
 const DATE_COL = 132;
+const BADGE = 46;
 
 /** Escapes text going into SVG. Program names come from a calendar. */
 function esc(s: string): string {
@@ -114,14 +116,23 @@ export interface PosterOptions {
 /** The whole poster, as one SVG string. */
 export function buildPosterSvg(sheet: WeekSheet, opts: PosterOptions = {}): string {
   const inner = W - PAD * 2;
-  const textW = inner - DATE_COL - 40 - 36;
+  // The badge sits at the right of the row; the name stops short of it.
+  const textW = inner - DATE_COL - 40 - 36 - BADGE - 24;
 
   // Measure first, so the canvas is exactly as tall as the content.
-  type Block = { day: WeekSheet['days'][number]; rows: { lines: string[]; meta: string }[]; h: number };
+  type Mark = { tint: string; color: string; path: string };
+  type Block = {
+    day: WeekSheet['days'][number];
+    rows: { lines: string[]; meta: string; venue: Mark | null }[];
+    h: number;
+  };
   const blocks: Block[] = sheet.days.map((day) => {
     const rows = day.events.map((e) => ({
       lines: wrap(e.program, textW, NAME_SIZE),
       meta: metaLine(e),
+      venue: e.venue
+        ? { tint: e.venue.tint, color: e.venue.color, path: VENUE_ICON_PATHS[e.venue.type] }
+        : null,
     }));
     const body = rows.reduce((n, r) => n + eventHeight(r.lines.length), 0);
     return { day, rows, h: Math.max(126, body + 34) };
@@ -200,6 +211,7 @@ export function buildPosterSvg(sheet: WeekSheet, opts: PosterOptions = {}): stri
     let ey = y + 30;
     const ex = PAD + DATE_COL + 40;
     for (const row of b.rows) {
+      const top = ey;
       for (const line of row.lines) {
         ey += NAME_SIZE;
         parts.push('<text x="' + ex + '" y="' + ey + '" font-size="' + NAME_SIZE + '" font-weight="700" fill="' + INK + '">' + esc(line) + '</text>');
@@ -207,6 +219,21 @@ export function buildPosterSvg(sheet: WeekSheet, opts: PosterOptions = {}): stri
       }
       ey += META_SIZE;
       parts.push('<text x="' + ex + '" y="' + ey + '" font-size="' + META_SIZE + '" font-weight="600" fill="' + MUTED + '">' + esc(row.meta) + '</text>');
+
+      // The venue mark, in the same colours the TV gives it, centred on
+      // the block rather than on a line — a two-line name would otherwise
+      // leave it floating against the first one.
+      if (row.venue) {
+        const cx = PAD + inner - 34;
+        const cy = (top + ey) / 2 - 4;
+        const s = 24 / 24;
+        parts.push(
+          '<circle cx="' + cx + '" cy="' + cy + '" r="' + BADGE / 2 + '" fill="' + row.venue.tint + '"/>',
+          '<g transform="translate(' + (cx - 12 * s) + ' ' + (cy - 12 * s) + ') scale(' + s + ')" fill="' + row.venue.color + '">' +
+            '<path fill-rule="evenodd" d="' + row.venue.path + '"/></g>',
+        );
+      }
+
       ey += 18;
     }
 
