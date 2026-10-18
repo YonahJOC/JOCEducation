@@ -166,13 +166,18 @@ export function gradeTiles(rows: { label: string; hours: number }[], goal: numbe
  * wall they did not agree to.
  */
 export function shoutOutFrom(s: {
-  firstName: string; lastInitial: string; grade: string; showName: boolean;
+  firstName: string; lastName: string; grade: string; showName: boolean;
 }): string {
   const grade = s.grade.trim();
   const g = grade ? (/grade/i.test(grade) ? grade : `${grade} grade`) : "";
   if (!s.showName || !s.firstName.trim()) return g ? `— ${g}` : "";
-  const initial = s.lastInitial.trim().charAt(0).toUpperCase();
-  const name = `${s.firstName.trim()}${initial ? ` ${initial}.` : ""}`;
+
+  // The student decides how much of their name goes on the wall. One letter
+  // is an initial and takes a full stop — "Rivka L." — and anything longer
+  // is a name and must not, or "Rivka Levi." reads as the end of a sentence.
+  const last = s.lastName.trim();
+  const shown = last.length === 1 ? `${last.toUpperCase()}.` : last;
+  const name = `${s.firstName.trim()}${shown ? ` ${shown}` : ""}`;
   return g ? `— ${name}, ${g}` : `— ${name}`;
 }
 

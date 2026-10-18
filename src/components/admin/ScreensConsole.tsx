@@ -1,5 +1,6 @@
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
+import type { Prisma } from "@prisma/client";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isScreenStaff } from "@/lib/school-screen/access";
 import { ScreensList, type ScreenRow } from "./ScreensList";
@@ -16,6 +17,24 @@ import { ScreensList, type ScreenRow } from "./ScreensList";
  * Somebody who keeps only the lobby TV gets the lobby panel and no list:
  * a column with one entry in it would be furniture.
  */
+/**
+ * Which schools this console is about.
+ *
+ * Test schools stay out, with one exception: a school on the demo portal.
+ * Its screen is the thing being shown to people this month, so it is the
+ * screen somebody here most needs to open — and demo schools are test
+ * schools by construction, which left the rollout with no way in from the
+ * console it is run from.
+ *
+ * Exported because the page above this draws a "screens up" tile from the
+ * same set. Counted with a different filter, the tile said "0 of 43" over a
+ * list of 44, and the first person to notice would have gone looking for a
+ * bug in the switch.
+ */
+export const SCREEN_CONSOLE_SCHOOLS: Prisma.SchoolWhereInput = {
+  OR: [{ isTest: false }, { demoAt: { not: null } }],
+};
+
 export async function ScreensConsole({ children }: { children: React.ReactNode }) {
   const session = await safeAuth();
   const me = session?.user;
@@ -25,7 +44,7 @@ export async function ScreensConsole({ children }: { children: React.ReactNode }
 
   const schools = isDatabaseConfigured()
     ? await prisma.school.findMany({
-        where: { isTest: false },
+        where: SCREEN_CONSOLE_SCHOOLS,
         orderBy: { name: "asc" },
         select: {
           id: true, slug: true, name: true, liveScreenUrl: true,

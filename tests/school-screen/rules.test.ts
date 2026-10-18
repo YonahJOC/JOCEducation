@@ -74,11 +74,35 @@ describe("gradeTiles", () => {
 });
 
 describe("shoutOutFrom", () => {
-  const s = { firstName: "Rivka", lastInitial: "levi", grade: "9th", showName: true };
+  const s = { firstName: "Rivka", lastName: "L", grade: "9th", showName: true };
 
   it("shows a name only with consent", () => {
     expect(shoutOutFrom(s)).toBe("— Rivka L., 9th grade");
     expect(shoutOutFrom({ ...s, showName: false })).toBe("— 9th grade");
+  });
+
+  it("takes a whole last name when the student gives one", () => {
+    expect(shoutOutFrom({ ...s, lastName: "Levi" })).toBe("— Rivka Levi, 9th grade");
+  });
+
+  it("punctuates an initial but never a name", () => {
+    // "Rivka Levi." would read as the end of a sentence on the wall.
+    expect(shoutOutFrom({ ...s, lastName: "l" })).toBe("— Rivka L., 9th grade");
+    expect(shoutOutFrom({ ...s, lastName: "Levi" })).not.toContain("Levi.");
+  });
+
+  it("keeps a name that is two words, or hyphenated", () => {
+    expect(shoutOutFrom({ ...s, lastName: "Ben Zion" })).toBe("— Rivka Ben Zion, 9th grade");
+    expect(shoutOutFrom({ ...s, lastName: "Bar-Lev" })).toBe("— Rivka Bar-Lev, 9th grade");
+  });
+
+  it("leaves a name alone when they give no surname at all", () => {
+    expect(shoutOutFrom({ ...s, lastName: "" })).toBe("— Rivka, 9th grade");
+    expect(shoutOutFrom({ ...s, lastName: "   " })).toBe("— Rivka, 9th grade");
+  });
+
+  it("does not capitalise a name the student wrote their own way", () => {
+    expect(shoutOutFrom({ ...s, lastName: "de Leon" })).toBe("— Rivka de Leon, 9th grade");
   });
 
   it("does not say 'grade grade'", () => {

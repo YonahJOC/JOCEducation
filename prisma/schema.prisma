@@ -2734,7 +2734,10 @@ model ShoutOut {
   school      School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   text        String
   firstName   String
-  lastInitial String
+  /// A last name, or just its first letter — the student chooses how
+  /// much of themselves goes on a wall. Empty is allowed: the screen
+  /// then shows the first name alone.
+  lastName    String
   grade       String
   /// The student said their name may be shown. Without it, only the grade is.
   showName    Boolean          @default(false)

@@ -384,7 +384,15 @@ export async function submitShoutOut(form: FormData): Promise<R> {
 
   const text = clean(form.get("text"), 220);
   const firstName = clean(form.get("firstName"), 30);
-  const lastInitial = clean(form.get("lastInitial"), 2).replace(/[^\p{L}]/gu, "").slice(0, 1);
+  // A last name, or one letter of it, or nothing — the student's call.
+  // Letters, spaces, hyphens and apostrophes, because Ben Zion, Bar-Lev and
+  // O'Brien are all somebody's actual name. Anything else is stripped, and
+  // runs of space are squeezed so a stray double tap does not reach the wall.
+  const lastName = clean(form.get("lastName"), 40)
+    .replace(/[^\p{L}\p{M}\s'’-]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 30);
   const grade = clean(form.get("grade"), 20);
   if (text.length < 10) return { ok: false, error: "Say a little more: who, and what they did." };
   if (!grade) return { ok: false, error: "Which grade are you in?" };
@@ -396,7 +404,7 @@ export async function submitShoutOut(form: FormData): Promise<R> {
   try {
     const made = await prisma.shoutOut.create({
       data: {
-        schoolId: school.id, text, firstName, lastInitial, grade,
+        schoolId: school.id, text, firstName, lastName, grade,
         showName: form.get("showName") === "1" && Boolean(firstName),
         authorId: me.id, authorEmail: me.email,
       },

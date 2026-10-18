@@ -18,13 +18,13 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
   const [pending, start] = useTransition();
   const [text, setText] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastInitial, setLastInitial] = useState("");
+  const [lastName, setLastName] = useState("");
   const [grade, setGrade] = useState("");
   const [showName, setShowName] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
-  const from = shoutOutFrom({ firstName, lastInitial, grade, showName: showName === true });
+  const from = shoutOutFrom({ firstName, lastName, grade, showName: showName === true });
 
   function submit() {
     if (showName === null) { setError("Say whether your name may be shown."); return; }
@@ -32,7 +32,7 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
     form.set("slug", slug);
     form.set("text", text);
     form.set("firstName", firstName);
-    form.set("lastInitial", lastInitial);
+    form.set("lastName", lastName);
     form.set("grade", grade);
     form.set("showName", showName ? "1" : "0");
     setError(null);
@@ -87,8 +87,19 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
         <div style={{ flex: "2 1 0" }}>
           <Field label="First name"><input style={input} value={firstName} onChange={(e) => setFirstName(e.target.value)} maxLength={30} autoComplete="given-name" /></Field>
         </div>
-        <div style={{ flex: "1 1 0" }}>
-          <Field label="Last initial"><input style={input} value={lastInitial} onChange={(e) => setLastInitial(e.target.value.slice(0, 1))} maxLength={1} /></Field>
+        <div style={{ flex: "2 1 0" }}>
+          {/* As much or as little as they want: "B", "Berkowitz", or
+              nothing at all. The line under the choice below shows them
+              exactly what the wall will say before they send it. */}
+          <Field label="Last name" hint="or just an initial — up to you">
+            <input
+              style={input}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              maxLength={30}
+              autoComplete="family-name"
+            />
+          </Field>
         </div>
       </div>
       <Field label="Grade">
@@ -97,7 +108,7 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
 
       <div style={{ ...T.meta, color: C.ink, margin: "6px 0 6px" }}>MAY WE SHOW YOUR NAME ON THE SCREEN?</div>
       <div role="radiogroup" aria-label="May we show your name" style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
-        {choice(true, "Yes, show my name", "First name and last initial, on the hallway TV.")}
+        {choice(true, "Yes, show my name", "Your name as you wrote it above, on the hallway TV.")}
         {choice(false, "No, just my grade", "Your shout-out still goes up, without your name.")}
       </div>
       {showName !== null && from ? (

@@ -42,7 +42,7 @@ export type EditorPhoto = {
 };
 
 export type EditorShoutOut = {
-  id: string; text: string; firstName: string; lastInitial: string; grade: string;
+  id: string; text: string; firstName: string; lastName: string; grade: string;
   showName: boolean; email: string; status: EditorStatus; createdAt: string;
 };
 
@@ -126,7 +126,7 @@ export async function screenEditorData(
           orderBy: [{ status: "asc" }, { createdAt: "desc" }],
           take: 60,
           select: {
-            id: true, text: true, firstName: true, lastInitial: true, grade: true,
+            id: true, text: true, firstName: true, lastName: true, grade: true,
             showName: true, authorEmail: true, status: true, createdAt: true,
           },
         }).catch(() => [])
@@ -165,7 +165,7 @@ export async function screenEditorData(
       by: who(p.uploadedBy), mine: Boolean(userId && p.uploadedById === userId),
     })),
     shoutOuts: shouts.map((s) => ({
-      id: s.id, text: s.text, firstName: s.firstName, lastInitial: s.lastInitial, grade: s.grade,
+      id: s.id, text: s.text, firstName: s.firstName, lastName: s.lastName, grade: s.grade,
       showName: s.showName, email: s.authorEmail, status: s.status, createdAt: s.createdAt.toISOString(),
     })),
     dedications: dedications.map((d) => ({
