@@ -55,10 +55,23 @@
 .hdr-date {
   background: rgba(255, 255, 255, 0.14);
   border-radius: 999px;
-  padding: 14px 28px;
+  padding: 10px 28px;
   font-size: 30px;
   font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
 }
+/* The Hebrew date, under the Gregorian one. Smaller and a shade
+   back, so the pill still reads as one thing from across a lobby.
+   :empty keeps the pill from growing a blank second line on an
+   engine that has no Hebrew calendar. */
+.hdr-hebrew {
+  font-size: 21px;
+  font-weight: 600;
+  opacity: 0.82;
+  margin-top: 2px;
+}
+.hdr-hebrew:empty { display: none; }
 .hdr-clock {
   background: #fff;
   color: #214ba5;

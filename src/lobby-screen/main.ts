@@ -3,7 +3,7 @@ import { emptyDoc, LOGO_URL, sanitizeDoc } from '@/lib/lobby/config';
 import { combineEvents, fetchGoogleEvents, fetchSheetCounters, sampleEvents } from '@/lib/lobby/events';
 import { bannerHTML, dayHTML, rowHTML, slideHTML, statHTML, STATS } from '@/lib/lobby/markup';
 import { buildView, type ScreenView } from '@/lib/lobby/model';
-import { formatClock, formatDateLong, formatTime, zonedParts } from '@/lib/lobby/time';
+import { formatClock, formatDateLong, formatHebrewDate, formatTime, zonedParts } from '@/lib/lobby/time';
 import type { CalEvent, CounterKey, LobbyDoc } from '@/lib/lobby/types';
 
 const params = new URLSearchParams(location.search);
@@ -65,7 +65,7 @@ document.getElementById('app')!.innerHTML = `
   <div class="canvas" id="canvas">
     <div class="hdr">
       <img class="hdr-logo" id="logo" alt="Just One Chesed" />
-      <div class="hdr-right"><div class="hdr-date" id="date"></div><div class="hdr-clock" id="clock"></div></div>
+      <div class="hdr-right"><div class="hdr-date"><div class="hdr-greg" id="date"></div><div class="hdr-hebrew" id="hebrew"></div></div><div class="hdr-clock" id="clock"></div></div>
     </div>
     <div class="main">
       <div class="today">
@@ -130,6 +130,9 @@ function render() {
   view = buildView(events(), s, t);
 
   $('#date').textContent = formatDateLong(t);
+  // Empty string on an engine with no Hebrew calendar; the CSS hides
+  // the line rather than leaving a gap under the date.
+  $('#hebrew').textContent = formatHebrewDate(t);
   $('#clock').textContent = formatClock(t, s.clock24);
 
   const n = view.slides.length;

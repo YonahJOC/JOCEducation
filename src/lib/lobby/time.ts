@@ -114,6 +114,29 @@ export function formatDateLong(date: Date): string {
   return date.toLocaleDateString('en-US', { timeZone: TZ, weekday: 'long', month: 'long', day: 'numeric' });
 }
 
+/**
+ * The Hebrew date: "22 Cheshvan".
+ *
+ * Same shape the console uses in src/lib/desk-words.ts, so the wall and
+ * the desk never disagree about what today is.
+ *
+ * It turns over at midnight Jerusalem time, not at sunset. A screen in a
+ * lobby is not a siddur, and a date that changed halfway through an
+ * afternoon would read as a bug to everybody walking past it.
+ *
+ * Returns '' on an engine without the Hebrew calendar, and the header
+ * then shows the Gregorian date alone rather than an empty line.
+ */
+export function formatHebrewDate(date: Date): string {
+  try {
+    return new Intl.DateTimeFormat('en-u-ca-hebrew', {
+      timeZone: TZ, day: 'numeric', month: 'long',
+    }).format(date);
+  } catch {
+    return '';
+  }
+}
+
 export function addMinutesHHMM(hhmm: string, minutes: number): string {
   const [h, m] = hhmm.split(':').map(Number);
   const t = Math.min(23 * 60 + 59, Math.max(0, h * 60 + m + minutes));
