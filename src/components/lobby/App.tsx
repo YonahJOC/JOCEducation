@@ -2,15 +2,17 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cryptoId, LOGO_URL } from '@/lib/lobby/config';
+import { fetchGoogleEvents } from '@/lib/lobby/events';
 import { abbrMap, expandProgram } from '@/lib/lobby/parse';
 import { addDays, dayKey, formatDateLong, formatTime, timeKey, zonedToInstant } from '@/lib/lobby/time';
-import type { CounterKey, LobbyDoc, ManualProgram, Settings as S } from '@/lib/lobby/types';
+import type { CalEvent, CounterKey, LobbyDoc, ManualProgram, Settings as S } from '@/lib/lobby/types';
 import { api, errorText } from './api';
 import { Impact } from './Impact';
 import { ScreenPreview } from './Preview';
 import { ProgramEditor, type EditorResult } from './ProgramEditor';
 import { Programs, relativeDay } from './Programs';
 import { Settings } from './Settings';
+import { Share } from './Share';
 import { Button, Icon, useConfirm, useMedia, useToast } from './ui';
 import { useDoc, type SaveState } from './useDoc';
 
@@ -28,11 +30,12 @@ export function App() {
 
 // ---------------- Main layout ----------------
 
-type Page = 'programs' | 'impact' | 'settings' | 'preview';
+type Page = 'programs' | 'impact' | 'settings' | 'share' | 'preview';
 const NAV: Array<{ id: Page; label: string; icon: string; mobileOnly?: boolean }> = [
   { id: 'programs', label: 'Programs', icon: 'event' },
   { id: 'impact', label: 'Impact', icon: 'volunteer_activism' },
   { id: 'settings', label: 'Screen', icon: 'tune' },
+  { id: 'share', label: 'Share', icon: 'ios_share' },
   { id: 'preview', label: 'Preview', icon: 'tv', mobileOnly: true },
 ];
 
@@ -59,6 +62,10 @@ function Shell() {
   const [settingsDraft, setSettingsDraft] = useState<Partial<S> | null>(null);
   const [previewAt, setPreviewAt] = useState<string>(''); // '' = live
   const wide = useMedia('(min-width: 1320px)');
+  // The screen reads Google itself; the panel never did, because the
+  // preview only had to show what an editor was changing. A sheet going
+  // to the staff group has to be the whole week, from both sources.
+  const [google, setGoogle] = useState<CalEvent[] | null>(null);
   const toast = useToast();
   const confirm = useConfirm();
 
@@ -67,6 +74,17 @@ function Shell() {
     setPage(p);
     window.scrollTo({ top: 0 });
   };
+
+  useEffect(() => {
+    const g = doc?.settings?.google;
+    const uses = doc?.settings?.source === 'google' || doc?.settings?.source === 'both';
+    if (!uses || !g?.calendarId || !g?.apiKey) { setGoogle(null); return; }
+    let alive = true;
+    fetchGoogleEvents(g.calendarId, g.apiKey, new Date())
+      .then((evs) => { if (alive) setGoogle(evs); })
+      .catch(() => { if (alive) setGoogle(null); });
+    return () => { alive = false; };
+  }, [doc?.settings?.source, doc?.settings?.google?.calendarId, doc?.settings?.google?.apiKey]);
 
   useEffect(() => {
     const on = () => setPage(pageFromHash());
@@ -241,6 +259,7 @@ function Shell() {
         {page === 'programs' && <Programs doc={doc} mutate={mutate} onAdd={openNew} onEdit={openEdit} />}
         {page === 'impact' && <Impact doc={doc} mutate={mutate} onDraft={setCounterDraft} />}
         {page === 'settings' && <Settings doc={doc} mutate={mutate} onDraft={setSettingsDraft} />}
+        {page === 'share' && <Share doc={doc} google={google} />}
         {page === 'preview' && !wide && (
           <div className="a-page">
             <header className="a-page-head">
