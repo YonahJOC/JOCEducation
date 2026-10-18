@@ -19,7 +19,11 @@ export interface ShownEvent {
 }
 
 export interface Slide extends ShownEvent {
-  label: 'Happening now' | 'Next up' | 'Later today';
+  /**
+   * The chip above the name. Today's three — Happening now, Next up,
+   * Later today — or, once today is over, the day it is actually on.
+   */
+  label: string;
   labelInk: string;
 }
 
@@ -35,6 +39,16 @@ export interface ScreenView {
   banners: ShownEvent[];
   /** Today's timed programs that haven't ended, in order */
   slides: Slide[];
+  /**
+   * The week ahead, for the panel to show once today is finished.
+   *
+   * The big panel used to empty itself at the end of the day and say
+   * 'see what's coming up' over an acre of nothing, on a screen in a
+   * lobby people walk past all evening. Same shape as `slides`, so the
+   * panel renders it with the carousel it already has, labelled by day
+   * rather than by how near it is.
+   */
+  ahead: Slide[];
   week: WeekDay[];
 }
 
@@ -111,5 +125,17 @@ export function buildView(events: CalEvent[], settings: Settings, now: Date): Sc
     }
   }
 
-  return { banners, slides, week };
+  // Everything still to come, for the panel to fall back to. Capped: it
+  // is a carousel somebody watches for a few seconds, not a list.
+  const ahead: Slide[] = [];
+  for (let i = 1; i <= 7 && ahead.length < 8; i++) {
+    const key = addDays(today, i);
+    const day = i === 1 ? 'Tomorrow' : formatDayKey(key, { weekday: 'long' });
+    for (const e of all.filter((x) => dayKey(x.start) === key).sort(byStart)) {
+      if (ahead.length >= 8) break;
+      ahead.push({ ...shapeEvent(e, settings), label: day, labelInk: '#214ba5' });
+    }
+  }
+
+  return { banners, slides, ahead, week };
 }

@@ -143,3 +143,50 @@ describe('sanitizeDoc', () => {
     expect([d.settings.slideSeconds, d.settings.daysAhead]).toEqual([3, 7]);
   });
 });
+
+describe('the panel when today is done', () => {
+  const settings = defaultSettings();
+  // A Sunday evening: everything today has finished.
+  const now = zonedToInstant('2026-10-18', '21:00');
+
+  const later = [
+    manualToEvent(prog({ program: 'Kindness Booth', date: '2026-10-19', start: '13:30', end: '14:30' })),
+    manualToEvent(prog({ program: 'Pizza Making', date: '2026-10-20', start: '10:15', end: '12:00' })),
+  ];
+
+  it('has nothing left for today', () => {
+    expect(buildView(later, settings, now).slides).toHaveLength(0);
+  });
+
+  it('offers the week ahead in its place, so the panel is never blank', () => {
+    const view = buildView(later, settings, now);
+    expect(view.ahead).toHaveLength(2);
+    expect(view.ahead.map((s) => s.program)).toEqual(['Kindness Booth', 'Pizza Making']);
+  });
+
+  it('labels them by day, and calls the next one Tomorrow', () => {
+    const view = buildView(later, settings, now);
+    expect(view.ahead[0].label).toBe('Tomorrow');
+    expect(view.ahead[1].label).toBe('Tuesday');
+  });
+
+  it('is empty only when the week really is', () => {
+    expect(buildView([], settings, now).ahead).toHaveLength(0);
+  });
+
+  it('does not repeat today in the week ahead', () => {
+    const withToday = [
+      manualToEvent(prog({ program: 'Earlier today', date: '2026-10-18', start: '09:00', end: '10:00' })),
+      ...later,
+    ];
+    const view = buildView(withToday, settings, now);
+    expect(view.ahead.map((s) => s.program)).not.toContain('Earlier today');
+  });
+
+  it('caps the carousel rather than running to a list', () => {
+    const many = Array.from({ length: 20 }, (_, i) =>
+      manualToEvent(prog({ program: 'P' + i, date: '2026-10-19', start: '09:00', end: '10:00' })),
+    );
+    expect(buildView(many, settings, now).ahead.length).toBeLessThanOrEqual(8);
+  });
+});

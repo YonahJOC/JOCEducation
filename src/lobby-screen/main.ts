@@ -70,7 +70,7 @@ document.getElementById('app')!.innerHTML = `
     <div class="main">
       <div class="today">
         <div class="today-head">
-          <div class="panel-title"><span class="ms">today</span>Today at JOC</div>
+          <div class="panel-title"><span class="ms">today</span><span id="todayTitle">Today at JOC</span></div>
           <div class="dots" id="dots"></div>
         </div>
         <div class="banners" id="banners"></div>
@@ -117,7 +117,7 @@ function setHTML(id: string, html: string): boolean {
   return true;
 }
 
-let view: ScreenView = { banners: [], slides: [], week: [] };
+let view: ScreenView = { banners: [], slides: [], ahead: [], week: [] };
 
 function events(): CalEvent[] {
   if (DEMO) return sampleEvents(now());
@@ -135,21 +135,33 @@ function render() {
   $('#hebrew').textContent = formatHebrewDate(t);
   $('#clock').textContent = formatClock(t, s.clock24);
 
-  const n = view.slides.length;
+  // Once the last program of the day has finished, the panel shows the
+  // week instead of emptying itself. A lobby screen is walked past all
+  // evening, and an acre of white saying 'see what's coming up' is the
+  // one thing it must never be.
+  const done = view.slides.length === 0;
+  const showing = done ? view.ahead : view.slides;
+  const n = showing.length;
+
+  $('#todayTitle').textContent = done ? 'Coming up this week at JOC' : 'Today at JOC';
+  $('#emptyToday').textContent = done
+    ? 'Nothing on the calendar this week.'
+    : 'No more programs today — see what’s coming up.';
+
   if (state.focusId) {
-    const i = view.slides.findIndex((x) => x.id === state.focusId);
+    const i = showing.findIndex((x) => x.id === state.focusId);
     if (i >= 0) state.slide = i;
   }
   const active = n ? state.slide % n : 0;
 
-  setHTML('dots', n > 1 ? view.slides.map((_, i) => `<div class="dot${i === active ? ' on' : ''}"></div>`).join('') : '');
+  setHTML('dots', n > 1 ? showing.map((_, i) => `<div class="dot${i === active ? ' on' : ''}"></div>`).join('') : '');
   setHTML('banners', view.banners.map(bannerHTML).join(''));
 
   $('#carousel').style.display = n ? '' : 'none';
-  setHTML('track', view.slides.map(slideHTML).join(''));
+  setHTML('track', showing.map(slideHTML).join(''));
   $('#track').style.transform = `translateX(${-active * 100}%)`;
 
-  setHTML('rows', view.slides.map((e, i) => rowHTML(e, i === active)).join(''));
+  setHTML('rows', showing.map((e, i) => rowHTML(e, i === active)).join(''));
   $('#rows').style.display = n ? '' : 'none';
   $('#emptyToday').style.display = n ? 'none' : '';
   fitRows(active);
