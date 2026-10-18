@@ -37,6 +37,11 @@ export default async function HomePage() {
     // the saved plans are not theirs yet, and showing them greyed out would
     // be a locked door where there should be a conversation.
     const access = await schoolAccess(session.user.schoolId);
+
+    // A school on the demo portal has no home here. Their site is the
+    // screen and the people who work it; this page is the rest of JOC,
+    // which is the thing they have not been shown yet.
+    if (access.state === "DEMO") redirect("/school/screen");
     if (access.state === "PROGRAMS") {
       const schoolName = session.user.schoolId && isDatabaseConfigured()
         ? (await prisma.school.findUnique({

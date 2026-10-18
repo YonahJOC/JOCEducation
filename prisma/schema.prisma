@@ -45,6 +45,18 @@ model School {
   /// this is the only switch anybody has to remember.
   fullSiteLaunchedAt DateTime?
 
+  /// The day this school was put on the demo portal.
+  ///
+  /// A demo school does not get a cut-down version of the portal; it gets a
+  /// different, smaller site. Its hallway screen and the people who may sign
+  /// in, and nothing else — no Today, no programs, no library, no plan, no
+  /// link back out to joc. Set this and the school is on it; clear it and
+  /// they are back on whatever their enrolments and plan already said.
+  ///
+  /// It is a date rather than a tick so the rollout can say how long a
+  /// school has been looking at it before anybody asks them.
+  demoAt DateTime?
+
   // ── Where they are up to ───────────────────────────────────────────────
   // Each of these is a date rather than a tick, so the board can say how long
   // something has been true. A tick only ever says "yes", and the useful
@@ -146,6 +158,7 @@ model School {
 
   @@index([status])
   @@index([accountManagerId])
+  @@index([demoAt])
 }
 
 /// A person at the school. May or may not have a login — a principal who signs

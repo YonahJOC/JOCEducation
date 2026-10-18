@@ -6,6 +6,7 @@ import { signOutAction } from "@/app/actions/auth";
 import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { schoolNav } from "@/lib/nav";
 import { viewingAs, currentSchoolId } from "@/lib/school-scope";
+import { onDemoPortal } from "@/lib/demo-school";
 import { stopViewingAsSchool } from "@/app/actions/view-as-school";
 import { unreadForSchool } from "@/lib/messages";
 import { SchoolSwitcher } from "@/components/school/SchoolSwitcher";
@@ -73,6 +74,9 @@ export default async function SchoolLayout({ children }: { children: React.React
   let planLabel: string | null = null;
   let programs: { slug: string; name: string; heroColor: string }[] = [];
   const schoolId = await currentSchoolId();
+  // A school being shown the portal for the first time. Two items on the
+  // rail, and no door out of them — see src/lib/demo-school.ts.
+  const demo = await onDemoPortal();
   const unreadMessages = schoolId ? await unreadForSchool(schoolId) : 0;
   if (isDatabaseConfigured() && schoolId) {
     try {
@@ -101,19 +105,25 @@ export default async function SchoolLayout({ children }: { children: React.React
   return (
     <PortalShell
       side="school"
+      // On the demo the screen is the front page, so the logo goes there.
+      home={demo ? "/school/screen" : undefined}
       who={session?.user?.email ?? "Nobody signed in"}
       role={schoolName}
       items={schoolNav(session?.user, {
         asSchoolAdmin: Boolean(looking) || openForReview,
         programs,
         unreadMessages,
+        demo,
       })}
       action={
         <div style={{ display: "grid", gap: "8px" }}>
-          {planLabel && (
+          {!demo && planLabel && (
             <p style={{ ...label, color: C.muted, margin: 0, textTransform: "uppercase" }}>{planLabel}</p>
           )}
-          <ShellExit side="school" href="/home">Back to the site</ShellExit>
+          {/* On the demo this is the whole site, so there is no back. */}
+          {!demo && (
+            <ShellExit side="school" href="/home">Back to the site</ShellExit>
+          )}
           {session?.user && (
             <form action={signOutAction}>
               <button

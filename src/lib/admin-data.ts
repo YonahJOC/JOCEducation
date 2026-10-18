@@ -180,6 +180,7 @@ export async function getSchool(id: string) {
         city: s.city, region: s.region, website: null,
         type: "DAY_SCHOOL", enrollment: s.enrollment,
         studentCount: s.studentCount, emailDomains: [] as string[], appSchoolId: null as string | null,
+        demoAt: null as Date | null,
       },
       planRequests: [] as {
         id: string; message: string; status: string;
@@ -238,6 +239,8 @@ export async function getSchool(id: string) {
       lastActivityAt: s.activities[0]?.occurredAt ?? null,
     } satisfies SchoolRow,
     details: {
+      // The demo portal switch, read by the panel on the school's page.
+      demoAt: s.demoAt,
       appSchoolId: s.appSchoolId,
       city: s.city,
       region: s.region,

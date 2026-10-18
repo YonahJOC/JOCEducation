@@ -9,6 +9,7 @@ import { ActivityComposer } from "@/components/admin/ActivityComposer";
 import { AddStaffPanel } from "@/components/admin/AddStaffPanel";
 import { AppAdminToggle } from "@/components/admin/AppAdminToggle";
 import { SchoolDetailsPanel } from "@/components/admin/SchoolDetailsPanel";
+import { DemoPanel } from "@/components/admin/DemoPanel";
 import { PlanRequestsPanel } from "@/components/admin/PlanRequestsPanel";
 import { PageIntro } from "@/components/admin/PageIntro";
 import { viewAsSchool } from "@/app/actions/view-as-school";
@@ -56,6 +57,7 @@ async function Inner({ slug }: { slug: string }) {
     city: string | null; region: string | null; website: string | null;
     type: string; enrollment: string; studentCount: number | null; emailDomains: string[];
     appSchoolId: string | null;
+    demoAt: Date | null;
   } }).details;
   const planRequests = (data as { planRequests?: {
     id: string; message: string; status: string; response: string | null;
@@ -93,6 +95,10 @@ async function Inner({ slug }: { slug: string }) {
           See their school panel
         </button>
       </form>
+
+      {/* Next to the button above on purpose: both answer the same
+          question, which is what this school gets when they sign in. */}
+      <DemoPanel slug={s.slug} demoAt={details?.demoAt ?? null} />
 
       <PageIntro
         as="h2"

@@ -7,7 +7,7 @@ import { C } from "@/lib/joc-tokens";
 export const metadata = { title: "Your teachers" };
 
 export default async function SchoolTeachersPage() {
-  await requireAccountHolder();
+  await requireAccountHolder({ demo: "allow" });
   const [school, session] = await Promise.all([mySchool(), safeAuth()]);
 
   if (!school) {

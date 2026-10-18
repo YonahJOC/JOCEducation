@@ -19,7 +19,7 @@ export const metadata = { title: "Your live screen" };
 export const dynamic = "force-dynamic";
 
 export default async function SchoolScreenPage() {
-  await requireSchoolPanel();
+  await requireSchoolPanel({ demo: "allow" });
   const session = await safeAuth();
 
   // A teacher's own school. currentSchoolId() only answers for an account

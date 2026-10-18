@@ -18,7 +18,7 @@ import { C, R, label, F } from "@/lib/joc-tokens";
  */
 
 export function PortalShell({
-  side, who, role, items, action, signOut, bleed, children,
+  side, who, role, items, action, signOut, bleed, home, children,
 }: {
   side: "joc" | "school";
   /** The name in the rail: the school, or the signed-in person. */
@@ -32,6 +32,14 @@ export function PortalShell({
   signOut?: React.ReactNode;
   /** Full-width, above the content column. */
   bleed?: React.ReactNode;
+  /**
+   * Where the wordmark goes. Defaults to the top of this side.
+   *
+   * A school on the demo portal cannot open /school, so the logo — the
+   * one thing on every page that everybody clicks — would have bounced
+   * them through a redirect to get back where they already were.
+   */
+  home?: string;
   children: React.ReactNode;
 }) {
   const s = SIDE[side];
@@ -56,7 +64,7 @@ export function PortalShell({
               : { padding: "0 20px 18px", borderBottom: `1px solid ${hairline}`, marginBottom: "16px" }
           }
         >
-          <Link href={side === "joc" ? "/admin" : "/school"} style={{ display: "block", textDecoration: "none" }}>
+          <Link href={home ?? (side === "joc" ? "/admin" : "/school")} style={{ display: "block", textDecoration: "none" }}>
             <Image
               src={s.wordmark}
               alt="JustOneChesed"

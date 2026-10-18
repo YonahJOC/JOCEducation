@@ -13,12 +13,13 @@ import type { Stage } from "@/lib/program-enrollment";
  * full site is open; everything else follows from the programs they are
  * actually running, so there is no flag for anybody to forget.
  *
+ *   DEMO       on the demo portal: the hallway screen and their people only
  *   FULL_SITE  the site was launched for them and their subscription is live
  *   PROGRAMS   they run at least one live program — every school today
  *   PUBLIC     signed in, running nothing, and not launched
  */
 
-export type AccessState = "FULL_SITE" | "PROGRAMS" | "PUBLIC";
+export type AccessState = "DEMO" | "FULL_SITE" | "PROGRAMS" | "PUBLIC";
 
 /**
  * A live program: registered or further, and not finished.
@@ -45,6 +46,7 @@ export async function schoolAccess(schoolId: string | null): Promise<SchoolAcces
     const school = await prisma.school.findUnique({
       where: { id: schoolId },
       select: {
+        demoAt: true,
         fullSiteLaunchedAt: true,
         subscription: { select: { status: true } },
         enrollments: {
@@ -58,6 +60,13 @@ export async function schoolAccess(schoolId: string | null): Promise<SchoolAcces
     });
 
     if (!school) return NOTHING;
+
+    // The demo comes first, and it is the whole answer. A school being
+    // shown the portal may already have enrolments against it and may even
+    // have been launched — none of that opens anything while they are on
+    // the demo, or the one surface we meant to show them would quietly
+    // grow the rest of the site back.
+    if (school.demoAt) return { state: "DEMO", programs: [] };
 
     const programs = school.enrollments
       .map((e) => ({ ...e.program, stage: e.stage as Stage }))
@@ -82,6 +91,7 @@ export async function schoolAccess(schoolId: string | null): Promise<SchoolAcces
  * open the ones it runs; anybody else can open none.
  */
 export function canOpenProgram(access: SchoolAccess, slug: string): boolean {
+  if (access.state === "DEMO") return false;
   if (access.state === "FULL_SITE") return true;
   return access.programs.some((p) => p.slug === slug);
 }

@@ -6,6 +6,7 @@ import { safeAuth, openForReview } from "@/auth";
 import { canRunSchoolApp } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { currentSchoolId } from "@/lib/school-scope";
+import { sealDemo } from "@/lib/demo-school";
 
 /**
  * A school's own sign-ups.
@@ -56,6 +57,10 @@ async function loadSignUps(schoolId: string) {
 type SignUp = Awaited<ReturnType<typeof loadSignUps>>[number];
 
 export default async function SchoolProgramsPage() {
+  // This page guards itself rather than calling the shared guard, so the
+  // demo seal has to be written out here too.
+  await sealDemo();
+
   const session = await safeAuth();
   if (!openForReview && !canRunSchoolApp(session?.user)) redirect("/home");
 

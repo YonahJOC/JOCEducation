@@ -208,8 +208,26 @@ export function schoolNav(
     programs?: { slug: string; name: string; heroColor: string }[];
     /** Replies the school has not opened. */
     unreadMessages?: number;
+    /**
+     * This school is on the demo portal.
+     *
+     * Not a filter over the rail below — a different rail. A demo school is
+     * not a school with most of the portal greyed out, it is a school looking
+     * at a two-page site, and a rail with five crossed-out items on it says
+     * exactly the opposite.
+     */
+    demo?: boolean;
   } = {},
 ): NavItem[] {
+  // The whole of it. Both pages are sealed on the server as well, in
+  // src/app/school/account-only.tsx — a rail is not a lock.
+  if (opts.demo) {
+    return [
+      { label: "Live screen", href: "/school/screen", hint: "What is showing in your building" },
+      { label: "People", href: "/school/teachers", hint: "Who can sign in, and what they can do" },
+    ];
+  }
+
   const MAX = 7;
   const items: NavItem[] = [{ label: "Today", href: "/school", hint: "Where each program is up to" }];
 
