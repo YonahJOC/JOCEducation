@@ -4,6 +4,7 @@ import Link from "next/link";
 import { C } from "@/lib/joc-tokens";
 import { useActionState } from "react";
 import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
+import { PasswordField } from "@/components/ui/PasswordField";
 
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
@@ -73,7 +74,7 @@ export function LoginForm({
                 Forgot password?
               </Link>
             </div>
-            <input id="password" name="password" type="password" placeholder="••••••••" autoComplete="current-password" required style={inputStyle} />
+            <PasswordField id="password" name="password" placeholder="••••••••" autoComplete="current-password" required style={inputStyle} />
           </div>
 
           {state?.error && (

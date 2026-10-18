@@ -5,6 +5,7 @@ import { R, C } from "@/lib/joc-tokens";
 import { useRouter } from "next/navigation";
 import { changeOwnPassword } from "@/app/actions/account";
 import { passwordProblem } from "@/lib/password";
+import { PasswordField } from "@/components/ui/PasswordField";
 
 const field: React.CSSProperties = {
   width: "100%", fontFamily: "var(--font-outfit)", fontSize: "15px", color: C.ink,
@@ -70,21 +71,20 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
       {hasPassword && (
         <div style={{ marginBottom: "16px" }}>
           <label style={label} htmlFor="current">Current password</label>
-          <input
-            id="current" type="password" autoComplete="current-password"
-            value={current} onChange={(e) => setCurrent(e.target.value)}
-            style={field} autoFocus={!forced}
+          <PasswordField
+            id="current" autoComplete="current-password"
+            value={current} onChange={setCurrent}
+            style={field}
           />
         </div>
       )}
 
       <div style={{ marginBottom: "16px" }}>
         <label style={label} htmlFor="next">New password</label>
-        <input
-          id="next" type="password" autoComplete="new-password"
-          value={next} onChange={(e) => setNext(e.target.value)}
+        <PasswordField
+          id="next" autoComplete="new-password"
+          value={next} onChange={setNext}
           style={{ ...field, borderColor: next && strength ? C.orangeText : C.hairline }}
-          autoFocus={forced}
         />
         <p style={{ fontSize: "13px", lineHeight: 1.5, margin: "6px 0 0", color: next ? (strength ? C.orangeText : C.greenText) : C.muted }}>
           {next ? (strength ?? "That will do.") : "At least 10 characters. Avoid anything with the organisation's name in it."}
@@ -93,9 +93,9 @@ export function PasswordForm({ hasPassword, forced }: { hasPassword: boolean; fo
 
       <div style={{ marginBottom: "20px" }}>
         <label style={label} htmlFor="confirm">New password again</label>
-        <input
-          id="confirm" type="password" autoComplete="new-password"
-          value={confirm} onChange={(e) => setConfirm(e.target.value)}
+        <PasswordField
+          id="confirm" autoComplete="new-password"
+          value={confirm} onChange={setConfirm}
           style={{ ...field, borderColor: mismatch ? C.orangeText : C.hairline }}
         />
         {mismatch && (

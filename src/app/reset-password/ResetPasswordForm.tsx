@@ -4,6 +4,7 @@ import Link from "next/link";
 import { sectionHeading, pageTitle, C } from "@/lib/joc-tokens";
 import { useState, useTransition } from "react";
 import { completePasswordReset } from "@/app/actions/reset";
+import { PasswordField } from "@/components/ui/PasswordField";
 
 const input: React.CSSProperties = {
   width: "100%", boxSizing: "border-box", padding: "12px 14px", minHeight: "46px",
@@ -61,10 +62,9 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
           <label style={{ display: "block", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "6px" }}>
             New password
           </label>
-          <input
-            type="password"
+          <PasswordField
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
             autoComplete="new-password"
             style={input}
           />
@@ -73,10 +73,9 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
           <label style={{ display: "block", fontWeight: 600, fontSize: "15px", color: C.ink, marginBottom: "6px" }}>
             Type it again
           </label>
-          <input
-            type="password"
+          <PasswordField
             value={again}
-            onChange={(e) => setAgain(e.target.value)}
+            onChange={setAgain}
             autoComplete="new-password"
             style={input}
           />

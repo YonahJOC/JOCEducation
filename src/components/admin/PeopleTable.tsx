@@ -119,6 +119,7 @@ function Row({
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   function changeSchool(next: string) {
     const prev = schoolId;

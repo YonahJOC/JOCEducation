@@ -860,3 +860,21 @@ body {
   .joc-add-line { flex-wrap: wrap; }
   .joc-add-line > input { flex: 1 1 100% !important; }
 }
+
+/* ── Mobile: never let iOS zoom the page ──────────────────────────────────
+   
+   Safari on iOS zooms the whole page in when you focus a field whose text is
+   under 16px, and it does not zoom back out afterwards. We had 62 of them on
+   People alone and five on the landing page — so tapping the email box on
+   the first page a school ever sees threw the layout sideways.
+   
+   Below the card breakpoint every field reads at 16px. `!important` because
+   these sizes are set inline, and an inline style beats a stylesheet.
+   Desktop typography is untouched. */
+@media (max-width: 760px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}

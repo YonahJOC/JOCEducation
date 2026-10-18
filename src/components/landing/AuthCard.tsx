@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useActionState } from "react";
 import { ROW_SHADOW, R, C } from "@/lib/joc-tokens";
 import Link from "next/link";
 import { signInWithGoogle, signInWithPassword } from "@/app/actions/auth";
+import { PasswordField } from "@/components/ui/PasswordField";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -208,10 +209,9 @@ export function AuthCard({
               Forgot?
             </Link>
           </div>
-          <input
+          <PasswordField
             id="password"
             name="password"
-            type="password"
             autoComplete="current-password"
             style={inputStyle}
           />

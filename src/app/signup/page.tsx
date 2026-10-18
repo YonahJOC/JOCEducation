@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { createAccount } from "@/app/actions/signup";
 import { BrandLockup } from "@/components/ui/Brand";
 import { sectionHeading, pageTitle, C, R } from "@/lib/joc-tokens";
+import { PasswordField } from "@/components/ui/PasswordField";
 
 const ROLES = [
   { value: "teacher", label: "Classroom teacher" },
@@ -104,7 +105,7 @@ export default function SignupPage() {
 
             <div>
               <label style={labelStyle}>Password <Required /></label>
-              <input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="At least 10 characters" autoComplete="new-password" style={inputStyle} />
+              <PasswordField value={form.password} onChange={(v) => set("password", v)} placeholder="At least 10 characters" autoComplete="new-password" style={inputStyle} />
             </div>
 
             {error && <p style={{ fontSize: "15px", color: C.redText, backgroundColor: C.redTint, borderRadius: "10px", padding: "10px 14px" }}>{error}</p>}
