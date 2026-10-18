@@ -66,10 +66,9 @@
    :empty keeps the pill from growing a blank second line on an
    engine that has no Hebrew calendar. */
 .hdr-hebrew {
-  font-size: 21px;
-  font-weight: 600;
-  opacity: 0.82;
-  margin-top: 2px;
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: 1px;
 }
 .hdr-hebrew:empty { display: none; }
 .hdr-clock {

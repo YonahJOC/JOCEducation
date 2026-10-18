@@ -136,7 +136,7 @@ describe('sanitizeDoc', () => {
     expect(d.programs).toHaveLength(1);
     expect(d.programs[0].start).toBe('10:00');
     expect(d.settings.daysAhead).toBe(4);
-    expect(d.counters.values.beds).toBe(4200);
+    expect(d.counters.values.beds).toBe(300);
   });
   it('clamps numbers into range', () => {
     const d = sanitizeDoc({ settings: { slideSeconds: 1, daysAhead: 99 } });

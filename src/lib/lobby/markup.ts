@@ -8,6 +8,14 @@ export const esc = (s: string | number) =>
 
 const icon = (name: string, style = '') => `<span class="ms"${style ? ` style="${style}"` : ''}>${esc(name)}</span>`;
 
+/**
+ * The big panel's slide.
+ *
+ * The venue block names the place rather than the screen's word for the
+ * kind of place: "Off-site" set over "Ben Yehuda" told somebody walking
+ * past the one thing they did not need. chip is the centre's name at the
+ * centre and the actual place everywhere else.
+ */
 export function slideHTML(s: Slide): string {
   const v = s.venue!;
   return `<div class="slide">
@@ -19,8 +27,7 @@ export function slideHTML(s: Slide): string {
   </div>
   <div class="venue-block" style="background:${v.color}">
     ${icon(v.icon)}
-    <div class="venue-short">${esc(v.short)}</div>
-    <div class="venue-place">${esc(v.place)}</div>
+    <div class="venue-short">${esc(v.chip)}</div>
   </div>
 </div>`;
 }
@@ -63,17 +70,20 @@ export function dayHTML(d: WeekDay): string {
 </div>`;
 }
 
-// The screen draws all four boxes alike (white, orange icon); `color` and `ink` tint the admin panel's counters.
-export const STATS: Array<{ key: CounterKey; icon: string; color: string; ink: string; label: string }> = [
-  { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#ff8e00', label: 'Acts of chesed' },
-  { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#214ba5', label: 'Beds given out' },
-  { key: 'challahs', icon: 'bakery_dining', color: '#E3F4E8', ink: '#2FA457', label: 'Challahs baked' },
+// The screen draws every box alike (white, orange icon); `color` and `ink` tint the admin panel's counters.
+//
+// `plus` is for a number that is a floor rather than a count — "250,000+"
+// claims less than "250,000" and is the honest way to put a figure
+// nobody is recounting on a wall.
+export const STATS: Array<{ key: CounterKey; icon: string; color: string; ink: string; label: string; plus?: boolean }> = [
+  { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#ff8e00', label: 'Acts of chesed', plus: true },
+  { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#214ba5', label: 'Beds given out', plus: true },
   { key: 'pizzas', icon: 'local_pizza', color: '#E4E9F8', ink: '#ff8e00', label: 'Pizzas made' },
 ];
 
 export function statHTML(s: (typeof STATS)[number], value: string): string {
   return `<div class="stat">
   <div class="stat-icon">${icon(s.icon)}</div>
-  <div class="stat-text"><div class="stat-value" data-stat="${s.key}">${esc(value)}</div><div class="stat-label">${esc(s.label)}</div></div>
+  <div class="stat-text"><div class="stat-value" data-stat="${s.key}">${esc(value)}${s.plus ? '+' : ''}</div><div class="stat-label">${esc(s.label)}</div></div>
 </div>`;
 }

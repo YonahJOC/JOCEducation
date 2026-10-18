@@ -18,8 +18,9 @@ export const LOGO_URL = '/brand/joc-wordmark-white.png';
 /** Fallback impact numbers when nothing is configured */
 export const DEFAULT_COUNTERS: Counters['values'] = {
   acts: 250000,
-  beds: 4200,
-  challahs: 12000,
+  beds: 300,
+  // Kept so an existing document still parses; nothing shows it.
+  challahs: 0,
   pizzas: 18500,
 };
 

@@ -6,7 +6,10 @@ export const VENUE_PALETTE: Record<VenueType, { color: string; light: string; ti
   center: { color: '#214ba5', light: '#C6CFF0', tint: '#E4E9F8' },
   shuk: { color: '#ff8e00', light: '#FFD8AE', tint: '#FFF0E0' },
   usa: { color: '#214ba5', light: '#E4E9F8', tint: '#E4E9F8' },
-  other: { color: '#1D6B37', light: '#E3F4E8', tint: '#E3F4E8' },
+  // Was a green, which belonged to no part of the brand. The lighter of
+  // the two blues in the screen's own gradient, so an off-site program
+  // still reads as its own thing without introducing a fourth colour.
+  other: { color: '#186fae', light: '#E4E9F8', tint: '#E4F0F8' },
 };
 
 export const VENUE_ICONS: Record<VenueType, string> = {

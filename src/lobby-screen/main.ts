@@ -247,7 +247,9 @@ function stepStats(ts: number) {
   for (const s of STATS) {
     shown[s.key] = Math.round(anim.from[s.key] + (target[s.key] - anim.from[s.key]) * eased);
     const el = document.querySelector(`[data-stat="${s.key}"]`);
-    if (el) el.textContent = shown[s.key].toLocaleString('en-US');
+    // The '+' has to be re-applied here: this overwrites what statHTML
+    // wrote, and it is the counter that is approximate, not the animation.
+    if (el) el.textContent = shown[s.key].toLocaleString('en-US') + (s.plus ? '+' : '');
   }
   if (p < 1) requestAnimationFrame(stepStats);
   else anim = null;

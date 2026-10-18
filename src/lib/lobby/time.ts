@@ -114,12 +114,19 @@ export function formatHHMM(hhmm: string, clock24 = false): string {
   return formatTime(zonedToInstant('2026-01-15', hhmm), clock24);
 }
 
-/** The big header clock: "4:30" (no am/pm), or "16:30" */
+/**
+ * The big header clock: "4:30 PM", or "16:30".
+ *
+ * It used to drop the am/pm, which is fine on a watch in your hand and not
+ * on a wall somebody glances at from across a lobby. The narrow no-break
+ * space ICU puts before the meridiem becomes an ordinary one, or the gap
+ * reads as a typo at 56px.
+ */
 export function formatClock(date: Date, clock24 = false): string {
   if (clock24) return formatTime(date, true);
   return date
     .toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true })
-    .replace(/\s?[AP]M/, '');
+    .replace(/ /g, ' ');
 }
 
 export function formatDateLong(date: Date): string {
