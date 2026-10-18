@@ -147,6 +147,31 @@ describe("buildPosterSvg", () => {
     expect(svg).toContain("Nothing on the calendar this week.");
   });
 
+  it("names the place, not the screen's category for it", () => {
+    // "Off-site, The Rova" and "The Shuk, Machane Yehuda Shuk" both put a
+    // label in front of the only part a reader needed.
+    const svg = buildPosterSvg(
+      buildWeekSheet(
+        [
+          ev({ program: "Kindness Booth", venue: "other", location: "The Rova, Jerusalem" }),
+          ev({ program: "Shuk run", venue: "shuk", location: "Machane Yehuda Shuk" }),
+        ],
+        S,
+        NOW,
+      ),
+    );
+    expect(svg).toContain("The Rova");
+    expect(svg).toContain("Machane Yehuda Shuk");
+    expect(svg).not.toContain("Off-site");
+  });
+
+  it("still names the centre, which has no street under it", () => {
+    const svg = buildPosterSvg(
+      buildWeekSheet([ev({ program: "Pizza Making", venue: "center" })], S, NOW),
+    );
+    expect(svg).toMatch(/JOC Cent(er|re)/);
+  });
+
   it("embeds the wordmark when given one, and never fetches it", () => {
     const svg = buildPosterSvg(sheet, { logoDataUrl: "data:image/png;base64,AAAA" });
     expect(svg).toContain('href="data:image/png;base64,AAAA"');

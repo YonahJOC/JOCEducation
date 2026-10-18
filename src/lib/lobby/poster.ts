@@ -81,15 +81,20 @@ export function wrap(text: string, px: number, size: number, maxLines = 2): stri
 type SheetEvent = WeekSheet['days'][number]['events'][number];
 
 /**
- * One event's meta line: "2:00-4:00 PM · 11th Grade · The Shuk, Jaffa Rd"
+ * One event's meta line: "1:30pm – 2:30pm · Hakotel · The Rova"
  *
- * `short` is the block label the screen shows ("The Shuk"); `place` is the
- * street under it, and is empty for the JOC Center. On a sheet read on a
- * phone the two belong on one line.
+ * The venue's `chip` is the one to print, and it is the field already built
+ * for a line like this: the centre's name where it is the centre, and
+ * otherwise the actual place.
+ *
+ * This used to join `short` and `place`, which put the screen's category
+ * label in front of the address — "Off-site, The Rova", "The Shuk, Machane
+ * Yehuda Shuk". On the TV that label earns its place, because it is a
+ * coloured block doing the work of an icon. On a sheet somebody reads on a
+ * phone it is a word in front of the only part they needed.
  */
 function metaLine(e: SheetEvent): string {
-  const where = e.venue ? [e.venue.short, e.venue.place].filter(Boolean).join(', ') : '';
-  return [e.allDay ? 'All day' : e.timeRange || e.time, e.groupLine, where]
+  return [e.allDay ? 'All day' : e.timeRange || e.time, e.groupLine, e.venue?.chip]
     .filter((x): x is string => Boolean(x && x.trim()))
     .join('  ·  ');
 }
