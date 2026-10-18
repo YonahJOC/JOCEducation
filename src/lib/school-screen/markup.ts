@@ -83,7 +83,11 @@ export function programFlyerHTML(f: ScreenFlyer, blue: boolean): string {
   return `<div class="ss-fl ss-fl-program ${blue ? "ss-blue" : "ss-orange"}">
   <div class="ss-bubble"></div><div class="ss-bubble-2"></div>
   ${d ? `<div class="ss-sticker ss-sticker-sm"><div class="ss-st-k">${esc(f.line && f.line.length <= 10 ? f.line : "Starts")}</div><div class="ss-st-big">${esc(`${d.mon} ${d.day}`)}</div></div>` : ""}
-  <div class="ss-pg-icon">${ms(f.icon || "volunteer_activism")}</div>
+  ${f.imageUrl
+    // A photo is the accent here, not the flyer: a small tilted print where
+    // the icon would be, so the program's name stays the thing people read.
+    ? `<div class="ss-pg-photo"><img src="${src(f.imageUrl)}" alt="" /></div>`
+    : `<div class="ss-pg-icon">${ms(f.icon || "volunteer_activism")}</div>`}
   <div class="ss-pg-title">${small ? `<div class="ss-pg-small">${esc(small)}</div>` : ""}<div class="ss-pg-big">${esc(big)}</div></div>
   ${f.line && !(d && f.line.length <= 10) ? `<div class="ss-pg-line">${esc(f.line)}</div>` : ""}
   ${f.qrSvg ? `<div class="ss-pg-qr"><div class="ss-pg-qr-l">${esc(f.qrLabel || "Scan to join")}</div><div class="ss-qrbox">${qr(f.qrSvg)}</div></div>` : ""}

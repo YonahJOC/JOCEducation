@@ -22,7 +22,7 @@ type Template = "EVENT" | "PROGRAM" | "BANNER";
 
 const TEMPLATES: { id: Template; name: string; what: string; icon: string }[] = [
   { id: "EVENT", name: "Event", what: "A photo, a date sticker, the name, time and place.", icon: "event" },
-  { id: "PROGRAM", name: "Program", what: "No photo. A big icon, the name huge, one line, a QR code.", icon: "campaign" },
+  { id: "PROGRAM", name: "Program", what: "The program's name huge, a big icon or a small photo, one line, a QR code.", icon: "campaign" },
   { id: "BANNER", name: "Banner", what: "Finished artwork, shown whole, with the name and a QR code under it.", icon: "image" },
 ];
 
@@ -115,7 +115,8 @@ export function FlyerForm({ schoolId, short, flyer, canChooseEvery, approves, on
     });
   }
 
-  const usesImage = template !== "PROGRAM";
+  // A program flyer can take a small photo in place of its icon.
+  const usesImage = true;
 
   return (
     <div style={{ border: `1.5px solid ${C.hairline}`, borderRadius: R.hero, padding: "20px", marginBottom: "18px", background: C.paper }}>
@@ -199,7 +200,10 @@ export function FlyerForm({ schoolId, short, flyer, canChooseEvery, approves, on
           ) : null}
 
           {usesImage ? (
-            <Field label={template === "EVENT" ? "Photo" : "The artwork"} hint="JPG or PNG. Real JOC or school photos only">
+            <Field
+              label={template === "EVENT" ? "Photo" : template === "PROGRAM" ? "Small photo" : "The artwork"}
+              hint={template === "PROGRAM" ? "optional, shown small in place of the icon" : "JPG or PNG. Real JOC or school photos only"}
+            >
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => void pick(e.target.files?.[0])}
                 style={{ ...input, padding: "8px" }} />
               {imageUrl ? (

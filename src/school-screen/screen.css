@@ -92,6 +92,9 @@
 .ss-st-big { font-size: 46px; font-weight: 800; line-height: .95; white-space: nowrap; }
 .ss-pg-icon { width: 120px; height: 120px; border-radius: 32px; background: #fff; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg); box-shadow: 0 12px 30px rgba(12,20,90,.25); }
 .ss-pg-icon .ss-ms { font-size: 76px; color: #ff8e00; }
+.ss-pg-photo { flex: none; display: inline-flex; border-radius: 24px; overflow: hidden; border: 6px solid #fff; transform: rotate(-4deg); box-shadow: 0 12px 30px rgba(12,20,90,.3); background: #fff; }
+/* The frame takes the photo's own shape, so nothing in it is ever cropped. */
+.ss-pg-photo img { display: block; width: auto; height: auto; max-width: 300px; max-height: 210px; }
 .ss-pg-title { display: flex; flex-direction: column; align-items: center; max-width: 100%; }
 .ss-pg-small { font-size: 56px; font-weight: 800; line-height: .95; letter-spacing: -.02em; text-transform: uppercase; white-space: nowrap; }
 .ss-pg-big { font-size: 124px; font-weight: 800; line-height: .9; letter-spacing: -.03em; text-transform: uppercase; white-space: nowrap; }
