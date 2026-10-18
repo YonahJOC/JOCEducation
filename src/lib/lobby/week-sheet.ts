@@ -1,6 +1,7 @@
 import { shapeEvent, visibleEvents, type ShownEvent } from './model';
 import { addDays, dayKey, dayNumber, formatDayKey, TZ } from './time';
 import type { CalEvent, Settings } from './types';
+import { hebrewDate } from '@/lib/hebrew-date';
 
 /**
  * The week, as something you can hand to a person.
@@ -53,9 +54,9 @@ function rangeLabel(fromKey: string, toKey: string): string {
 /** "7 Heshvan – 13 Heshvan", or '' where Intl has no Hebrew calendar. */
 function hebrewRangeLabel(from: Date, to: Date): string {
   try {
-    const f = new Intl.DateTimeFormat('en-u-ca-hebrew', { timeZone: TZ, day: 'numeric', month: 'long' });
-    const a = f.format(from);
-    const b = f.format(to);
+    const a = hebrewDate(from, { timeZone: TZ });
+    const b = hebrewDate(to, { timeZone: TZ });
+    if (!a || !b) return '';
     if (a === b) return a;
     const [, aMon] = a.split(' ');
     const [, bMon] = b.split(' ');

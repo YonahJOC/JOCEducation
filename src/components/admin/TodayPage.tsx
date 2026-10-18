@@ -1,3 +1,4 @@
+import { withHebrew } from "@/lib/hebrew-date";
 import { BandRow } from "@/components/ui/BandRow";
 import { C, rowCard, label, F } from "@/lib/joc-tokens";
 import type { Today } from "@/lib/today";
@@ -13,9 +14,11 @@ import type { Today } from "@/lib/today";
  * sign the rows were not clear enough.
  */
 export function TodayPage({ data, children }: { data: Today; children?: React.ReactNode }) {
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "short", day: "numeric", month: "short",
-  }).toUpperCase();
+  const now = new Date();
+  const today = withHebrew(
+    now.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" }),
+    now,
+  ).toUpperCase();
 
   return (
     <div>

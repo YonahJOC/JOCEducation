@@ -1,3 +1,4 @@
+import { hebrewDate } from '@/lib/hebrew-date';
 import './screen.css';
 import type { ScreenData } from '@/lib/school-screen/types';
 import {
@@ -139,13 +140,7 @@ function renderClock() {
   const now = new Date();
   $('#clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   $('#date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-  let heb = '';
-  try {
-    heb = new Intl.DateTimeFormat('en-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' }).format(now);
-  } catch {
-    /* an old browser without the Hebrew calendar shows the English date alone */
-  }
-  $('#hdate').textContent = heb;
+  $('#hdate').textContent = hebrewDate(now, { year: true });
 }
 
 function renderNumbers(d: ScreenData) {

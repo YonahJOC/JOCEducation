@@ -3,7 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { cryptoId } from '@/lib/lobby/config';
 import { VENUE_ICONS, VENUE_PALETTE, venueNames } from '@/lib/lobby/parse';
-import { addDays, addMinutesHHMM, dayKey, formatDayKey, formatHHMM } from '@/lib/lobby/time';
+import { addDays, addMinutesHHMM, dayKey, formatDayKey, hebrewDayKey, formatHHMM } from '@/lib/lobby/time';
 import type { LobbyDoc, ManualProgram, VenueType } from '@/lib/lobby/types';
 import { CardPreview } from './Preview';
 import { Button, Field, Icon, Stepper, Switch, useConfirm } from './ui';
@@ -211,7 +211,10 @@ export function ProgramEditor({
                   </button>
                 </div>
               </div>
-              <div className="a-hint">{formatDayKey(p.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</div>
+              <div className="a-hint">
+                {formatDayKey(p.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                {hebrewDayKey(p.date) ? ' · ' + hebrewDayKey(p.date) : ''}
+              </div>
             </Field>
 
             <div className="a-toggle-row">

@@ -4,18 +4,20 @@ import { useMemo, useState } from 'react';
 import { cryptoId } from '@/lib/lobby/config';
 import { manualToEvent } from '@/lib/lobby/events';
 import { abbrMap, expandProgram, venueInfo } from '@/lib/lobby/parse';
-import { addDays, dayKey, daysBetween, dayNumber, formatDayKey, formatHHMM } from '@/lib/lobby/time';
+import { addDays, dayKey, daysBetween, dayNumber, formatDayKey, hebrewDayKey, formatHHMM } from '@/lib/lobby/time';
 import type { LobbyDoc, ManualProgram } from '@/lib/lobby/types';
 import { Button, Icon, IconButton, Segmented, useConfirm, useToast } from './ui';
 import type { Mutate } from './useDoc';
 
 export function relativeDay(key: string, today: string): string {
   const d = daysBetween(today, key);
-  if (d === 0) return 'Today';
-  if (d === 1) return 'Tomorrow';
-  if (d === -1) return 'Yesterday';
-  if (d > 1 && d < 7) return formatDayKey(key, { weekday: 'long' });
-  return formatDayKey(key, { weekday: 'long', month: 'long', day: 'numeric' });
+  const heb = hebrewDayKey(key);
+  const say = (s: string) => (heb ? `${s} · ${heb}` : s);
+  if (d === 0) return say('Today');
+  if (d === 1) return say('Tomorrow');
+  if (d === -1) return say('Yesterday');
+  if (d > 1 && d < 7) return say(formatDayKey(key, { weekday: 'long' }));
+  return say(formatDayKey(key, { weekday: 'long', month: 'long', day: 'numeric' }));
 }
 
 export function Programs({

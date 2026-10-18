@@ -1,3 +1,4 @@
+import { hebrewDate } from '@/lib/hebrew-date';
 // Everything on the screen is shown in Jerusalem time, whatever the TV's own clock zone is.
 export const TZ = 'Asia/Jerusalem';
 
@@ -81,6 +82,17 @@ export function formatDayKey(key: string, opts: Intl.DateTimeFormatOptions): str
   return keyDate(key).toLocaleDateString('en-US', { ...opts, timeZone: 'UTC' });
 }
 
+/**
+ * The Hebrew date for a day key.
+ *
+ * Read in UTC like formatDayKey beside it: a key is a calendar day, not
+ * an instant, and reading the two in different zones is how a heading
+ * ends up naming one day in English and the day before it in Hebrew.
+ */
+export function hebrewDayKey(key: string): string {
+  return hebrewDate(keyDate(key), { timeZone: 'UTC' });
+}
+
 export function dayNumber(key: string): number {
   return Number(key.slice(8, 10));
 }
@@ -128,13 +140,7 @@ export function formatDateLong(date: Date): string {
  * then shows the Gregorian date alone rather than an empty line.
  */
 export function formatHebrewDate(date: Date): string {
-  try {
-    return new Intl.DateTimeFormat('en-u-ca-hebrew', {
-      timeZone: TZ, day: 'numeric', month: 'long',
-    }).format(date);
-  } catch {
-    return '';
-  }
+  return hebrewDate(date, { timeZone: TZ });
 }
 
 export function addMinutesHHMM(hhmm: string, minutes: number): string {

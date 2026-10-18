@@ -13,7 +13,8 @@ describe("formatHebrewDate", () => {
     // 18 October 2026, mid-morning Jerusalem time.
     const d = new Date("2026-10-18T07:37:00Z");
     expect(formatDateLong(d)).toBe("Sunday, October 18");
-    expect(formatHebrewDate(d)).toMatch(/^\d{1,2} [A-Za-z]+$/);
+    // In Hebrew, and in letters: ז׳ בחשוון.
+    expect(formatHebrewDate(d)).toBe("ז׳ בחשוון");
   });
 
   it("turns over at Jerusalem midnight, not at UTC midnight", () => {

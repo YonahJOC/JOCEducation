@@ -1,3 +1,4 @@
+import { withHebrew } from "@/lib/hebrew-date";
 "use client";
 
 import Link from "next/link";
@@ -56,7 +57,10 @@ const OUTCOME_LABEL: Record<string, string> = {
 };
 
 const day = (d: Date | string) =>
-  new Date(d).toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  withHebrew(
+    new Date(d).toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
+    new Date(d),
+  );
 const shortDay = (d: Date | string) =>
   new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 

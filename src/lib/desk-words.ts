@@ -1,3 +1,4 @@
+import { hebrewDate } from "@/lib/hebrew-date";
 /**
  * The desk's pure helpers: a name, a greeting, a date line.
  *
@@ -33,14 +34,7 @@ export function dateLine(now: Date): string {
     weekday: "long", day: "numeric", month: "long",
   }).toUpperCase();
 
-  let hebrew = "";
-  try {
-    hebrew = new Intl.DateTimeFormat("en-u-ca-hebrew", {
-      day: "numeric", month: "long",
-    }).format(now).toUpperCase();
-  } catch {
-    // An engine without the Hebrew calendar: the Gregorian date alone.
-  }
+  const hebrew = hebrewDate(now).toUpperCase();
 
   return hebrew ? `${greg} · ${hebrew}` : greg;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { withHebrew } from "@/lib/hebrew-date";
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { C, F, label } from "@/lib/joc-tokens";
@@ -30,11 +31,13 @@ const dayStamp = (d: Date) => new Date(d).toDateString();
 
 function dayLabel(d: Date): string {
   const k = dayStamp(d);
-  if (k === new Date().toDateString()) return "Today";
-  if (k === new Date(Date.now() - 86_400_000).toDateString()) return "Yesterday";
-  return new Date(d).toLocaleDateString("en-US", {
-    weekday: "long", day: "numeric", month: "long",
-  });
+  const on = new Date(d);
+  if (k === new Date().toDateString()) return withHebrew("Today", on);
+  if (k === new Date(Date.now() - 86_400_000).toDateString()) return withHebrew("Yesterday", on);
+  return withHebrew(
+    on.toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" }),
+    on,
+  );
 }
 
 const clock = (d: Date) =>

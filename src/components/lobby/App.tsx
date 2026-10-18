@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cryptoId, LOGO_URL } from '@/lib/lobby/config';
 import { fetchGoogleEvents } from '@/lib/lobby/events';
 import { abbrMap, expandProgram } from '@/lib/lobby/parse';
-import { addDays, dayKey, formatDateLong, formatTime, timeKey, zonedToInstant } from '@/lib/lobby/time';
+import { addDays, dayKey, formatDateLong, formatHebrewDate, formatTime, timeKey, zonedToInstant } from '@/lib/lobby/time';
 import type { CalEvent, CounterKey, LobbyDoc, ManualProgram, Settings as S } from '@/lib/lobby/types';
 import { api, errorText } from './api';
 import { Impact } from './Impact';
@@ -349,7 +349,9 @@ function PreviewPanel({
             {editing ? 'Previewing your program' : unsaved ? 'Previewing your changes' : now ? 'Preview at another time' : 'Live on the screen'}
           </h2>
           <p>
-            {formatDateLong(shownAt)} · {formatTime(shownAt, clock24)}
+            {formatDateLong(shownAt)}
+            {formatHebrewDate(shownAt) ? ' · ' + formatHebrewDate(shownAt) : ''}
+            {' · '}{formatTime(shownAt, clock24)}
           </p>
         </div>
         <a className="a-iconbtn a-iconbtn-ghost" href="/" target="_blank" rel="noopener" aria-label="Open the screen in a new tab" title="Open the screen">
