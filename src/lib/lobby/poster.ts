@@ -135,7 +135,7 @@ export function buildPosterSvg(sheet: WeekSheet, opts: PosterOptions = {}): stri
         : null,
     }));
     const body = rows.reduce((n, r) => n + eventHeight(r.lines.length), 0);
-    return { day, rows, h: Math.max(126, body + 34) };
+    return { day, rows, h: Math.max(152, body + 34) };
   });
 
   const headH = 250;
@@ -200,6 +200,12 @@ export function buildPosterSvg(sheet: WeekSheet, opts: PosterOptions = {}): stri
         '" text-anchor="middle">' + day.num + '</text>',
       '<text x="' + cx + '" y="' + (y + 116) + '" font-size="19" font-weight="700" fill="' + MUTED +
         '" text-anchor="middle" letter-spacing="1.1">' + esc(day.mon.toUpperCase()) + '</text>',
+      // The Hebrew date, under the month. Its own text element and
+      // centred, so there is no Latin beside it for bidi to reorder.
+      day.hebrew
+        ? '<text x="' + cx + '" y="' + (y + 142) + '" font-size="17" font-weight="600" fill="' +
+          (day.isToday ? ORANGE : MUTED) + '" text-anchor="middle">' + esc(day.hebrew) + '</text>'
+        : '',
       '<line x1="' + (PAD + DATE_COL + 16) + '" y1="' + (y + 22) + '" x2="' + (PAD + DATE_COL + 16) +
         '" y2="' + (y + b.h - 22) + '" stroke="#e6eaf2" stroke-width="2"/>',
     );
@@ -240,11 +246,13 @@ export function buildPosterSvg(sheet: WeekSheet, opts: PosterOptions = {}): stri
     y += b.h + gap;
   }
 
-  // Footer
+  // Footer.
+  //
+  // No count of the programs: anybody reading this can see how many
+  // there are, and a number under them only invites the comparison
+  // with last week that nobody asked for.
   const fy = H - footH + 46;
-  const count = sheet.programCount === 1 ? '1 program' : sheet.programCount + ' programs';
   parts.push(
-    '<text x="' + PAD + '" y="' + fy + '" font-size="24" font-weight="700" fill="#ffffff" fill-opacity="0.82">' + esc(count) + '</text>',
     '<text x="' + (W - PAD) + '" y="' + fy + '" font-size="24" font-weight="600" fill="#ffffff" fill-opacity="0.6" text-anchor="end">' +
       esc(opts.footer ?? 'justonechesed.org') + '</text>',
   );

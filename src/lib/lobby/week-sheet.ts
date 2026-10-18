@@ -1,5 +1,5 @@
 import { shapeEvent, visibleEvents, type ShownEvent } from './model';
-import { addDays, dayKey, dayNumber, formatDayKey, TZ } from './time';
+import { addDays, dayKey, dayNumber, formatDayKey, hebrewDayKey, TZ } from './time';
 import type { CalEvent, Settings } from './types';
 import { hebrewDate } from '@/lib/hebrew-date';
 
@@ -25,6 +25,8 @@ export interface SheetDay {
   num: number;
   /** "Oct" */
   mon: string;
+  /** "ח׳ בחשוון", or '' where the calendar is unavailable */
+  hebrew: string;
   isToday: boolean;
   events: ShownEvent[];
 }
@@ -55,13 +57,17 @@ function rangeLabel(fromKey: string, toKey: string): string {
 function hebrewRangeLabel(from: Date, to: Date): string {
   try {
     const a = hebrewDate(from, { timeZone: TZ });
-    const b = hebrewDate(to, { timeZone: TZ });
+    // The year rides on the end of the range, once, the way the English
+    // line beside it carries 2026 once: ז׳ – י״ג בחשוון תשפ״ז.
+    const b = hebrewDate(to, { timeZone: TZ, year: true });
     if (!a || !b) return '';
-    if (a === b) return a;
+    if (a === hebrewDate(to, { timeZone: TZ })) return b;
     const [, aMon] = a.split(' ');
     const [, bMon] = b.split(' ');
-    // Inside one Hebrew month the month name is said once.
-    return aMon === bMon ? `${a.split(' ')[0]}–${b}` : `${a} – ${b}`;
+    // Inside one Hebrew month the month name is said once. The dash is
+    // spaced: ז׳ – י״ג בחשוון. Closed up, the geresh on the first day
+    // runs straight into the dash and the two read as one mark.
+    return aMon === bMon ? `${a.split(' ')[0]} – ${b}` : `${a} – ${b}`;
   } catch {
     return '';
   }
@@ -98,6 +104,7 @@ export function buildWeekSheet(
       weekdayShort: formatDayKey(key, { weekday: 'short' }),
       num: dayNumber(key),
       mon: formatDayKey(key, { month: 'short' }),
+      hebrew: hebrewDayKey(key),
       isToday: i === 0,
       events: evs.map((e) => shapeEvent(e, settings)),
     });

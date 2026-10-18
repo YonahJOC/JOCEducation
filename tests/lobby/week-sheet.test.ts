@@ -191,3 +191,30 @@ describe("buildPosterSvg", () => {
     expect(h(lots)).toBeGreaterThan(h(one));
   });
 });
+
+describe("the Hebrew on the sheet", () => {
+  const sheet = buildWeekSheet([ev({ program: "One" })], S, NOW);
+
+  it("gives every day its own Hebrew date", () => {
+    expect(sheet.days[0].hebrew).toBe("ז׳ בחשוון");
+  });
+
+  it("carries the year once, on the end of the range", () => {
+    expect(sheet.hebrewRange).toBe("ז׳ – י״ג בחשוון תשפ״ז");
+  });
+
+  it("spaces the dash, so the geresh is not read as part of it", () => {
+    expect(sheet.hebrewRange).toContain("׳ – ");
+  });
+
+  it("puts the day's Hebrew date in the poster's date column", () => {
+    const svg = buildPosterSvg(sheet);
+    expect(svg).toContain("ז׳ בחשוון");
+  });
+
+  it("does not count the programs at the foot of the poster", () => {
+    const svg = buildPosterSvg(buildWeekSheet([ev({ program: "One" }), ev({ program: "Two" })], S, NOW));
+    expect(svg).not.toMatch(/\d+ programs?</);
+    expect(svg).toContain("justonechesed.org");
+  });
+});
