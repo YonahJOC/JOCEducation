@@ -7,6 +7,7 @@ import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { schoolNav } from "@/lib/nav";
 import { viewingAs, currentSchoolId } from "@/lib/school-scope";
 import { onDemoPortal } from "@/lib/demo-school";
+import { IconFont } from "@/components/ui/IconFont";
 import { stopViewingAsSchool } from "@/app/actions/view-as-school";
 import { unreadForSchool } from "@/lib/messages";
 import { SchoolSwitcher } from "@/components/school/SchoolSwitcher";
@@ -103,6 +104,8 @@ export default async function SchoolLayout({ children }: { children: React.React
   }
 
   return (
+    <>
+      <IconFont />
     <PortalShell
       side="school"
       // On the demo the screen is the front page, so the logo goes there.
@@ -170,5 +173,6 @@ export default async function SchoolLayout({ children }: { children: React.React
 
       {children}
     </PortalShell>
+    </>
   );
 }

@@ -137,14 +137,24 @@ async function main() {
     },
   });
 
+  // All three use the PROGRAM template, which draws an icon, the name huge
+  // and one line under it.
+  //
+  // The EVENT template is built around a photograph, and these are seeded
+  // without one \u2014 it left a blank grey block where the picture goes, and the
+  // name, set at the size a photo-less layout gives it, ran off the edge of
+  // the flyer. A demo school's screen is the first thing they see; it should
+  // not open on a broken poster. Real schools upload a photo and use EVENT.
+  //
+  // Names are kept short on purpose: this template sets them at 124px on a
+  // 1920 screen and does not wrap, which is the whole point of it.
   await prisma.screenFlyer.deleteMany({ where: { schoolId: school.id } });
   await prisma.screenFlyer.createMany({
     data: [
       {
-        schoolId: school.id, template: "EVENT", status: "APPROVED",
-        title: "Kindness Booth", line: "11th Grade",
-        startsAt: day(3), time: "2:00\u20134:00 PM", place: "Machane Yehuda Shuk",
-        showFrom: day(-1), showUntil: day(4), sort: 0,
+        schoolId: school.id, template: "PROGRAM", status: "APPROVED",
+        title: "Kindness Booth", line: "11th Grade \u00b7 Thursday 2:00 PM",
+        icon: "storefront", showFrom: day(-1), showUntil: day(4), sort: 0,
       },
       {
         schoolId: school.id, template: "PROGRAM", status: "APPROVED",
@@ -152,10 +162,9 @@ async function main() {
         icon: "bed", showFrom: day(-1), showUntil: day(10), sort: 1,
       },
       {
-        schoolId: school.id, template: "EVENT", status: "PENDING",
-        title: "Bake for Chesed", line: "9th & 10th",
-        startsAt: day(7), time: "After school", place: "School kitchen",
-        showFrom: day(0), showUntil: day(8), sort: 2,
+        schoolId: school.id, template: "PROGRAM", status: "PENDING",
+        title: "Bake for Chesed", line: "9th & 10th \u00b7 After school",
+        icon: "bakery_dining", showFrom: day(0), showUntil: day(8), sort: 2,
       },
     ],
   });

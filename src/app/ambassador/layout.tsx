@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
 import { label, C } from "@/lib/joc-tokens";
+import { IconFont } from "@/components/ui/IconFont";
 
 /**
  * The ambassador's corner of the portal.
@@ -26,6 +27,9 @@ export default async function AmbassadorLayout({ children }: { children: React.R
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: C.paper }}>
+      {/* /ambassador/screen is the same editor the school sees, icons and
+          all, so it needs the same font the school layout loads. */}
+      <IconFont />
       <header style={{ backgroundColor: C.ink, padding: "16px 20px" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto", display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
           <Link href="/ambassador" style={{ textDecoration: "none", display: "block" }}>

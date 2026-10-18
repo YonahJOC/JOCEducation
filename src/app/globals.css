@@ -833,7 +833,17 @@ body {
    Loaded by the console layout only, so the public pages never fetch it. The
    `font-variation-settings` are the same axis values the lobby panel asks
    for, so an icon is the same weight wherever it appears. */
+/*
+  Icon tiles clip their own contents.
+
+  Every one of these is a fixed box with a ligature name inside it. If
+  the font does not arrive — blocked, offline, a bad cache — the name
+  renders as words, and `white-space: nowrap` then runs it straight
+  across whatever is next to it. Clipping makes that failure a blank
+  square instead of a wrecked heading.
+*/
 .material-symbols-rounded {
+  overflow: hidden;
   font-family: "Material Symbols Rounded";
   font-weight: normal;
   font-style: normal;
