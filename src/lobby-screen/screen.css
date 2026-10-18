@@ -55,11 +55,19 @@
 .hdr-date {
   background: rgba(255, 255, 255, 0.14);
   border-radius: 999px;
-  padding: 10px 28px;
+  padding: 14px 28px;
   font-size: 30px;
   font-weight: 700;
-  text-align: center;
-  line-height: 1.15;
+  /* Side by side, on one line, separated by a dot rather than stacked —
+     two dates above one another read as a date and a caption. */
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.hdr-date > * + *::before {
+  content: "·";
+  opacity: 0.55;
+  margin-right: 14px;
 }
 /* The Hebrew date, under the Gregorian one. Smaller and a shade
    back, so the pill still reads as one thing from across a lobby.
@@ -68,7 +76,6 @@
 .hdr-hebrew {
   font-size: 30px;
   font-weight: 700;
-  margin-top: 1px;
 }
 .hdr-hebrew:empty { display: none; }
 .hdr-clock {
@@ -226,6 +233,26 @@
 .coming .panel-title { color: #fff; padding: 8px 8px 0; }
 .coming .panel-title .ms { color: #ff8e00; }
 .week { display: flex; flex-direction: column; gap: 14px; min-height: 0; flex: 1; overflow: hidden; }
+/*
+  The question, in the room the fourth counter used to take.
+
+  Taking Challahs baked off the wall freed a quarter of the impact row, and
+  a stretch of flat blue under the numbers is the one piece of the screen
+  with nothing to report — which makes it the right place to ask the only
+  thing the building is really about.
+*/
+.ask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  font-family: Montserrat, sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+}
 .day {
   background: #fff;
   border-radius: 26px;

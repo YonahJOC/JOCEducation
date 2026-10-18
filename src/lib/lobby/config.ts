@@ -21,7 +21,7 @@ export const DEFAULT_COUNTERS: Counters['values'] = {
   beds: 300,
   // Kept so an existing document still parses; nothing shows it.
   challahs: 0,
-  pizzas: 18500,
+  pizzas: 7000,
 };
 
 export const ENV = {

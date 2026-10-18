@@ -97,7 +97,17 @@ logo.onerror = () => {
 };
 logo.src = '/logo-white.png';
 
-$('#impact').innerHTML = STATS.map((s) => statHTML(s, '0')).join('');
+// The counters, and then the question, in whatever room is left beside
+// them. Taking Challahs baked off the wall freed a quarter of this row,
+// and a stretch of flat blue under the numbers is the one place on the
+// screen with nothing to report — which makes it the right place to ask
+// the only thing the building is really about.
+$('#impact').innerHTML =
+  STATS.map((s) => statHTML(s, '0')).join('') +
+  '<div class="ask">Did you do your just one chesed today?</div>';
+// The counters take the width their numbers need — a clipped '250,000+'
+// is worse than a shorter question — and the question takes the rest.
+$('#impact').style.gridTemplateColumns = `repeat(${STATS.length}, auto) minmax(0, 1fr)`;
 
 function fit() {
   const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);

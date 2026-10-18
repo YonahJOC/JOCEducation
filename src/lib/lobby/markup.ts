@@ -78,7 +78,7 @@ export function dayHTML(d: WeekDay): string {
 export const STATS: Array<{ key: CounterKey; icon: string; color: string; ink: string; label: string; plus?: boolean }> = [
   { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#ff8e00', label: 'Acts of chesed', plus: true },
   { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#214ba5', label: 'Beds given out', plus: true },
-  { key: 'pizzas', icon: 'local_pizza', color: '#E4E9F8', ink: '#ff8e00', label: 'Pizzas made' },
+  { key: 'pizzas', icon: 'local_pizza', color: '#E4E9F8', ink: '#ff8e00', label: 'Pizzas made', plus: true },
 ];
 
 export function statHTML(s: (typeof STATS)[number], value: string): string {
