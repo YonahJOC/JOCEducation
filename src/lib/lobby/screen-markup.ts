@@ -27,8 +27,57 @@ const ms = (name: string, style = '') =>
  * The markup is the original's, down to the class names — the stylesheet
  * carries the rules it came with.
  */
+/**
+ * A family, as opposed to a school group or a seminary.
+ *
+ * It is whatever somebody typed into the group box, so this reads the word
+ * rather than a flag: "the Weidenfeld family", "Cohen Family" and "the Levy
+ * family" all match, and "Machon Maayan" and "Birthright Volunteer" do not.
+ */
+const FAMILY = /\bfamil(y|ies)\b/i;
+
+/**
+ * "the Weidenfeld family" → "The Weidenfeld Family".
+ *
+ * Only the two things that are certainly wrong are touched: the opening
+ * letter, and the word family itself. The surname is left exactly as it was
+ * typed, because nothing here knows whether it is de Vries, Ben-Zion or
+ * O'Brien, and a rule clever enough to guess is a rule that gets somebody's
+ * name wrong on a wall in their own building.
+ */
+function familyName(group: string): string {
+  const s = group.trim().replace(FAMILY, (m) => m[0].toUpperCase() + m.slice(1).toLowerCase());
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 export function programSlideHTML(e: LobbyEvent): string {
   const v = e.venue;
+  const time = esc(e.allDay ? 'All day' : e.timeRange || e.time);
+
+  /**
+   * A family who are here right now get greeted rather than listed.
+   *
+   * They are standing in front of this screen, in a building they have
+   * probably never been in, and the card was telling them the name of the
+   * activity they already know they came for. So the family takes the big
+   * slot, the greeting sits above it, and what they are here for moves down
+   * beside the time — where it is still read, but second.
+   *
+   * Only while it is happening: a family listed for Thursday is not in the
+   * room, and a wall that welcomes an empty doorway means nothing by it.
+   */
+  if (/^happening now$/i.test(e.label) && FAMILY.test(e.groupLine)) {
+    return `<div class="slide">
+  <div class="slide-label" style="background:#ff8e00"><i></i>Welcome</div>
+  <div class="slide-body">
+    <div class="slide-hello">Welcome to Just One Chesed!</div>
+    <div class="slide-program">${esc(familyName(e.groupLine))}</div>
+  </div>
+  ${v ? `<div class="venue-pill" style="background:${esc(v.color)}">${ms(v.icon)}${esc(v.chip)}</div>` : ''}
+  <div class="slide-time">${ms('schedule')}${time}${e.program ? ` &middot; ${esc(e.program)}` : ''}</div>
+</div>`;
+  }
+
   return `<div class="slide">
   <div class="slide-label" style="background:${esc(v?.color || '#214ba5')}"><i></i>${esc(e.label || 'Today')}</div>
   <div class="slide-body">
@@ -36,7 +85,7 @@ export function programSlideHTML(e: LobbyEvent): string {
     ${e.groupLine ? `<div class="slide-group">${esc(e.groupLine)}</div>` : ''}
   </div>
   ${v ? `<div class="venue-pill" style="background:${esc(v.color)}">${ms(v.icon)}${esc(v.chip)}</div>` : ''}
-  <div class="slide-time">${ms('schedule')}${esc(e.allDay ? 'All day' : e.timeRange || e.time)}</div>
+  <div class="slide-time">${ms('schedule')}${time}</div>
 </div>`;
 }
 
