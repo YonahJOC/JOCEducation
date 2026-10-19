@@ -16,7 +16,16 @@ export type ScreenRow = { id: string; slug: string; name: string; up: boolean; w
  * schools is a list nobody scrolls; and the ones with something waiting
  * carry an orange count, because those are the ones going stale.
  */
-export function ScreensList({ rows, lobby }: { rows: ScreenRow[]; lobby: boolean }) {
+export function ScreensList({
+  rows,
+  own,
+  lobby,
+}: {
+  rows: ScreenRow[];
+  /** JOC's own lobby wall, kept out of the alphabetical list. */
+  own?: ScreenRow | null;
+  lobby: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const [q, setQ] = useState("");
@@ -57,6 +66,20 @@ export function ScreensList({ rows, lobby }: { rows: ScreenRow[]; lobby: boolean
           <span className="joc-screens-name">Lobby TV</span>
         </Link>
       ) : null}
+
+      {own ? (
+        <Link
+          href={`/admin/school-screens/${own.slug}`}
+          aria-current={pathname === `/admin/school-screens/${own.slug}` ? "page" : undefined}
+          className="joc-screens-row"
+        >
+          <span aria-hidden="true" className="material-symbols-rounded joc-screens-ic">campaign</span>
+          <span className="joc-screens-name">Lobby shout-outs</span>
+          {own.waiting ? <span className="joc-screens-wait">{own.waiting}</span> : null}
+        </Link>
+      ) : null}
+
+      <div style={{ height: "1px", background: C.hairline, margin: "10px 10px 8px" }} />
 
       <Link href="/admin/school-screens" aria-current={pathname === "/admin/school-screens" ? "page" : undefined} className="joc-screens-row">
         <span aria-hidden="true" className="material-symbols-rounded joc-screens-ic">dashboard</span>

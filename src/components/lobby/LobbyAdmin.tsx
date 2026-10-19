@@ -16,7 +16,7 @@ import "./fit.css";
  * The icon font is the panel's own and is not loaded anywhere else on the
  * site. React hoists this link into the head, and it only ships on this page.
  */
-export function LobbyAdmin() {
+export function LobbyAdmin({ shoutOuts = 0 }: { shoutOuts?: number }) {
   return (
     <>
       <link
@@ -24,7 +24,7 @@ export function LobbyAdmin() {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0&display=block"
       />
       <div className="joc-bleed joc-lobby-admin">
-        <App />
+        <App shoutOuts={shoutOuts} />
       </div>
     </>
   );

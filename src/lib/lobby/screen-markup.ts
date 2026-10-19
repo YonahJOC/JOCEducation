@@ -91,9 +91,19 @@ export function lobbyShoutHTML(
 </div>`;
 
   if (post) {
+    /**
+     * The question stays up, under the heading, once somebody has answered.
+     *
+     * It used to be the card's headline and nothing else, so the first
+     * approved shout-out took it off the wall — and with it the only thing
+     * telling the next person what to send. A wall that stops asking stops
+     * being answered. Small, because the shout-out is what people read;
+     * present, because it is what makes them write one.
+     */
     // A long one is set smaller rather than allowed to overrun the card.
     const size = post.text.length > 95 ? 34 : 40;
     return `${head}
+${theme.question ? `<div class="ss-so-q">${esc(theme.question)}</div>` : ''}
 <div class="ss-so-body">
   <div class="ss-so-text" style="font-size:${size}px">“${esc(post.text)}”</div>
   ${post.from ? `<div class="ss-so-from">${esc(post.from)}</div>` : ''}

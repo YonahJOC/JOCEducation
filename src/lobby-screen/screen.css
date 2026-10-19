@@ -288,3 +288,41 @@
 .ss-logo { display: none; }
 .ss-name-t { line-height: 0; }
 .ss-name-t img { height: 68px; width: auto; display: block; }
+
+/* ---- the question, kept up once somebody has answered ---- */
+.ss-so-q {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, .82);
+  padding: 2px 4px 0;
+  max-width: 62%;
+}
+
+/* ---- Hebrew ----
+   Ploni is JOC's Hebrew face. It is a licensed Fontef family, so the files
+   are not in this repository: drop ploni-regular.woff2 and ploni-bold.woff2
+   into public/brand/fonts/ and every line below picks it up on the next
+   load. Until then each one falls back to Frank Ruhl Libre, which is what
+   they were set in before, so nothing breaks while the files are missing.
+*/
+@font-face {
+  font-family: 'Ploni';
+  src: url('/brand/fonts/ploni-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'Ploni';
+  src: url('/brand/fonts/ploni-bold.woff2') format('woff2');
+  font-weight: 700 900;
+  font-display: swap;
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+
+.ss-hdate,
+.ss-ded-he,
+.ss-theme-he,
+.so-topic-he,
+.ss-so-he { font-family: 'Ploni', 'Frank Ruhl Libre', serif; }

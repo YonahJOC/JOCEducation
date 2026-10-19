@@ -36,6 +36,10 @@ const result = await build({
   outfile: path.join(out, "screen.js"),
   // `import "./screen.css"` emits screen.css next to it.
   loader: { ".css": "css" },
+  // url() paths that start with / are served by Next from public/ at
+  // runtime. esbuild would otherwise try to resolve them on disk and fail
+  // the build over a font that is deliberately not in the repository.
+  external: ["/brand/*"],
   absWorkingDir: root,
   // The one path alias the shared library uses.
   alias: { "@": path.join(root, "src") },

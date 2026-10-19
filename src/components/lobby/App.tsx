@@ -24,8 +24,8 @@ import { useDoc, type SaveState } from './useDoc';
  * own sign-in screen, and now it sits inside the console behind the `lobby`
  * permission, so there is no second secret for anybody to remember.
  */
-export function App() {
-  return <Shell />;
+export function App({ shoutOuts = 0 }: { shoutOuts?: number }) {
+  return <Shell shoutOuts={shoutOuts} />;
 }
 
 // ---------------- Main layout ----------------
@@ -53,7 +53,7 @@ interface EditorState {
   date: string;
 }
 
-function Shell() {
+function Shell({ shoutOuts }: { shoutOuts: number }) {
   const { doc, loaded, loadError, saveState, mutate, refresh } = useDoc();
   const [page, setPage] = useState<Page>(pageFromHash);
   const [editor, setEditor] = useState<EditorState | null>(null);
@@ -61,7 +61,17 @@ function Shell() {
   const [counterDraft, setCounterDraft] = useState<Record<CounterKey, number> | null>(null);
   const [settingsDraft, setSettingsDraft] = useState<Partial<S> | null>(null);
   const [previewAt, setPreviewAt] = useState<string>(''); // '' = live
-  const wide = useMedia('(min-width: 1320px)');
+  /**
+   * Wide enough for the preview to sit beside the work, not just wide
+   * enough to fit it on.
+   *
+   * At 1320 the sum came out at 248 of sidebar + 460 of preview, leaving
+   * about 530px for the column somebody is actually typing in — which is
+   * where a programme's name, its time and its buttons started climbing
+   * over each other on a 13" Mac. The preview moves to its own tab below
+   * this, rather than taking the room the work needs.
+   */
+  const wide = useMedia('(min-width: 1500px)');
   // The screen reads Google itself; the panel never did, because the
   // preview only had to show what an editor was changing. A sheet going
   // to the staff group has to be the whole week, from both sources.
@@ -217,7 +227,7 @@ function Shell() {
         </div>
         <ul>
           {NAV.filter((n) => !n.mobileOnly || !wide).map((n) => (
-            <li key={n.id} className={n.mobileOnly ? 'a-only-narrow' : ''}>
+            <li key={n.id}>
               <a
                 href={'#' + n.id}
                 aria-current={page === n.id ? 'page' : undefined}
@@ -233,6 +243,18 @@ function Shell() {
           ))}
         </ul>
         <div className="a-side-foot">
+          {/*
+            The shout-outs people send from the QR code on the wall are
+            approved in the screens console, because the wall is a school's
+            screen and that is where every school's are approved. Nothing
+            here said so, so they looked lost. The count is the point: it
+            says there is something waiting without being opened.
+          */}
+          <a className="a-side-link" href="/admin/school-screens/joc-lobby">
+            <Icon name="campaign" fill={false} />
+            <span>Shout-outs</span>
+            {shoutOuts > 0 && <b className="a-side-count">{shoutOuts}</b>}
+          </a>
           <a className="a-side-link" href="/lobby" target="_blank" rel="noopener">
             <Icon name="open_in_new" fill={false} />
             <span>Open the screen</span>

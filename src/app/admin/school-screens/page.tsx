@@ -1,7 +1,7 @@
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isScreenStaff } from "@/lib/school-screen/access";
-import { ScreensConsole, SCREEN_CONSOLE_SCHOOLS } from "@/components/admin/ScreensConsole";
+import { ScreensConsole, SCREEN_CONSOLE_LIST } from "@/components/admin/ScreensConsole";
 import { C, F, R, T, pageTitle } from "@/lib/joc-tokens";
 
 /**
@@ -28,8 +28,8 @@ export default async function SchoolScreensPage() {
 
   const [schools, up, flyers, photos, shouts] = isDatabaseConfigured()
     ? await Promise.all([
-        prisma.school.count({ where: SCREEN_CONSOLE_SCHOOLS }).catch(() => 0),
-        prisma.school.count({ where: { AND: [SCREEN_CONSOLE_SCHOOLS, { liveScreenUrl: { not: null } }] } }).catch(() => 0),
+        prisma.school.count({ where: SCREEN_CONSOLE_LIST }).catch(() => 0),
+        prisma.school.count({ where: { AND: [SCREEN_CONSOLE_LIST, { liveScreenUrl: { not: null } }] } }).catch(() => 0),
         prisma.screenFlyer.count({ where: { status: "PENDING" } }).catch(() => 0),
         prisma.screenPhoto.count({ where: { status: "PENDING" } }).catch(() => 0),
         prisma.shoutOut.count({ where: { status: "PENDING" } }).catch(() => 0),

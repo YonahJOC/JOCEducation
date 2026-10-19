@@ -4,7 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isScreenStaff } from "@/lib/school-screen/access";
 import { ScreensList, type ScreenRow } from "./ScreensList";
-import { LOBBY_SLUG } from "@/lib/lobby/screen-data";
+import { LOBBY_SLUG } from "@/lib/lobby/slug";
 
 /**
  * Live screens: one console for every TV JOC looks after.
@@ -32,6 +32,11 @@ import { LOBBY_SLUG } from "@/lib/lobby/screen-data";
  * list of 44, and the first person to notice would have gone looking for a
  * bug in the switch.
  */
+/** The schools, with our own lobby wall left out: it has its own row. */
+export const SCREEN_CONSOLE_LIST: Prisma.SchoolWhereInput = {
+  AND: [{ OR: [{ isTest: false }, { demoAt: { not: null } }] }, { slug: { not: LOBBY_SLUG } }],
+};
+
 export const SCREEN_CONSOLE_SCHOOLS: Prisma.SchoolWhereInput = {
   OR: [
     { isTest: false },
@@ -68,14 +73,26 @@ export async function ScreensConsole({ children }: { children: React.ReactNode }
       }).catch(() => [])
     : [];
 
-  const rows: ScreenRow[] = schools.map((s) => ({
+  const all: ScreenRow[] = schools.map((s) => ({
     id: s.id, slug: s.slug, name: s.name, up: Boolean(s.liveScreenUrl),
     waiting: s._count.shoutOuts + s._count.screenPhotos + s._count.screenFlyers,
   }));
 
+  /**
+   * Our own wall comes out of the alphabet.
+   *
+   * It is a school row like any other, which put it twenty-second of
+   * forty-five under the name "Just One Chesed" — so somebody looking for
+   * the lobby's shout-outs scrolled a list of schools and did not find
+   * anything that looked like the lobby. It goes at the top now, next to
+   * the panel it belongs with, and is not left in the list twice.
+   */
+  const rows = all.filter((r) => r.slug !== LOBBY_SLUG);
+  const own = all.find((r) => r.slug === LOBBY_SLUG) ?? null;
+
   return (
     <div className="joc-bleed joc-screens">
-      <ScreensList rows={rows} lobby={lobby} />
+      <ScreensList rows={rows} own={own} lobby={lobby} />
       <div className="joc-screens-main">{children}</div>
     </div>
   );

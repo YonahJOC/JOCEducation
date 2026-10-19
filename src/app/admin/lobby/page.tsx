@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
+import { LOBBY_SLUG } from "@/lib/lobby/slug";
 import { LobbyAdmin } from "@/components/lobby/LobbyAdmin";
 import { ScreensConsole } from "@/components/admin/ScreensConsole";
 import { C, F, R, pageTitle } from "@/lib/joc-tokens";
@@ -46,9 +48,17 @@ export default async function LobbyPage() {
     );
   }
 
+  // What is waiting to be read, for the badge on the panel's own link to
+  // the queue. A failure here must not take the panel down with it.
+  const shoutOuts = isDatabaseConfigured()
+    ? await prisma.shoutOut
+        .count({ where: { status: "PENDING", school: { slug: LOBBY_SLUG } } })
+        .catch(() => 0)
+    : 0;
+
   return (
     <ScreensConsole>
-      <LobbyAdmin />
+      <LobbyAdmin shoutOuts={shoutOuts} />
     </ScreensConsole>
   );
 }
