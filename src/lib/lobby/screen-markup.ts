@@ -30,20 +30,13 @@ const ms = (name: string, style = '') =>
 export function programSlideHTML(e: LobbyEvent): string {
   const v = e.venue;
   return `<div class="slide">
+  <div class="slide-label" style="background:${esc(v?.color || '#214ba5')}"><i></i>${esc(e.label || 'Today')}</div>
   <div class="slide-body">
-    <div class="slide-label" style="background:${esc(v?.color || '#214ba5')}"><i></i>${esc(e.label || 'Today')}</div>
     <div class="slide-program">${esc(e.program)}</div>
-    <div class="slide-group">${esc(e.groupLine)}</div>
-    <div class="slide-time">${ms('schedule')}${esc(e.allDay ? 'All day' : e.timeRange || e.time)}</div>
+    ${e.groupLine ? `<div class="slide-group">${esc(e.groupLine)}</div>` : ''}
   </div>
-  ${
-    v
-      ? `<div class="venue-block" style="background:${esc(v.color)}">
-    ${ms(v.icon)}
-    <div class="venue-short">${esc(v.chip)}</div>
-  </div>`
-      : ''
-  }
+  ${v ? `<div class="venue-pill" style="background:${esc(v.color)}">${ms(v.icon)}${esc(v.chip)}</div>` : ''}
+  <div class="slide-time">${ms('schedule')}${esc(e.allDay ? 'All day' : e.timeRange || e.time)}</div>
 </div>`;
 }
 
@@ -68,4 +61,48 @@ export function tilesHTML(
   <div class="ss-gr-k">${ms('volunteer_activism')}Our impact</div>
 </div>
 <div class="ss-gr-tiles ss-three">${body}</div>`;
+}
+
+/**
+ * The shout-out card, with the cycle in it.
+ *
+ * A school's version takes its topic from the Cycle it is running and asks
+ * everybody the same question — "Who made a difference to you this week?"
+ * — which stops being read by about the third week.
+ *
+ * The lobby's carries the theme itself in the pill, Hebrew and all, and
+ * asks whatever is set against that theme in the panel. The question is the
+ * headline, because that is the thing somebody is meant to answer; the
+ * theme is the context for it.
+ */
+export function lobbyShoutHTML(
+  post: { text: string; from: string } | null,
+  theme: { en: string; he: string; question: string },
+): string {
+  const pill = theme.en
+    ? `<div class="ss-so-topic">${ms('menu_book')}${esc(theme.en)}${
+        theme.he ? `<span class="so-topic-he" dir="rtl">${esc(theme.he)}</span>` : ''
+      }</div>`
+    : '';
+
+  const head = `<div class="ss-so-head">
+  <div class="ss-so-k">${ms('campaign')}Chesed shout-out</div>
+  ${pill}
+</div>`;
+
+  if (post) {
+    // A long one is set smaller rather than allowed to overrun the card.
+    const size = post.text.length > 95 ? 34 : 40;
+    return `${head}
+<div class="ss-so-body">
+  <div class="ss-so-text" style="font-size:${size}px">“${esc(post.text)}”</div>
+  ${post.from ? `<div class="ss-so-from">${esc(post.from)}</div>` : ''}
+</div>`;
+  }
+
+  return `${head}
+<div class="ss-so-body">
+  <div class="ss-so-text" style="font-size:40px">${esc(theme.question)}</div>
+  <div class="ss-so-from">Scan the code and tell everyone.</div>
+</div>`;
 }

@@ -56,7 +56,7 @@ export type LobbyScreenData = ScreenData & {
     week: LobbyDay[];
     /** All-day items. */
     banners: LobbyEvent[];
-    theme: { en: string; he: string };
+    theme: { en: string; he: string; question: string };
     counters: { beds: number; pizzas: number };
     /** Hours across every organisation on the app, or null if it did not answer. */
     hours: number | null;
@@ -134,7 +134,12 @@ export async function buildLobbyScreenData(
     // The lobby keeps its own cycle theme. A school's comes from the Cycle
     // it is running, and editing that to change this wall would change
     // every school's screen with it.
-    theme: { en: doc.settings.theme.en, he: doc.settings.theme.he || null, topic: null },
+    // The topic a school takes from its Cycle; the lobby's is its own.
+    theme: {
+      en: doc.settings.theme.en,
+      he: doc.settings.theme.he || null,
+      topic: doc.settings.theme.question || null,
+    },
     network: network.map((n) => ({
       name: n.school.screenShortName || n.school.name,
       hours: n.hoursAllTime ?? 0,

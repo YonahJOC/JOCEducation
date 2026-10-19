@@ -20,7 +20,7 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
   const toast = useToast();
   const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
-  const ids = { center: useId(), slide: useId(), themeEn: useId(), themeHe: useId() };
+  const ids = { center: useId(), slide: useId(), themeEn: useId(), themeHe: useId(), themeQ: useId() };
   const dirty = JSON.stringify(v) !== JSON.stringify(saved);
   const set = (patch: Partial<Editable>) => setV((x) => ({ ...x, ...patch }));
 
@@ -39,7 +39,7 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
         ...d.settings,
         ...v,
         centerName: v.centerName.trim() || 'JOC Center',
-        theme: { en: v.theme.en.trim(), he: v.theme.he.trim() },
+        theme: { en: v.theme.en.trim(), he: v.theme.he.trim(), question: v.theme.question.trim() },
       },
     }));
     setSaving(false);
@@ -167,6 +167,20 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
               maxLength={60}
               placeholder="חשבון הנפש"
               onChange={(e) => set({ theme: { ...v.theme, he: e.target.value } })}
+            />
+          </Field>
+          <Field
+            label="What the screen asks"
+            htmlFor={ids.themeQ}
+            hint="The question on the shout-out card. Tie it to the theme and change it when the theme does."
+          >
+            <input
+              id={ids.themeQ}
+              className="a-input"
+              value={v.theme.question}
+              maxLength={120}
+              placeholder="Who made you want to be better this week?"
+              onChange={(e) => set({ theme: { ...v.theme, question: e.target.value } })}
             />
           </Field>
         </Card>

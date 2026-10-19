@@ -201,7 +201,21 @@ describe('the cycle theme on the lobby wall', () => {
 
   it('keeps what somebody typed', () => {
     const d = sanitizeDoc({ settings: { theme: { en: 'Hachnasat Orchim', he: 'הכנסת אורחים' } } });
-    expect(d.settings.theme).toEqual({ en: 'Hachnasat Orchim', he: 'הכנסת אורחים' });
+    expect(d.settings.theme.en).toBe('Hachnasat Orchim');
+    expect(d.settings.theme.he).toBe('הכנסת אורחים');
+  });
+
+  it('carries the question the shout-out card asks', () => {
+    const d = sanitizeDoc({
+      settings: { theme: { en: 'Bikur Cholim', he: '', question: 'Who did you go and see?' } },
+    });
+    expect(d.settings.theme.question).toBe('Who did you go and see?');
+  });
+
+  it('falls back to a question rather than asking nothing', () => {
+    // A theme typed in without one must not leave the card blank.
+    const d = sanitizeDoc({ settings: { theme: { en: 'Bikur Cholim', he: '' } } });
+    expect(d.settings.theme.question.length).toBeGreaterThan(0);
   });
 
   it('lets the Hebrew be dropped without the English falling back', () => {

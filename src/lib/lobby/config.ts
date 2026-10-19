@@ -44,7 +44,11 @@ export function defaultSettings(): Settings {
       usa: ['usa', 'ny', 'nj', 'ma', 'il', 'ca', 'fl', 'md', 'new york', 'chicago', 'teaneck', 'brooklyn'],
     },
     centerName: 'JOC Center',
-    theme: { en: 'Cheshbon Hanefesh', he: 'חשבון הנפש' },
+    theme: {
+      en: 'Cheshbon Hanefesh',
+      he: 'חשבון הנפש',
+      question: 'Who made you want to be better this week?',
+    },
     slideSeconds: ENV.slideSeconds,
     daysAhead: 4,
     refreshMinutes: ENV.refreshMinutes,
@@ -109,6 +113,7 @@ export function sanitizeSettings(raw: unknown): Settings {
       return {
         en: str(t.en, 60).trim() || d.theme.en,
         he: str(t.he, 60).trim() || (str(t.en, 60).trim() ? '' : d.theme.he),
+        question: str(t.question, 120).trim() || d.theme.question,
       };
     })(),
     slideSeconds: clamp(s.slideSeconds, 3, 30, d.slideSeconds),

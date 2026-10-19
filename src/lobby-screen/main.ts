@@ -1,8 +1,8 @@
 import { hebrewDate } from '@/lib/hebrew-date';
 import './screen.css';
 import type { LobbyScreenData } from '@/lib/lobby/screen-data';
-import { esc, marqueeHTML, shoutEmptyHTML, shoutHTML } from '@/lib/school-screen/markup';
-import { programSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
+import { esc, marqueeHTML } from '@/lib/school-screen/markup';
+import { lobbyShoutHTML, programSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
 import { dayKey } from '@/lib/school-screen/rules';
 
 /**
@@ -193,14 +193,10 @@ function render() {
   document.querySelectorAll<HTMLElement>('#track .ss-slide').forEach((el, i) => el.classList.toggle('on', i === k));
 
 
-  // The shout-out card, exactly as a school's: one at a time, moving on
-  // with every other slide, and a QR beside it to send one.
-  const topic = d.theme?.topic ?? null;
-  if (d.shoutOuts.length) {
-    setHTML('soContent', shoutHTML(d.shoutOuts[state.shout % d.shoutOuts.length], topic));
-  } else {
-    setHTML('soContent', shoutEmptyHTML(topic));
-  }
+  // The shout-out card, carrying the cycle: the theme in the pill, and
+  // the question set against it as the thing being asked.
+  const post = d.shoutOuts.length ? d.shoutOuts[state.shout % d.shoutOuts.length] : null;
+  setHTML('soContent', lobbyShoutHTML(post, d.lobby.theme));
   show('soQr', Boolean(d.shoutOutQrSvg));
   setHTML('soQrBox', d.shoutOutQrSvg ?? '');
 
@@ -216,13 +212,9 @@ function render() {
     { label: 'Pizzas', value: count(d.lobby.counters.pizzas) + '+', unit: 'made', icon: 'local_pizza' },
   ]));
 
-  // The band.
-  show('themeSect', Boolean(d.theme));
-  if (d.theme) {
-    $('#schoolsLearning').textContent = 'This cycle';
-    $('#theme').textContent = d.theme.en;
-    $('#themeHe').textContent = d.theme.he ?? '';
-  }
+  // The band. The cycle is in the shout-out card now, not here — one
+  // screen saying it twice is one screen saying it once too often.
+  show('themeSect', false);
   show('around', d.network.length > 0);
   if (d.network.length) {
     // All-time, which is what the app reports; a school's screen says

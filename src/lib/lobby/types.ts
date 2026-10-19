@@ -46,7 +46,18 @@ export interface Settings {
    * and editing the Cycle to change this wall would change every
    * school's screen with it.
    */
-  theme: { en: string; he: string };
+  theme: {
+    en: string;
+    he: string;
+    /**
+     * What the shout-out card asks, tied to the theme above.
+     *
+     * A school's comes from the Cycle it is running. The lobby's is its
+     * own, because a wall that asks everybody the same thing every week
+     * stops being read.
+     */
+    question: string;
+  };
   clock24: boolean;
   /** Google Calendar event ids hidden from the screen by an admin */
   hiddenIds: string[];

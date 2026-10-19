@@ -202,16 +202,24 @@
 
 
 
+
+/* The slide brings its own white card, so the panel behind it is bare. */
+.ss-slides { background: transparent; box-shadow: none; }
+
+
 /*
-   The programme slide, as the lobby wall always drew it.
+   The programme slide.
 
-   A school’s flyer is a poster somebody composed. A programme off a diary is
-   a name, who is coming and when — and this is the shape that was built for
-   it: the label, the name, the group, the time, and the venue in its own
-   colour beside them.
+   The wall gives this panel a near-square 745×752. The shape this slide
+   came off was wide and short — a body on the left, the venue in a column
+   down the right, the time pushed to the floor by margin-top:auto — and in
+   a square that left the name at the ceiling and a third of the card
+   empty.
 
-   It sits inside .ss-slide, which positions and crossfades it, so the
-   carousel and track rules it once needed are not brought back with it.
+   So it is one centred column: what is on, who is coming, where, and when.
+   The full width goes to the programme name, which is what somebody
+   crossing the lobby is reading, and the venue keeps its colour as a pill
+   rather than a wall.
 */
 .slide {
   position: absolute;
@@ -219,19 +227,19 @@
   box-sizing: border-box;
   background: #fff;
   border-radius: 26px;
-  padding: 32px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 230px;
-  gap: 32px;
-  align-items: stretch;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 22px;
 }
-.slide-body { display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 4px 0 4px 12px; }
 .slide-label {
-  align-self: flex-start;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -239,52 +247,24 @@
   padding: 8px 20px;
   border-radius: 999px;
 }
-.slide-label i { width: 12px; height: 12px; border-radius: 50%; background: #fff; }
-.slide-program { font-size: 74px; font-weight: 800; line-height: 1.02; letter-spacing: -0.02em; text-wrap: pretty; }
-.slide-group { font-size: 38px; font-weight: 700; line-height: 1.15; color: #214ba5; }
-.slide-time {
-  margin-top: auto;
-  display: flex;
+.slide-label i { width: 11px; height: 11px; border-radius: 50%; background: #fff; }
+.slide-body { display: flex; flex-direction: column; align-items: center; gap: 14px; min-width: 0; }
+.slide-program { font-size: 60px; font-weight: 800; line-height: 1.04; letter-spacing: -0.02em; text-wrap: balance; }
+.slide-group { font-size: 30px; font-weight: 700; line-height: 1.15; color: #214ba5; }
+.venue-pill {
+  display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-size: 32px;
-  font-weight: 700;
-  color: #214ba5;
-  font-variant-numeric: tabular-nums;
-}
-.slide-time .ms { font-size: 36px; color: #214ba5; }
-.venue-block {
-  border-radius: 20px;
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 24px 16px;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-size: 28px;
+  font-weight: 800;
+  max-width: 100%;
 }
-.venue-block .ms { font-size: 96px; color: #fff; }
-.venue-short { font-size: 30px; font-weight: 800; text-align: center; line-height: 1.1; }
-.venue-place { font-size: 22px; font-weight: 700; text-align: center; line-height: 1.2; opacity: 0.92; }
+.venue-pill .ss-ms { font-size: 32px; }
+.slide-time { display: flex; align-items: center; gap: 12px; font-size: 30px; font-weight: 800; color: #214ba5; }
+.slide-time .ss-ms { font-size: 32px; color: #214ba5; }
 
-/* The slide brings its own white card, so the panel behind it is bare. */
-.ss-slides { background: transparent; box-shadow: none; }
-
-/*
-   Sized for this column, not the old one.
-
-   The rules above came off a screen whose programme panel was the wider of
-   two; here it is the narrower, about 745px against a little over a
-   thousand. At the original sizes "The Kindness Booth- Rova" broke onto
-   four lines and the venue block took a third of the card.
-*/
-.slide { padding: 28px; grid-template-columns: minmax(0, 1fr) 168px; gap: 24px; }
-.slide-body { gap: 10px; padding: 2px 0 2px 6px; }
-.slide-label { font-size: 17px; padding: 6px 15px; gap: 9px; }
-.slide-label i { width: 9px; height: 9px; }
-.slide-program { font-size: 50px; line-height: 1.04; }
-.slide-group { font-size: 27px; }
-.slide-time { font-size: 27px; }
-.slide-time .ms { font-size: 27px; }
-.venue-block .ms { font-size: 66px; }
-.venue-short { font-size: 22px; }
+/* The theme's Hebrew, beside its name in the shout-out card's pill. */
+.so-topic-he { font-family: 'Frank Ruhl Libre', serif; font-weight: 700; color: #ff8e00; margin-inline-start: 10px; }
