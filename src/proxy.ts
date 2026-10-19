@@ -106,6 +106,23 @@ const PUBLIC_FILES = new Set([
   "/opengraph-image",
 ]);
 
+/**
+ * "Somebody has signed in on this browser before."
+ *
+ * Carries no name, no session and nothing secret — it is a single 1, set on
+ * any request that already has a session and kept for a year. All it does
+ * is let the gate tell a returning teacher from a stranger once their
+ * session has run out.
+ *
+ * Without it, everyone who comes back to the address gets the marketing
+ * page: the right thing for a school that has never heard of us, and a
+ * locked door for the people who use this every week. They had to find a
+ * sign-in button and scroll to a form to get at a page they have opened a
+ * hundred times.
+ */
+const RETURNING = "joc-returning";
+const RETURNING_MAX_AGE = 365 * 24 * 60 * 60;
+
 // Auth.js v5 cookie names. The __Secure- prefix is used over HTTPS.
 const SESSION_COOKIES = [
   "authjs.session-token",
@@ -128,17 +145,40 @@ export function proxy(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
   const hasSession = signedIn(req);
+  const returning = Boolean(req.cookies.get(RETURNING)?.value);
+
+  /** Marks the browser as one that has signed in, on the way past. */
+  const remember = (res: NextResponse) => {
+    if (hasSession && !returning) {
+      res.cookies.set(RETURNING, "1", {
+        path: "/",
+        maxAge: RETURNING_MAX_AGE,
+        sameSite: "lax",
+        httpOnly: true,
+        secure: inProduction,
+      });
+    }
+    return res;
+  };
 
   // Someone already signed in has no use for the landing page.
   if (hasSession && pathname === "/") {
     const url = req.nextUrl.clone();
     url.pathname = "/home";
     url.search = "";
+    return remember(NextResponse.redirect(url));
+  }
+
+  // Signed out, but this browser has signed in before: send them to the
+  // sign-in page rather than to a page selling them the product.
+  if (!hasSession && returning && pathname === "/" && !req.nextUrl.searchParams.has("stay")) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (isPublic(pathname)) return NextResponse.next();
-  if (hasSession) return NextResponse.next();
+  if (isPublic(pathname)) return remember(NextResponse.next());
+  if (hasSession) return remember(NextResponse.next());
 
   // An API caller wants an answer, not a marketing page. Redirecting one to
   // the landing page hands it a 200 and a lump of HTML, which reads as
@@ -148,8 +188,10 @@ export function proxy(req: NextRequest) {
   }
 
   // Send them to the landing page, remembering where they were headed.
+  // A returning browser is sent to the sign-in page; a stranger gets the
+  // landing page, which is where the explanation of all this lives.
   const url = req.nextUrl.clone();
-  url.pathname = "/";
+  url.pathname = returning ? "/login" : "/";
   url.search = pathname === "/home" ? "" : `?next=${encodeURIComponent(pathname)}`;
   return NextResponse.redirect(url);
 }
