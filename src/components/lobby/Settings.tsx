@@ -179,7 +179,7 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
               className="a-input"
               value={v.theme.question}
               maxLength={120}
-              placeholder="Who made you want to be better this week?"
+              placeholder="What’s a chesed someone did for you this week?"
               onChange={(e) => set({ theme: { ...v.theme, question: e.target.value } })}
             />
           </Field>

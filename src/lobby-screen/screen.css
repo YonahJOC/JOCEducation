@@ -268,3 +268,14 @@
 
 /* The theme's Hebrew, beside its name in the shout-out card's pill. */
 .so-topic-he { font-family: 'Frank Ruhl Libre', serif; font-weight: 700; color: #ff8e00; margin-inline-start: 10px; }
+
+/*
+   The band: the wordmark, then the ticker across everything left.
+
+   A school's band is four cells — wordmark, the cycle, the ticker, the
+   worldwide counter — and the ticker is given a fixed 560px because the
+   other three are competing with it. Here it is the only thing beside
+   the wordmark, so it takes the rest.
+*/
+.ss-band { grid-template-columns: auto minmax(0, 1fr); }
+.ss-around { width: auto; }

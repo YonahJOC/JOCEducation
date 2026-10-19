@@ -47,7 +47,7 @@ export function defaultSettings(): Settings {
     theme: {
       en: 'Cheshbon Hanefesh',
       he: 'חשבון הנפש',
-      question: 'Who made you want to be better this week?',
+      question: 'What’s a chesed someone did for you this week?',
     },
     slideSeconds: ENV.slideSeconds,
     daysAhead: 4,

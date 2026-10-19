@@ -70,12 +70,7 @@ document.getElementById('app')!.innerHTML = `
     </div>
     <div class="ss-band">
       <div class="ss-band-logo"><img src="/brand/joc-wordmark.png" alt="Just One Chesed" /></div>
-      <div class="ss-sect" id="themeSect">
-        <div class="ss-sect-ic"><span class="ss-ms">menu_book</span></div>
-        <div class="ss-sect-txt"><div class="ss-k" id="schoolsLearning"></div><div class="ss-theme" id="theme"></div><div class="ss-theme-he" dir="rtl" id="themeHe"></div></div>
-      </div>
       <div class="ss-around" id="around"><div class="ss-k" id="aroundK"></div><div class="ss-mq" id="mq"></div></div>
-      <div class="ss-world" id="world"><span class="ss-ms">public</span><div><div class="ss-world-n" id="worldN"></div><div class="ss-world-l">hours of chesed worldwide</div></div></div>
     </div>
   </div>
 </div>
@@ -157,12 +152,18 @@ function renderClock() {
  * hours is the figure the app actually answers, and it has a tile of its
  * own now.
  */
+/**
+ * The line under the name, and the counter in the band.
+ *
+ * The same split a school's screen uses: what we have done up here, what
+ * everybody has done down there. They are different figures — this one is
+ * the schools JOC tracks, the band's is every organisation on the app.
+ */
 function renderNumbers(d: LobbyScreenData) {
-  // The band carries the worldwide counter a school's does, so the line
-  // under the name does not say it twice.
-  $('#stats').textContent = '';
-  show('world', d.worldHours != null);
-  if (d.worldHours != null) $('#worldN').textContent = count(d.worldHours);
+  const bits: string[] = [];
+  if (d.stats.acts != null) bits.push(`${count(d.stats.acts)} acts of chesed`);
+  if (d.stats.hours != null) bits.push(`${count(d.stats.hours)} hours across JOC schools`);
+  $('#stats').textContent = bits.join(' · ');
 }
 
 function render() {
@@ -212,9 +213,6 @@ function render() {
     { label: 'Pizzas', value: count(d.lobby.counters.pizzas) + '+', unit: 'made', icon: 'local_pizza' },
   ]));
 
-  // The band. The cycle is in the shout-out card now, not here — one
-  // screen saying it twice is one screen saying it once too often.
-  show('themeSect', false);
   show('around', d.network.length > 0);
   if (d.network.length) {
     // All-time, which is what the app reports; a school's screen says

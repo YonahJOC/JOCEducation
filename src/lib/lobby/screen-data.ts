@@ -121,6 +121,22 @@ export async function buildLobbyScreenData(
    *
    * Hours all-time, as the app reports them; the label says so.
    */
+  /**
+   * JOC's own figures, for the line under the name.
+   *
+   * A school's screen prints what that school has done there and leaves
+   * the worldwide total to the band. The lobby's equivalent of “what we
+   * have done” is every school JOC tracks added up — which is a different
+   * and smaller thing than spendTimeByAll, because the app carries
+   * organisations this portal has never heard of.
+   */
+  const totals = await prisma.appSchoolStats
+    .aggregate({
+      where: { school: { isTest: false } },
+      _sum: { actsAllTime: true, hoursAllTime: true },
+    })
+    .catch(() => null);
+
   const network = await prisma.appSchoolStats
     .findMany({
       where: { hoursAllTime: { gt: 0 }, school: { isTest: false } },
@@ -145,6 +161,10 @@ export async function buildLobbyScreenData(
       hours: n.hoursAllTime ?? 0,
     })),
     networkSchools: network.length,
+    stats: {
+      acts: totals?._sum.actsAllTime ?? null,
+      hours: totals?._sum.hoursAllTime ?? null,
+    },
     // The counter beside the ticker is the app’s own all-schools figure,
     // not our sum of the rows above: the app counts organisations this
     // portal does not track.
