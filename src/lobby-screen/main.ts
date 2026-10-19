@@ -2,7 +2,7 @@ import { hebrewDate } from '@/lib/hebrew-date';
 import './screen.css';
 import type { LobbyScreenData } from '@/lib/lobby/screen-data';
 import { esc, marqueeHTML, shoutEmptyHTML, shoutHTML } from '@/lib/school-screen/markup';
-import { capHTML, programSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
+import { programSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
 import { dayKey } from '@/lib/school-screen/rules';
 
 /**
@@ -59,7 +59,7 @@ document.getElementById('app')!.innerHTML = `
       <div class="ss-clock-box"><div class="ss-clock" id="clock"></div><div class="ss-date" id="date"></div><div class="ss-hdate" id="hdate"></div></div>
     </div>
     <div class="ss-mid" id="mid">
-      <div class="ss-slides" id="slides"><div id="track"></div><div class="ss-cap" id="cap"></div></div>
+      <div class="ss-slides" id="slides"><div id="track"></div></div>
       <div class="ss-right">
         <div class="ss-so" id="so">
           <div class="ss-so-content" id="soContent"></div>
@@ -138,13 +138,9 @@ function count(n: number): string {
  * the week ahead in their place. A wall people walk past all evening must
  * never be an empty box.
  */
-function slides(d: LobbyScreenData): { html: string; line: string }[] {
-  const done = d.lobby.today.length === 0;
-  const list = done ? d.lobby.ahead : d.lobby.today;
-  return list.map((e) => ({
-    html: programSlideHTML(e),
-    line: [e.groupLine, e.venue?.chip].filter(Boolean).join('  ·  ') || e.program,
-  }));
+function slides(d: LobbyScreenData): { html: string }[] {
+  const list = d.lobby.today.length ? d.lobby.today : d.lobby.ahead;
+  return list.map((e) => ({ html: programSlideHTML(e) }));
 }
 
 function renderClock() {
@@ -196,13 +192,6 @@ function render() {
   const k = list.length ? state.slide % list.length : 0;
   document.querySelectorAll<HTMLElement>('#track .ss-slide').forEach((el, i) => el.classList.toggle('on', i === k));
 
-  // The caption bar names the list and marks the place in it. A school
-  // only captions photographs; here every slide is a programme.
-  const done = d.lobby.today.length === 0;
-  $('#cap').classList.toggle('on', list.length > 0);
-  if (list.length) {
-    setHTML('cap', capHTML(done ? 'Coming up this week at JOC' : 'Today at JOC', list[k].line, k, list.length));
-  }
 
   // The shout-out card, exactly as a school's: one at a time, moving on
   // with every other slide, and a QR beside it to send one.

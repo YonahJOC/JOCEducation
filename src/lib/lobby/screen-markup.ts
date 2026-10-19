@@ -52,19 +52,6 @@ export function programSlideHTML(e: LobbyEvent): string {
 </div>`;
 }
 
-/** The caption bar under the slideshow: what this is, and where in it. */
-export function capHTML(kicker: string, line: string, i: number, n: number): string {
-  const dots =
-    n > 1
-      ? `<div class="ss-cdots">${Array.from({ length: n }, (_, k) => `<div class="ss-cdot${k === i ? ' on' : ''}"></div>`).join('')}</div>`
-      : '';
-  return `<div class="ss-cap-head">
-  <div class="ss-cap-k">${ms('today')}${esc(kicker)}</div>
-  ${dots}
-</div>
-<div class="ss-cap-t">${esc(line)}</div>`;
-}
-
 /** The three tiles, where a school shows hours by grade. */
 export function tilesHTML(
   tiles: { label: string; value: string; unit: string; icon: string; on?: boolean }[],
