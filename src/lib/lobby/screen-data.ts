@@ -4,7 +4,7 @@ import type { ScreenData } from "@/lib/school-screen/types";
 import { readDoc } from "@/lib/lobby/store";
 import { combineEvents } from "@/lib/lobby/events";
 import { buildView } from "@/lib/lobby/model";
-import { liveTotals } from "@/lib/lobby/live";
+import { liveSchools, liveTotals } from "@/lib/lobby/live";
 import { prisma } from "@/lib/prisma";
 import type { Slide, WeekDay } from "@/lib/lobby/model";
 import { LOBBY_SLUG } from "@/lib/lobby/slug";
@@ -130,20 +130,61 @@ export async function buildLobbyScreenData(
    * and smaller thing than spendTimeByAll, because the app carries
    * organisations this portal has never heard of.
    */
-  const totals = await prisma.appSchoolStats
-    .aggregate({
-      where: { school: { isTest: false } },
-      _sum: { actsAllTime: true, hoursAllTime: true },
-    })
-    .catch(() => null);
-
-  const network = await prisma.appSchoolStats
+  /**
+   * Asked of the app at render, not read off our own table.
+   *
+   * Each figure below is one the app returned for that school a quarter of an
+   * hour ago at most — `opportunitiesCount` and `spendTimeByOrganization`,
+   * neither adjusted. The nightly table is kept only as the answer for when
+   * the app cannot be reached, because a wall that silently shows September
+   * is the failure this had already had once.
+   *
+   * The one piece of arithmetic left on this screen is the addition: the app
+   * has no "all JOC schools" figure, so a total across them has to be made by
+   * adding the schools it does report. Every term in that sum is the app's.
+   */
+  const tracked = await prisma.school
     .findMany({
-      where: { hoursAllTime: { gt: 0 }, school: { isTest: false } },
-      orderBy: { hoursAllTime: "desc" },
-      select: { hoursAllTime: true, school: { select: { name: true, screenShortName: true } } },
+      where: { isTest: false, appSchoolId: { not: null } },
+      select: { name: true, screenShortName: true, appSchoolId: true },
     })
     .catch(() => []);
+
+  const perSchool = await liveSchools(tracked);
+
+  const shortOf = new Map(tracked.map((s) => [s.name, s.screenShortName || s.name]));
+
+  let network: { name: string; hours: number }[];
+  let totalActs: number | null;
+  let totalHours: number | null;
+
+  if (perSchool) {
+    const withHours = perSchool.filter((s) => s.hours > 0).sort((a, b) => b.hours - a.hours);
+    network = withHours.map((s) => ({ name: shortOf.get(s.name) ?? s.name, hours: s.hours }));
+    totalActs = perSchool.reduce((n, s) => n + s.acts, 0);
+    totalHours = perSchool.reduce((n, s) => n + s.hours, 0);
+  } else {
+    // The app did not answer for anybody. Last known, rather than a blank wall.
+    const rows = await prisma.appSchoolStats
+      .findMany({
+        where: { hoursAllTime: { gt: 0 }, school: { isTest: false } },
+        orderBy: { hoursAllTime: "desc" },
+        select: { hoursAllTime: true, school: { select: { name: true, screenShortName: true } } },
+      })
+      .catch(() => []);
+    const sum = await prisma.appSchoolStats
+      .aggregate({
+        where: { school: { isTest: false } },
+        _sum: { actsAllTime: true, hoursAllTime: true },
+      })
+      .catch(() => null);
+    network = rows.map((n) => ({
+      name: n.school.screenShortName || n.school.name,
+      hours: n.hoursAllTime ?? 0,
+    }));
+    totalActs = sum?._sum.actsAllTime ?? null;
+    totalHours = sum?._sum.hoursAllTime ?? null;
+  }
 
   const assembled: Omit<LobbyScreenData, "version"> = {
     ...base,
@@ -156,15 +197,9 @@ export async function buildLobbyScreenData(
       he: doc.settings.theme.he || null,
       topic: doc.settings.theme.question || null,
     },
-    network: network.map((n) => ({
-      name: n.school.screenShortName || n.school.name,
-      hours: n.hoursAllTime ?? 0,
-    })),
+    network,
     networkSchools: network.length,
-    stats: {
-      acts: totals?._sum.actsAllTime ?? null,
-      hours: totals?._sum.hoursAllTime ?? null,
-    },
+    stats: { acts: totalActs, hours: totalHours },
     // The counter beside the ticker is the app’s own all-schools figure,
     // not our sum of the rows above: the app counts organisations this
     // portal does not track.
