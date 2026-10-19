@@ -279,3 +279,12 @@
 */
 .ss-band { grid-template-columns: auto minmax(0, 1fr); }
 .ss-around { width: auto; }
+
+/* ---- the lobby's own masthead ----
+   The logo is the artwork, not the name typeset beside the ring, so the
+   column the crest used to sit in goes with it.
+*/
+.ss-hdr { grid-template-columns: auto minmax(0, 1fr) auto; }
+.ss-logo { display: none; }
+.ss-name-t { line-height: 0; }
+.ss-name-t img { height: 68px; width: auto; display: block; }

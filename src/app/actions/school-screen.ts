@@ -7,6 +7,7 @@ import { safeAuth } from "@/auth";
 import { putFile } from "@/lib/files";
 import { canApprove, isScreenStaff, screenActor, type ScreenActor } from "@/lib/school-screen/access";
 import { dayEnd, dayStart, emailAllowed, normalizeDomains } from "@/lib/school-screen/rules";
+import { isLobby } from "@/lib/lobby/slug";
 
 /**
  * Everything that changes a school's screen.
@@ -361,25 +362,34 @@ export async function setScreenUp(schoolId: string, up: boolean): Promise<R> {
 /* ----------------------------------------------------------- shout-outs -- */
 
 /**
- * A student's shout-out, from the QR code on the screen.
+ * A shout-out, from the QR code on a screen.
  *
- * Signed in, with the school's own email address when the school has said
- * what that is. Whether their name may be shown is asked here, on the form,
- * by the person whose name it is. It goes in PENDING; a teacher decides.
+ * At a school: signed in, with the school's own email address when the
+ * school has said what that is. In JOC's own lobby: no account at all, for
+ * the reason set out in `src/lib/lobby/slug.ts` — the people in front of
+ * that wall are visitors, not students.
+ *
+ * Both land PENDING. Nothing reaches a wall that a person has not read.
  */
 export async function submitShoutOut(form: FormData): Promise<R> {
   if (!isDatabaseConfigured()) return { ok: false, error: "The database is not connected." };
-  const session = await safeAuth();
-  const me = session?.user;
-  if (!me?.id || !me.email) return { ok: false, error: "Sign in with your school email first." };
 
   const slug = clean(form.get("slug"), 80);
   const school = await prisma.school.findUnique({
     where: { slug }, select: { id: true, screenEmailDomains: true },
   }).catch(() => null);
   if (!school) return { ok: false, error: "That school isn't on JOC." };
-  if (!emailAllowed(me.email, school.screenEmailDomains)) {
-    return { ok: false, error: `Sign in with your school email (@${school.screenEmailDomains[0]}).` };
+
+  const lobby = isLobby(slug);
+  const session = await safeAuth();
+  const me = session?.user;
+
+  if (!lobby) {
+    if (!me?.id || !me.email) return { ok: false, error: "Sign in with your school email first." };
+    if (!emailAllowed(me.email, school.screenEmailDomains)) {
+      const d = school.screenEmailDomains[0];
+      return { ok: false, error: d ? `Sign in with your school email (@${d}).` : "Sign in with your school email first." };
+    }
   }
 
   const text = clean(form.get("text"), 220);
@@ -393,20 +403,39 @@ export async function submitShoutOut(form: FormData): Promise<R> {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 30);
-  const grade = clean(form.get("grade"), 20);
+  // A visitor in the lobby is not in a grade. A student is, and is asked.
+  const grade = lobby ? "" : clean(form.get("grade"), 20);
   if (text.length < 10) return { ok: false, error: "Say a little more: who, and what they did." };
-  if (!grade) return { ok: false, error: "Which grade are you in?" };
+  if (!lobby && !grade) return { ok: false, error: "Which grade are you in?" };
 
-  // Five waiting at once is plenty for one person.
-  const waiting = await prisma.shoutOut.count({ where: { authorId: me.id, status: "PENDING" } }).catch(() => 0);
-  if (waiting >= 5) return { ok: false, error: "You have five waiting already. A teacher will get to them soon." };
+  if (me?.id) {
+    // Five waiting at once is plenty for one person.
+    const waiting = await prisma.shoutOut.count({ where: { authorId: me.id, status: "PENDING" } }).catch(() => 0);
+    if (waiting >= 5) return { ok: false, error: "You have five waiting already. A teacher will get to them soon." };
+  } else {
+    /**
+     * Nobody to count against, so the queue itself is what is protected.
+     *
+     * The thing an open form risks is not the wall — a person reads every
+     * one of these before it goes up — it is burying the real ones under so
+     * many that nobody reads any. Past this many waiting, the form says come
+     * back later rather than quietly dropping what somebody wrote.
+     */
+    const queue = await prisma.shoutOut
+      .count({ where: { schoolId: school.id, status: "PENDING" } })
+      .catch(() => 0);
+    if (queue >= 60) {
+      return { ok: false, error: "There are a lot waiting to be read just now. Try again a bit later." };
+    }
+  }
 
   try {
     const made = await prisma.shoutOut.create({
       data: {
         schoolId: school.id, text, firstName, lastName, grade,
         showName: form.get("showName") === "1" && Boolean(firstName),
-        authorId: me.id, authorEmail: me.email,
+        // Nobody signed in has no author and no address to show a teacher.
+        authorId: me?.id ?? null, authorEmail: me?.email ?? "",
       },
       select: { id: true },
     });

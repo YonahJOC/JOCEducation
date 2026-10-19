@@ -14,7 +14,19 @@ import { Btn, Field, Note, input } from "./ui";
  * so that is what it says — and the line that will appear under the
  * shout-out is shown live, so nobody is surprised by it on the wall.
  */
-export function ShoutOutForm({ slug, short, email }: { slug: string; short: string; email: string }) {
+export function ShoutOutForm({
+  slug,
+  short,
+  email,
+  askGrade = true,
+}: {
+  slug: string;
+  short: string;
+  /** Null in JOC's own lobby, where the form asks for no account. */
+  email: string | null;
+  /** A visitor in a lobby is not in a grade; a student is. */
+  askGrade?: boolean;
+}) {
   const [pending, start] = useTransition();
   const [text, setText] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -48,7 +60,9 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
       <div>
         <h2 style={{ fontFamily: F.ui, fontSize: "22px", fontWeight: 800, color: C.ink, margin: "0 0 8px" }}>Sent. Thank you.</h2>
         <p style={{ ...T.read, color: C.muted, margin: "0 0 16px" }}>
-          A teacher reads it first, then it goes up on the {short} screen.
+          {askGrade
+            ? <>A teacher reads it first, then it goes up on the {short} screen.</>
+            : <>Someone reads it first, then it goes up on the screen.</>}
         </p>
         <Btn tone="quiet" onClick={() => { setSent(false); setText(""); }}>Send another</Btn>
       </div>
@@ -102,14 +116,16 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
           </Field>
         </div>
       </div>
-      <Field label="Grade">
-        <input style={input} value={grade} onChange={(e) => setGrade(e.target.value)} maxLength={20} placeholder="9th" />
-      </Field>
+      {askGrade ? (
+        <Field label="Grade">
+          <input style={input} value={grade} onChange={(e) => setGrade(e.target.value)} maxLength={20} placeholder="9th" />
+        </Field>
+      ) : null}
 
       <div style={{ ...T.meta, color: C.ink, margin: "6px 0 6px" }}>MAY WE SHOW YOUR NAME ON THE SCREEN?</div>
       <div role="radiogroup" aria-label="May we show your name" style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
-        {choice(true, "Yes, show my name", "Your name as you wrote it above, on the hallway TV.")}
-        {choice(false, "No, just my grade", "Your shout-out still goes up, without your name.")}
+        {choice(true, "Yes, show my name", askGrade ? "Your name as you wrote it above, on the hallway TV." : "Your name as you wrote it above, on the screen in the lobby.")}
+        {choice(false, askGrade ? "No, just my grade" : "No, keep it anonymous", "Your shout-out still goes up, without your name.")}
       </div>
       {showName !== null && from ? (
         <div style={{ ...T.small, color: C.muted, marginBottom: "10px" }}>Under your shout-out it will say: <strong style={{ color: C.ink }}>{from}</strong></div>
@@ -118,7 +134,9 @@ export function ShoutOutForm({ slug, short, email }: { slug: string; short: stri
       {error ? <Note tone="error">{error}</Note> : null}
       <Btn onClick={submit} disabled={pending}>{pending ? "Sending…" : "Send it"}</Btn>
       <p style={{ ...T.small, color: C.faint, fontSize: "12.5px", marginTop: "12px" }}>
-        Sending as {email}. Your teacher sees your email; the screen never does.
+        {email
+          ? <>Sending as {email}. Your teacher sees your email; the screen never does.</>
+          : <>Someone at JOC reads it before it goes on the screen.</>}
       </p>
     </div>
   );

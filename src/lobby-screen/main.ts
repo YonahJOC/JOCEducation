@@ -171,8 +171,18 @@ function render() {
   renderClock();
   if (!d) return;
 
-  setHTML('logo', `<img src="${esc(d.school.logoUrl || '/brand/joc-icon.png')}" alt="Just One Chesed" />`);
-  setHTML('name', 'Just One <span>Chesed</span>');
+  /**
+   * The logo, rather than the name set in type next to a ring.
+   *
+   * A school's screen has a round crest and its name beside it, because a
+   * school's name is just a name. Ours is a drawn thing — the ring is the O
+   * in it — and setting "Just One Chesed" in Montserrat beside a loose ring
+   * was a second-hand version of a logo we already own. The white lockup is
+   * the one for this background, and the circle goes: it was showing the
+   * same ring twice.
+   */
+  setHTML('logo', '');
+  setHTML('name', '<img src="/brand/joc-wordmark-white.png" alt="Just One Chesed" />');
   renderNumbers(d);
 
   show('ded', Boolean(d.dedication));

@@ -7,6 +7,7 @@ import { buildView } from "@/lib/lobby/model";
 import { liveTotals } from "@/lib/lobby/live";
 import { prisma } from "@/lib/prisma";
 import type { Slide, WeekDay } from "@/lib/lobby/model";
+import { LOBBY_SLUG } from "@/lib/lobby/slug";
 
 /**
  * What the lobby wall reads.
@@ -63,8 +64,7 @@ export type LobbyScreenData = ScreenData & {
   };
 };
 
-/** The slug the lobby's own school record goes by. */
-export const LOBBY_SLUG = "joc-lobby";
+export { LOBBY_SLUG } from "@/lib/lobby/slug";
 
 const toEvent = (e: Slide | (WeekDay["events"][number] & { label?: string })): LobbyEvent => ({
   id: e.id,
