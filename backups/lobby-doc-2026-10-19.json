@@ -1,0 +1,254 @@
+{
+  "takenAt": "2026-10-19T09:34:22.683Z",
+  "why": "Before the lobby screen was rebuilt on the school screen. Everything Dalia had entered.",
+  "lobbyDoc": {
+    "version": 17,
+    "counters": {
+      "source": "manual",
+      "values": {
+        "acts": 250000,
+        "beds": 300,
+        "pizzas": 7000,
+        "challahs": 0
+      },
+      "sheetId": ""
+    },
+    "programs": [
+      {
+        "id": "6e6075b98fd7436d",
+        "end": "14:30",
+        "date": "2026-10-19",
+        "group": "Hakotel",
+        "notes": "",
+        "start": "13:30",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Rova",
+        "location": "The Rova",
+        "createdAt": "2026-10-18T11:45:59.295Z",
+        "updatedAt": "2026-10-18T11:45:59.295Z"
+      },
+      {
+        "id": "7c82d6544ee146ac",
+        "end": "16:00",
+        "date": "2026-10-19",
+        "group": "Machon Maayan",
+        "notes": "",
+        "start": "15:00",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Ben Yehuda",
+        "location": "Ben Yehuda",
+        "createdAt": "2026-10-18T11:55:51.164Z",
+        "updatedAt": "2026-10-18T11:55:51.164Z"
+      },
+      {
+        "id": "c52648a6b40f4273",
+        "end": "18:00",
+        "date": "2026-10-19",
+        "group": "the Weidenfeld family",
+        "notes": "",
+        "start": "16:00",
+        "venue": "center",
+        "allDay": false,
+        "program": "Pizza Making",
+        "location": "",
+        "createdAt": "2026-10-18T11:56:51.376Z",
+        "updatedAt": "2026-10-18T11:56:51.376Z"
+      },
+      {
+        "id": "42f0d4cf5b664cde",
+        "end": "18:30",
+        "date": "2026-10-19",
+        "group": "Reishit",
+        "notes": "",
+        "start": "17:30",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Bet Shemesh",
+        "location": "Bet Shemesh",
+        "createdAt": "2026-10-18T11:58:38.045Z",
+        "updatedAt": "2026-10-18T11:58:38.045Z"
+      },
+      {
+        "id": "7df9b0ece89b4af1",
+        "end": "11:45",
+        "date": "2026-10-20",
+        "group": "Birthright Volunteer",
+        "notes": "",
+        "start": "10:15",
+        "venue": "center",
+        "allDay": false,
+        "program": "Pizza Making",
+        "location": "",
+        "createdAt": "2026-10-18T11:59:59.344Z",
+        "updatedAt": "2026-10-18T11:59:59.344Z"
+      },
+      {
+        "id": "5139c433191245f5",
+        "end": "16:30",
+        "date": "2026-10-20",
+        "group": "Meorot",
+        "notes": "",
+        "start": "15:30",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Ben Yehuda",
+        "location": "Ben Yehuda",
+        "createdAt": "2026-10-18T12:03:55.199Z",
+        "updatedAt": "2026-10-18T12:03:55.199Z"
+      },
+      {
+        "id": "973fef5162404f26",
+        "end": "17:30",
+        "date": "2026-10-20",
+        "group": "Midreshet Eshel",
+        "notes": "",
+        "start": "16:30",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Ben Yehuda",
+        "location": "Ben Yehuda",
+        "createdAt": "2026-10-18T12:04:47.903Z",
+        "updatedAt": "2026-10-18T12:04:47.903Z"
+      },
+      {
+        "id": "1977bf08111845a6",
+        "end": "17:30",
+        "date": "2026-10-20",
+        "group": "Midreshet Eshel",
+        "notes": "",
+        "start": "16:30",
+        "venue": "shuk",
+        "allDay": false,
+        "program": "The Kindness Booth- The Shuk",
+        "location": "",
+        "createdAt": "2026-10-18T12:05:42.413Z",
+        "updatedAt": "2026-10-18T12:05:42.413Z"
+      },
+      {
+        "id": "815a84fee38046c4",
+        "end": "15:00",
+        "date": "2026-10-21",
+        "group": "Midreshet Amit",
+        "notes": "",
+        "start": "14:00",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Ben Yehuda",
+        "location": "Ben Yehuda",
+        "createdAt": "2026-10-18T12:06:30.212Z",
+        "updatedAt": "2026-10-18T12:06:30.212Z"
+      },
+      {
+        "id": "c84f85806d7a49c3",
+        "end": "15:00",
+        "date": "2026-10-21",
+        "group": "Midreshet Amit",
+        "notes": "",
+        "start": "14:00",
+        "venue": "shuk",
+        "allDay": false,
+        "program": "The Kindness Booth- The Shuk",
+        "location": "",
+        "createdAt": "2026-10-18T12:07:21.712Z",
+        "updatedAt": "2026-10-18T12:07:21.712Z"
+      },
+      {
+        "id": "7bdd5b98a7394bc8",
+        "end": "16:00",
+        "date": "2026-10-21",
+        "group": "Baer Miriam",
+        "notes": "",
+        "start": "15:00",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Ben Yehuda",
+        "location": "Ben Yehuda",
+        "createdAt": "2026-10-18T12:08:06.978Z",
+        "updatedAt": "2026-10-18T12:08:06.978Z"
+      },
+      {
+        "id": "572817c74ce04880",
+        "end": "17:00",
+        "date": "2026-10-21",
+        "group": "Baer Miriam",
+        "notes": "",
+        "start": "16:00",
+        "venue": "other",
+        "allDay": false,
+        "program": "The Kindness Booth- Ben Yehuda",
+        "location": "Ben Yehuda",
+        "createdAt": "2026-10-18T12:08:58.149Z",
+        "updatedAt": "2026-10-18T12:08:58.149Z"
+      },
+      {
+        "id": "a614bd30b5ce4293",
+        "end": "17:00",
+        "date": "2026-10-21",
+        "group": "Midreshet Ora",
+        "notes": "",
+        "start": "16:00",
+        "venue": "shuk",
+        "allDay": false,
+        "program": "The Kindness Booth- The Shuk",
+        "location": "",
+        "createdAt": "2026-10-18T12:09:30.782Z",
+        "updatedAt": "2026-10-18T12:09:30.782Z"
+      }
+    ],
+    "settings": {
+      "google": {
+        "apiKey": "",
+        "calendarId": ""
+      },
+      "source": "manual",
+      "clock24": false,
+      "daysAhead": 4,
+      "hiddenIds": [],
+      "centerName": "JOC Center",
+      "venueRules": {
+        "usa": [
+          "usa",
+          "ny",
+          "nj",
+          "ma",
+          "il",
+          "ca",
+          "fl",
+          "md",
+          "new york",
+          "chicago",
+          "teaneck",
+          "brooklyn"
+        ],
+        "shuk": [
+          "shuk",
+          "machane yehuda",
+          "mahane yehuda",
+          "market"
+        ],
+        "center": [
+          "joc center",
+          "chesed center",
+          "efrat"
+        ]
+      },
+      "slideSeconds": 8,
+      "abbreviations": [
+        {
+          "full": "Build A Bed",
+          "short": "BAB"
+        }
+      ],
+      "refreshMinutes": 5,
+      "excludeKeywords": [
+        "out of office",
+        "away",
+        "OOO",
+        "private"
+      ]
+    },
+    "updatedAt": "2026-10-18T12:09:31.117Z"
+  }
+}
