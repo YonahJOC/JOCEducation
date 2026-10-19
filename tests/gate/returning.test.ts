@@ -12,6 +12,11 @@ let proxy: (req: NextRequest) => Response & { cookies: { get(n: string): { value
 beforeAll(async () => {
   process.env.AUTH_SECRET = "test-secret";
   process.env.DATABASE_URL = "postgres://test/test";
+  // The gate is switched off for now. These describe it as it behaves when
+  // it is back on, so they ask for it: without this they would all pass
+  // against a gate that was never shut, which is the failure mode this file
+  // was written to avoid in the first place.
+  process.env.GATE = "on";
   ({ proxy } = (await import("@/proxy")) as never);
 });
 

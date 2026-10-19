@@ -786,7 +786,8 @@ plus the `VERCEL_*` variables Vercel injects.
 | `JOC_APP_API_URL` / `JOC_APP_API_KEY` | JOC App never read; 0 `AppSyncRun` rows |
 | `NEXT_PUBLIC_BASE_URL` | falls back to the production host; fine |
 | `SUPER_ADMIN_EMAILS` / `PROGRAM_STAFF_EMAILS` | optional; both have safe defaults that *add to* rather than replace the built-in list |
-| `GATE_DISABLED` | correct — unset means the gate is on |
+| `GATE` | the gate is off unless this is `on`. Switched off 19 Oct 2026 while the portal is being shown to schools; see the note in `src/proxy.ts` for what it does and does not open |
+| `GATE_DISABLED` | correct — unset means the gate is on, once `GATE=on` has asked for it |
 
 `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are **not used and not needed**:
 Supabase is reached as plain Postgres and files live in the database, not in

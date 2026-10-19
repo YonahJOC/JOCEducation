@@ -6,6 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
  * The educator landing page at `/` is the only public route. Everything else
  * — the site, the portal, the console — requires an account.
  *
+ * It is currently switched off — see the note on `gateRequested` below for
+ * why, and for what that does and does not open. The rest of this comment
+ * describes it as it behaves when GATE=on puts it back.
+ *
  * The gate needs a database and a signing secret to be worth anything, since
  * without them nobody can sign in. In development it stands aside in that
  * state so a fresh clone can be read; in production it does the opposite —
@@ -35,9 +39,29 @@ const canSignIn = Boolean(process.env.AUTH_SECRET && process.env.DATABASE_URL);
  * says in the logs why.
  */
 const inProduction = process.env.NODE_ENV === "production";
-const gateOn = canSignIn
-  ? process.env.GATE_DISABLED !== "true"
-  : inProduction;
+
+/**
+ * The gate is off.
+ *
+ * Asked for on 19 October 2026, while the portal is being shown round the
+ * schools: every link anybody was sent opened on a sign-in form instead of
+ * on the thing they were sent, and the people being shown it do not have
+ * accounts yet.
+ *
+ * What this opens is the published site — lesson plans, resources, the
+ * programs, the shop, the cycles. What it does not open is anything with a
+ * school in it: the console checks `canOpenConsole` in its own layout, a
+ * school's panel checks `canRunSchoolApp` in its, and every server action
+ * checks before it writes. Those are capability checks rather than a wall,
+ * and this file was never what enforced them.
+ *
+ * To put it back, set GATE=on in Vercel's environment and redeploy — every
+ * line below it is untouched, so it returns exactly as it was.
+ */
+const gateRequested = process.env.GATE === "on";
+
+const gateOn =
+  gateRequested && (canSignIn ? process.env.GATE_DISABLED !== "true" : inProduction);
 
 /** Reachable without an account. */
 const PUBLIC_PATHS = new Set([
@@ -141,8 +165,6 @@ function signedIn(req: NextRequest): boolean {
 }
 
 export function proxy(req: NextRequest) {
-  if (!gateOn) return NextResponse.next();
-
   const { pathname } = req.nextUrl;
   const hasSession = signedIn(req);
   const returning = Boolean(req.cookies.get(RETURNING)?.value);
@@ -176,6 +198,11 @@ export function proxy(req: NextRequest) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
+
+  // Everything from here down is the gate. The two redirects above are not:
+  // they decide where somebody is sent, never what they may see, and they
+  // are as useful with the gate off as with it on.
+  if (!gateOn) return remember(NextResponse.next());
 
   if (isPublic(pathname)) return remember(NextResponse.next());
   if (hasSession) return remember(NextResponse.next());
