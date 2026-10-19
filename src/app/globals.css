@@ -74,8 +74,20 @@ body {
   flex-direction: column;
 }
 
-/* Suppress dark mode — design is light only */
-@media (prefers-color-scheme: dark) {}
+/**
+ * Suppress dark mode — the design is light only.
+ *
+ * The empty media block that used to be here said so and did nothing: a
+ * rule with no declarations in it changes no colour. What a phone actually
+ * reads is `color-scheme`, and a page that declares none is one Chrome on
+ * Android will re-colour itself under "Auto dark theme for web contents" —
+ * inverting a cream page to charcoal and, on the screens, turning the
+ * orange shout-out card blood red.
+ *
+ * `only light` is the firm form: it opts out of that automatic darkening
+ * rather than merely stating a preference.
+ */
+:root { color-scheme: only light; }
 
 /* Lesson editor: the guiding-question rail drops below the form on narrow screens */
 @media (max-width: 1040px) {

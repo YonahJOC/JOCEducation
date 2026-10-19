@@ -21,6 +21,15 @@ const PAGE = `<!doctype html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      The wall is already dark blue and orange; it is not asking a browser
+      for an opinion. Without this, Chrome on Android applies its own "Auto
+      dark theme for web contents" to any page that declares no scheme, and
+      the screen comes up on a phone charcoal grey with the shout-out card
+      blood red. A television never does it; somebody checking the wall from
+      their pocket always did.
+    -->
+    <meta name="color-scheme" content="light" />
     <title>JOC Lobby Screen</title>
     <link rel="icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,6 +38,7 @@ const PAGE = `<!doctype html>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0&display=block" rel="stylesheet" />
     <link rel="stylesheet" href="/lobby/screen.css" />
     <style>
+      html { color-scheme: only light; }
       html, body { margin: 0; height: 100%; background: #222898; overflow: hidden; cursor: none; }
     </style>
   </head>
