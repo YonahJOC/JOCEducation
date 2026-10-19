@@ -19,6 +19,14 @@ const PAGE = `<!doctype html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Same reason as the lobby's. Chrome on Android re-colours any page
+      that declares no scheme under "Auto dark theme for web contents", and
+      a hallway screen opened on a teacher's phone came up charcoal with
+      the shout-out card red. The television in the hallway never does it,
+      which is exactly why nobody would report it.
+    -->
+    <meta name="color-scheme" content="light" />
     <title>JOC School Screen</title>
     <link rel="icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,6 +35,7 @@ const PAGE = `<!doctype html>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0&display=block" rel="stylesheet" />
     <link rel="stylesheet" href="/school-screen/screen.css" />
     <style>
+      html { color-scheme: only light; }
       html, body { margin: 0; height: 100%; background: #222898; overflow: hidden; cursor: none; }
     </style>
   </head>
