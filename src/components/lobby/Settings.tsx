@@ -7,8 +7,11 @@ import type { LobbyDoc, Settings as S } from '@/lib/lobby/types';
 import { Button, Card, Field, Icon, Segmented, Stepper, useConfirm, useToast } from './ui';
 import type { Mutate } from './useDoc';
 
-type Editable = Pick<S, 'clock24' | 'slideSeconds' | 'daysAhead' | 'centerName'>;
-const pick = (s: S): Editable => ({ clock24: s.clock24, slideSeconds: s.slideSeconds, daysAhead: s.daysAhead, centerName: s.centerName });
+type Editable = Pick<S, 'clock24' | 'slideSeconds' | 'daysAhead' | 'centerName' | 'theme'>;
+const pick = (s: S): Editable => ({
+  clock24: s.clock24, slideSeconds: s.slideSeconds, daysAhead: s.daysAhead,
+  centerName: s.centerName, theme: { ...s.theme },
+});
 
 export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Mutate; onDraft: (s: Editable | null) => void }) {
   const saved = pick(doc.settings);
@@ -17,7 +20,7 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
   const toast = useToast();
   const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
-  const ids = { center: useId(), slide: useId() };
+  const ids = { center: useId(), slide: useId(), themeEn: useId(), themeHe: useId() };
   const dirty = JSON.stringify(v) !== JSON.stringify(saved);
   const set = (patch: Partial<Editable>) => setV((x) => ({ ...x, ...patch }));
 
@@ -30,7 +33,15 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
 
   async function save() {
     setSaving(true);
-    const ok = await mutate((d) => ({ ...d, settings: { ...d.settings, ...v, centerName: v.centerName.trim() || 'JOC Center' } }));
+    const ok = await mutate((d) => ({
+      ...d,
+      settings: {
+        ...d.settings,
+        ...v,
+        centerName: v.centerName.trim() || 'JOC Center',
+        theme: { en: v.theme.en.trim(), he: v.theme.he.trim() },
+      },
+    }));
     setSaving(false);
     toast(ok ? { kind: 'ok', text: 'Screen settings saved' } : { kind: 'error', text: 'Couldn’t save. Check the connection and try again.' });
   }
@@ -129,6 +140,34 @@ export function Settings({ doc, mutate, onDraft }: { doc: LobbyDoc; mutate: Muta
         <Card title="Our location" icon="home_pin">
           <Field label="Name for the center" htmlFor={ids.center} hint="Shown on programs held at the center.">
             <input id={ids.center} className="a-input" value={v.centerName} maxLength={60} onChange={(e) => set({ centerName: e.target.value })} />
+          </Field>
+        </Card>
+
+        <Card title="This cycle" icon="menu_book">
+          <Field
+            label="What the building is learning"
+            htmlFor={ids.themeEn}
+            hint="Along the foot of the screen. Leave it empty and the strip shows only the question."
+          >
+            <input
+              id={ids.themeEn}
+              className="a-input"
+              value={v.theme.en}
+              maxLength={60}
+              placeholder="Cheshbon Hanefesh"
+              onChange={(e) => set({ theme: { ...v.theme, en: e.target.value } })}
+            />
+          </Field>
+          <Field label="In Hebrew" htmlFor={ids.themeHe} hint="Optional, shown beside it in orange.">
+            <input
+              id={ids.themeHe}
+              className="a-input"
+              dir="rtl"
+              value={v.theme.he}
+              maxLength={60}
+              placeholder="חשבון הנפש"
+              onChange={(e) => set({ theme: { ...v.theme, he: e.target.value } })}
+            />
           </Field>
         </Card>
 

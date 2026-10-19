@@ -44,6 +44,7 @@ export function defaultSettings(): Settings {
       usa: ['usa', 'ny', 'nj', 'ma', 'il', 'ca', 'fl', 'md', 'new york', 'chicago', 'teaneck', 'brooklyn'],
     },
     centerName: 'JOC Center',
+    theme: { en: 'Cheshbon Hanefesh', he: 'חשבון הנפש' },
     slideSeconds: ENV.slideSeconds,
     daysAhead: 4,
     refreshMinutes: ENV.refreshMinutes,
@@ -101,6 +102,15 @@ export function sanitizeSettings(raw: unknown): Settings {
       usa: strList(rules.usa) ?? d.venueRules.usa,
     },
     centerName: str(s.centerName, 60).trim() || d.centerName,
+    // A document saved before this existed has no theme, and takes the
+    // default rather than an empty strip.
+    theme: (() => {
+      const t = (s.theme && typeof s.theme === 'object' ? s.theme : {}) as Record<string, unknown>;
+      return {
+        en: str(t.en, 60).trim() || d.theme.en,
+        he: str(t.he, 60).trim() || (str(t.en, 60).trim() ? '' : d.theme.he),
+      };
+    })(),
     slideSeconds: clamp(s.slideSeconds, 3, 30, d.slideSeconds),
     daysAhead: clamp(s.daysAhead, 2, 7, d.daysAhead),
     refreshMinutes: clamp(s.refreshMinutes, 1, 60, d.refreshMinutes),

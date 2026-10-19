@@ -37,6 +37,16 @@ export interface Settings {
   slideSeconds: number;
   daysAhead: number;
   refreshMinutes: number;
+  /**
+   * What the building is learning this cycle, for the strip along the
+   * bottom: "Cheshbon Hanefesh" and its Hebrew.
+   *
+   * The schools' own screens take this from the running Cycle. The lobby
+   * keeps its own, because the wall here is not on any school's cycle
+   * and editing the Cycle to change this wall would change every
+   * school's screen with it.
+   */
+  theme: { en: string; he: string };
   clock24: boolean;
   /** Google Calendar event ids hidden from the screen by an admin */
   hiddenIds: string[];

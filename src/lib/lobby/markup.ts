@@ -76,7 +76,9 @@ export function dayHTML(d: WeekDay): string {
 // claims less than "250,000" and is the honest way to put a figure
 // nobody is recounting on a wall.
 export const STATS: Array<{ key: CounterKey; icon: string; color: string; ink: string; label: string; plus?: boolean }> = [
-  { key: 'acts', icon: 'volunteer_activism', color: '#FFF0E0', ink: '#ff8e00', label: 'Acts of chesed', plus: true },
+  // Acts of chesed is gone from here: hours now comes from the app
+  // itself (src/lib/lobby/live.ts) rather than from somebody's typing.
+  // The stored `acts` value is left untouched in the document.
   { key: 'beds', icon: 'bed', color: '#E4E9F8', ink: '#214ba5', label: 'Beds given out', plus: true },
   { key: 'pizzas', icon: 'local_pizza', color: '#E4E9F8', ink: '#ff8e00', label: 'Pizzas made', plus: true },
 ];

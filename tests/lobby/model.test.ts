@@ -190,3 +190,30 @@ describe('the panel when today is done', () => {
     expect(buildView(many, settings, now).ahead.length).toBeLessThanOrEqual(8);
   });
 });
+
+describe('the cycle theme on the lobby wall', () => {
+  it('defaults to Cheshbon Hanefesh for a document saved before it existed', () => {
+    // The live document has no `theme` key. It must not render an empty strip.
+    const d = sanitizeDoc({ settings: { centerName: 'JOC Center' } });
+    expect(d.settings.theme.en).toBe('Cheshbon Hanefesh');
+    expect(d.settings.theme.he).toBe('חשבון הנפש');
+  });
+
+  it('keeps what somebody typed', () => {
+    const d = sanitizeDoc({ settings: { theme: { en: 'Hachnasat Orchim', he: 'הכנסת אורחים' } } });
+    expect(d.settings.theme).toEqual({ en: 'Hachnasat Orchim', he: 'הכנסת אורחים' });
+  });
+
+  it('lets the Hebrew be dropped without the English falling back', () => {
+    const d = sanitizeDoc({ settings: { theme: { en: 'Bikur Cholim', he: '' } } });
+    expect(d.settings.theme.en).toBe('Bikur Cholim');
+    expect(d.settings.theme.he).toBe('');
+  });
+
+  it('never loses the counters a document already had', () => {
+    // Acts came off the screen; it must not come out of the document.
+    const d = sanitizeDoc({ counters: { source: 'manual', sheetId: '', values: { acts: 250000, beds: 300, challahs: 0, pizzas: 7000 } } });
+    expect(d.counters.values.acts).toBe(250000);
+    expect(d.counters.values.pizzas).toBe(7000);
+  });
+});

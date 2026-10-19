@@ -81,10 +81,21 @@ document.getElementById('app')!.innerHTML = `
       <div class="coming">
         <div class="panel-title"><span class="ms">event_upcoming</span>Coming up</div>
         <div class="week" id="week"></div>
+        <div class="impact" id="impact"></div>
         <div class="status"><div id="source"></div><div id="updated"></div></div>
       </div>
     </div>
-    <div class="impact" id="impact"></div>
+    <div class="foot">
+      <div class="theme">
+        <span class="ms">menu_book</span>
+        <div class="theme-txt">
+          <div class="theme-k">This cycle</div>
+          <div class="theme-en" id="themeEn"></div>
+        </div>
+        <div class="theme-he" dir="rtl" id="themeHe"></div>
+      </div>
+      <div class="ask">Did you do your just one chesed today?</div>
+    </div>
   </div>
 </div>
 ${DEBUG ? '<div class="debug" id="debug"></div>' : ''}`;
@@ -97,17 +108,13 @@ logo.onerror = () => {
 };
 logo.src = '/logo-white.png';
 
-// The counters, and then the question, in whatever room is left beside
-// them. Taking Challahs baked off the wall freed a quarter of this row,
-// and a stretch of flat blue under the numbers is the one place on the
-// screen with nothing to report — which makes it the right place to ask
-// the only thing the building is really about.
+// Hours of chesed comes from the app and leads; the two counters
+// somebody still types in follow it.
 $('#impact').innerHTML =
-  STATS.map((s) => statHTML(s, '0')).join('') +
-  '<div class="ask">Did you do your just one chesed today?</div>';
-// The counters take the width their numbers need — a clipped '250,000+'
-// is worse than a shorter question — and the question takes the rest.
-$('#impact').style.gridTemplateColumns = `repeat(${STATS.length}, auto) minmax(0, 1fr)`;
+  '<div class="stat"><div class="stat-icon"><span class="ms">schedule</span></div>' +
+  '<div class="stat-text"><div class="stat-value" data-live="hours">—</div>' +
+  '<div class="stat-label">Hours of chesed</div></div></div>' +
+  STATS.map((s) => statHTML(s, '0')).join('');
 
 function fit() {
   const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
@@ -180,6 +187,8 @@ function render() {
   clipOverflow($('#week'));
 
   renderStatus();
+  renderLive();
+  renderTheme();
   renderStats();
   renderDebug();
 }
@@ -241,6 +250,20 @@ function counterValues(): Record<CounterKey, number> {
   return c.values;
 }
 
+/** Hours of chesed, straight from the app. */
+function renderLive() {
+  const el = document.querySelector('[data-live="hours"]');
+  if (!el) return;
+  el.textContent = live && live.hours != null ? live.hours.toLocaleString('en-US') + '+' : '—';
+}
+
+/** What the building is learning this cycle. */
+function renderTheme() {
+  const t = state.doc.settings.theme;
+  $('#themeEn').textContent = t?.en ?? '';
+  $('#themeHe').textContent = t?.he ?? '';
+}
+
 function renderStats() {
   const v = counterValues();
   const changed = STATS.some((s) => target[s.key] !== v[s.key]);
@@ -283,6 +306,15 @@ function renderDebug() {
 
 // ---------------- data ----------------
 
+/**
+ * What the app reports, as served beside the document.
+ *
+ * Null until the first fetch answers, and after any fetch that fails —
+ * the tile then shows a dash rather than a nought, because a nought is a
+ * claim and a dash is not.
+ */
+let live: { hours: number | null; readAt: string | null } | null = null;
+
 let etag = '';
 async function loadDoc() {
   if (DEMO || PREVIEW) return;
@@ -294,7 +326,11 @@ async function loadDoc() {
       return;
     }
     if (!r.ok) throw new Error('Schedule server answered ' + r.status);
-    const doc = sanitizeDoc(await r.json());
+    const json = await r.json();
+    // Read before sanitising: sanitizeDoc guarantees the document's shape
+    // by dropping everything else, and `live` is not part of it.
+    live = json && typeof json === 'object' && json.live ? json.live : live;
+    const doc = sanitizeDoc(json);
     etag = r.headers.get('etag') || '';
     const sourceChanged = doc.settings.source !== state.doc.settings.source;
     const googleChanged = JSON.stringify(doc.settings.google) !== JSON.stringify(state.doc.settings.google);
