@@ -148,6 +148,7 @@ export default async function EducatorLanding({
             </a>
             <a
               href="#demo"
+              className="joc-header-cta"
               style={{
                 fontSize: "14px", fontWeight: 700, color: C.ink, backgroundColor: C.orange,
                 borderRadius: R.chip, padding: "10px 18px", textDecoration: "none", whiteSpace: "nowrap",

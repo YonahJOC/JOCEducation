@@ -145,7 +145,17 @@ body {
 @media (max-width: 480px) {
   .joc-brand-sub      { display: none !important; }
   .joc-wordmark       { height: 18px !important; }
-  .joc-header-signin  { display: none !important; }
+  /*
+    Sign in stays; the walkthrough goes.
+
+    Both will not fit beside the wordmark on a phone, and it used to be
+    sign-in that gave way — so somebody who already has an account opened
+    this on their phone, saw a page about booking a walkthrough, and had
+    no way in without scrolling past the whole hero. The walkthrough is
+    offered again in the hero box on that same first screen; the way in
+    was offered nowhere else.
+  */
+  .joc-header-cta     { display: none !important; }
 }
 
 /* Status dot pulse for Chesed Cycles */
