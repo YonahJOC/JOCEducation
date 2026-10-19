@@ -22,9 +22,24 @@ const OWN_CHROME = [
   "/buzz",
 ];
 
+/** Route trees that supply their own, for the same reasons. */
+const OWN_CHROME_PREFIXES = [
+  "/admin",
+  "/school",
+  /**
+   * Scanned off a wall, held up in a hallway or a lobby, one thing to do.
+   *
+   * The site header is the worst thing that could be around it: a stranger
+   * who came to say thank you is handed Programs, Pricing, Shop, Staff Room
+   * and a sign-in, most of which are not theirs and none of which is what
+   * they scanned the code for.
+   */
+  "/shout-out",
+];
+
 export function ChromeGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   if (OWN_CHROME.includes(pathname)) return null;
-  if (pathname.startsWith("/admin") || pathname.startsWith("/school")) return null;
+  if (OWN_CHROME_PREFIXES.some((p) => pathname.startsWith(p))) return null;
   return <>{children}</>;
 }

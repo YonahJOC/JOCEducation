@@ -75,8 +75,11 @@ export function Btn({ children, onClick, tone = "blue", disabled, type = "button
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "block", marginBottom: "12px" }}>
-      <span style={{ display: "flex", gap: "6px", alignItems: "baseline", marginBottom: "5px" }}>
-        <span style={{ ...T.meta, color: C.ink }}>{label}</span>
+      {/* The hint drops to its own line rather than squeezing the label into
+          two. Half-width on a phone — "Last name" beside "or just an initial
+          — up to you" — is where this showed. */}
+      <span style={{ display: "flex", flexWrap: "wrap", gap: "2px 6px", alignItems: "baseline", marginBottom: "5px" }}>
+        <span style={{ ...T.meta, color: C.ink, whiteSpace: "nowrap" }}>{label}</span>
         {hint ? <span style={{ ...T.small, color: C.faint, fontSize: "12.5px" }}>{hint}</span> : null}
       </span>
       {children}

@@ -97,11 +97,14 @@ export function ShoutOutForm({
           style={{ ...input, minHeight: "110px", resize: "vertical", lineHeight: 1.45 }}
         />
       </Field>
-      <div style={{ display: "flex", gap: "10px" }}>
-        <div style={{ flex: "2 1 0" }}>
+      {/* Side by side where there is room, stacked on a phone. Held in one
+          row they ended up on different baselines, because the hint under
+          "Last name" is two lines wide at that width. */}
+      <div style={{ display: "flex", gap: "0 10px", flexWrap: "wrap", alignItems: "flex-start" }}>
+        <div style={{ flex: "1 1 190px" }}>
           <Field label="First name"><input style={input} value={firstName} onChange={(e) => setFirstName(e.target.value)} maxLength={30} autoComplete="given-name" /></Field>
         </div>
-        <div style={{ flex: "2 1 0" }}>
+        <div style={{ flex: "1 1 190px" }}>
           {/* As much or as little as they want: "B", "Berkowitz", or
               nothing at all. The line under the choice below shows them
               exactly what the wall will say before they send it. */}
