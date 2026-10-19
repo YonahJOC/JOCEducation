@@ -26,15 +26,34 @@ export default async function SchoolScreensPage() {
     );
   }
 
-  const [schools, up, flyers, photos, shouts] = isDatabaseConfigured()
+  const [schools, up, flyers, photos, shouts, lastSync] = isDatabaseConfigured()
     ? await Promise.all([
         prisma.school.count({ where: SCREEN_CONSOLE_LIST }).catch(() => 0),
         prisma.school.count({ where: { AND: [SCREEN_CONSOLE_LIST, { liveScreenUrl: { not: null } }] } }).catch(() => 0),
         prisma.screenFlyer.count({ where: { status: "PENDING" } }).catch(() => 0),
         prisma.screenPhoto.count({ where: { status: "PENDING" } }).catch(() => 0),
         prisma.shoutOut.count({ where: { status: "PENDING" } }).catch(() => 0),
+        // When the app's figures were last read. The nightly cron needs
+        // CRON_SECRET set, and without it the route answers 503 to a caller
+        // nobody reads — which is how these sat 25 days old on the lobby
+        // wall with nothing anywhere saying so.
+        prisma.appSchoolStats
+          .findFirst({ orderBy: { syncedAt: "desc" }, select: { syncedAt: true } })
+          .catch(() => null),
       ])
-    : [0, 0, 0, 0, 0];
+    : [0, 0, 0, 0, 0, null];
+
+  /**
+   * How old the app's figures are, said plainly.
+   *
+   * They are what the lobby wall and every school's ticker count up to, so
+   * when the sync stops they do not look broken — they look like nothing is
+   * happening at JOC. Two days is a missed night; anything more has been
+   * missed more than once.
+   */
+  const syncedAt = (lastSync as { syncedAt: Date } | null)?.syncedAt ?? null;
+  const daysOld = syncedAt ? Math.floor((Date.now() - syncedAt.getTime()) / 86400000) : null;
+  const stale = daysOld === null || daysOld >= 2;
 
   const tiles = [
     { n: `${up} of ${schools}`, label: "screens up" },
@@ -53,6 +72,31 @@ export default async function SchoolScreensPage() {
           dedication and shout-outs. Its switch says whether the screen is up in the building; teachers and
           ambassadors can add to it from their own side.
         </p>
+
+        {stale ? (
+          <div
+            role="status"
+            style={{
+              display: "flex", gap: "10px", alignItems: "flex-start",
+              background: "#FFF4E5", border: "1px solid #F3C98B", borderRadius: R.hero,
+              padding: "14px 16px", marginBottom: "18px", maxWidth: "72ch",
+            }}
+          >
+            <span aria-hidden="true" className="material-symbols-rounded" style={{ color: "#B35C00", fontSize: "22px" }}>
+              sync_problem
+            </span>
+            <div style={{ ...T.read, color: C.ink, margin: 0 }}>
+              <strong>
+                {syncedAt
+                  ? `The app's figures are ${daysOld} days old.`
+                  : "The app's figures have never been read."}
+              </strong>{" "}
+              Acts and hours on every screen are counting up to these, so they are behind by that
+              much. The nightly sync needs <code>CRON_SECRET</code> set in Vercel — without it the
+              job answers 503 and stops, quietly.
+            </div>
+          </div>
+        ) : null}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "14px", marginBottom: "26px" }}>
           {tiles.map((t) => (
