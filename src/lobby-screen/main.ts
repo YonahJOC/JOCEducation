@@ -75,7 +75,7 @@ document.getElementById('app')!.innerHTML = `
         <div class="ss-sect-txt"><div class="ss-k" id="schoolsLearning"></div><div class="ss-theme" id="theme"></div><div class="ss-theme-he" dir="rtl" id="themeHe"></div></div>
       </div>
       <div class="ss-around" id="around"><div class="ss-k" id="aroundK"></div><div class="ss-mq" id="mq"></div></div>
-      <div class="ss-ask">Did you do your just one chesed today?</div>
+      <div class="ss-world" id="world"><span class="ss-ms">public</span><div><div class="ss-world-n" id="worldN"></div><div class="ss-world-l">hours of chesed worldwide</div></div></div>
     </div>
   </div>
 </div>
@@ -162,9 +162,11 @@ function renderClock() {
  * own now.
  */
 function renderNumbers(d: LobbyScreenData) {
-  $('#stats').textContent = d.lobby.hours != null
-    ? `${count(d.lobby.hours)} hours of chesed worldwide`
-    : '';
+  // The band carries the worldwide counter a school's does, so the line
+  // under the name does not say it twice.
+  $('#stats').textContent = '';
+  show('world', d.worldHours != null);
+  if (d.worldHours != null) $('#worldN').textContent = count(d.worldHours);
 }
 
 function render() {
@@ -218,7 +220,9 @@ function render() {
   // app has not answered — a nought is a claim and a dash is not.
   show('grades', true);
   setHTML('grades', tilesHTML([
-    { label: 'Hours', value: d.lobby.hours != null ? count(d.lobby.hours) + '+' : '—', unit: 'of chesed', icon: 'schedule', on: true },
+    // No plus: this one is the app's own count, to the hour. The two
+    // below are typed in and rounded down, so they keep theirs.
+    { label: 'Hours', value: d.lobby.hours != null ? count(d.lobby.hours) : '—', unit: 'of chesed', icon: 'schedule', on: true },
     { label: 'Beds', value: count(d.lobby.counters.beds) + '+', unit: 'given out', icon: 'bed' },
     { label: 'Pizzas', value: count(d.lobby.counters.pizzas) + '+', unit: 'made', icon: 'local_pizza' },
   ]));
@@ -232,7 +236,9 @@ function render() {
   }
   show('around', d.network.length > 0);
   if (d.network.length) {
-    $('#aroundK').textContent = 'Around JOC schools · this year';
+    // All-time, which is what the app reports; a school's screen says
+    // this year because that is the figure it is given.
+    $('#aroundK').textContent = 'Around JOC schools · all time';
     setHTML('mq', marqueeHTML(d.network, Math.max(30, d.network.length * 7)));
   }
 

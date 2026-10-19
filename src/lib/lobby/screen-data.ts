@@ -1,9 +1,11 @@
+import { createHash } from "node:crypto";
 import { buildScreenData } from "@/lib/school-screen/data";
 import type { ScreenData } from "@/lib/school-screen/types";
 import { readDoc } from "@/lib/lobby/store";
 import { combineEvents } from "@/lib/lobby/events";
 import { buildView } from "@/lib/lobby/model";
 import { liveTotals } from "@/lib/lobby/live";
+import { prisma } from "@/lib/prisma";
 import type { Slide, WeekDay } from "@/lib/lobby/model";
 
 /**
@@ -77,6 +79,23 @@ const toEvent = (e: Slide | (WeekDay["events"][number] & { label?: string })): L
     : null,
 });
 
+/**
+ * The version the TVs hang their ETag on.
+ *
+ * It has to cover the whole payload, which is why it is recomputed here.
+ * `buildScreenData` hashes its own result and returns that as `version` —
+ * correct for a school, whose screen is entirely that data, and wrong the
+ * moment anything is added on top. Everything below is: the programme
+ * diary, the counters, the theme, the ticker.
+ *
+ * Left as the school's hash, a programme Dalia typed in would not move the
+ * version, every screen would be answered 304, and the wall would quietly
+ * go on showing yesterday until something unrelated changed.
+ */
+function versionOf(d: Omit<LobbyScreenData, "version">): string {
+  return createHash("sha1").update(JSON.stringify(d)).digest("hex").slice(0, 16);
+}
+
 export async function buildLobbyScreenData(
   origin: string,
   now = new Date(),
@@ -90,12 +109,41 @@ export async function buildLobbyScreenData(
   const view = buildView(combineEvents(doc, null), doc.settings, now);
   const live = await liveTotals();
 
-  return {
+  /**
+   * The ticker along the foot: every school the app reports, not only the
+   * ones with a screen of their own.
+   *
+   * A school's own screen shows the others that have a screen up, which is
+   * the right list for a school — it is the company it keeps. On the lobby
+   * wall that filter left the ticker empty, because almost nobody has set a
+   * screen URL. Here it is every school the app has figures for, which is
+   * what the wall in this building should be showing.
+   *
+   * Hours all-time, as the app reports them; the label says so.
+   */
+  const network = await prisma.appSchoolStats
+    .findMany({
+      where: { hoursAllTime: { gt: 0 }, school: { isTest: false } },
+      orderBy: { hoursAllTime: "desc" },
+      select: { hoursAllTime: true, school: { select: { name: true, screenShortName: true } } },
+    })
+    .catch(() => []);
+
+  const assembled: Omit<LobbyScreenData, "version"> = {
     ...base,
     // The lobby keeps its own cycle theme. A school's comes from the Cycle
     // it is running, and editing that to change this wall would change
     // every school's screen with it.
     theme: { en: doc.settings.theme.en, he: doc.settings.theme.he || null, topic: null },
+    network: network.map((n) => ({
+      name: n.school.screenShortName || n.school.name,
+      hours: n.hoursAllTime ?? 0,
+    })),
+    networkSchools: network.length,
+    // The counter beside the ticker is the app’s own all-schools figure,
+    // not our sum of the rows above: the app counts organisations this
+    // portal does not track.
+    worldHours: live.hours,
     // A school shows hours by grade. The lobby has no grades; its three
     // tiles are built on the client from `lobby` below.
     grades: null,
@@ -115,4 +163,6 @@ export async function buildLobbyScreenData(
       hours: live.hours,
     },
   };
+
+  return { ...assembled, version: versionOf(assembled) };
 }

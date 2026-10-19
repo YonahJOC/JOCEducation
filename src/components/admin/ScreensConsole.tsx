@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { isScreenStaff } from "@/lib/school-screen/access";
 import { ScreensList, type ScreenRow } from "./ScreensList";
+import { LOBBY_SLUG } from "@/lib/lobby/screen-data";
 
 /**
  * Live screens: one console for every TV JOC looks after.
@@ -32,7 +33,15 @@ import { ScreensList, type ScreenRow } from "./ScreensList";
  * bug in the switch.
  */
 export const SCREEN_CONSOLE_SCHOOLS: Prisma.SchoolWhereInput = {
-  OR: [{ isTest: false }, { demoAt: { not: null } }],
+  OR: [
+    { isTest: false },
+    { demoAt: { not: null } },
+    // JOC's own lobby wall. It is a school in the database so that it can
+    // use a school's screen, and flagged isTest so it stays out of every
+    // count — which also hid it here, leaving its shout-outs with nowhere
+    // to be approved from.
+    { slug: LOBBY_SLUG },
+  ],
 };
 
 export async function ScreensConsole({ children }: { children: React.ReactNode }) {
