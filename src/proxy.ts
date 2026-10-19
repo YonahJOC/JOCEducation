@@ -79,6 +79,9 @@ const PUBLIC_PREFIXES = [
   // the session and the lobby permission itself.
   "/lobby",
   "/api/lobby/display",
+  // The lobby wall reads this one. Same reason: a television cannot sign in,
+  // and it carries only what somebody standing in the lobby can already see.
+  "/api/lobby/screen",
   // A school's hallway TV, its data and its pictures: the same reason. The
   // data route returns only what is on that wall, and the picture route
   // serves a file to strangers only while it is approved for one.

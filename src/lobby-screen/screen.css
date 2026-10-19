@@ -1,13 +1,14 @@
 /*
  * The JOC lobby screen, 1920×1080.
  *
- * A copy of the school live screen's stylesheet (src/school-screen/screen.css),
- * not an import of it. The lobby wall and a school's wall are meant to look
- * like the same family, and the quickest way to break thirty schools' screens
- * would be to tune this one through a file they share. Classes keep the ss-
- * prefix so the two stay comparable side by side.
+ * A copy of the school live screen (src/school-screen/screen.css), not an
+ * import of it. The two walls are meant to look like one organisation, and
+ * the quickest way to break thirty schools would be to tune this one wall
+ * through a file they all read. Lobby-only rules are at the foot.
  *
- * Lobby-only rules live at the foot, under their own heading.
+ * Originally: the school live screen, to design/JOC School Screen v6.dc.html.
+ * Every class is ss- so the editors' flyer preview can load this file inside
+ * the portal without it touching anything else.
  */
 
 @keyframes ssMarquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
@@ -191,37 +192,16 @@
 .ss-preview-panel { position: relative; width: 745px; height: 752px; border-radius: 28px; overflow: hidden; background: #E4E9F8; font-family: Montserrat, sans-serif; font-weight: 700; color: #214ba5; transform-origin: top left; }
 
 /* ======================================================================
-   Lobby only
+   Lobby only — the slots a school fills with shout-outs and grades
    ====================================================================== */
 
-
-/* Three tiles, not four grades. */
+/* Three tiles, not four grades; six-figure numbers step down a size. */
 .ss-gr-tiles.ss-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .ss-tile-n.ss-long { font-size: 56px; }
 
-/*
-   Coming up, in the orange card a school fills with a shout-out.
-
-   The card is built around one big quote; a week is a list, so the rows get
-   their own white cards inside it rather than being set in the orange.
-*/
-.ss-up { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; overflow: hidden; }
-.ss-up-day { background: #fff; color: #214ba5; border-radius: 20px; padding: 14px 18px; display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 16px; align-items: center; flex: none; }
-.ss-up-date { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ff8e00; color: #fff; border-radius: 14px; padding: 8px 4px; }
-.ss-up-dow { font-size: 15px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.ss-up-num { font-size: 32px; font-weight: 800; line-height: 1; }
-.ss-up-mon { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-.ss-up-evs { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.ss-up-ev { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; }
-.ss-up-time { font-size: 17px; font-weight: 800; color: #ff8e00; }
-.ss-up-name { font-size: 22px; font-weight: 800; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ss-up-group { font-size: 16px; font-weight: 700; color: #5a6782; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ss-up-where { display: flex; align-items: center; gap: 6px; background: #E4E9F8; border-radius: 9999px; padding: 6px 14px; font-size: 15px; font-weight: 800; white-space: nowrap; }
-.ss-up-where .ss-ms { font-size: 18px; }
-.ss-up-none { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 26px; font-weight: 800; color: #fff; }
-
-/* The programme slide: a school's program flyer, carrying one of ours. */
+/* The programme's details, on pills under its name. */
 .ss-pg-meta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 
-/* The question, in the room a school's screen gives its ticker. */
-.ss-ask { display: flex; align-items: center; justify-content: flex-end; padding: 0 32px; height: 68px; font-size: 28px; font-weight: 800; color: #214ba5; text-align: right; }
+
+/* The question, where a school's band carries its ticker. */
+.ss-ask { display: flex; align-items: center; justify-content: flex-end; padding: 0 32px; height: 68px; font-size: 26px; font-weight: 800; color: #214ba5; text-align: right; }
