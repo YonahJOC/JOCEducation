@@ -16,39 +16,34 @@ const ms = (name: string, style = '') =>
   `<span class="ss-ms"${style ? ` style="${style}"` : ''}>${esc(name)}</span>`;
 
 /**
- * One programme, filling the panel a school gives its flyers.
+ * One programme, in the shape the lobby wall has always drawn.
  *
- * Drawn as the school's PROGRAM flyer: a mark, the name huge, the details
- * on pills beneath. Both title lines are set nowrap there, which is fine
- * for a flyer somebody wrote to fit and not for "The Kindness Booth- Ben
- * Yehuda" off a calendar — so each line is given a size it fits at.
+ * Not the school's flyer. A flyer is a poster somebody composed, with a
+ * name short enough to set at 124px; a programme off a diary is a name,
+ * who is coming and when, and "The Kindness Booth- Ben Yehuda" has to wrap
+ * rather than be cropped or shrunk to nothing. So: the label, the name,
+ * the group, the time, and the venue in its own colour beside them.
+ *
+ * The markup is the original's, down to the class names — the stylesheet
+ * carries the rules it came with.
  */
 export function programSlideHTML(e: LobbyEvent): string {
-  const words = e.program.trim().split(/\s+/);
-  const big = words.length > 1 ? words[words.length - 1] : e.program;
-  const small = words.length > 1 ? words.slice(0, -1).join(' ') : '';
-
-  // The panel is about 657px of usable width and Montserrat 800 runs near
-  // 0.62em a character.
-  const fit = (text: string, max: number) =>
-    Math.max(26, Math.min(max, Math.round(657 / Math.max(1, text.length * 0.62))));
-
-  const pills = [e.allDay ? 'All day' : e.timeRange || e.time, e.groupLine, e.venue?.chip]
-    .filter((x): x is string => Boolean(x && x.trim()))
-    .map((p) => `<div class="ss-pill">${ms('check')}${esc(p)}</div>`)
-    .join('');
-
-  return `<div class="ss-fl ss-fl-program ss-blue">
-  <div class="ss-bubble"></div><div class="ss-bubble-2"></div>
-  <div class="ss-sticker ss-sticker-sm">
-    <div class="ss-st-k">${esc(e.label || 'Today')}</div>
-    <div class="ss-st-big">${esc(e.allDay ? 'All day' : e.time)}</div>
+  const v = e.venue;
+  return `<div class="slide">
+  <div class="slide-body">
+    <div class="slide-label" style="background:${esc(v?.color || '#214ba5')}"><i></i>${esc(e.label || 'Today')}</div>
+    <div class="slide-program">${esc(e.program)}</div>
+    <div class="slide-group">${esc(e.groupLine)}</div>
+    <div class="slide-time">${ms('schedule')}${esc(e.allDay ? 'All day' : e.timeRange || e.time)}</div>
   </div>
-  <div class="ss-pg-icon">${ms(e.venue?.icon || 'volunteer_activism')}</div>
-  <div class="ss-pg-title">${
-    small ? `<div class="ss-pg-small" style="font-size:${fit(small, 56)}px">${esc(small)}</div>` : ''
-  }<div class="ss-pg-big" style="font-size:${fit(big, 124)}px">${esc(big)}</div></div>
-  <div class="ss-pg-meta">${pills}</div>
+  ${
+    v
+      ? `<div class="venue-block" style="background:${esc(v.color)}">
+    ${ms(v.icon)}
+    <div class="venue-short">${esc(v.chip)}</div>
+  </div>`
+      : ''
+  }
 </div>`;
 }
 
