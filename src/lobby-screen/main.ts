@@ -1,10 +1,25 @@
 import './screen.css';
 import { emptyDoc, LOGO_URL, sanitizeDoc } from '@/lib/lobby/config';
 import { combineEvents, fetchGoogleEvents, fetchSheetCounters, sampleEvents } from '@/lib/lobby/events';
-import { bannerHTML, dayHTML, rowHTML, slideHTML, statHTML, STATS } from '@/lib/lobby/markup';
+import { STATS } from '@/lib/lobby/markup';
+import { bannerHTML, capHTML, slideHTML, tileHTML, upDayHTML } from '@/lib/lobby/screen-markup';
 import { buildView, type ScreenView } from '@/lib/lobby/model';
-import { formatClock, formatDateLong, formatHebrewDate, formatTime, zonedParts } from '@/lib/lobby/time';
+import { formatClock, formatDateLong, formatHebrewDate, zonedParts } from '@/lib/lobby/time';
 import type { CalEvent, CounterKey, LobbyDoc } from '@/lib/lobby/types';
+
+/**
+ * The JOC lobby screen.
+ *
+ * Drawn as a school's own live screen is drawn: a 1920×1080 canvas scaled to
+ * whatever the television says it is, a programme filling the left, what is
+ * coming up and the impact tiles down the right, and a band along the foot.
+ * The wall in this building and the wall in a school should look like the
+ * same organisation, and before this they did not.
+ *
+ * It reads the lobby's own document — the programmes somebody types into the
+ * panel, plus Google Calendar where that is switched on — and the hours
+ * figure the app reports. Nothing here touches src/school-screen.
+ */
 
 const params = new URLSearchParams(location.search);
 const DEMO = params.has('demo');
@@ -34,6 +49,8 @@ const state = {
   /** Preview can hold the carousel on one program */
   focusId: null as string | null,
   slide: 0,
+  /** When the numbers started counting up, so they only do it once. */
+  countFrom: 0,
 };
 
 const now = () => state.nowOverride ?? new Date();
@@ -61,77 +78,125 @@ const cache = {
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
 
 document.getElementById('app')!.innerHTML = `
-<div class="stage">
-  <div class="canvas" id="canvas">
-    <div class="hdr">
-      <img class="hdr-logo" id="logo" alt="Just One Chesed" />
-      <div class="hdr-right"><div class="hdr-date"><div class="hdr-greg" id="date"></div><div class="hdr-hebrew" id="hebrew"></div></div><div class="hdr-clock" id="clock"></div></div>
-    </div>
-    <div class="main">
-      <div class="today">
-        <div class="today-head">
-          <div class="panel-title"><span class="ms">today</span><span id="todayTitle">Today at JOC</span></div>
-          <div class="dots" id="dots"></div>
-        </div>
-        <div class="banners" id="banners"></div>
-        <div class="carousel" id="carousel"><div class="track" id="track"></div></div>
-        <div class="rows" id="rows"></div>
-        <div class="empty-today" id="emptyToday">No more programs today — see what’s coming up.</div>
+<div class="ss-stage">
+  <div class="ss-canvas" id="canvas">
+    <div class="ss-hdr">
+      <div class="ss-logo"><img id="logo" alt="Just One Chesed" /></div>
+      <div class="ss-name">
+        <div class="ss-name-t">Just One <span>Chesed</span></div>
+        <div class="ss-name-s" id="stats"></div>
       </div>
-      <div class="coming">
-        <div class="panel-title"><span class="ms">event_upcoming</span>Coming up</div>
-        <div class="week" id="week"></div>
-        <div class="impact" id="impact"></div>
-        <div class="status"><div id="source"></div><div id="updated"></div></div>
+      <div></div>
+      <div class="ss-clock-box">
+        <div class="ss-clock" id="clock"></div>
+        <div class="ss-date" id="date"></div>
+        <div class="ss-hdate" id="hdate"></div>
       </div>
     </div>
-    <div class="foot">
-      <div class="theme">
-        <span class="ms">menu_book</span>
-        <div class="theme-txt">
-          <div class="theme-k">This cycle</div>
-          <div class="theme-en" id="themeEn"></div>
-        </div>
-        <div class="theme-he" dir="rtl" id="themeHe"></div>
+
+    <div class="ss-mid">
+      <div class="ss-slides" id="slides">
+        <div id="track"></div>
+        <div class="ss-cap on" id="cap"></div>
       </div>
-      <div class="ask">Did you do your just one chesed today?</div>
+      <div class="ss-right">
+        <div class="ss-so" id="so">
+          <div class="ss-so-head">
+            <div class="ss-so-k"><span class="ss-ms">event_upcoming</span>Coming up</div>
+            <div class="ss-so-topic" id="banners"></div>
+          </div>
+          <div class="ss-up" id="up"></div>
+        </div>
+        <div class="ss-gr">
+          <div class="ss-gr-head">
+            <div class="ss-gr-k"><span class="ss-ms">volunteer_activism</span>Our impact</div>
+            <div class="ss-gr-total" id="updated"></div>
+          </div>
+          <div class="ss-gr-tiles ss-three" id="tiles"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ss-band">
+      <div class="ss-band-logo"><img src="/brand/joc-wordmark.png" alt="Just One Chesed" /></div>
+      <div class="ss-sect">
+        <div class="ss-sect-ic"><span class="ss-ms">menu_book</span></div>
+        <div class="ss-sect-txt">
+          <div class="ss-k">This cycle</div>
+          <div class="ss-theme" id="themeEn"></div>
+        </div>
+        <div class="ss-theme-he" dir="rtl" id="themeHe"></div>
+      </div>
+      <div class="ss-ask">Did you do your just one chesed today?</div>
+      <div></div>
     </div>
   </div>
 </div>
-${DEBUG ? '<div class="debug" id="debug"></div>' : ''}`;
+${DEBUG ? '<div class="ss-debug" id="debug"></div>' : ''}`;
 
-// Local copy of the logo if one was added to /public, otherwise the website's
 const logo = $<HTMLImageElement>('#logo');
 logo.onerror = () => {
   logo.onerror = null;
   logo.src = LOGO_URL;
 };
-logo.src = '/logo-white.png';
+logo.src = '/brand/joc-icon.png';
 
-// Hours of chesed comes from the app and leads; the two counters
-// somebody still types in follow it.
-$('#impact').innerHTML =
-  '<div class="stat"><div class="stat-icon"><span class="ms">schedule</span></div>' +
-  '<div class="stat-text"><div class="stat-value" data-live="hours">—</div>' +
-  '<div class="stat-label">Hours of chesed</div></div></div>' +
-  STATS.map((s) => statHTML(s, '0')).join('');
+/* ---------------------------------------------------------------- scale -- */
 
+/**
+ * The canvas is 1920×1080 and the window is whatever the TV says it is.
+ *
+ * Measured from the live window every time, and re-checked every second for
+ * the first twelve: some sticks report a size of zero, or the wrong size,
+ * until the browser has settled. A zero is never applied.
+ */
+let lastScale = 0;
 function fit() {
-  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-  $('#canvas').style.transform = `scale(${scale})`;
+  const de = document.documentElement;
+  const w = de.clientWidth || window.innerWidth;
+  const h = de.clientHeight || window.innerHeight;
+  if (!w || !h) return;
+  const s = Math.min(w / 1920, h / 1080);
+  if (s > 0 && s !== lastScale) {
+    lastScale = s;
+    $('#canvas').style.transform = `scale(${s})`;
+  }
 }
 window.addEventListener('resize', fit);
+window.addEventListener('load', fit);
 fit();
+const boot = window.setInterval(fit, 1000);
+window.setTimeout(() => window.clearInterval(boot), 12_000);
 
-// ---------------- rendering ----------------
+/* ------------------------------------------------------------ rendering -- */
 
 const last: Record<string, string> = {};
-/** Only touch the DOM when a section actually changed, so transitions run smoothly */
-function setHTML(id: string, html: string): boolean {
-  if (last[id] === html) return false;
+/** Only touch the DOM when a part actually changed, so the crossfades run. */
+function setHTML(id: string, html: string) {
+  if (last[id] === html) return;
   last[id] = html;
-  document.getElementById(id)!.innerHTML = html;
-  return true;
+  $(`#${id}`).innerHTML = html;
+}
+
+/**
+ * Drives the count-up.
+ *
+ * render() otherwise runs on a fifteen-second timer, so the first frame
+ * after the data lands is whatever fraction of the number had been
+ * reached — and it then sat there. 248,743 showed as 1,118.
+ */
+function countUp() {
+  const step = () => {
+    renderTiles();
+    if (Date.now() - state.countFrom < 2100) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/** Numbers count up over two seconds the first time the screen gets data. */
+function count(n: number): string {
+  const p = state.countFrom ? Math.min(1, (Date.now() - state.countFrom) / 2000) : 1;
+  return Math.round(n * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US');
 }
 
 let view: ScreenView = { banners: [], slides: [], ahead: [], week: [] };
@@ -146,115 +211,99 @@ function render() {
   const s = state.doc.settings;
   view = buildView(events(), s, t);
 
-  $('#date').textContent = formatDateLong(t);
-  // Empty string on an engine with no Hebrew calendar; the CSS hides
-  // the line rather than leaving a gap under the date.
-  $('#hebrew').textContent = formatHebrewDate(t);
   $('#clock').textContent = formatClock(t, s.clock24);
+  $('#date').textContent = formatDateLong(t);
+  $('#hdate').textContent = formatHebrewDate(t);
 
-  // Once the last program of the day has finished, the panel shows the
-  // week instead of emptying itself. A lobby screen is walked past all
-  // evening, and an acre of white saying 'see what's coming up' is the
-  // one thing it must never be.
-  const done = view.slides.length === 0;
-  const showing = done ? view.ahead : view.slides;
-  const n = showing.length;
-
-  $('#todayTitle').textContent = done ? 'Coming up this week at JOC' : 'Today at JOC';
-  $('#emptyToday').textContent = done
-    ? 'Nothing on the calendar this week.'
-    : 'No more programs today — see what’s coming up.';
-
-  if (state.focusId) {
-    const i = showing.findIndex((x) => x.id === state.focusId);
-    if (i >= 0) state.slide = i;
-  }
-  const active = n ? state.slide % n : 0;
-
-  setHTML('dots', n > 1 ? showing.map((_, i) => `<div class="dot${i === active ? ' on' : ''}"></div>`).join('') : '');
-  setHTML('banners', view.banners.map(bannerHTML).join(''));
-
-  $('#carousel').style.display = n ? '' : 'none';
-  setHTML('track', showing.map(slideHTML).join(''));
-  $('#track').style.transform = `translateX(${-active * 100}%)`;
-
-  setHTML('rows', showing.map((e, i) => rowHTML(e, i === active)).join(''));
-  $('#rows').style.display = n ? '' : 'none';
-  $('#emptyToday').style.display = n ? 'none' : '';
-  fitRows(active);
-
-  setHTML('week', view.week.length ? view.week.map(dayHTML).join('') : '<div class="week-empty">Nothing else on the calendar this week.</div>');
-  clipOverflow($('#week'));
-
-  renderStatus();
-  renderLive();
+  renderSlides(t);
+  renderUp();
+  renderTiles();
   renderTheme();
   renderStats();
   renderDebug();
 }
 
-/** Keeps the highlighted row in view and hides any row that would be cut off */
-function fitRows(active: number) {
-  const box = $('#rows');
-  const rows = [...box.children] as HTMLElement[];
-  rows.forEach((r) => (r.style.visibility = ''));
-  if (!rows.length) return;
-  const a = rows[active];
-  let top = 0;
-  if (a && a.offsetTop - box.offsetTop + a.offsetHeight > box.clientHeight) top = a.offsetTop - box.offsetTop;
-  box.scrollTop = top;
-  rows.forEach((r) => {
-    const y = r.offsetTop - box.offsetTop - top;
-    if (y < 0 || y + r.offsetHeight > box.clientHeight + 1) r.style.visibility = 'hidden';
-  });
+/**
+ * The big panel.
+ *
+ * Today's programmes while there are any left, and once the last one has
+ * finished, the week ahead in their place — a wall people walk past all
+ * evening must never be an empty box.
+ */
+function renderSlides(t: Date) {
+  const done = view.slides.length === 0;
+  const showing = done ? view.ahead : view.slides;
+  const n = showing.length;
+
+  if (!n) {
+    setHTML('track', '');
+    setHTML(
+      'cap',
+      capHTML('Today at JOC', 0, 0, 'Nothing on the calendar this week.'),
+    );
+    return;
+  }
+
+  if (state.focusId) {
+    const i = showing.findIndex((x) => x.id === state.focusId);
+    if (i >= 0) state.slide = i;
+  }
+  const active = state.slide % n;
+  const on = showing[active];
+
+  setHTML('track', showing.map((sl, i) => slideHTML(sl, i === active)).join(''));
+  setHTML(
+    'cap',
+    capHTML(
+      done ? 'Coming up this week at JOC' : 'Today at JOC',
+      n,
+      active,
+      [on.groupLine, on.venue?.chip].filter(Boolean).join('  ·  ') || formatDateLong(t),
+    ),
+  );
 }
 
-function clipOverflow(box: HTMLElement) {
-  const kids = [...box.children] as HTMLElement[];
-  kids.forEach((c) => (c.style.visibility = ''));
-  kids.forEach((c) => {
-    if (c.offsetTop - box.offsetTop + c.offsetHeight > box.clientHeight + 1) c.style.visibility = 'hidden';
-  });
+/** The orange card: the days still to come. */
+function renderUp() {
+  setHTML(
+    'banners',
+    view.banners.length
+      ? `<span class="ss-ms">celebration</span>${view.banners[0].program}`
+      : '<span class="ss-ms">calendar_month</span>This week',
+  );
+  setHTML(
+    'up',
+    view.week.length
+      ? view.week.slice(0, 3).map(upDayHTML).join('')
+      : '<div class="ss-up-none">Nothing else on the calendar this week.</div>',
+  );
 }
 
-function renderStatus() {
-  const s = state.doc.settings;
-  const usesGoogle = s.source !== 'manual';
-  let label: string;
-  let warn = false;
-  if (DEMO) label = 'Sample data · demo mode';
-  else if (PREVIEW) label = 'Preview';
-  else if (state.docError && !state.docLoaded) {
-    label = 'Offline · waiting for schedule';
-    warn = true;
-  } else if (state.docError || (usesGoogle && state.googleError)) {
-    label = 'Offline · showing last data';
-    warn = true;
-  } else label = usesGoogle ? 'Live · Google Calendar' : 'Live · JOC schedule';
-
-  const fetched = usesGoogle && state.googleFetchedAt ? state.googleFetchedAt : state.docFetchedAt;
-  const src = $('#source');
-  src.textContent = label;
-  src.className = warn ? 'warn' : '';
-  $('#updated').textContent = fetched && !PREVIEW && !DEMO ? 'Updated ' + formatTime(fetched, s.clock24) : '';
-}
-
-// Count-up: from the last shown number to the new one over 2 seconds
-const shown: Record<CounterKey, number> = { acts: 0, beds: 0, challahs: 0, pizzas: 0 };
-const target: Record<CounterKey, number> = { acts: 0, beds: 0, challahs: 0, pizzas: 0 };
-let anim: { from: Record<CounterKey, number>; t0: number } | null = null;
-
-function counterValues(): Record<CounterKey, number> {
-  const c = state.doc.counters;
-  if (c.source === 'sheet' && state.sheet) return { ...c.values, ...state.sheet };
-  return c.values;
-}
-
-/** Hours of chesed, straight from the app. */
-function renderLive() {
-  const el = document.querySelector('[data-live="hours"]');
-  if (!el) return;
-  el.textContent = live && live.hours != null ? live.hours.toLocaleString('en-US') + '+' : '—';
+/**
+ * The three tiles.
+ *
+ * Hours comes from the app itself; the other two are typed into the panel.
+ * A dash rather than a nought when the app has not answered — a nought is a
+ * claim and a dash is not.
+ */
+function renderTiles() {
+  const v = counterValues();
+  const tiles = [
+    {
+      label: 'Hours',
+      value: live?.hours != null ? count(live.hours) + '+' : '—',
+      unit: 'of chesed',
+      icon: 'schedule',
+      on: true,
+    },
+    ...STATS.map((st) => ({
+      label: st.label.split(' ')[0],
+      value: count(v[st.key] ?? 0) + (st.plus ? '+' : ''),
+      unit: st.label.split(' ').slice(1).join(' '),
+      icon: st.icon,
+    })),
+  ];
+  setHTML('tiles', tiles.map(tileHTML).join(''));
 }
 
 /** What the building is learning this cycle. */
@@ -264,28 +313,25 @@ function renderTheme() {
   $('#themeHe').textContent = t?.he ?? '';
 }
 
+/** The line under the name, and when the figures were last read. */
 function renderStats() {
-  const v = counterValues();
-  const changed = STATS.some((s) => target[s.key] !== v[s.key]);
-  if (!changed) return;
-  Object.assign(target, v);
-  anim = { from: { ...shown }, t0: performance.now() };
-  requestAnimationFrame(stepStats);
+  const parts: string[] = [];
+  if (live?.hours != null) parts.push(`${live.hours.toLocaleString('en-US')} hours of chesed worldwide`);
+  parts.push(state.doc.settings.source === 'manual' ? 'JOC schedule' : 'Live · JOC calendar');
+  $('#stats').textContent = parts.join('  ·  ');
+
+  const when = state.docFetchedAt;
+  $('#updated').textContent = when
+    ? 'Updated ' + when.toLocaleTimeString('en-US', { timeZone: 'Asia/Jerusalem', hour: 'numeric', minute: '2-digit' }).toLowerCase()
+    : '';
 }
 
-function stepStats(ts: number) {
-  if (!anim) return;
-  const p = Math.min(1, (ts - anim.t0) / 2000);
-  const eased = 1 - Math.pow(1 - p, 3);
-  for (const s of STATS) {
-    shown[s.key] = Math.round(anim.from[s.key] + (target[s.key] - anim.from[s.key]) * eased);
-    const el = document.querySelector(`[data-stat="${s.key}"]`);
-    // The '+' has to be re-applied here: this overwrites what statHTML
-    // wrote, and it is the counter that is approximate, not the animation.
-    if (el) el.textContent = shown[s.key].toLocaleString('en-US') + (s.plus ? '+' : '');
-  }
-  if (p < 1) requestAnimationFrame(stepStats);
-  else anim = null;
+const shown: Record<CounterKey, number> = { acts: 0, beds: 0, challahs: 0, pizzas: 0 };
+
+function counterValues(): Record<CounterKey, number> {
+  const c = state.doc.counters;
+  if (c.source === 'sheet' && state.sheet) return { ...c.values, ...state.sheet };
+  return c.values;
 }
 
 function renderDebug() {
@@ -298,8 +344,8 @@ function renderDebug() {
     s.source !== 'manual'
       ? `google: ${state.google?.length ?? 0} events · fetched ${fmt(state.googleFetchedAt)}${state.googleError ? ' · ERROR ' + state.googleError : ''}`
       : 'google: not used',
-    state.doc.counters.source === 'sheet' ? `sheet: ${state.sheetError || 'ok'}` : 'counters: manual',
-    `today: ${view.slides.length} · banners: ${view.banners.length} · coming-up days: ${view.week.length}`,
+    `live hours: ${live?.hours ?? '—'} · read ${live?.readAt ?? '—'}`,
+    `today: ${view.slides.length} · ahead: ${view.ahead.length} · coming-up days: ${view.week.length}`,
     `now (Jerusalem): ${fmt(now())} · scale ${(Math.min(innerWidth / 1920, innerHeight / 1080)).toFixed(3)}`,
   ].join('\n');
 }
@@ -309,9 +355,8 @@ function renderDebug() {
 /**
  * What the app reports, as served beside the document.
  *
- * Null until the first fetch answers, and after any fetch that fails —
- * the tile then shows a dash rather than a nought, because a nought is a
- * claim and a dash is not.
+ * Null until the first fetch answers, and after any fetch that fails — the
+ * tile then shows a dash rather than a nought.
  */
 let live: { hours: number | null; readAt: string | null } | null = null;
 
@@ -338,6 +383,10 @@ async function loadDoc() {
     state.docLoaded = true;
     state.docError = '';
     state.docFetchedAt = new Date();
+    if (!state.countFrom) {
+      state.countFrom = Date.now();
+      countUp();
+    }
     cache.write(CACHE_DOC, doc);
     if (sourceChanged || googleChanged) scheduleGoogle(true);
     restartSlider();
@@ -451,3 +500,5 @@ document.fonts?.ready.then(() => {
   for (const k of Object.keys(last)) delete last[k];
   render();
 });
+
+void shown;
