@@ -1,5 +1,5 @@
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
-import { canApprove, type ScreenRole } from "./access";
+import { canApprove, canEndorse, type ScreenRole } from "./access";
 import { screenImageUrl } from "./data";
 import { dayKey } from "./rules";
 
@@ -35,17 +35,22 @@ export type EditorFlyer = {
   showUntil: string;
   sort: number;
   status: EditorStatus;
+  /** Who submitted it. */
   by: string | null;
+  /** The ambassador who passed it on, if one has. */
+  endorsedBy: string | null;
   mine: boolean;
 };
 
 export type EditorPhoto = {
-  id: string; imageUrl: string; caption: string | null; status: EditorStatus; by: string | null; mine: boolean;
+  id: string; imageUrl: string; caption: string | null; status: EditorStatus;
+  by: string | null; endorsedBy: string | null; mine: boolean;
 };
 
 export type EditorShoutOut = {
   id: string; text: string; firstName: string; lastName: string; grade: string;
   showName: boolean; email: string; status: EditorStatus; createdAt: string;
+  endorsedBy: string | null;
 };
 
 export type EditorDedication = { id: string; date: string; hebrewName: string; text: string | null; everySchool: boolean };
@@ -57,16 +62,34 @@ export type ScreenEditorData = {
     screenUp: boolean;
   };
   role: ScreenRole;
+  /** May put things on the wall: the second approval. */
   canApprove: boolean;
+  /** May pass things on: the first. True for ambassadors and for the school. */
+  canEndorse: boolean;
   flyers: EditorFlyer[];
   photos: EditorPhoto[];
   shoutOuts: EditorShoutOut[];
   dedications: EditorDedication[];
 };
 
+/**
+ * The name to put against a submission or an approval.
+ *
+ * It used to return the first word, which made "Rivka Mandel" into "Rivka"
+ * and "Mrs. Devorah Klein" into "Mrs." — fine as a hint on a dense row, and
+ * useless on a card whose whole job is to say who decided this. A school
+ * with two Rivkas learns nothing from "Rivka".
+ *
+ * The full name where there is one; otherwise the part of the address in
+ * front of the @, which is the most a stranger's email should give away on
+ * a shared screen.
+ */
 function who(u: { name: string | null; email: string | null } | null): string | null {
   if (!u) return null;
-  return (u.name ?? u.email ?? "").split(/[\s@]/)[0] || null;
+  const name = u.name?.trim();
+  if (name) return name;
+  const local = u.email?.split("@")[0]?.trim();
+  return local || null;
 }
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
@@ -85,6 +108,14 @@ export async function screenEditorData(
   if (!school) return null;
 
   const approver = canApprove(role);
+  /**
+   * An ambassador now reads the whole queue, not just their own things.
+   *
+   * They could previously see what was already on the wall and what they
+   * had added themselves, which is all somebody who only submits needs. A
+   * first approver needs everything waiting, or there is nothing to work on.
+   */
+  const endorser = canEndorse(role);
   const now = new Date();
   // Last month onward: enough to see what just came down, not the archive.
   const since = new Date(now.getTime() - 31 * 86400000);
@@ -96,7 +127,7 @@ export async function screenEditorData(
         showUntil: { gte: since },
         AND: [
           { OR: [{ schoolId }, { schoolId: null }] },
-          ...(approver ? [] : [{ OR: [{ status: "APPROVED" as const }, { createdById: userId ?? "-" }] }]),
+          ...(endorser ? [] : [{ OR: [{ status: "APPROVED" as const }, { createdById: userId ?? "-" }] }]),
         ],
       },
       orderBy: [{ status: "asc" }, { sort: "asc" }, { createdAt: "desc" }],
@@ -106,23 +137,25 @@ export async function screenEditorData(
         place: true, ambassadors: true, icon: true, imageId: true, qrUrl: true, qrLabel: true,
         showFrom: true, showUntil: true, sort: true, status: true, createdById: true,
         createdBy: { select: { name: true, email: true } },
+        endorsedBy: { select: { name: true, email: true } },
       },
     }).catch(() => []),
 
     prisma.screenPhoto.findMany({
       where: {
         schoolId,
-        ...(approver ? {} : { OR: [{ status: "APPROVED" }, { uploadedById: userId ?? "-" }] }),
+        ...(endorser ? {} : { OR: [{ status: "APPROVED" }, { uploadedById: userId ?? "-" }] }),
       },
       orderBy: { createdAt: "desc" },
       take: 40,
       select: {
         id: true, imageId: true, caption: true, status: true, uploadedById: true,
         uploadedBy: { select: { name: true, email: true } },
+        endorsedBy: { select: { name: true, email: true } },
       },
     }).catch(() => []),
 
-    approver
+    endorser
       ? prisma.shoutOut.findMany({
           where: { schoolId, OR: [{ status: "PENDING" }, { createdAt: { gte: since } }] },
           orderBy: [{ status: "asc" }, { createdAt: "desc" }],
@@ -130,6 +163,7 @@ export async function screenEditorData(
           select: {
             id: true, text: true, firstName: true, lastName: true, grade: true,
             showName: true, authorEmail: true, status: true, createdAt: true,
+            endorsedBy: { select: { name: true, email: true } },
           },
         }).catch(() => [])
       : Promise.resolve([]),
@@ -153,6 +187,7 @@ export async function screenEditorData(
     },
     role,
     canApprove: approver,
+    canEndorse: endorser,
     flyers: flyers.map((f) => ({
       id: f.id, schoolId: f.schoolId, template: f.template, title: f.title, line: f.line,
       startsAt: f.startsAt ? f.startsAt.toISOString() : null,
@@ -160,15 +195,18 @@ export async function screenEditorData(
       imageUrl: f.imageId ? screenImageUrl(f.imageId) : null,
       qrUrl: f.qrUrl, qrLabel: f.qrLabel,
       showFrom: dayKey(f.showFrom), showUntil: dayKey(f.showUntil),
-      sort: f.sort, status: f.status, by: who(f.createdBy), mine: Boolean(userId && f.createdById === userId),
+      sort: f.sort, status: f.status, by: who(f.createdBy), endorsedBy: who(f.endorsedBy),
+      mine: Boolean(userId && f.createdById === userId),
     })),
     photos: photos.map((p) => ({
       id: p.id, imageUrl: screenImageUrl(p.imageId), caption: p.caption, status: p.status,
-      by: who(p.uploadedBy), mine: Boolean(userId && p.uploadedById === userId),
+      by: who(p.uploadedBy), endorsedBy: who(p.endorsedBy),
+      mine: Boolean(userId && p.uploadedById === userId),
     })),
     shoutOuts: shouts.map((s) => ({
       id: s.id, text: s.text, firstName: s.firstName, lastName: s.lastName, grade: s.grade,
       showName: s.showName, email: s.authorEmail, status: s.status, createdAt: s.createdAt.toISOString(),
+      endorsedBy: who(s.endorsedBy),
     })),
     dedications: dedications.map((d) => ({
       id: d.id, date: ymd(d.date), hebrewName: d.hebrewName, text: d.text, everySchool: d.schoolId === null,

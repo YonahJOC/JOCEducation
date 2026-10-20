@@ -4,11 +4,12 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { C, F, R, T } from "@/lib/joc-tokens";
 import {
-  decideFlyer, decidePhoto, decideShoutOut, deleteDedication, deleteFlyer, deletePhoto,
+  decideShoutOut, deleteDedication, deleteFlyer, deletePhoto,
   saveScreenSettings, setDedication, uploadScreenPhoto,
 } from "@/app/actions/school-screen";
 import type { ScreenEditorData, EditorFlyer } from "@/lib/school-screen/editor-data";
 import { dayKey, shortName, shoutOutFrom } from "@/lib/school-screen/rules";
+import { ApprovalQueue } from "./ApprovalQueue";
 import { FlyerForm } from "./FlyerForm";
 import { FlyerPreview } from "./FlyerPreview";
 import { Btn, Field, Note, Section, StatusChip, input, shrinkImage } from "./ui";
@@ -44,10 +45,17 @@ export function ScreenEditor({ data, staff }: { data: ScreenEditorData; staff?: 
     });
   }
 
-  const waitingFlyers = data.flyers.filter((f) => f.status === "PENDING");
-  const waitingPhotos = data.photos.filter((p) => p.status === "PENDING");
-  const waitingShouts = data.shoutOuts.filter((s) => s.status === "PENDING");
-  const waiting = waitingFlyers.length + waitingPhotos.length + waitingShouts.length;
+
+  /**
+   * Which half of the job this person is here to do.
+   *
+   * An ambassador gives the first approval and the school gives the second,
+   * so the same queue is shown with different verbs rather than as two
+   * different screens. Somebody who can do both — a teacher, or JOC — gets
+   * the school's, because that is the decision that actually puts something
+   * in a hallway.
+   */
+  const queueMode = approves ? ("approve" as const) : ("endorse" as const);
 
   return (
     <div>
@@ -76,56 +84,13 @@ export function ScreenEditor({ data, staff }: { data: ScreenEditorData; staff?: 
         <Note tone="warn">No school email domain is set, so any signed-in account can send a shout-out. Set one under Settings.</Note>
       ) : null}
 
-      {/* ---- waiting ---- */}
-      {approves && waiting > 0 ? (
-        <Section title={`Waiting for you · ${waiting}`} icon="pending_actions"
-          note="Nothing here is on the screen yet. Approve it and it goes up within five minutes.">
-          {waitingShouts.map((s) => (
-            <Row key={s.id}
-              main={<>
-                <div style={{ ...T.body, color: C.ink }}>“{s.text}”</div>
-                <div style={{ ...T.meta, marginTop: "4px" }}>
-                  {shoutOutFrom(s).replace(/^— /, "").toUpperCase() || "NO GRADE"} · {s.showName ? "NAME MAY BE SHOWN" : "GRADE ONLY"} · {s.email}
-                </div>
-              </>}
-              tag="Shout-out"
-              actions={<>
-                <Btn tone="green" disabled={pending} onClick={() => run(() => decideShoutOut(s.id, true))}>Approve</Btn>
-                <Btn tone="danger" disabled={pending} onClick={() => run(() => decideShoutOut(s.id, false))}>Reject</Btn>
-              </>}
-            />
-          ))}
-          {waitingPhotos.map((p) => (
-            <Row key={p.id}
-              thumb={p.imageUrl}
-              main={<>
-                <div style={{ ...T.body, color: C.ink }}>{p.caption || "No caption"}</div>
-                <div style={{ ...T.meta, marginTop: "4px" }}>PHOTO{p.by ? ` · FROM ${p.by.toUpperCase()}` : ""} · CONSENT CONFIRMED</div>
-              </>}
-              tag="Photo"
-              actions={<>
-                <Btn tone="green" disabled={pending} onClick={() => run(() => decidePhoto(p.id, true))}>Approve</Btn>
-                <Btn tone="danger" disabled={pending} onClick={() => run(() => decidePhoto(p.id, false))}>Reject</Btn>
-              </>}
-            />
-          ))}
-          {waitingFlyers.map((f) => (
-            <Row key={f.id}
-              preview={<FlyerPreview width={150} short={short} flyer={{ ...f, hasQr: Boolean(f.qrUrl) }} />}
-              main={<>
-                <div style={{ ...T.body, color: C.ink, fontWeight: 600 }}>{f.title}</div>
-                <div style={{ ...T.meta, marginTop: "4px" }}>{f.template} FLYER{f.by ? ` · FROM ${f.by.toUpperCase()}` : ""} · {f.showFrom} → {f.showUntil}</div>
-              </>}
-              tag="Flyer"
-              actions={<>
-                <Btn tone="green" disabled={pending} onClick={() => run(() => decideFlyer(f.id, true))}>Approve</Btn>
-                <Btn tone="quiet" disabled={pending} onClick={() => setEditing(f)}>Edit</Btn>
-                <Btn tone="danger" disabled={pending} onClick={() => run(() => decideFlyer(f.id, false))}>Reject</Btn>
-              </>}
-            />
-          ))}
-        </Section>
-      ) : null}
+      {/* ---- the queue ----
+          Both halves of the job, in one component. An ambassador sees what
+          nobody has looked at yet; the school sees what an ambassador
+          passed on, with the student's name on the card, and what nobody
+          has reached. Everything about who may do which is decided inside
+          it from `mode`. */}
+      {data.canEndorse ? <ApprovalQueue data={data} mode={queueMode} /> : null}
 
       {/* ---- slideshow: flyers ---- */}
       <Section
