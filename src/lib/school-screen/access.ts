@@ -17,15 +17,15 @@ import { can, canRunOwnSchool, canRunSchoolApp } from "@/lib/access";
  * No new roles: each of these is a fact the app already keeps.
  */
 
-export type ScreenRole = "staff" | "teacher" | "ambassador";
+// The role, and the rules about it, are pure: they live in stages.ts so
+// that a unit test can load them without next-auth coming too.
+export type { ScreenRole } from "@/lib/school-screen/stages";
+export { canApprove, canEndorse, decisionFor } from "@/lib/school-screen/stages";
+import type { ScreenRole } from "@/lib/school-screen/stages";
 
 export type ScreenActor = { userId: string | null; email: string | null; role: ScreenRole };
 
 type SessionUser = NonNullable<Awaited<ReturnType<typeof safeAuth>>>["user"];
-
-export function canApprove(role: ScreenRole | null | undefined): boolean {
-  return role === "staff" || role === "teacher";
-}
 
 export function isScreenStaff(user: SessionUser | null | undefined): boolean {
   if (openForReview) return true;

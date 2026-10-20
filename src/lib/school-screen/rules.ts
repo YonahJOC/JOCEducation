@@ -70,8 +70,18 @@ export function pickDedication(
 
 /* ---------------------------------------------------------------- flyers -- */
 
+/**
+ * The five states, written out rather than imported from the Prisma client.
+ *
+ * This module is bundled into the televisions' own script by esbuild, and
+ * `@prisma/client` has no business in a browser. Keep in step with the
+ * ScreenItemStatus enum in prisma/schema.prisma — the typechecker catches
+ * the drift at every call site, which is how the two new states were found.
+ */
+export type ScreenStatus = "PENDING" | "ENDORSED" | "APPROVED" | "SET_ASIDE" | "REJECTED";
+
 export type FlyerWindow = {
-  status: "PENDING" | "APPROVED" | "REJECTED";
+  status: ScreenStatus;
   template: "EVENT" | "PROGRAM" | "BANNER";
   showFrom: Date;
   showUntil: Date;

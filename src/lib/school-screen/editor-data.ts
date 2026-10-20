@@ -13,7 +13,9 @@ import { dayKey } from "./rules";
  * settings.
  */
 
-export type EditorStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type { ScreenStatus } from "@/lib/school-screen/rules";
+/** @deprecated the states live in one place now — use ScreenStatus. */
+export type EditorStatus = import("@/lib/school-screen/rules").ScreenStatus;
 
 export type EditorFlyer = {
   id: string;

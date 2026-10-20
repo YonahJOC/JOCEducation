@@ -5,7 +5,14 @@ import { headers } from "next/headers";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth } from "@/auth";
 import { putFile } from "@/lib/files";
-import { canApprove, isScreenStaff, screenActor, type ScreenActor } from "@/lib/school-screen/access";
+import {
+  canApprove,
+  canEndorse,
+  decisionFor,
+  isScreenStaff,
+  screenActor,
+  type ScreenActor,
+} from "@/lib/school-screen/access";
 import { dayEnd, dayStart, emailAllowed, normalizeDomains } from "@/lib/school-screen/rules";
 import { isLobby } from "@/lib/lobby/slug";
 
@@ -172,18 +179,61 @@ export async function deleteFlyer(id: string): Promise<R> {
   return { ok: true };
 }
 
-export async function decideFlyer(id: string, approve: boolean): Promise<R> {
-  const f = await prisma.screenFlyer.findUnique({ where: { id }, select: { schoolId: true } }).catch(() => null);
-  if (!f) return { ok: false, error: "That flyer has gone." };
-  const a = await actorFor(f.schoolId);
+/**
+ * One decision, on any of the three things a screen shows.
+ *
+ * Flyers, photos and shout-outs had the same twelve lines three times over,
+ * differing only in the noun. They now differ only in the noun.
+ *
+ * Which decision a yes or a no means is the role's business, not this
+ * function's: decisionFor() in src/lib/school-screen/access.ts holds the
+ * rule that an ambassador's yes is an endorsement and the school's is a
+ * sign-off. An endorsement also records who gave it, separately from the
+ * school's own decider, because the approval queue has to show both.
+ */
+type ScreenItem = "flyer" | "photo" | "shout-out";
+
+async function decideScreenItem(
+  kind: ScreenItem,
+  id: string,
+  yes: boolean,
+): Promise<R> {
+  const table =
+    kind === "flyer" ? prisma.screenFlyer : kind === "photo" ? prisma.screenPhoto : prisma.shoutOut;
+
+  const row = await (table as { findUnique(a: unknown): Promise<{ schoolId: string | null } | null> })
+    .findUnique({ where: { id }, select: { schoolId: true } })
+    .catch(() => null);
+  if (!row) return { ok: false, error: `That ${kind} has gone.` };
+
+  const a = await actorFor(row.schoolId);
   if ("error" in a) return { ok: false, error: a.error };
-  if (!canApprove(a.role)) return { ok: false, error: "A teacher approves flyers." };
-  await prisma.screenFlyer.update({
-    where: { id },
-    data: { status: approve ? "APPROVED" : "REJECTED", decidedById: a.userId, decidedAt: new Date() },
-  }).catch(() => null);
+  if (!canEndorse(a.role)) {
+    return { ok: false, error: `An ambassador or a teacher decides ${kind}s.` };
+  }
+
+  const status = decisionFor(a.role, yes);
+  const now = new Date();
+
+  // An endorsement is the ambassador's own mark and leaves the school's
+  // decision slot empty, which is what makes "waiting for the school"
+  // answerable by looking at the row.
+  const data =
+    a.role === "ambassador"
+      ? { status, endorsedById: a.userId, endorsedAt: now }
+      : { status, decidedById: a.userId, decidedAt: now };
+
+  await (table as { update(x: unknown): Promise<unknown> })
+    .update({ where: { id }, data })
+    .catch(() => null);
+
   done();
+  revalidatePath("/ambassador/screen");
   return { ok: true };
+}
+
+export async function decideFlyer(id: string, approve: boolean): Promise<R> {
+  return decideScreenItem("flyer", id, approve);
 }
 
 /* --------------------------------------------------------------- photos -- */
@@ -229,17 +279,7 @@ export async function uploadScreenPhoto(form: FormData): Promise<R> {
 }
 
 export async function decidePhoto(id: string, approve: boolean): Promise<R> {
-  const p = await prisma.screenPhoto.findUnique({ where: { id }, select: { schoolId: true } }).catch(() => null);
-  if (!p) return { ok: false, error: "That photo has gone." };
-  const a = await actorFor(p.schoolId);
-  if ("error" in a) return { ok: false, error: a.error };
-  if (!canApprove(a.role)) return { ok: false, error: "A teacher approves photos." };
-  await prisma.screenPhoto.update({
-    where: { id },
-    data: { status: approve ? "APPROVED" : "REJECTED", decidedById: a.userId, decidedAt: new Date() },
-  }).catch(() => null);
-  done();
-  return { ok: true };
+  return decideScreenItem("photo", id, approve);
 }
 
 export async function deletePhoto(id: string): Promise<R> {
@@ -447,15 +487,5 @@ export async function submitShoutOut(form: FormData): Promise<R> {
 }
 
 export async function decideShoutOut(id: string, approve: boolean): Promise<R> {
-  const s = await prisma.shoutOut.findUnique({ where: { id }, select: { schoolId: true } }).catch(() => null);
-  if (!s) return { ok: false, error: "That shout-out has gone." };
-  const a = await actorFor(s.schoolId);
-  if ("error" in a) return { ok: false, error: a.error };
-  if (!canApprove(a.role)) return { ok: false, error: "A teacher approves shout-outs." };
-  await prisma.shoutOut.update({
-    where: { id },
-    data: { status: approve ? "APPROVED" : "REJECTED", decidedById: a.userId, decidedAt: new Date() },
-  }).catch(() => null);
-  done();
-  return { ok: true };
+  return decideScreenItem("shout-out", id, approve);
 }

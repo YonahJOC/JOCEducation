@@ -594,10 +594,13 @@ model User {
   screenDedicationsSet ScreenDedication[]  @relation("ScreenDedicationBy")
   screenFlyersMade     ScreenFlyer[]       @relation("ScreenFlyerBy")
   screenFlyersDecided  ScreenFlyer[]       @relation("ScreenFlyerDecidedBy")
+  screenFlyersEndorsed ScreenFlyer[]       @relation("ScreenFlyerEndorsedBy")
   screenPhotosMade     ScreenPhoto[]       @relation("ScreenPhotoBy")
   screenPhotosDecided  ScreenPhoto[]       @relation("ScreenPhotoDecidedBy")
+  screenPhotosEndorsed ScreenPhoto[]       @relation("ScreenPhotoEndorsedBy")
   shoutOutsSent        ShoutOut[]          @relation("ShoutOutBy")
   shoutOutsDecided     ShoutOut[]          @relation("ShoutOutDecidedBy")
+  shoutOutsEndorsed    ShoutOut[]          @relation("ShoutOutEndorsedBy")
 
   /// The Experiences department: the clients this person looks after, what
   /// they wrote down about any client, and what they said under it.
@@ -2641,9 +2644,25 @@ model InTrayCleared {
 // and nothing a student or ambassador adds reaches it until a teacher or JOC
 // has approved it.
 
+/// The life of anything that wants to be on a screen.
+///
+/// PENDING    submitted, nobody has looked yet
+/// ENDORSED   a student ambassador passed it on — the first approval
+/// APPROVED   the school signed it off. Only this reaches a wall.
+/// SET_ASIDE  a student ambassador said no
+/// REJECTED   the school said no. The end of it.
+///
+/// SET_ASIDE is deliberately not REJECTED. A student with a fast finger
+/// should not be able to produce something indistinguishable from the
+/// school's own decision: these stay in their own list, where an
+/// administrator can see at a glance that twelve went that way this week
+/// and can still approve any of them. A school's no is final; a student's
+/// is a second opinion.
 enum ScreenItemStatus {
   PENDING
+  ENDORSED
   APPROVED
+  SET_ASIDE
   REJECTED
 }
 
@@ -2697,6 +2716,14 @@ model ScreenFlyer {
   status      ScreenItemStatus    @default(PENDING)
   createdById String?
   createdBy   User?               @relation("ScreenFlyerBy", fields: [createdById], references: [id], onDelete: SetNull)
+  /// The student ambassador who passed it on, and when.
+  ///
+  /// Separate from decidedBy, which is the school's own sign-off. A card in
+  /// the approval queue has to say who submitted it *and* who endorsed it,
+  /// which needs both recorded.
+  endorsedById String?
+  endorsedBy   User?               @relation("ScreenFlyerEndorsedBy", fields: [endorsedById], references: [id], onDelete: SetNull)
+  endorsedAt   DateTime?
   decidedById String?
   decidedBy   User?               @relation("ScreenFlyerDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
   decidedAt   DateTime?
@@ -2719,6 +2746,10 @@ model ScreenPhoto {
   status       ScreenItemStatus @default(PENDING)
   uploadedById String?
   uploadedBy   User?            @relation("ScreenPhotoBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+  /// The student ambassador who passed it on. See ScreenFlyer.endorsedById.
+  endorsedById String?
+  endorsedBy   User?            @relation("ScreenPhotoEndorsedBy", fields: [endorsedById], references: [id], onDelete: SetNull)
+  endorsedAt   DateTime?
   decidedById  String?
   decidedBy    User?            @relation("ScreenPhotoDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
   decidedAt    DateTime?
@@ -2745,6 +2776,10 @@ model ShoutOut {
   author      User?            @relation("ShoutOutBy", fields: [authorId], references: [id], onDelete: SetNull)
   authorEmail String
   status      ScreenItemStatus @default(PENDING)
+  /// The student ambassador who passed it on. See ScreenFlyer.endorsedById.
+  endorsedById String?
+  endorsedBy   User?            @relation("ShoutOutEndorsedBy", fields: [endorsedById], references: [id], onDelete: SetNull)
+  endorsedAt   DateTime?
   decidedById String?
   decidedBy   User?            @relation("ShoutOutDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
   decidedAt   DateTime?

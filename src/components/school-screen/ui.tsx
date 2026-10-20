@@ -29,9 +29,18 @@ export function Section({ title, icon, note, children, tools }: {
   );
 }
 
+/**
+ * What each state is called to the person looking at it.
+ *
+ * Worded as where the thing has got to, not as what was done to it: somebody
+ * glancing at a list wants to know whether their flyer is going up, and
+ * "Endorsed" on its own does not answer that.
+ */
 const STATUS: Record<EditorStatus, [string, string, string]> = {
-  PENDING: ["Waiting for a teacher", C.orangeTint, C.orangeText],
+  PENDING: ["Waiting for an ambassador", C.orangeTint, C.orangeText],
+  ENDORSED: ["Waiting for the school", C.blueTint, C.blue],
   APPROVED: ["On the screen", C.greenTint, C.green],
+  SET_ASIDE: ["Set aside by an ambassador", C.panel, C.muted],
   REJECTED: ["Not approved", C.panel, C.muted],
 };
 

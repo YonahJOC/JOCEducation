@@ -38,6 +38,22 @@ vi.mock("@/auth", () => ({
 
 vi.mock("@/lib/access", () => ({ can: () => allowed }));
 
+/**
+ * The app's own API, stubbed.
+ *
+ * The display route reads the all-app hours figure, which is a real HTTP
+ * call with an eight second timeout — longer than this file's five. Left
+ * unmocked these tests reached the open internet and passed or failed on
+ * how quick api.justonechesed.org happened to be, which is not a property
+ * of the route they are supposed to be testing.
+ */
+vi.mock("@/lib/lobby/live", () => ({
+  liveTotals: async () => ({ hours: 249220, readAt: "2026-10-20T00:00:00.000Z" }),
+  liveTag: (t: { hours: number | null }) => String(t.hours ?? "-"),
+  liveSchools: async () => null,
+  NO_TOTALS: { hours: null, readAt: null },
+}));
+
 const { GET: display } = await import("@/app/api/lobby/display/route");
 const { PUT: putDoc } = await import("@/app/api/lobby/doc/route");
 
