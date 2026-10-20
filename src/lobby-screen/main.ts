@@ -159,10 +159,26 @@ function renderClock() {
  * everybody has done down there. They are different figures — this one is
  * the schools JOC tracks, the band's is every organisation on the app.
  */
+/**
+ * The line under the logo.
+ *
+ * The hours are `spendTimeByAll` — one field, as the app returns it, every
+ * hour logged by everybody on it. Nothing adds up to this and nothing can:
+ * it counts organisations this portal has never heard of, which is why it
+ * says total hours rather than naming the schools.
+ *
+ * The acts beside it are still the schools added together, because the app
+ * publishes no all-app equivalent of opportunitiesCount. Every term in that
+ * sum is a figure the app returned within the quarter hour.
+ *
+ * If the app does not answer, the hours are left off rather than filled in
+ * from our own sum: that figure is the schools only, and putting it under
+ * this label would say something untrue quietly.
+ */
 function renderNumbers(d: LobbyScreenData) {
   const bits: string[] = [];
   if (d.stats.acts != null) bits.push(`${count(d.stats.acts)} acts of chesed`);
-  if (d.stats.hours != null) bits.push(`${count(d.stats.hours)} hours across JOC schools`);
+  if (d.worldHours != null) bits.push(`${count(d.worldHours)} total hours`);
   $('#stats').textContent = bits.join(' · ');
 }
 

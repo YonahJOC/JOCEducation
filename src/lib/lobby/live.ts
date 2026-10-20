@@ -100,8 +100,18 @@ export async function liveSchools(
   const asked = schools.filter((s) => s.appSchoolId);
   if (asked.length === 0) return null;
 
-  const results = await Promise.all(
-    asked.map(async (s) => {
+  /**
+   * A few at a time, not thirty at once.
+   *
+   * Fired all together on a cold cache they crowd out the all-app total
+   * fetched moments earlier, and the wall comes up with a dash where the
+   * hours go — which looks like the app is down when it is only busy.
+   */
+  const LANES = 6;
+  const out: (SchoolFigure | null)[] = [];
+  for (let i = 0; i < asked.length; i += LANES) {
+    const batch = await Promise.all(
+      asked.slice(i, i + LANES).map(async (s) => {
       try {
         const res = await fetch(`${BASE}/organisations/${s.appSchoolId}/publicDashboard`, {
           headers: { accept: "application/json" },
@@ -120,10 +130,12 @@ export async function liveSchools(
       } catch {
         return null;
       }
-    }),
-  );
+      }),
+    );
+    out.push(...batch);
+  }
 
-  const ok = results.filter((r): r is SchoolFigure => r !== null);
+  const ok = out.filter((r): r is SchoolFigure => r !== null);
   // A handful failing is a blip and the rest still belong on the wall. Every
   // one failing is the app being down, and then the table is the better
   // answer than a ticker with nothing in it.
