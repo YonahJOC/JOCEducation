@@ -111,6 +111,11 @@ const PUBLIC_PREFIXES = [
   // serves a file to strangers only while it is approved for one.
   "/school-screen/",
   "/api/school-screen/",
+  // Where the QR code on every school's screen goes. The page asks for its
+  // own sign-in in place and checks the school's email domain itself, so
+  // the gate has no part in it; behind the gate, a student scanning the
+  // code was sent to the marketing page instead of the form.
+  "/shout-out/",
   // Somebody an administrator issued a password to has to be able to change
   // it. Only that page — /account itself sits behind the gate like the rest.
   "/account/password",
