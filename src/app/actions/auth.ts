@@ -3,10 +3,15 @@
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-/** Only ever redirect within this site — never to a URL someone supplied. */
+/**
+ * Only ever redirect within this site — never to a URL someone supplied.
+ *
+ * With nowhere asked for, sign-in goes to /start, which sends each person to
+ * their own first page before anything is drawn (see app/start/route.ts).
+ */
 function safeNext(next: FormDataEntryValue | null): string {
   const s = typeof next === "string" ? next : "";
-  return s.startsWith("/") && !s.startsWith("//") ? s : "/home";
+  return s.startsWith("/") && !s.startsWith("//") ? s : "/start";
 }
 
 export async function signInWithGoogle(formData?: FormData) {

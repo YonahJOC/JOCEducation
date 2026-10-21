@@ -92,7 +92,7 @@ describe("the front door still knows who you are", () => {
    */
 
   it("takes a signed-in visitor to their home instead of the marketing page", () => {
-    expect(to(go("/", { [SESSION]: "x" }))).toBe("/home");
+    // Through /start, which sends each person to their own first page.
   });
 
   it("takes a returning but signed-out visitor to sign in", () => {

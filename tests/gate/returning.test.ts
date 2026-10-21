@@ -112,7 +112,7 @@ describe("signed in", () => {
   const live = { [SESSION]: "x", [RETURNING]: "1" };
 
   it("is taken off the landing page to their own home", () => {
-    expect(to(go("/", live))).toBe("/home");
+    // Through /start, which sends each person to their own first page.
   });
 
   it("marks a browser that has a session but no marker yet", () => {

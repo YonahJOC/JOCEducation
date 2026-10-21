@@ -10,9 +10,10 @@ type Search = Promise<{ next?: string }>;
 export default async function LoginPage({ searchParams }: { searchParams: Search }) {
   const { next } = await searchParams;
 
-  // Already signed in — no reason to show this.
+  // Already signed in — no reason to show this. With nowhere asked for, to
+  // their own first page (app/start/route.ts).
   const session = await safeAuth();
-  if (session?.user) redirect(next?.startsWith("/") ? next : "/home");
+  if (session?.user) redirect(next?.startsWith("/") && !next.startsWith("//") ? next : "/start");
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", backgroundColor: C.paper }}>

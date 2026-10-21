@@ -189,9 +189,11 @@ export function proxy(req: NextRequest) {
   };
 
   // Someone already signed in has no use for the landing page.
+  // /start sends each person to their own first page — a demo school to its
+  // screen — before anything is drawn.
   if (hasSession && pathname === "/") {
     const url = req.nextUrl.clone();
-    url.pathname = "/home";
+    url.pathname = "/start";
     url.search = "";
     return remember(NextResponse.redirect(url));
   }
