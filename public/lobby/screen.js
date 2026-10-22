@@ -15,10 +15,8 @@
   ${s?`<div class="venue-pill" style="background:${o(s.color)}">${l(s.icon)}${o(s.chip)}</div>`:""}
   <div class="slide-time">${l("schedule")}${i}</div>
 </div>`}function F(){return`<div class="slide slide-stand">
-  <div class="slide-body">
+  <div class="stand-group">
     <div class="slide-program">Did you do your just one chesed today?</div>
-  </div>
-  <div class="stand-sign">
     <div class="slide-standing">${l("volunteer_activism")}</div>
     <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
   </div>

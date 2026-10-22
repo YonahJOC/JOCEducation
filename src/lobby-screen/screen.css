@@ -339,12 +339,10 @@
 .slide-standing { line-height: 1; display: flex; justify-content: center; }
 .slide-standing .ss-ms { font-size: 96px; color: #ff8e00; display: block; }
 
-/* The standing card's signature, pinned to the foot.
-   Out of the flow on purpose: in it, the mark and the name were counted
-   when the card worked out its middle, which put the question above the
-   middle by half their height. The sentence is what the card is for, so
-   the sentence is what gets centred. */
-.slide-stand .stand-sign {
-  position: absolute; left: 0; right: 0; bottom: 52px;
-  display: flex; flex-direction: column; align-items: center; gap: 18px;
+/* The standing card: one group, centred as a unit.
+   The three pieces belong together - the question, the hand and the name -
+   so they sit in one column with a tight gap and the column is what the
+   card centres. */
+.slide-stand .stand-group {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
 }

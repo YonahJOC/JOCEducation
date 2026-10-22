@@ -107,15 +107,13 @@ export function standingSlideHTML(): string {
   // programme slide puts its chip on top because the chip says when it is
   // on and you need that before the name — this one has nothing to say
   // first, so the question gets the top of the card.
-  // The question is the only thing in the flow, so the card centres on the
-  // question rather than on the question plus everything under it. The mark
-  // and the name are lifted out and pinned to the foot: a signature should
-  // not decide where the sentence sits.
+  // One group, centred: the question, the mark and the name close enough
+  // together to read as a single thing. Pinning the mark and the name to
+  // the foot did centre the sentence, but it left a hand and a badge
+  // stranded at the bottom of the card with a hole above them.
   return `<div class="slide slide-stand">
-  <div class="slide-body">
+  <div class="stand-group">
     <div class="slide-program">Did you do your just one chesed today?</div>
-  </div>
-  <div class="stand-sign">
     <div class="slide-standing">${ms('volunteer_activism')}</div>
     <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
   </div>
