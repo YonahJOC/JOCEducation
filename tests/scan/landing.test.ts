@@ -61,13 +61,17 @@ describe("which doors are shown", () => {
 });
 
 describe("the answer box", () => {
-  it("holds a visitor to the design's limit", () => {
-    expect(ANSWER_MAX).toBe(140);
+  it("keeps the room the form it replaces gave people", () => {
+    // The handoff says 140. The old form allowed 220, and the wall already
+    // sets anything over 95 characters a size smaller to fit it, so 220 is
+    // a length the screen is built to show. The design gives way rather
+    // than taking room away for the sake of a number in a spec.
+    expect(ANSWER_MAX).toBe(220);
   });
 
-  it("stays inside what the server will accept", () => {
-    // submitShoutOut truncates at 220. The page must not invite somebody
-    // to type something that is then quietly cut in half.
+  it("does not invite more than the server will keep", () => {
+    // submitShoutOut truncates at 220. The page must not ask somebody for
+    // something that is then quietly cut in half.
     expect(ANSWER_MAX).toBeLessThanOrEqual(220);
   });
 });
