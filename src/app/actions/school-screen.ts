@@ -445,6 +445,16 @@ export async function submitShoutOut(form: FormData): Promise<R> {
     .slice(0, 30);
   // A visitor in the lobby is not in a grade. A student is, and is asked.
   const grade = lobby ? "" : clean(form.get("grade"), 20);
+  // And the other way round: a visitor may say where they are from, a
+  // pupil says a grade. Letters, spaces and the punctuation that turns up
+  // in the name of a shul or a seminary; nothing else reaches a wall.
+  const org = lobby
+    ? clean(form.get("org"), 60)
+        .replace(/[^\p{L}\p{M}\p{N}\s'’.,&()-]/gu, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 48)
+    : "";
   if (text.length < 10) return { ok: false, error: "Say a little more: who, and what they did." };
   if (!lobby && !grade) return { ok: false, error: "Which grade are you in?" };
 
@@ -473,6 +483,7 @@ export async function submitShoutOut(form: FormData): Promise<R> {
     const made = await prisma.shoutOut.create({
       data: {
         schoolId: school.id, text, firstName, lastName, grade,
+        org: org || null,
         showName: form.get("showName") === "1" && Boolean(firstName),
         // Nobody signed in has no author and no address to show a teacher.
         authorId: me?.id ?? null, authorEmail: me?.email ?? "",

@@ -177,9 +177,32 @@ export function gradeTiles(rows: { label: string; hours: number }[], goal: numbe
  */
 export function shoutOutFrom(s: {
   firstName: string; lastName: string; grade: string; showName: boolean;
+  /**
+   * Where somebody is from, when they are not a pupil. Only the lobby's
+   * landing page collects it; a school's form sends a grade and no org, so
+   * every school screen renders exactly as it did.
+   */
+  org?: string | null;
 }): string {
   const grade = s.grade.trim();
-  const g = grade ? (/grade/i.test(grade) ? grade : `${grade} grade`) : "";
+  const org = (s.org ?? "").trim();
+  // A grade gets the word "grade" after it unless it already says so —
+  // "9th" reads as nothing on its own. An organisation is already a name
+  // and must be left exactly as somebody typed it: "Bnei Akiva grade" is
+  // how that rule would fail if it were applied to both.
+  /**
+   * A grade stands on its own; an organisation does not.
+   *
+   * "— 9th grade" under an anonymous shout-out places it among fifty
+   * people and names none of them, which is why a school's wall has always
+   * shown it. "— Bnei Akiva" can be the one person who came in from there
+   * this week, and somebody who has just answered no to having their name
+   * shown has not agreed to that. So an organisation appears with a name
+   * or not at all.
+   */
+  const g = grade
+    ? (/grade/i.test(grade) ? grade : `${grade} grade`)
+    : (s.showName ? org : "");
   if (!s.showName || !s.firstName.trim()) return g ? `— ${g}` : "";
 
   // The student decides how much of their name goes on the wall. One letter

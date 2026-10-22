@@ -87,6 +87,7 @@ export function ScanLanding({
   const [answer, setAnswer] = useState("");
   const [name, setName] = useState("");
   const [last, setLast] = useState("");
+  const [org, setOrg] = useState("");
   // Null until they choose. The form this replaces made the choice
   // required and so does this: whether somebody's name goes on a wall in
   // a public lobby is not a thing to infer from whether they filled in an
@@ -109,6 +110,7 @@ export function ScanLanding({
     setAnswer("");
     setName("");
     setLast("");
+    setOrg("");
     setShowName(null);
     setError(null);
   }
@@ -124,6 +126,7 @@ export function ScanLanding({
     form.set("text", text);
     form.set("firstName", name.trim());
     form.set("lastName", last.trim());
+    form.set("org", org.trim());
     form.set("grade", "");
     form.set("showName", showName ? "1" : "0");
     submitShoutOut(form).then((res) => {
@@ -154,6 +157,7 @@ export function ScanLanding({
             answer={answer} setAnswer={setAnswer}
             name={name} setName={setName}
             last={last} setLast={setLast}
+            org={org} setOrg={setOrg}
             showName={showName} setShowName={setShowName}
             sending={sending} error={error} onSend={send}
           />
@@ -230,21 +234,29 @@ function Home({ onPick }: { onPick: (s: Screen) => void }) {
 /* ------------------------------------------------------------- answer -- */
 
 function Answer({
-  question, answer, setAnswer, name, setName, last, setLast,
+  question, answer, setAnswer, name, setName, last, setLast, org, setOrg,
   showName, setShowName, sending, error, onSend,
 }: {
   question: string;
   answer: string; setAnswer: (v: string) => void;
   name: string; setName: (v: string) => void;
   last: string; setLast: (v: string) => void;
+  org: string; setOrg: (v: string) => void;
   showName: boolean | null; setShowName: (v: boolean) => void;
   sending: boolean; error: string | null; onSend: () => void;
 }) {
-  const ready = answer.trim().length > 0 && showName !== null && !sending;
+  const ready =
+    answer.trim().length > 0 &&
+    name.trim().length > 0 &&
+    last.trim().length > 0 &&
+    showName !== null &&
+    !sending;
   // What the wall will actually print, worked out by the same function the
   // wall uses. Shown before they send it, so nobody is surprised by their
   // own name in a lobby.
-  const line = shoutOutFrom({ firstName: name, lastName: last, grade: "", showName: showName === true });
+  const line = shoutOutFrom({
+    firstName: name, lastName: last, grade: "", org, showName: showName === true,
+  });
   return (
     <>
       <div style={S.qCard}>
@@ -264,35 +276,51 @@ function Answer({
         <div style={S.counter}>{answer.length}/{ANSWER_MAX}</div>
       </div>
 
-      {/* Side by side where there is room, stacked on a narrow phone. */}
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+      {/* One to a row. Two side by side cut "First name" off mid-word at
+          phone width, and the placeholder is the only label these have. */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="First name (optional)"
-          aria-label="First name, optional"
+          placeholder="First name"
+          aria-label="First name"
           autoComplete="given-name"
           autoCapitalize="words"
           autoCorrect="off"
           spellCheck={false}
           enterKeyHint="next"
           maxLength={30}
-          style={{ ...S.input, flex: "1 1 150px" }}
+          style={S.input}
         />
-        {/* As much or as little as they want: "L", "Levy", or nothing. */}
         <input
           value={last}
           onChange={(e) => setLast(e.target.value)}
-          placeholder="Last name or initial"
-          aria-label="Last name or initial, optional"
+          placeholder="Last name"
+          aria-label="Last name"
           autoComplete="family-name"
           autoCapitalize="words"
           autoCorrect="off"
           spellCheck={false}
-          enterKeyHint="done"
+          enterKeyHint="next"
           maxLength={30}
-          style={{ ...S.input, flex: "1 1 150px" }}
+          style={S.input}
         />
+        <input
+          value={org}
+          onChange={(e) => setOrg(e.target.value)}
+          placeholder="School, shul or organization"
+          aria-label="School, shul or organization, optional"
+          autoComplete="organization"
+          autoCapitalize="words"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="done"
+          maxLength={48}
+          style={S.input}
+        />
+        <p style={{ ...S.note, fontSize: "13px", opacity: 0.85 }}>
+          School, shul or organization is optional.
+        </p>
       </div>
 
       <div>

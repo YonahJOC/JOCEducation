@@ -113,7 +113,10 @@ export async function buildScreenData(slug: string, origin: string, now = new Da
       where: { schoolId: school.id, status: "APPROVED" },
       orderBy: { createdAt: "desc" },
       take: 10,
-      select: { id: true, text: true, firstName: true, lastName: true, grade: true, showName: true },
+      select: {
+        id: true, text: true, firstName: true, lastName: true,
+        grade: true, org: true, showName: true,
+      },
     }).catch(() => []),
 
     // Every other school with a screen up: its name and its hours, nothing else.

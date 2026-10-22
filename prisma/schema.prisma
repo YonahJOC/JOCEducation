@@ -2770,6 +2770,11 @@ model ShoutOut {
   /// then shows the first name alone.
   lastName    String
   grade       String
+  /// Where somebody is from when they are not a pupil: a shul, a seminary,
+  /// an office. Only the lobby's landing page asks for it; a school's form
+  /// asks for a grade instead, because that is the useful thing about a
+  /// pupil and "9th grade" says nothing about a visitor.
+  org         String?
   /// The student said their name may be shown. Without it, only the grade is.
   showName    Boolean          @default(false)
   authorId    String?
