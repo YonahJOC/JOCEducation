@@ -87,7 +87,23 @@ body {
  * `only light` is the firm form: it opts out of that automatic darkening
  * rather than merely stating a preference.
  */
-:root { color-scheme: only light; }
+:root {
+  /**
+   * Two declarations on purpose, in this order.
+   *
+   * `only light` is the firm form and the one to have, but `only` is newer
+   * syntax: an engine that cannot parse it throws the whole declaration
+   * away, and a browser that drops it gets no instruction at all and
+   * darkens the page exactly as if nothing had been said. Samsung Internet
+   * and older Android WebViews are the ones that bite.
+   *
+   * So: the form everything understands, then the stronger one over the
+   * top for everything that understands that. A browser takes the last
+   * declaration it can parse, which is the best one it supports.
+   */
+  color-scheme: light;
+  color-scheme: only light;
+}
 
 /* Lesson editor: the guiding-question rail drops below the form on narrow screens */
 @media (max-width: 1040px) {

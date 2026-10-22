@@ -26,6 +26,15 @@ import { ACTIONS, ANSWER_MAX, C, SCREEN_NAME, isLive, type ScanAction } from "@/
  */
 const MOBILE = `
 .jsl-page {
+  /* Said again on the page's own root, and said twice.
+     "only light" is the firm form but "only" is newer syntax: an engine
+     that cannot parse it throws the whole declaration away and then has
+     no instruction at all, which is how a navy page with an orange button
+     comes back charcoal with a dark red one. Samsung Internet and older
+     Android WebViews are the ones that bite. The plain form first for
+     them, the firm one after for everything else. */
+  color-scheme: light;
+  color-scheme: only light;
   /* 100vh on iOS Safari is the height with the toolbars hidden, which is
      taller than what you can see — the pinned button ends up under the
      browser's own chrome. dvh is the visible height; vh stays first for

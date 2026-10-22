@@ -43,7 +43,11 @@ export const metadata = {
 export const viewport = {
   themeColor: "#1E2A8C",
   viewportFit: "cover" as const,
-  colorScheme: "only light",
+  // "light", not "only light": the meta takes the same grammar as the CSS
+  // property, so an older engine drops a value it cannot parse and the
+  // page is left with no instruction at all. The stylesheet carries the
+  // firmer form for everything that can read it.
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 };
