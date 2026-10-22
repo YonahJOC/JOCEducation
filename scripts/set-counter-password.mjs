@@ -1,7 +1,11 @@
 /**
  * Sets the word typed on the counter iPad.
  *
- *   node --env-file=.env scripts/set-counter-password.mjs JOCJOC
+ *   node --env-file=.env scripts/set-counter-password.mjs "<the word>"
+ *
+ * Never write the real word into this file, a commit message or anything
+ * else in here. The repository is public: an example is an example, and a
+ * password put in one is a published password.
  *
  * It lives in the lobby document rather than in this repository, which is
  * public, and rather than in an environment variable, which would need a
