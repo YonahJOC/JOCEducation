@@ -331,6 +331,10 @@
    so the family is what is read first and the greeting is its preface. */
 .slide-hello { font-size: 36px; font-weight: 800; line-height: 1.1; color: #214ba5; }
 
-/* The mark above the standing question, when the diary has run out. */
-.slide-standing { line-height: 0; }
-.slide-standing .ss-ms { font-size: 96px; color: #ff8e00; }
+/* The mark under the standing question, when the diary has run out.
+   line-height here was 0, which is right for a box that only has to hug an
+   icon and wrong inside a column that centres itself: the glyph took no
+   height in the layout, so the card centred the question and the chip and
+   let the mark hang below them. */
+.slide-standing { line-height: 1; display: flex; justify-content: center; }
+.slide-standing .ss-ms { font-size: 96px; color: #ff8e00; display: block; }
