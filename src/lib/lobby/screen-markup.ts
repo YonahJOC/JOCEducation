@@ -107,15 +107,14 @@ export function standingSlideHTML(): string {
   // programme slide puts its chip on top because the chip says when it is
   // on and you need that before the name — this one has nothing to say
   // first, so the question gets the top of the card.
-  // One group, centred: the question, the mark and the name close enough
-  // together to read as a single thing. Pinning the mark and the name to
-  // the foot did centre the sentence, but it left a hand and a badge
-  // stranded at the bottom of the card with a hole above them.
+  // One group, centred, read downwards: the question, whose it is, then
+  // the mark. The question gets the top because it is the thing being
+  // asked, and the name and the hand sign it underneath.
   return `<div class="slide slide-stand">
   <div class="stand-group">
     <div class="slide-program">Did you do your just one chesed today?</div>
-    <div class="slide-standing">${ms('volunteer_activism')}</div>
     <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
+    <div class="slide-standing">${ms('volunteer_activism')}</div>
   </div>
 </div>`;
 }
