@@ -236,11 +236,13 @@ function render() {
   // app has not answered — a nought is a claim and a dash is not.
   show('grades', true);
   setHTML('grades', tilesHTML([
-    // No plus: this one is the app's own count, to the hour. The two
-    // below are typed in and rounded down, so they keep theirs.
+    // A plus says "at least this many". That is honest about a figure
+    // somebody rounded down, and wrong about one that has been counted:
+    // hours comes from the app to the hour, and pizzas is now an exact
+    // tally. Beds is still a round number typed in, so it keeps its plus.
     { label: 'Hours', value: d.lobby.hours != null ? count(d.lobby.hours) : '—', unit: 'of chesed', icon: 'schedule', on: true },
     { label: 'Beds', value: count(d.lobby.counters.beds) + '+', unit: 'given out', icon: 'bed' },
-    { label: 'Pizzas', value: count(d.lobby.counters.pizzas) + '+', unit: 'made', icon: 'local_pizza' },
+    { label: 'Pizzas', value: count(d.lobby.counters.pizzas), unit: 'made', icon: 'local_pizza' },
   ]));
 
   show('around', d.network.length > 0);
