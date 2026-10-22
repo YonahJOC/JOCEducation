@@ -25,6 +25,29 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
+/**
+ * The phone's own furniture, which the rest of the site never had to think
+ * about because the rest of the site is cream.
+ *
+ *   themeColor    the bar above the page. Without it Android draws its
+ *                 status bar white and Safari tints its chrome grey, and a
+ *                 navy page gets a stripe of the wrong colour over it on
+ *                 both. This is the "colours on Apple and Android" fix.
+ *   viewportFit   lets the page reach under the notch and the home bar, so
+ *                 the navy runs edge to edge. The padding that keeps
+ *                 content out of them is in the component's own CSS.
+ *   colorScheme   the site already declares this, and it is restated here
+ *                 because this page is the one somebody opens on a phone
+ *                 with auto-dark turned on.
+ */
+export const viewport = {
+  themeColor: "#1E2A8C",
+  viewportFit: "cover" as const,
+  colorScheme: "only light",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default async function ScanPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   if (!isDatabaseConfigured()) notFound();

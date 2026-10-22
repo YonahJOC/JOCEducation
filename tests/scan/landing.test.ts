@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { shoutOutUrl } from "@/lib/school-screen/data";
-import { ACTIONS, LIVE, isLive, ANSWER_MAX } from "@/lib/scan/actions";
+import { ACTIONS, LIVE, isLive, ANSWER_MAX, type ScanAction } from "@/lib/scan/actions";
 
 /**
  * The page behind the QR code on the lobby wall.
@@ -37,19 +37,33 @@ describe("where a screen's code sends you", () => {
 
 describe("which doors are shown", () => {
   it("knows all four from the design", () => {
-    expect(ACTIONS.map((a) => a.id)).toEqual(["answer", "pay", "marathon", "swag"]);
+    expect(ACTIONS.map((a) => a.id)).toEqual(["answer", "donate", "marathon", "swag", "experience"]);
   });
 
-  it("shows only the one that is built", () => {
-    expect([...LIVE]).toEqual(["answer"]);
-    expect(ACTIONS.filter((a) => isLive(a.id)).map((a) => a.id)).toEqual(["answer"]);
+  it("shows every one of them", () => {
+    expect(ACTIONS.filter((x) => isLive(x.id)).map((x) => x.id))
+      .toEqual(["answer", "donate", "marathon", "swag", "experience"]);
   });
 
-  it("keeps money shut until somebody turns it on deliberately", () => {
-    // Donations and swag take payments. They stay off until the flow
-    // exists and the live key has been rolled.
-    expect(isLive("pay")).toBe(false);
-    expect(isLive("swag")).toBe(false);
+  it("sends money to what JOC already runs, not to a second checkout", () => {
+    const href = (id: ScanAction) => ACTIONS.find((x) => x.id === id)?.href ?? "";
+    // A donation and paying for an experience are different things and go
+    // to different places; the donorsupport page is the one somebody is
+    // sent a link to when they owe for a booking.
+    expect(href("donate")).toContain("justonechesed.org/donations");
+    expect(href("experience")).toContain("jocdonors.donorsupport.co");
+    expect(href("marathon")).toContain("chesedcampaigns.org");
+    expect(href("swag")).toContain("thekindstore.org");
+  });
+
+  it("answers the question here, because the answer belongs to the screen", () => {
+    expect(ACTIONS.find((x) => x.id === "answer")?.href).toBeUndefined();
+  });
+
+  it("only ever leaves over https", () => {
+    for (const x of ACTIONS) {
+      if (x.href) expect(x.href.startsWith("https://"), x.id).toBe(true);
+    }
   });
 
   it("sets text on orange in navy, which is the contrast the audit asked for", () => {

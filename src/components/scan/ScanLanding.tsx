@@ -19,6 +19,50 @@ import { ACTIONS, ANSWER_MAX, C, SCREEN_NAME, isLive, type ScanAction } from "@/
  * nobody is showing them.
  */
 
+/**
+ * The parts a phone needs that an inline style cannot say: safe areas,
+ * the real viewport height, what a press looks like, and what shows when
+ * somebody drags the page past its end.
+ */
+const MOBILE = `
+.jsl-page {
+  /* 100vh on iOS Safari is the height with the toolbars hidden, which is
+     taller than what you can see — the pinned button ends up under the
+     browser's own chrome. dvh is the visible height; vh stays first for
+     anything too old to know the newer one. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Dragging a page past its end shows the body behind it. White behind
+     navy reads as the page coming apart. */
+  background: #1E2A8C;
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+}
+.jsl-col {
+  /* Reach under the notch and the home bar, then keep the content out of
+     them. max() so a phone with no insets still gets the design's 20px. */
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: calc(32px + env(safe-area-inset-bottom));
+}
+.jsl-page button,
+.jsl-page a[href] {
+  /* Android paints a grey box over a tapped button; iOS flashes it. The
+     design says a press is a slight shrink, so that is what a press is. */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform .08s ease;
+}
+.jsl-page button:not(:disabled):active,
+.jsl-page a[href]:active { transform: scale(.98); }
+.jsl-page textarea::placeholder,
+.jsl-page input::placeholder { color: #8A90B5; opacity: 1; }
+.jsl-page textarea,
+.jsl-page input { -webkit-appearance: none; appearance: none; }
+.jsl-page :focus-visible { outline: 3px solid #FFD23F; outline-offset: 2px; }
+`;
+
 type Screen = "home" | ScanAction | "thanks";
 
 export function ScanLanding({
@@ -83,8 +127,9 @@ export function ScanLanding({
   const label = screen === "home" || screen === "thanks" ? "Just One Chesed" : SCREEN_NAME[screen];
 
   return (
-    <div style={S.page}>
-      <div style={S.col} ref={top}>
+    <div className="jsl-page" style={S.page}>
+      <style>{MOBILE}</style>
+      <div className="jsl-col" style={S.col} ref={top}>
         <header style={S.header}>
           {screen === "home" || screen === "thanks" ? <span /> : (
             <button type="button" onClick={home} style={S.back}>&lsaquo;&ensp;Back</button>
@@ -133,17 +178,41 @@ function Home({ onPick }: { onPick: (s: Screen) => void }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {doors.map((a) => (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => onPick(a.id)}
-            style={{ ...S.door, background: a.bg, color: a.fg }}
-          >
-            <span style={{ textAlign: "left", whiteSpace: "pre-line" }}>{a.label}</span>
-            <span aria-hidden="true" style={{ fontSize: "24px", flex: "0 0 auto" }}>&rarr;</span>
-          </button>
-        ))}
+        {doors.map((a) => {
+          const inner = (
+            <>
+              <span style={{ textAlign: "left", whiteSpace: "pre-line" }}>{a.label}</span>
+              <span aria-hidden="true" style={{ fontSize: "24px", flex: "0 0 auto" }}>
+                {a.href ? "\u2197" : "\u2192"}
+              </span>
+            </>
+          );
+          const look = {
+            ...S.door,
+            background: a.bg,
+            color: a.fg,
+            ...(a.outline ? { border: "2px solid rgba(255,255,255,.55)", minHeight: "66px" } : null),
+          };
+
+          // A real anchor for the three that leave: long-press, copy, open
+          // in a new tab and "opens in a new window" to a screen reader all
+          // come free, and none of them do if a button sets location.
+          return a.href ? (
+            <a
+              key={a.id}
+              href={a.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ ...look, textDecoration: "none" }}
+            >
+              {inner}
+            </a>
+          ) : (
+            <button key={a.id} type="button" onClick={() => onPick(a.id)} style={look}>
+              {inner}
+            </button>
+          );
+        })}
       </div>
     </>
   );
@@ -194,6 +263,10 @@ function Answer({
           placeholder="First name (optional)"
           aria-label="First name, optional"
           autoComplete="given-name"
+          autoCapitalize="words"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="next"
           maxLength={30}
           style={{ ...S.input, flex: "1 1 150px" }}
         />
@@ -204,6 +277,10 @@ function Answer({
           placeholder="Last name or initial"
           aria-label="Last name or initial, optional"
           autoComplete="family-name"
+          autoCapitalize="words"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="done"
           maxLength={30}
           style={{ ...S.input, flex: "1 1 150px" }}
         />
@@ -273,7 +350,7 @@ function Thanks({
 
 const S: Record<string, React.CSSProperties> = {
   page: {
-    minHeight: "100vh",
+    // minHeight and background live in MOBILE, which can say dvh.
     background: C.navy,
     display: "flex",
     justifyContent: "center",
@@ -282,8 +359,8 @@ const S: Record<string, React.CSSProperties> = {
   col: {
     width: "100%",
     maxWidth: "440px",
-    minHeight: "100vh",
-    padding: "16px 20px 32px",
+    // Height and padding live in MOBILE, which can read the safe areas.
+    minHeight: "inherit",
     display: "flex",
     flexDirection: "column",
     gap: "16px",

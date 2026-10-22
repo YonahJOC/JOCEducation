@@ -12,7 +12,7 @@
  * day donations are built the button appears with them.
  */
 
-export type ScanAction = "answer" | "pay" | "marathon" | "swag";
+export type ScanAction = "answer" | "donate" | "experience" | "marathon" | "swag";
 
 export type ActionSpec = {
   id: ScanAction;
@@ -20,24 +20,83 @@ export type ActionSpec = {
   label: string;
   bg: string;
   fg: string;
+  /**
+   * Where it goes, when that is somewhere JOC already runs.
+   *
+   * The design has these flows living on the phone and ending at a payment
+   * provider. JOC takes money through its donor platform and registers
+   * marathon runners through qgiv, both of which already exist, already
+   * work and already reconcile with whatever the office uses. Rebuilding
+   * either here would mean a second place for money to go wrong.
+   */
+  href?: string;
+  /** Drawn as an outline rather than a fill: present, but quieter. */
+  outline?: boolean;
 };
 
 export const ACTIONS: readonly ActionSpec[] = [
   { id: "answer", label: "Answer the Question\non the Screen", bg: "#FF8A00", fg: "#1E2A8C" },
-  { id: "pay", label: "Donation or Payment", bg: "#FFFFFF", fg: "#1E2A8C" },
-  { id: "marathon", label: "Sign up for the Marathon", bg: "#2FA3E6", fg: "#0E1652" },
-  { id: "swag", label: "Buy Swag", bg: "#FFD23F", fg: "#1E2A8C" },
+  {
+    id: "donate",
+    label: "Make a Donation",
+    bg: "#FFFFFF",
+    fg: "#1E2A8C",
+    href: "https://justonechesed.org/donations",
+  },
+  {
+    id: "marathon",
+    label: "Sign up for the Marathon",
+    bg: "#2FA3E6",
+    fg: "#0E1652",
+    href: "https://www.chesedcampaigns.org/initiatives/jerusalem-marathon-2027",
+  },
+  {
+    id: "swag",
+    label: "Buy Swag",
+    bg: "#FFD23F",
+    fg: "#1E2A8C",
+    // The Kind Store, which is where JOC's swag is actually sold.
+    href: "https://thekindstore.org/",
+  },
+  /**
+   * Last, and outlined rather than filled.
+   *
+   * This is the page somebody is sent a link to when they owe for an
+   * experience they have already booked — not something a visitor browses
+   * to. Giving it the quiet treatment the design already uses on "Back to
+   * Start" keeps the four it does specify looking as they were drawn, and
+   * puts the common things first.
+   */
+  {
+    id: "experience",
+    label: "Pay for an Experience",
+    bg: "transparent",
+    fg: "#FFFFFF",
+    outline: true,
+    href: "https://jocdonors.donorsupport.co/page/FUNMRKTTXLQ?fundraiser=experiences&member=SRHUSHHF",
+  },
 ];
 
-/** The ones a visitor can actually use today. */
-export const LIVE: readonly ScanAction[] = ["answer"];
+/**
+ * All four, as the design has them.
+ *
+ * The question is answered here, on the phone, because the answer belongs
+ * to the screen a few feet away. The other three leave for places JOC
+ * already runs — the donor platform, qgiv, the Kind Store — because a
+ * second checkout is a second place for money to go wrong.
+ */
+export const LIVE: readonly ScanAction[] = ["answer", "donate", "marathon", "swag", "experience"];
 
 export const isLive = (id: ScanAction) => LIVE.includes(id);
+
+/** Which ones hand the visitor over to something JOC already runs. */
+export const isExternal = (a: ActionSpec) => Boolean(a.href);
 
 /** The screen name in the header, per the design. */
 export const SCREEN_NAME: Record<ScanAction, string> = {
   answer: "The Question",
-  pay: "Donation or Payment",
+  donate: "Donation",
+  experience: "Experience",
   marathon: "Marathon",
   swag: "Swag",
 };
