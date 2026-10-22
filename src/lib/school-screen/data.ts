@@ -1,4 +1,5 @@
 import QRCode from "qrcode";
+import { LOBBY_SLUG } from "@/lib/lobby/slug";
 import { createHash } from "node:crypto";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getRunningCycle } from "@/lib/cycle-data";
@@ -35,8 +36,19 @@ export async function qrSvg(url: string): Promise<string | null> {
   }
 }
 
+/**
+ * Where a screen's QR code points.
+ *
+ * A school's goes to its shout-out form, as it always has. The lobby's goes
+ * to the landing page instead: a visitor in JOC's own building has more
+ * than one thing they might want to do, and the form is one of them rather
+ * than the whole of it. The landing page sends any other slug on to the
+ * form, so a code printed before this still arrives somewhere sensible.
+ */
 export function shoutOutUrl(origin: string, slug: string): string {
-  return `${origin.replace(/\/$/, "")}/shout-out/${encodeURIComponent(slug)}`;
+  const base = origin.replace(/\/$/, "");
+  const path = slug === LOBBY_SLUG ? "scan" : "shout-out";
+  return `${base}/${path}/${encodeURIComponent(slug)}`;
 }
 
 /** The flyer every screen falls back to when a school has nothing of its own up yet. */

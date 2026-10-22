@@ -35,6 +35,8 @@ const OWN_CHROME_PREFIXES = [
    * they scanned the code for.
    */
   "/shout-out",
+  // The page behind the QR code on the lobby wall. Same reason.
+  "/scan",
 ];
 
 export function ChromeGate({ children }: { children: React.ReactNode }) {

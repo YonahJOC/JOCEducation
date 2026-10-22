@@ -116,6 +116,10 @@ const PUBLIC_PREFIXES = [
   // the gate has no part in it; behind the gate, a student scanning the
   // code was sent to the marketing page instead of the form.
   "/shout-out/",
+  // The landing page behind the lobby's code, for the same reason: a
+  // visitor scanning a wall has no account and should not be sent to a
+  // marketing page to find out they need one.
+  "/scan/",
   // Somebody an administrator issued a password to has to be able to change
   // it. Only that page — /account itself sits behind the gate like the rest.
   "/account/password",
