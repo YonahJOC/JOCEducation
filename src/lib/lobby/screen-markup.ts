@@ -103,12 +103,16 @@ export function programSlideHTML(e: LobbyEvent): string {
  * this is the card that cannot itself go stale.
  */
 export function standingSlideHTML(): string {
+  // The question leads; the mark and the name sign it underneath. A
+  // programme slide puts its chip on top because the chip says when it is
+  // on and you need that before the name — this one has nothing to say
+  // first, so the question gets the top of the card.
   return `<div class="slide">
-  <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
   <div class="slide-body">
     <div class="slide-program">Did you do your just one chesed today?</div>
     <div class="slide-standing">${ms('volunteer_activism')}</div>
   </div>
+  <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
 </div>`;
 }
 
