@@ -58,6 +58,13 @@ export interface Settings {
      */
     question: string;
   };
+  /**
+   * The word typed on the counter iPad. Lives here rather than in the
+   * code because the repository is public, and here it can be changed
+   * without a deploy. Empty means the counter asks for a staff sign-in
+   * instead.
+   */
+  counterPass: string;
   clock24: boolean;
   /** Google Calendar event ids hidden from the screen by an admin */
   hiddenIds: string[];

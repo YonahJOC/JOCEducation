@@ -179,7 +179,7 @@ export function ProgramEditor({
           </Field>
 
           {!p.allDay && (
-            <Field label="Who it’s for" htmlFor={ids.group} hint="Leave empty to show “Open to all visitors”.">
+            <Field label="Who it’s for" htmlFor={ids.group} hint="Leave empty to show nothing under the name.">
               <input
                 id={ids.group}
                 className="a-input"

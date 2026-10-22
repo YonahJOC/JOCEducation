@@ -49,6 +49,7 @@ export function defaultSettings(): Settings {
       he: 'חשבון הנפש',
       question: 'What’s a chesed someone did for you this week?',
     },
+    counterPass: '',
     slideSeconds: ENV.slideSeconds,
     daysAhead: 4,
     refreshMinutes: ENV.refreshMinutes,
@@ -119,6 +120,9 @@ export function sanitizeSettings(raw: unknown): Settings {
     slideSeconds: clamp(s.slideSeconds, 3, 30, d.slideSeconds),
     daysAhead: clamp(s.daysAhead, 2, 7, d.daysAhead),
     refreshMinutes: clamp(s.refreshMinutes, 1, 60, d.refreshMinutes),
+    // Trimmed, because a word typed with a trailing space would never
+    // match what somebody types on the iPad.
+    counterPass: str(s.counterPass, 64).trim(),
     clock24: typeof s.clock24 === 'boolean' ? s.clock24 : d.clock24,
     hiddenIds: strList(s.hiddenIds, 2000) ?? [],
   };

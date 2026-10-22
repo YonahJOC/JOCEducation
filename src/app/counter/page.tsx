@@ -2,6 +2,8 @@ import Link from "next/link";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { GroupCounter } from "@/components/counter/GroupCounter";
+import { CounterLock } from "@/components/counter/CounterLock";
+import { counterPassword, counterUnlocked } from "@/lib/counter/lock";
 
 /**
  * The counter an iPad runs at the table in the centre.
@@ -30,7 +32,23 @@ export default async function CounterPage() {
   const session = await safeAuth();
   const me = session?.user;
 
-  if (!openForReview && !can(me, "lobby")) {
+  /**
+   * Three ways in, in this order.
+   *
+   * A device that has already typed the word; somebody signed in who looks
+   * after the lobby screen; and nobody. The word comes first because it is
+   * what the iPad on the table actually uses — the sign-in is for the
+   * person setting the device up, and for the days before a word is set.
+   */
+  const unlocked = await counterUnlocked();
+  const staff = openForReview || can(me, "lobby");
+
+  if (!unlocked && !staff) {
+    // A word has been set, so ask for it rather than for an account.
+    if (await counterPassword()) return <CounterLock />;
+  }
+
+  if (!unlocked && !staff) {
     return (
       <main
         style={{

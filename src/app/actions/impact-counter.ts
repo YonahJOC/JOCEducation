@@ -5,6 +5,7 @@ import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { readDoc } from "@/lib/lobby/store";
+import { counterUnlocked } from "@/lib/counter/lock";
 import { sanitizeDoc } from "@/lib/lobby/config";
 import { DOC_ID } from "@/lib/lobby/store";
 
@@ -45,10 +46,15 @@ export async function submitToScreen(input: {
 
   const session = await safeAuth();
   const me = session?.user;
-  // The same permission that edits the lobby panel: this changes what the
-  // same wall says, so it is the same decision about the same screen.
-  if (!openForReview && !can(me, "lobby")) {
-    return { ok: false, error: "This is for JOC staff who look after the lobby screen." };
+  /**
+   * Either the device typed the word, or the person is signed in and looks
+   * after the lobby screen. The same two ways the page lets somebody in,
+   * checked again here: a page that renders is not an authorisation, and
+   * this is the call that moves a number on a wall.
+   */
+  const unlocked = await counterUnlocked();
+  if (!openForReview && !unlocked && !can(me, "lobby")) {
+    return { ok: false, error: "This counter is locked." };
   }
 
   if (!PROJECTS.includes(input.project)) return { ok: false, error: "That is not something we count." };

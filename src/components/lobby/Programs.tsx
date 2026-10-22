@@ -174,7 +174,7 @@ export function Programs({
                             {ended && date === today && <span className="a-pill">Ended</span>}
                           </span>
                           <span className="a-item-sub">
-                            {p.allDay ? 'Banner across the top of the day' : p.group || <i>Open to all visitors</i>}
+                            {p.allDay ? 'Banner across the top of the day' : p.group || <i>No group</i>}
                             {p.seriesId && (
                               <span className="a-meta" title="Repeats weekly">
                                 <Icon name="repeat" size={16} fill={false} />

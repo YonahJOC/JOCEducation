@@ -10,7 +10,16 @@ export interface ShownEvent {
   allDay: boolean;
   program: string;
   group: string;
-  /** Group, or "Open to all visitors"; empty for all-day items */
+  /**
+   * Who a programme is for, when somebody has said. Empty otherwise, and
+   * empty for all-day items.
+   *
+   * It used to fall back to "Open to all visitors" on anything with no
+   * group typed in, which put a line of filler under most of the week on
+   * both the wall and the sheet - and said nothing, because a programme
+   * with nobody named against it is open by default. Nothing reads better
+   * than a sentence that is true of everything.
+   */
   groupLine: string;
   /** null for all-day items, which show no location */
   venue: VenueInfo | null;
@@ -68,7 +77,7 @@ export function shapeEvent(e: CalEvent, settings: Settings): ShownEvent {
     allDay: e.allDay,
     program: parsed.program,
     group: parsed.group,
-    groupLine: e.allDay ? '' : parsed.group || 'Open to all visitors',
+    groupLine: e.allDay ? '' : parsed.group,
     venue: e.allDay ? null : venueInfo(e.location, e.venue, settings),
     time,
     timeRange: e.allDay ? 'All day' : `${time} – ${formatTime(e.end, settings.clock24)}`,

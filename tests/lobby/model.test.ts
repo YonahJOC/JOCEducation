@@ -58,7 +58,10 @@ describe('buildView', () => {
       ['Next', 'Next up'],
       ['Later', 'Later today'],
     ]);
-    expect(v.slides[0].groupLine).toBe('Open to all visitors');
+    // Nothing, not a sentence true of every programme: a group with
+    // nobody named against it is open by default and saying so on every
+    // card is filler.
+    expect(v.slides[0].groupLine).toBe('');
     expect(v.slides[0].timeRange).toBe('10am – 11am');
   });
 
@@ -73,7 +76,7 @@ describe('buildView', () => {
     expect(v.week[0].key).toBe('2026-10-10');
     expect(v.week[0].events.map((e) => [e.time, e.program, e.groupLine])).toEqual([
       ['All day', 'Election Day', ''],
-      ['4pm', 'Build A Bed', 'Open to all visitors'],
+      ['4pm', 'Build A Bed', ''],
     ]);
   });
 
