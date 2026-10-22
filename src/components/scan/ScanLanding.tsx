@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { submitShoutOut } from "@/app/actions/school-screen";
+import { shoutOutFrom } from "@/lib/school-screen/rules";
 import { ACTIONS, ANSWER_MAX, C, SCREEN_NAME, isLive, type ScanAction } from "@/lib/scan/actions";
 
 /**
@@ -32,6 +33,12 @@ export function ScanLanding({
   const [screen, setScreen] = useState<Screen>("home");
   const [answer, setAnswer] = useState("");
   const [name, setName] = useState("");
+  const [last, setLast] = useState("");
+  // Null until they choose. The form this replaces made the choice
+  // required and so does this: whether somebody's name goes on a wall in
+  // a public lobby is not a thing to infer from whether they filled in an
+  // optional box.
+  const [showName, setShowName] = useState<boolean | null>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const top = useRef<HTMLDivElement>(null);
@@ -48,23 +55,24 @@ export function ScanLanding({
     setScreen("home");
     setAnswer("");
     setName("");
+    setLast("");
+    setShowName(null);
     setError(null);
   }
 
   function send() {
     const text = answer.trim();
     if (!text || sending) return;
+    if (showName === null) { setError("Say whether your name may be shown."); return; }
     setError(null);
     setSending(true);
     const form = new FormData();
     form.set("slug", slug);
     form.set("text", text);
     form.set("firstName", name.trim());
-    form.set("lastName", "");
+    form.set("lastName", last.trim());
     form.set("grade", "");
-    // Somebody who gave a name is saying they are happy to be named; the
-    // box is optional and labelled, so leaving it empty is the other answer.
-    form.set("showName", name.trim() ? "1" : "0");
+    form.set("showName", showName ? "1" : "0");
     submitShoutOut(form).then((res) => {
       setSending(false);
       if (!res.ok) { setError(res.error); return; }
@@ -91,6 +99,8 @@ export function ScanLanding({
             question={question}
             answer={answer} setAnswer={setAnswer}
             name={name} setName={setName}
+            last={last} setLast={setLast}
+            showName={showName} setShowName={setShowName}
             sending={sending} error={error} onSend={send}
           />
         ) : null}
@@ -142,14 +152,21 @@ function Home({ onPick }: { onPick: (s: Screen) => void }) {
 /* ------------------------------------------------------------- answer -- */
 
 function Answer({
-  question, answer, setAnswer, name, setName, sending, error, onSend,
+  question, answer, setAnswer, name, setName, last, setLast,
+  showName, setShowName, sending, error, onSend,
 }: {
   question: string;
   answer: string; setAnswer: (v: string) => void;
   name: string; setName: (v: string) => void;
+  last: string; setLast: (v: string) => void;
+  showName: boolean | null; setShowName: (v: boolean) => void;
   sending: boolean; error: string | null; onSend: () => void;
 }) {
-  const ready = answer.trim().length > 0 && !sending;
+  const ready = answer.trim().length > 0 && showName !== null && !sending;
+  // What the wall will actually print, worked out by the same function the
+  // wall uses. Shown before they send it, so nobody is surprised by their
+  // own name in a lobby.
+  const line = shoutOutFrom({ firstName: name, lastName: last, grade: "", showName: showName === true });
   return (
     <>
       <div style={S.qCard}>
@@ -169,15 +186,51 @@ function Answer({
         <div style={S.counter}>{answer.length}/{ANSWER_MAX}</div>
       </div>
 
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="First name (optional)"
-        aria-label="First name, optional"
-        autoComplete="given-name"
-        maxLength={30}
-        style={S.input}
-      />
+      {/* Side by side where there is room, stacked on a narrow phone. */}
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="First name (optional)"
+          aria-label="First name, optional"
+          autoComplete="given-name"
+          maxLength={30}
+          style={{ ...S.input, flex: "1 1 150px" }}
+        />
+        {/* As much or as little as they want: "L", "Levy", or nothing. */}
+        <input
+          value={last}
+          onChange={(e) => setLast(e.target.value)}
+          placeholder="Last name or initial"
+          aria-label="Last name or initial, optional"
+          autoComplete="family-name"
+          maxLength={30}
+          style={{ ...S.input, flex: "1 1 150px" }}
+        />
+      </div>
+
+      <div>
+        <div style={S.choiceLabel}>May we show your name on the screen?</div>
+        <div role="radiogroup" aria-label="May we show your name on the screen" style={S.segment}>
+          <button
+            type="button" role="radio" aria-checked={showName === true}
+            onClick={() => setShowName(true)}
+            style={{ ...S.seg, ...(showName === true ? S.segOn : null) }}
+          >Yes</button>
+          <button
+            type="button" role="radio" aria-checked={showName === false}
+            onClick={() => setShowName(false)}
+            style={{ ...S.seg, ...(showName === false ? S.segOn : null) }}
+          >No</button>
+        </div>
+        {showName !== null ? (
+          <p style={{ ...S.note, marginTop: "10px" }}>
+            {line
+              ? <>Under your answer the screen will say <strong>{line.replace(/^— /, "")}</strong>.</>
+              : <>Your answer goes up without a name.</>}
+          </p>
+        ) : null}
+      </div>
 
       <p style={S.note}>Answers are reviewed before appearing on the screen.</p>
 
@@ -330,6 +383,28 @@ const S: Record<string, React.CSSProperties> = {
   },
 
   note: { color: C.white, fontWeight: 500, fontSize: "14px", margin: 0 },
+
+  choiceLabel: { color: C.white, fontWeight: 800, fontSize: "15px", marginBottom: "8px" },
+  segment: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "8px",
+    background: C.veil,
+    borderRadius: "20px",
+    padding: "6px",
+  },
+  seg: {
+    height: "48px",
+    borderRadius: "15px",
+    border: "none",
+    background: "transparent",
+    color: C.white,
+    fontFamily: "inherit",
+    fontWeight: 800,
+    fontSize: "15px",
+    cursor: "pointer",
+  },
+  segOn: { background: C.white, color: C.navy },
 
   cta: {
     marginTop: "auto",

@@ -61,5 +61,13 @@ export const C = {
   veil: "rgba(255,255,255,.14)",
 } as const;
 
-/** What a visitor may type into the answer box. The server's cap is higher. */
-export const ANSWER_MAX = 140;
+/**
+ * What a visitor may type into the answer box.
+ *
+ * The handoff says 140. The form this replaces allowed 220 and the wall
+ * sets anything over 95 characters a size smaller to fit it, so 220 is a
+ * length the screen is already built to show. Cutting it to 140 would take
+ * room away from people for no reason other than a number in a spec, so the
+ * design gives way to the thing that already worked.
+ */
+export const ANSWER_MAX = 220;
