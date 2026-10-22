@@ -601,6 +601,7 @@ model User {
   shoutOutsSent        ShoutOut[]          @relation("ShoutOutBy")
   shoutOutsDecided     ShoutOut[]          @relation("ShoutOutDecidedBy")
   shoutOutsEndorsed    ShoutOut[]          @relation("ShoutOutEndorsedBy")
+  impactSubmits        ImpactSubmit[]      @relation("ImpactSubmitBy")
 
   /// The Experiences department: the clients this person looks after, what
   /// they wrote down about any client, and what they said under it.
@@ -2590,6 +2591,31 @@ model DeskEvent {
 /// so two people editing the schedule at once cannot silently overwrite each
 /// other. Read by the screens without a session; written only with the lobby
 /// permission.
+/// One push from the counter in the centre to the lobby wall.
+///
+/// The totals live in LobbyDoc, which is a number per thing and no memory
+/// of how it got there. This is the memory: what was added, by whom, for
+/// which group. It never decides what the wall shows, so losing it would
+/// cost history rather than correctness.
+model ImpactSubmit {
+  id        String   @id @default(cuid())
+  /// "pizzas" or "beds". Text, not an enum: a third project should cost a
+  /// row rather than a migration and a deploy.
+  project   String
+  /// The change, not the running total. Negative when somebody corrected a
+  /// count downward after submitting it.
+  delta     Int
+  /// What the counter read after this submit, for reconciling against the
+  /// document if the two ever disagree.
+  total     Int
+  groupName String?
+  byId      String?
+  by        User?    @relation("ImpactSubmitBy", fields: [byId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+}
+
 model LobbyDoc {
   id          String   @id
   version     Int      @default(0)

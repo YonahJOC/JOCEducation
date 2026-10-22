@@ -37,6 +37,9 @@ const OWN_CHROME_PREFIXES = [
   "/shout-out",
   // The page behind the QR code on the lobby wall. Same reason.
   "/scan",
+  // The iPad at the table in the centre: a full-screen app, not a page of
+  // the site with a counter on it.
+  "/counter",
 ];
 
 export function ChromeGate({ children }: { children: React.ReactNode }) {

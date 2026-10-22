@@ -74,6 +74,28 @@ function hebrewRangeLabel(from: Date, to: Date): string {
 }
 
 /**
+ * How many days "this week" is, from whichever day somebody presses the
+ * button.
+ *
+ * Seven days from today is a different week every day of the week, and the
+ * day it loses is always the one a week out. Made on a Thursday it ran to
+ * the following Wednesday and dropped next Thursday — which is exactly how
+ * an Art Therapy session went missing from a sheet sent to the staff group.
+ *
+ * So it runs to the end of the coming week instead: today, the rest of this
+ * week, and all of next. Between eight and fourteen days depending on when
+ * it is made, and never stopping in the middle of a week. The dates are
+ * printed under the title, so the sheet always says what it covers.
+ */
+export function weekSheetDays(now: Date): number {
+  // The weekday of the Jerusalem date, not of the machine's. Noon UTC so
+  // neither end of the day can slip across a date line or a clock change.
+  const dow = new Date(`${dayKey(now)}T12:00:00Z`).getUTCDay(); // 0 = Sunday
+  const restOfThisWeek = 6 - dow; // days left until Saturday
+  return restOfThisWeek + 1 + 7; // today, the rest of this week, and next
+}
+
+/**
  * Every program from today for `days` days.
  *
  * Days with nothing on them are dropped rather than printed empty — a sheet

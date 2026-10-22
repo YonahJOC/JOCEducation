@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { LOGO_URL } from '@/lib/lobby/config';
 import { combineEvents } from '@/lib/lobby/events';
 import { buildPosterSvg } from '@/lib/lobby/poster';
-import { buildWeekSheet } from '@/lib/lobby/week-sheet';
+import { buildWeekSheet, weekSheetDays } from '@/lib/lobby/week-sheet';
 import type { CalEvent, LobbyDoc } from '@/lib/lobby/types';
 import { Button, Icon } from './ui';
 
@@ -27,10 +27,22 @@ import { Button, Icon } from './ui';
  * Nothing here writes anything. It is a read of what is already saved.
  */
 
-const DAYS = [7, 14] as const;
+/**
+ * "This week" is not a fixed number of days.
+ *
+ * Seven days from today is a different week every day of the week, and the
+ * day it loses is always the one a week out: made on a Thursday it ran to
+ * the following Wednesday and dropped next Thursday. So the default runs to
+ * the end of the coming week instead, and the fixed lengths stay as manual
+ * choices for when somebody wants a longer or shorter sheet.
+ */
+const WEEK = "week" as const;
+const DAYS = [WEEK, 7, 14] as const;
+type DayChoice = (typeof DAYS)[number];
+const dayLabel = (d: DayChoice) => (d === WEEK ? "This week" : d + " days");
 
 export function Share({ doc, google }: { doc: LobbyDoc; google: CalEvent[] | null }) {
-  const [days, setDays] = useState<number>(7);
+  const [days, setDays] = useState<DayChoice>(WEEK);
   const [logo, setLogo] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [said, setSaid] = useState<string | null>(null);
@@ -58,7 +70,11 @@ export function Share({ doc, google }: { doc: LobbyDoc; google: CalEvent[] | nul
   }, []);
 
   const sheet = useMemo(
-    () => buildWeekSheet(combineEvents(doc, google), doc.settings, new Date(), days),
+    () => {
+      const now = new Date();
+      const span = days === WEEK ? weekSheetDays(now) : days;
+      return buildWeekSheet(combineEvents(doc, google), doc.settings, now, span);
+    },
     [doc, google, days],
   );
 
@@ -183,7 +199,7 @@ export function Share({ doc, google }: { doc: LobbyDoc; google: CalEvent[] | nul
           <div role="group" aria-label="How far ahead" style={{ display: 'flex', gap: 6 }}>
             {DAYS.map((d) => (
               <Button key={d} small kind={days === d ? 'primary' : 'ghost'} onClick={() => setDays(d)}>
-                {d} days
+                {dayLabel(d)}
               </Button>
             ))}
           </div>
