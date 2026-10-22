@@ -2,7 +2,7 @@ import { hebrewDate } from '@/lib/hebrew-date';
 import './screen.css';
 import type { LobbyScreenData } from '@/lib/lobby/screen-data';
 import { esc, marqueeHTML } from '@/lib/school-screen/markup';
-import { lobbyShoutHTML, programSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
+import { lobbyShoutHTML, programSlideHTML, standingSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
 import { dayKey } from '@/lib/school-screen/rules';
 
 /**
@@ -135,6 +135,10 @@ function count(n: number): string {
  */
 function slides(d: LobbyScreenData): { html: string }[] {
   const list = d.lobby.today.length ? d.lobby.today : d.lobby.ahead;
+  // Today, then the rest of the week, then the one question that is true on
+  // any day of the year. The panel never goes away, so the wall never
+  // changes shape because somebody fell behind on the diary.
+  if (list.length === 0) return [{ html: standingSlideHTML() }];
   return list.map((e) => ({ html: programSlideHTML(e) }));
 }
 

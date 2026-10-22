@@ -89,6 +89,29 @@ export function programSlideHTML(e: LobbyEvent): string {
 </div>`;
 }
 
+/**
+ * What the slide slot shows when the diary has run out.
+ *
+ * There are two fallbacks before this one — today's programmes, then the
+ * rest of the week — and both are empty the moment nobody has typed
+ * anything in for a while. That used to collapse the panel and hand its
+ * space to the shout-out, which is a tidy way to fail and still leaves the
+ * wall saying less than it could.
+ *
+ * So it asks the one question that is true on any day of the year, and the
+ * wall keeps its shape. Nothing here reads from the diary, deliberately:
+ * this is the card that cannot itself go stale.
+ */
+export function standingSlideHTML(): string {
+  return `<div class="slide">
+  <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
+  <div class="slide-body">
+    <div class="slide-standing">${ms('volunteer_activism')}</div>
+    <div class="slide-program">Did you do your just one chesed today?</div>
+  </div>
+</div>`;
+}
+
 /** The three tiles, where a school shows hours by grade. */
 export function tilesHTML(
   tiles: { label: string; value: string; unit: string; icon: string; on?: boolean }[],
