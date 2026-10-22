@@ -17,8 +17,8 @@
 </div>`}function F(){return`<div class="slide">
   <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
   <div class="slide-body">
-    <div class="slide-standing">${l("volunteer_activism")}</div>
     <div class="slide-program">Did you do your just one chesed today?</div>
+    <div class="slide-standing">${l("volunteer_activism")}</div>
   </div>
 </div>`}function D(e){let s=e.map(i=>{let n=i.value.replace(/\D/g,"").length>=5;return`<div class="ss-tile${i.on?" on":""}">
     <div class="ss-tile-h"><div class="ss-tile-l">${o(i.label)}</div>${l(i.icon)}</div>

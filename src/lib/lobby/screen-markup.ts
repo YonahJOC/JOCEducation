@@ -106,8 +106,8 @@ export function standingSlideHTML(): string {
   return `<div class="slide">
   <div class="slide-label" style="background:#ff8e00"><i></i>Just One Chesed</div>
   <div class="slide-body">
-    <div class="slide-standing">${ms('volunteer_activism')}</div>
     <div class="slide-program">Did you do your just one chesed today?</div>
+    <div class="slide-standing">${ms('volunteer_activism')}</div>
   </div>
 </div>`;
 }
