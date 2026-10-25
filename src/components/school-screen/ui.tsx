@@ -39,7 +39,10 @@ export function Section({ title, icon, note, children, tools }: {
 const STATUS: Record<EditorStatus, [string, string, string]> = {
   PENDING: ["Waiting for an ambassador", C.orangeTint, C.orangeText],
   ENDORSED: ["Waiting for the school", C.blueTint, C.blue],
-  APPROVED: ["On the screen", C.greenTint, C.green],
+  // greenText, not green: #2FA457 on this tint is 2.80:1 and fails, and
+  // "On the screen" is the one chip somebody scans a list for. #1D6B37
+  // reads the same and comes out at 5.72:1.
+  APPROVED: ["On the screen", C.greenTint, C.greenText],
   SET_ASIDE: ["Set aside by an ambassador", C.panel, C.muted],
   REJECTED: ["Not approved", C.panel, C.muted],
 };
