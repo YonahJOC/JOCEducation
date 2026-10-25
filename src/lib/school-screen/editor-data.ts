@@ -213,3 +213,28 @@ export async function screenEditorData(
     })),
   };
 }
+
+/**
+ * How many things are waiting for a student ambassador's first look.
+ *
+ * PENDING only: ENDORSED is already past them and sitting with the school,
+ * and counting it would put a number on their rail for work that is not
+ * theirs to do.
+ *
+ * Their own uploads are counted here, which is the behaviour as it stands.
+ * Whether a student should be able to pass on a flyer they made themselves
+ * is a question about what two stages are for, and it is Yonah's to answer
+ * rather than one to settle in a count.
+ */
+export async function waitingForAmbassador(
+  schoolId: string,
+  _userId: string | null,
+): Promise<number> {
+  if (!isDatabaseConfigured()) return 0;
+  const [flyers, photos, shouts] = await Promise.all([
+    prisma.screenFlyer.count({ where: { schoolId, status: "PENDING" } }).catch(() => 0),
+    prisma.screenPhoto.count({ where: { schoolId, status: "PENDING" } }).catch(() => 0),
+    prisma.shoutOut.count({ where: { schoolId, status: "PENDING" } }).catch(() => 0),
+  ]);
+  return flyers + photos + shouts;
+}

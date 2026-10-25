@@ -1,18 +1,26 @@
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { safeAuth, openForReview } from "@/auth";
-import { label, C } from "@/lib/joc-tokens";
+import { C, F } from "@/lib/joc-tokens";
 import { IconFont } from "@/components/ui/IconFont";
+import { PortalShell } from "@/components/shell/PortalShell";
+import { ambassadorNav } from "@/lib/nav";
+import { myAmbassadorship } from "@/lib/ambassadors";
+import { waitingForAmbassador } from "@/lib/school-screen/editor-data";
 
 /**
  * The ambassador's corner of the portal.
  *
- * Deliberately small. An ambassador is a student who runs one program at one
- * school: there is their program, the thing they came to write, and nothing
- * else. No school plan, no other programs, no other schools, no console.
+ * The same shell the school side uses, not a header of its own. It had its
+ * own small dark bar and a 760px column, so a student and their teacher
+ * were looking at two different pieces of software to do two halves of one
+ * job — and anything built for one of them had to be built twice.
  *
- * Signing in is all this layout asks for. Whether they are actually an
+ * What stays deliberately small is the rail, not the furniture: one
+ * program, one school, and nothing about a plan, money, another school or
+ * the console. See ambassadorNav.
+ *
+ * Signing in is all this layout asks for. Whether somebody is actually an
  * ambassador is asked on each page, because /ambassador/join has to be
  * reachable by somebody who is not one yet.
  */
@@ -20,43 +28,63 @@ import { IconFont } from "@/components/ui/IconFont";
 export const metadata = { title: "Ambassador", robots: { index: false, follow: false } };
 
 export default async function AmbassadorLayout({ children }: { children: React.ReactNode }) {
-  if (!openForReview) {
-    const session = await safeAuth();
-    if (!session?.user) redirect("/");
+  const session = await safeAuth();
+  if (!openForReview && !session?.user) redirect("/");
+
+  const me = session?.user;
+  const amb = await myAmbassadorship().catch(() => null);
+
+  // Somebody who has not joined yet gets the page and no rail: /join is
+  // the one thing they can do, and a rail of four locked items beside it
+  // would be four ways of telling them they are not welcome.
+  if (!amb) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: C.paper }}>
+        <IconFont />
+        <main style={{ maxWidth: "760px", margin: "0 auto", padding: "26px 20px 60px" }}>
+          {children}
+        </main>
+      </div>
+    );
   }
 
+  const waiting = await waitingForAmbassador(amb.schoolId, me?.id ?? null).catch(() => 0);
+
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: C.paper }}>
-      {/* /ambassador/screen is the same editor the school sees, icons and
-          all, so it needs the same font the school layout loads. */}
+    <>
       <IconFont />
-      <header style={{ backgroundColor: C.ink, padding: "16px 20px" }}>
-        <div style={{ maxWidth: "760px", margin: "0 auto", display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
-          <Link href="/ambassador" style={{ textDecoration: "none", display: "block" }}>
-            <Image
-              src="/brand/joc-wordmark-white.png"
-              alt="JustOneChesed"
-              width={150}
-              height={18}
-              priority
-              style={{ height: "17px", width: "auto", display: "block" }}
-            />
-          </Link>
-          <span style={{
-            fontFamily: "var(--font-outfit)", ...label, color: C.orange,
-          }}>
-            Ambassador
-          </span>
-          <span style={{ flex: 1 }} />
+      <PortalShell
+        side="school"
+        who={amb.schoolName}
+        role={`Ambassador · ${amb.programName}`}
+        items={ambassadorNav({ waiting })}
+        action={
           <Link
-            href="/home"
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", fontWeight: 600, color: C.onDarkBody, textDecoration: "none", minHeight: "44px", display: "flex", alignItems: "center" }}
+            href={`/school-screen/${amb.schoolSlug}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              minHeight: "44px",
+              fontFamily: F.ui,
+              fontSize: "14.5px",
+              fontWeight: 600,
+              color: C.muted,
+              textDecoration: "none",
+            }}
           >
-            Back to the site
+            Open the TV
+            <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "18px" }}>
+              open_in_new
+            </span>
           </Link>
-        </div>
-      </header>
-      <main style={{ maxWidth: "760px", margin: "0 auto", padding: "26px 20px 60px" }}>{children}</main>
-    </div>
+        }
+        home="/ambassador"
+      >
+        {children}
+      </PortalShell>
+    </>
   );
 }

@@ -301,3 +301,50 @@ export const SIDE = {
   joc: { rail: C.onDarkBody, railText: C.ink, accent: C.orangeText, wordmark: "/brand/joc-wordmark.png" },
   school: { rail: C.panel, railText: C.ink, accent: C.orangeText, wordmark: "/brand/joc-wordmark.png" },
 } as const;
+
+/**
+ * The ambassador's rail.
+ *
+ * Four items, the same four shapes a teacher gets, because it is the same
+ * job from the other side: look at what is waiting, see the screen, add
+ * something, read what came back. What it must never grow is anything
+ * about a plan, money, another school or the console — a student runs one
+ * program at one school and the rail should not imply otherwise.
+ *
+ * "Updates" rather than "Messages" on purpose. JOC does not message
+ * students and the page does not send: it is what happened to their own
+ * things, and calling it Messages would promise a conversation that is
+ * deliberately not there.
+ */
+export function ambassadorNav(opts: {
+  /** Items waiting for this student's first look. */
+  waiting?: number;
+  /** Their own things that have moved since they last looked. */
+  updates?: number;
+} = {}): NavItem[] {
+  return [
+    { label: "Home", href: "/ambassador", hint: "Where your things got to", icon: "home" },
+    {
+      label: "Live screen",
+      href: "/ambassador/screen",
+      hint: "What is showing in your building",
+      icon: "slideshow",
+    },
+    {
+      label: "Uploads",
+      href: "/ambassador/uploads",
+      hint: "Your first look, and what you have sent in",
+      icon: "inventory",
+      need: opts.waiting || undefined,
+      tone: "orange",
+    },
+    {
+      label: "Updates",
+      href: "/ambassador/updates",
+      hint: "What happened to the things you sent",
+      icon: "forum",
+      need: opts.updates || undefined,
+      tone: "blue",
+    },
+  ];
+}

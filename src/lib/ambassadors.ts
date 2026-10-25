@@ -46,6 +46,8 @@ export type AmbassadorScope = {
   userId: string;
   schoolId: string;
   schoolName: string;
+  /** For linking at the school's own TV, which lives on the slug. */
+  schoolSlug: string;
   programId: number;
   programName: string;
   programSlug: string;
@@ -78,7 +80,7 @@ export async function myAmbassadorship(): Promise<AmbassadorScope | null> {
     orderBy: { startsAt: "desc" },
     select: {
       id: true, userId: true, schoolId: true, programId: true, startsAt: true, endsAt: true,
-      school: { select: { name: true } },
+      school: { select: { name: true, slug: true } },
       program: { select: { name: true, slug: true } },
       supervisor: { select: { name: true, email: true } },
     },
@@ -90,6 +92,7 @@ export async function myAmbassadorship(): Promise<AmbassadorScope | null> {
     userId: row.userId,
     schoolId: row.schoolId,
     schoolName: row.school.name,
+    schoolSlug: row.school.slug,
     programId: row.programId,
     programName: row.program.name,
     programSlug: row.program.slug,
