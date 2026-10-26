@@ -3,7 +3,7 @@ import { safeAuth } from "@/auth";
 import { currentSchoolId } from "@/lib/school-scope";
 import { myScreenSchool, screenRoleFor } from "@/lib/school-screen/access";
 import { screenEditorData } from "@/lib/school-screen/editor-data";
-import { ScreenEditor } from "@/components/school-screen/ScreenEditor";
+import { ScreenEditor, screenTabFromQuery } from "@/components/school-screen/ScreenEditor";
 import { C, T } from "@/lib/joc-tokens";
 
 /**
@@ -18,8 +18,14 @@ import { C, T } from "@/lib/joc-tokens";
 export const metadata = { title: "Your live screen" };
 export const dynamic = "force-dynamic";
 
-export default async function SchoolScreenPage() {
+export default async function SchoolScreenPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   await requireSchoolPanel({ demo: "allow" });
+  // "Set one" on the home page wants the Dedication tab, not the slideshow.
+  const tab = screenTabFromQuery((await searchParams).tab);
   const session = await safeAuth();
 
   // A teacher's own school. currentSchoolId() only answers for an account
@@ -38,5 +44,5 @@ export default async function SchoolScreenPage() {
     );
   }
 
-  return <ScreenEditor data={data} />;
+  return <ScreenEditor data={data} initialTab={tab} />;
 }

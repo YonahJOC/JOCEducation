@@ -61,7 +61,13 @@ const decide = (kind: QueueItem["kind"], id: string, yes: boolean) =>
       ? decidePhoto(id, yes)
       : decideShoutOut(id, yes);
 
-type Tab = "waiting" | "aside" | "mine";
+export type Tab = "waiting" | "aside" | "mine";
+
+/** The ?tab= a link may carry, and nothing else. */
+export function tabFromQuery(v: string | string[] | undefined): Tab | undefined {
+  const s = Array.isArray(v) ? v[0] : v;
+  return s === "aside" || s === "mine" || s === "waiting" ? s : undefined;
+}
 
 /** What happened, and the one thing a person might want to do about it. */
 type Toast = { text: string; undo?: { label: string; items: QueueItem[]; yes: boolean } };
@@ -90,18 +96,20 @@ function liveNow(item: QueueItem, today: string): boolean {
 }
 
 export function UploadsBoard({
-  data, mode, short,
+  data, mode, short, initialTab,
 }: {
   data: ScreenEditorData;
   mode: QueueMode;
   /** The school's short name, for drawing a flyer as the TV draws it. */
   short: string;
+  /** Which tab a link asked for, so "2 set aside" lands on the right one. */
+  initialTab?: Tab;
 }) {
   const router = useRouter();
   const [, start] = useTransition();
   const wide = useMedia(`(min-width: ${BP.cards}px)`);
 
-  const [tab, setTab] = useState<Tab>("waiting");
+  const [tab, setTab] = useState<Tab>(initialTab ?? "waiting");
   const [view, setView] = useState<"list" | "one">("list");
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [at, setAt] = useState(0);

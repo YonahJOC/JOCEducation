@@ -4,7 +4,7 @@ import { currentSchoolId } from "@/lib/school-scope";
 import { myScreenSchool, screenRoleFor } from "@/lib/school-screen/access";
 import { screenEditorData } from "@/lib/school-screen/editor-data";
 import { shortName } from "@/lib/school-screen/rules";
-import { UploadsBoard } from "@/components/school-screen/UploadsBoard";
+import { UploadsBoard, tabFromQuery } from "@/components/school-screen/UploadsBoard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { C, T } from "@/lib/joc-tokens";
 
@@ -20,9 +20,15 @@ import { C, T } from "@/lib/joc-tokens";
 export const metadata = { title: "Uploads & approvals" };
 export const dynamic = "force-dynamic";
 
-export default async function SchoolUploadsPage() {
+export default async function SchoolUploadsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   await requireSchoolPanel({ demo: "allow" });
   const session = await safeAuth();
+  // "2 set aside by an ambassador" on the home page lands on that tab.
+  const tab = tabFromQuery((await searchParams).tab);
 
   const schoolId = (await currentSchoolId()) ?? (await myScreenSchool())?.id ?? null;
   const role = schoolId ? await screenRoleFor(session?.user, schoolId) : null;
@@ -52,6 +58,7 @@ export default async function SchoolUploadsPage() {
       data={data}
       mode={data.canApprove ? "approve" : "endorse"}
       short={shortName(data.school.name, data.school.shortName)}
+      initialTab={tab}
     />
   );
 }

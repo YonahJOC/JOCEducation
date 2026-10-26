@@ -3,6 +3,8 @@ import { stepFor, STEP_TITLE } from "@/lib/program-step";
 import { STAGE_LABEL, type Stage } from "@/lib/program-enrollment";
 import type { Tone } from "@/lib/joc-tokens";
 import { JOC_APP_URL } from "@/lib/joc-app";
+import { dayEnd, dayKey, dayStart } from "@/lib/school-screen/rules";
+import { screenTodayRows } from "@/lib/school-screen/today";
 
 /**
  * What a school has to do this week (5a).
@@ -30,7 +32,13 @@ export type SchoolTodayKind =
   | "NEXT_RUN"
   | "NEXT_STEP"
   | "NEW_WRITE_UP"
-  | "REPLY";
+  | "REPLY"
+  // The hallway screen. See src/lib/school-screen/today.ts, which decides
+  // which of these appear; this file only does the counting.
+  | "SCREEN_ENDORSED"
+  | "SCREEN_PENDING"
+  | "SCREEN_ASIDE"
+  | "SCREEN_DEDICATION";
 
 export type SchoolTodayRow = {
   id: string;
@@ -85,12 +93,18 @@ export async function getSchoolToday(
     const now = Date.now();
     const soon = new Date(now + SOON_DAYS * 86_400_000);
 
-    const [school, enrollments, events, unread, replies, reportCounts] = await Promise.all([
+    const [
+      school, enrollments, events, unread, replies, reportCounts,
+      flyerStates, photoStates, shoutStates, dedicationsToday,
+    ] = await Promise.all([
       prisma.school.findUnique({
         where: { id: schoolId },
         select: {
           unapprovedHours: true,
           unapprovedCheckedAt: true,
+          // Whether this school has a screen at all. A school without one
+          // is not behind on it.
+          liveScreenUrl: true,
           appStats: {
             select: { unapprovedMinutes: true, unapprovedOldestAt: true, syncedAt: true },
           },
@@ -141,6 +155,23 @@ export async function getSchoolToday(
         where: { ambassador: { schoolId } },
         _count: { _all: true },
       }).catch(() => []),
+      // The hallway screen, in four numbers. Grouped rather than counted
+      // one state at a time, so this is three queries and not nine.
+      prisma.screenFlyer.groupBy({
+        by: ["status"], where: { schoolId }, _count: { _all: true },
+      }).catch(() => []),
+      prisma.screenPhoto.groupBy({
+        by: ["status"], where: { schoolId }, _count: { _all: true },
+      }).catch(() => []),
+      prisma.shoutOut.groupBy({
+        by: ["status"], where: { schoolId }, _count: { _all: true },
+      }).catch(() => []),
+      prisma.screenDedication.count({
+        where: {
+          OR: [{ schoolId }, { schoolId: null }],
+          date: { gte: dayStart(dayKey(new Date(now))), lte: dayEnd(dayKey(new Date(now))) },
+        },
+      }).catch(() => 0),
     ]);
 
     const rows: SchoolTodayRow[] = [];
@@ -252,6 +283,23 @@ export async function getSchoolToday(
         action: { label: "Read it", href: "/school/messages" },
       });
     }
+
+    // 6. The hallway screen. What it needs from a teacher is decided in
+    //    school-screen/today.ts; here we only add up the three tables.
+    const tally = (
+      groups: { status: string; _count: { _all: number } }[],
+      want: string,
+    ) => groups.filter((g) => g.status === want).reduce((n, g) => n + g._count._all, 0);
+    const across = (want: string) =>
+      tally(flyerStates, want) + tally(photoStates, want) + tally(shoutStates, want);
+
+    rows.push(...screenTodayRows({
+      endorsed: across("ENDORSED"),
+      pending: across("PENDING"),
+      setAside: across("SET_ASIDE"),
+      dedicationToday: dedicationsToday > 0,
+      screenUp: Boolean(school?.liveScreenUrl),
+    }));
 
     rows.sort((a, b) => b.weight - a.weight);
 

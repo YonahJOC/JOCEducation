@@ -34,7 +34,15 @@ import { Btn, Field, Note, StatusChip, input } from "./ui";
  * this file drew.
  */
 
-type Tab = "slideshow" | "photos" | "shouts" | "dedication" | "settings";
+export type Tab = "slideshow" | "photos" | "shouts" | "dedication" | "settings";
+
+const TABS: Tab[] = ["slideshow", "photos", "shouts", "dedication", "settings"];
+
+/** The ?tab= a link may carry, and nothing else. */
+export function screenTabFromQuery(v: string | string[] | undefined): Tab | undefined {
+  const s = Array.isArray(v) ? v[0] : v;
+  return TABS.includes(s as Tab) ? (s as Tab) : undefined;
+}
 
 /** White, hairline, 16px, no shadow. Ink is the television and nothing else. */
 const card: React.CSSProperties = {
@@ -57,12 +65,17 @@ const TEMPLATE: Record<EditorFlyer["template"], string> = {
   BANNER: "Banner",
 };
 
-export function ScreenEditor({ data, staff }: { data: ScreenEditorData; staff?: boolean }) {
+export function ScreenEditor({ data, staff, initialTab }: {
+  data: ScreenEditorData;
+  staff?: boolean;
+  /** Which tab a link asked for — "Set one" on the home page wants Dedication. */
+  initialTab?: Tab;
+}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<EditorFlyer | "new" | null>(null);
-  const [tab, setTab] = useState<Tab>("slideshow");
+  const [tab, setTab] = useState<Tab>(initialTab ?? "slideshow");
 
   const { school, canApprove: approves } = data;
   const short = shortName(school.name, school.shortName);
