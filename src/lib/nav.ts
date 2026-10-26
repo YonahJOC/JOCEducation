@@ -209,6 +209,14 @@ export function schoolNav(
     /** Replies the school has not opened. */
     unreadMessages?: number;
     /**
+     * Flyers, photos and shout-outs waiting for the school's sign-off.
+     *
+     * The one count on this rail with a clock on it: a shout-out sitting in
+     * a queue for a week is the way a hallway screen goes stale, and
+     * nothing else on the page says so.
+     */
+    waitingUploads?: number;
+    /**
      * This school is on the demo portal.
      *
      * Not a filter over the rail below — a different rail. A demo school is
@@ -223,8 +231,13 @@ export function schoolNav(
   // src/app/school/account-only.tsx — a rail is not a lock.
   if (opts.demo) {
     return [
-      { label: "Live screen", href: "/school/screen", hint: "What is showing in your building" },
-      { label: "People", href: "/school/teachers", hint: "Who can sign in, and what they can do" },
+      { label: "Live screen", href: "/school/screen", hint: "What is showing in your building", icon: "slideshow" },
+      {
+        label: "Uploads", href: "/school/uploads", icon: "inventory",
+        hint: "What is waiting for you to say yes to",
+        need: opts.waitingUploads || undefined, tone: "orange",
+      },
+      { label: "People", href: "/school/teachers", hint: "Who can sign in, and what they can do", icon: "group" },
     ];
   }
 
@@ -261,8 +274,14 @@ export function schoolNav(
     items.push({ label: "Cycle progress", href: "/school/cycles" });
     items.push({ label: "Ambassadors", href: "/school/ambassadors" });
     // The hallway TV: what goes on it, and what ambassadors and students
-    // have sent for it to approve.
-    items.push({ label: "Live screen", href: "/school/screen" });
+    // have sent for it to approve. Two items, because looking after the
+    // wall and deciding what reaches it are different jobs on different
+    // clocks — only the second has anybody waiting on it.
+    items.push({ label: "Live screen", href: "/school/screen", icon: "slideshow" });
+    items.push({
+      label: "Uploads", href: "/school/uploads", icon: "inventory",
+      need: opts.waitingUploads || undefined, tone: "orange",
+    });
   }
 
   // An app admin is a teacher looking after what students are doing. What the
@@ -278,7 +297,11 @@ export function schoolNav(
   // somebody looks at when nothing needs them. Ambassadors and Chesed
   // activity both live one click inside Today.
   // Messages is never dropped: it is the only way a school can reach a person.
-  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity", "Live screen"]) {
+  //
+  // Uploads goes last of all, after Live screen: of the two, it is the one
+  // with people waiting on it, and the Uploads page carries its own link to
+  // the screen if the rail has had to let that one go.
+  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity", "Live screen", "Uploads"]) {
     if (items.length <= MAX) break;
     const i = items.findIndex((it) => it.label === label);
     if (i >= 0) items.splice(i, 1);

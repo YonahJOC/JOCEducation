@@ -5,7 +5,7 @@ import path from "node:path";
 /**
  * The demo portal is default-closed, and this is what keeps it that way.
  *
- * A school on the demo sees two pages. Nothing stops somebody adding a ninth
+ * A school on the demo sees three pages. Nothing stops somebody adding a tenth
  * page to the school panel next month and forgetting that it must not be one
  * of them — except this, which walks the directory and fails if a page is
  * neither sealed nor named as part of the demo.
@@ -17,8 +17,8 @@ import path from "node:path";
 
 const ROOT = path.resolve(__dirname, "../../src/app/school");
 
-/** Both halves of the demo, as the rail and the guards name them. */
-const DEMO_PAGES = ["screen", "teachers"];
+/** The whole of the demo, as the rail and the guards name them. */
+const DEMO_PAGES = ["screen", "uploads", "teachers"];
 
 /** Every page.tsx under /school, as a route path. */
 function pages(dir: string, base = ""): { route: string; file: string }[] {
@@ -64,7 +64,7 @@ describe("the demo portal seal", () => {
     ).toBe(true);
   });
 
-  it("the two demo pages exist", () => {
+  it("the three demo pages exist", () => {
     for (const p of DEMO_PAGES) {
       expect(fs.existsSync(path.join(ROOT, p, "page.tsx")), `/school/${p} is missing`).toBe(true);
     }
@@ -77,10 +77,10 @@ describe("the demo portal seal", () => {
     expect(seals.length, "both guards must seal unless told otherwise").toBe(2);
   });
 
-  it("the rail offers nothing but the two pages", async () => {
+  it("the rail offers nothing but the three pages", async () => {
     const { schoolNav } = await import("@/lib/nav");
     const items = schoolNav(null, { demo: true, asSchoolAdmin: true, unreadMessages: 4 });
-    expect(items.map((i) => i.href)).toEqual(["/school/screen", "/school/teachers"]);
+    expect(items.map((i) => i.href)).toEqual(["/school/screen", "/school/uploads", "/school/teachers"]);
   });
 
   it("a demo school is denied programs and the library", async () => {

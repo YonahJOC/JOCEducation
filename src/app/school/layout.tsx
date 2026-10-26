@@ -10,6 +10,7 @@ import { onDemoPortal } from "@/lib/demo-school";
 import { IconFont } from "@/components/ui/IconFont";
 import { stopViewingAsSchool } from "@/app/actions/view-as-school";
 import { unreadForSchool } from "@/lib/messages";
+import { waitingForSchool } from "@/lib/school-screen/editor-data";
 import { SchoolSwitcher } from "@/components/school/SchoolSwitcher";
 import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
@@ -79,6 +80,8 @@ export default async function SchoolLayout({ children }: { children: React.React
   // rail, and no door out of them — see src/lib/demo-school.ts.
   const demo = await onDemoPortal();
   const unreadMessages = schoolId ? await unreadForSchool(schoolId) : 0;
+  // The one count on this rail that somebody is waiting on.
+  const waitingUploads = schoolId ? await waitingForSchool(schoolId) : 0;
   if (isDatabaseConfigured() && schoolId) {
     try {
       const [s, enrolled] = await Promise.all([
@@ -116,6 +119,7 @@ export default async function SchoolLayout({ children }: { children: React.React
         asSchoolAdmin: Boolean(looking) || openForReview,
         programs,
         unreadMessages,
+        waitingUploads,
         demo,
       })}
       action={

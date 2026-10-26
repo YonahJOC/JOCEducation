@@ -238,3 +238,21 @@ export async function waitingForAmbassador(
   ]);
   return flyers + photos + shouts;
 }
+
+/**
+ * How many things are waiting for the school's sign-off.
+ *
+ * ENDORSED *and* PENDING, which is the same list the queue shows a
+ * teacher: a school whose ambassador is away for a week must not have a
+ * quiet rail while seven things sit untouched.
+ */
+export async function waitingForSchool(schoolId: string): Promise<number> {
+  if (!isDatabaseConfigured()) return 0;
+  const where = { schoolId, status: { in: ["PENDING" as const, "ENDORSED" as const] } };
+  const [flyers, photos, shouts] = await Promise.all([
+    prisma.screenFlyer.count({ where }).catch(() => 0),
+    prisma.screenPhoto.count({ where }).catch(() => 0),
+    prisma.shoutOut.count({ where }).catch(() => 0),
+  ]);
+  return flyers + photos + shouts;
+}

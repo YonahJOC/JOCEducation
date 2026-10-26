@@ -34,7 +34,9 @@ const SCREEN_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 function done() {
   revalidatePath("/admin/school-screens", "layout");
   revalidatePath("/school/screen");
+  revalidatePath("/school/uploads");
   revalidatePath("/ambassador/screen");
+  revalidatePath("/ambassador/uploads");
 }
 
 function clean(v: FormDataEntryValue | null | undefined, max = 200): string {
@@ -175,6 +177,49 @@ export async function deleteFlyer(id: string): Promise<R> {
     return { ok: false, error: "Ask a teacher to take that one down." };
   }
   await prisma.screenFlyer.delete({ where: { id } }).catch(() => null);
+  done();
+  return { ok: true };
+}
+
+/**
+ * Move a flyer up or down the slideshow.
+ *
+ * It writes the `sort` the flyers already had, so there is nothing new in
+ * the database and the TV needs no telling. Rather than swapping two
+ * numbers it renumbers the list 0..n: the column has always allowed
+ * duplicates and a school that has ever had two flyers on sort 0 would
+ * otherwise find that a swap did nothing.
+ *
+ * Only the school's own flyers are in the list being ordered. JOC's
+ * every-school flyers appear on thirty walls, and a teacher nudging one up
+ * their own slideshow must not reorder everybody else's.
+ */
+export async function moveFlyer(id: string, dir: "up" | "down"): Promise<R> {
+  const f = await prisma.screenFlyer.findUnique({
+    where: { id }, select: { schoolId: true },
+  }).catch(() => null);
+  if (!f) return { ok: false, error: "That flyer has gone." };
+
+  const a = await actorFor(f.schoolId);
+  if ("error" in a) return { ok: false, error: a.error };
+  // The order things appear in a corridor is the school's own decision.
+  if (!canApprove(a.role)) return { ok: false, error: "A teacher sets the order." };
+
+  const list = await prisma.screenFlyer.findMany({
+    where: { schoolId: f.schoolId },
+    orderBy: [{ sort: "asc" }, { createdAt: "desc" }],
+    select: { id: true },
+  }).catch(() => []);
+
+  const i = list.findIndex((x) => x.id === id);
+  const j = dir === "up" ? i - 1 : i + 1;
+  if (i < 0 || j < 0 || j >= list.length) return { ok: true };
+  [list[i], list[j]] = [list[j], list[i]];
+
+  await prisma.$transaction(
+    list.map((x, n) => prisma.screenFlyer.update({ where: { id: x.id }, data: { sort: n } })),
+  ).catch(() => null);
+
   done();
   return { ok: true };
 }
