@@ -30,19 +30,14 @@ export function AmbassadorHome({
 
   return (
     <div>
-      <div style={{ position: "relative", overflow: "hidden", backgroundColor: C.blue, borderRadius: R.hero, padding: "30px 26px", marginBottom: "20px" }}>
-        <span aria-hidden="true" style={{ position: "absolute", top: "-80px", right: "-50px", width: "190px", height: "190px", borderRadius: "50%", backgroundColor: C.orange, opacity: 0.9 }} />
-        <div style={{ position: "relative" }}>
-          <p style={{ ...bandLabel, color: C.onDarkLabel, margin: "0 0 8px" }}>You run</p>
-          <p style={{ fontFamily: "var(--font-outfit)", fontSize: "clamp(28px, 6vw, 40px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.08, color: C.white, margin: "0 0 8px" }}>
-            {scope.programName}
-          </p>
-          <p style={{ fontSize: "15px", color: C.onDarkBody, margin: 0, lineHeight: 1.55 }}>
-            At {scope.schoolName} · since {day(scope.startsAt)}
-            {scope.endsAt && ` · until ${day(scope.endsAt)}`}
-          </p>
-        </div>
-      </div>
+      {/* The blue banner with the orange circle that used to sit here said
+          the name of the program under a rail that already says the name of
+          the program, in the largest type on the page. What it cost was the
+          whole first screen of a phone. */}
+      <p style={{ ...bandLabel, color: C.faint, margin: "0 0 14px" }}>
+        {scope.schoolName} · since {day(scope.startsAt)}
+        {scope.endsAt && ` · until ${day(scope.endsAt)}`}
+      </p>
 
       {just && (
         <div style={{ backgroundColor: C.greenTint, borderRadius: R.form, padding: "14px 17px", marginBottom: "16px" }}>

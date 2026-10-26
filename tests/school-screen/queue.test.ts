@@ -20,7 +20,7 @@ const flyer = (over: Partial<ScreenEditorData["flyers"][number]> = {}) => ({
   line: "11th grade", startsAt: null, time: "2:00 PM", place: "Gym",
   ambassadors: null, icon: null, imageUrl: null, qrUrl: null, qrLabel: null,
   showFrom: "2026-10-20", showUntil: "2026-10-27", sort: 0,
-  status: "PENDING" as ScreenStatus, by: "Rivka Mandel", endorsedBy: null, mine: false,
+  status: "PENDING" as ScreenStatus, by: "Rivka Mandel", endorsedBy: null, mine: false, endorsedMine: false,
   at: "2026-10-22T10:00:00.000Z",
   ...over,
 });

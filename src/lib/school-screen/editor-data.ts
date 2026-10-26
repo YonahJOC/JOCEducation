@@ -40,6 +40,8 @@ export type EditorFlyer = {
   /** The ambassador who passed it on, if one has. */
   endorsedBy: string | null;
   mine: boolean;
+  /** This person gave it its first approval. */
+  endorsedMine: boolean;
   /**
    * When something last happened to it: decided, else endorsed, else made.
    *
@@ -149,7 +151,7 @@ export async function screenEditorData(
         id: true, schoolId: true, template: true, title: true, line: true, startsAt: true, time: true,
         place: true, ambassadors: true, icon: true, imageId: true, qrUrl: true, qrLabel: true,
         showFrom: true, showUntil: true, sort: true, status: true, createdById: true,
-        createdAt: true, endorsedAt: true, decidedAt: true,
+        createdAt: true, endorsedAt: true, decidedAt: true, endorsedById: true,
         createdBy: { select: { name: true, email: true } },
         endorsedBy: { select: { name: true, email: true } },
       },
@@ -213,6 +215,7 @@ export async function screenEditorData(
       showFrom: dayKey(f.showFrom), showUntil: dayKey(f.showUntil),
       sort: f.sort, status: f.status, by: who(f.createdBy), endorsedBy: who(f.endorsedBy), at: movedAt(f),
       mine: Boolean(userId && f.createdById === userId),
+      endorsedMine: Boolean(userId && f.endorsedById === userId),
     })),
     photos: photos.map((p) => ({
       id: p.id, imageUrl: screenImageUrl(p.imageId), caption: p.caption, status: p.status,
