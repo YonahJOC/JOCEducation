@@ -12,9 +12,12 @@ import {
   myUploads, needsYou, queueKey, setAsideItems, uploadProgress,
   type QueueItem, type QueueMode,
 } from "@/lib/school-screen/queue";
+import { dayKey } from "@/lib/school-screen/rules";
+import { slideState } from "@/lib/school-screen/slideshow";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useMedia } from "@/components/ui/useMedia";
 import { FlyerForm } from "./FlyerForm";
+import { WentLive } from "./WentLive";
 import { FlyerPreview } from "./FlyerPreview";
 import { PhotoUpload } from "./PhotoUpload";
 import { StatusChip } from "./ui";
@@ -63,15 +66,36 @@ type Tab = "waiting" | "aside" | "mine";
 /** What happened, and the one thing a person might want to do about it. */
 type Toast = { text: string; undo?: { label: string; items: QueueItem[]; yes: boolean } };
 
+/**
+ * Whether a yes just put this in the corridor, or only onto the list.
+ *
+ * A flyer whose first day is next Tuesday is approved and not showing. The
+ * moment says "it's on the screen", so it must only appear for things that
+ * are. Photos and shout-outs join the rotation as soon as they are
+ * approved, so for those a yes is always a yes.
+ */
+function liveNow(item: QueueItem, today: string): boolean {
+  if (!item.flyer) return true;
+  const f = item.flyer;
+  return slideState(
+    {
+      status: "APPROVED",
+      template: f.template,
+      showFrom: f.showFrom,
+      showUntil: f.showUntil,
+      startsOn: f.startsAt ? dayKey(new Date(f.startsAt)) : null,
+    },
+    today,
+  ) === "showing";
+}
+
 export function UploadsBoard({
-  data, mode, short, onApproved,
+  data, mode, short,
 }: {
   data: ScreenEditorData;
   mode: QueueMode;
   /** The school's short name, for drawing a flyer as the TV draws it. */
   short: string;
-  /** Said when a teacher's yes has just put something in a hallway. */
-  onApproved?: (items: QueueItem[]) => void;
 }) {
   const router = useRouter();
   const [, start] = useTransition();
@@ -89,6 +113,8 @@ export function UploadsBoard({
   // offer this on the slideshow; the slideshow is what is on the wall now,
   // so it belongs beside the thing it is about.
   const [editing, setEditing] = useState<EditorFlyer | null>(null);
+  // The one thing this whole portal is for, when it has just happened.
+  const [live, setLive] = useState<{ items: QueueItem[]; more: number; left: number } | null>(null);
 
   const teacher = mode === "approve";
   const waiting = useMemo(() => needsYou(data, mode), [data, mode]);
@@ -122,11 +148,17 @@ export function UploadsBoard({
       setAt(0);
       if (failed) setError(failed);
       if (done.length > 0) {
-        setToast({
-          text: `${said} · ${done.length === 1 ? done[0].title : `${done.length} things`}`,
-          undo: { label: undoLabel, items: done, yes: !yes },
-        });
-        if (yes && teacher) onApproved?.(done);
+        // A yes from the school that actually reached a corridor gets the
+        // moment; everything else gets a line at the bottom of the page.
+        const up = yes && teacher ? done.filter((d) => liveNow(d, dayKey(new Date()))) : [];
+        if (up.length > 0) {
+          setLive({ items: up, more: done.length - 1, left: Math.max(0, waiting.length - done.length) });
+        } else {
+          setToast({
+            text: `${said} · ${done.length === 1 ? done[0].title : `${done.length} things`}`,
+            undo: { label: undoLabel, items: done, yes: !yes },
+          });
+        }
       }
       router.refresh();
     });
@@ -341,6 +373,19 @@ export function UploadsBoard({
           </ul>
         </>
       )}
+
+      {live ? (
+        <WentLive
+          items={live.items}
+          more={live.more}
+          short={short}
+          schoolName={data.school.name}
+          screenUrl={`/school-screen/${data.school.slug}`}
+          remaining={live.left}
+          onNext={() => setLive(null)}
+          onClose={() => setLive(null)}
+        />
+      ) : null}
 
       {toast ? (
         <ToastPill
