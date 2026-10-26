@@ -5,7 +5,8 @@ import {
   createInvite, revokeInvite, endTenure, markReportSeen, shareReportPhoto,
 } from "@/app/actions/ambassadors";
 import type { SupervisedAmbassador, ReportForTeacher } from "@/lib/ambassadors";
-import { pageTitle, sectionHeading, C, R, ROW_SHADOW, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import { sectionHeading, C, F, R, T, HIT, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 /**
  * Your ambassadors, for the teacher who supervises them.
@@ -29,17 +30,16 @@ export function AmbassadorsPanel({
   const unread = current.reduce((n, a) => n + a.reports.filter((r) => !r.seen).length, 0);
 
   return (
-    <div>
-      <h1 style={{ ...pageTitle, color: C.ink, margin: "0 0 6px" }}>
-        Your ambassadors
-      </h1>
-      <p style={{ fontSize: "16px", color: C.muted, lineHeight: 1.6, margin: "0 0 8px", maxWidth: "64ch" }}>
-        Two students per program run it on the ground and write up what happened each time. You hand
-        them a code, you read what they write, and nothing they write leaves this page with their
-        name on it.
-      </p>
-      <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.6, margin: "0 0 22px", maxWidth: "64ch" }}>
-        Give the code to the student yourself — say it, or write it down. JOC never emails a student.
+    <div style={{ maxWidth: CONTENT_MAX }}>
+      <PageHeader
+        back={{ href: "/school", label: "Home" }}
+        title="Your ambassadors"
+        sub="Two students per program run it on the ground and write up what happened. Nothing they write leaves this page with their name on it."
+      />
+
+      {/* It belongs next to the code, not in a paragraph above the page. */}
+      <p style={{ ...T.small, fontWeight: 400, color: C.faint, margin: "-8px 0 18px", maxWidth: "64ch" }}>
+        Give a code to the student yourself — say it, or write it down. JOC never emails a student.
       </p>
 
       {unread > 0 && (
@@ -66,7 +66,7 @@ export function AmbassadorsPanel({
       </h2>
 
       {current.length === 0 ? (
-        <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "28px 24px" }}>
+        <div style={{ backgroundColor: C.white, borderRadius: R.row, border: `1px solid ${C.hairline}`, padding: "28px 24px" }}>
           <p style={{ fontSize: "15px", color: C.muted, margin: 0, lineHeight: 1.6, maxWidth: "58ch" }}>
             No student has joined yet. Make a code above, give it to the two students who run the
             program, and they enter it at <strong style={{ color: C.ink }}>/ambassador/join</strong>{" "}
@@ -119,7 +119,7 @@ function MakeCode({
   const here = taken.filter((a) => a.programId === programId).length;
 
   return (
-    <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, padding: "18px 20px", marginBottom: "22px" }}>
+    <div style={{ backgroundColor: C.white, borderRadius: R.row, border: `1px solid ${C.hairline}`, padding: "18px 20px", marginBottom: "22px" }}>
       <p style={{ ...bandLabel, color: C.muted, margin: "0 0 10px" }}>Give a student a place</p>
 
       {made ? (
@@ -207,7 +207,7 @@ function Invite({
   if (gone) return null;
 
   return (
-    <div style={{ backgroundColor: C.white, borderRadius: R.form, boxShadow: ROW_SHADOW, padding: "13px 16px", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+    <div style={{ backgroundColor: C.white, borderRadius: R.form, border: `1px solid ${C.hairline}`, padding: "13px 16px", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
       <span style={{ fontFamily: "var(--font-outfit)", fontSize: "20px", fontWeight: 800, letterSpacing: "0.12em", color: C.blue }}>
         {invite.code}
       </span>
@@ -230,11 +230,14 @@ function Invite({
 function Ambassador({ a }: { a: SupervisedAmbassador }) {
   const [open, setOpen] = useState(a.reports.some((r) => !r.seen));
   const [ended, setEnded] = useState(false);
+  const [asking, setAsking] = useState(false);
   const [pending, start] = useTransition();
   const unread = a.reports.filter((r) => !r.seen).length;
+  // The question is about a person, so it uses their name.
+  const firstName = (a.studentName ?? "").trim().split(/\s+/)[0] || "this student";
 
   return (
-    <div style={{ backgroundColor: C.white, borderRadius: R.row, boxShadow: ROW_SHADOW, overflow: "hidden" }}>
+    <div style={{ backgroundColor: C.white, borderRadius: R.row, border: `1px solid ${C.hairline}`, overflow: "hidden" }}>
       <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", padding: "16px 18px" }}>
         <span style={{ flex: 1, minWidth: "min(100%, 240px)" }}>
           <span style={{ display: "block", fontFamily: "var(--font-outfit)", fontSize: "19px", fontWeight: 700, letterSpacing: "-0.02em", color: C.ink }}>
@@ -272,16 +275,58 @@ function Ambassador({ a }: { a: SupervisedAmbassador }) {
         </div>
       )}
 
+      {/*
+        Ending somebody's place used to be one click, from a quiet
+        underlined link, with nothing in between. It takes a student off
+        the program and frees their place — not a disaster, but not
+        something to do by brushing past it either, and the person it
+        happens to is fifteen and does not get told.
+
+        So it asks, by name, and says what does not change.
+      */}
       {a.current && !ended && (
         <div style={{ borderTop: `1px solid ${C.hairline}`, padding: "11px 18px" }}>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => start(async () => { const r = await endTenure(a.id); if (r.ok) setEnded(true); })}
-            style={{ fontFamily: "var(--font-outfit)", fontSize: "14px", color: C.muted, background: "none", border: "none", textDecoration: "underline", cursor: "pointer", minHeight: "44px", padding: 0 }}
-          >
-            {pending ? "Ending…" : "They have finished running it"}
-          </button>
+          {asking ? (
+            <div>
+              <p style={{ ...T.small, fontWeight: 400, color: C.ink, margin: "2px 0 10px", lineHeight: 1.55, maxWidth: "52ch" }}>
+                Has {firstName} finished running {a.programName}? Everything they wrote stays here,
+                and anything they passed on stays on the screen. Their place goes free for
+                somebody else.
+              </p>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => start(async () => { const r = await endTenure(a.id); if (r.ok) setEnded(true); })}
+                  style={{
+                    minHeight: HIT, padding: "0 16px", borderRadius: R.button, border: 0, cursor: "pointer",
+                    background: C.ink, color: C.white,
+                    fontFamily: F.ui, fontSize: "14.5px", fontWeight: 700,
+                  }}
+                >
+                  {pending ? "Ending…" : "They’ve finished"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAsking(false)}
+                  style={{
+                    minHeight: HIT, padding: "0 14px", background: "none", border: 0, cursor: "pointer",
+                    fontFamily: F.ui, fontSize: "14.5px", fontWeight: 600, color: C.muted,
+                  }}
+                >
+                  Not yet
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAsking(true)}
+              style={{ fontFamily: F.ui, fontSize: "14px", color: C.muted, background: "none", border: "none", textDecoration: "underline", cursor: "pointer", minHeight: HIT, padding: 0 }}
+            >
+              They have finished running it
+            </button>
+          )}
         </div>
       )}
       {ended && (
@@ -315,16 +360,17 @@ function Report({ r }: { r: ReportForTeacher }) {
         {!seen && <span style={{ ...chip, backgroundColor: C.blueTint, color: C.blue }}>New</span>}
       </div>
 
-      <p style={{ fontSize: "15px", color: C.ink, margin: "0 0 8px", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+      {/* A student wrote this, so it is set in the reading face. */}
+      <p style={{ ...T.read, color: C.ink, margin: "0 0 8px", whiteSpace: "pre-wrap" }}>
         {r.whatHappened}
       </p>
       {r.wentWell && (
-        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px", lineHeight: 1.55 }}>
+        <p style={{ ...T.read, fontSize: "15px", color: C.muted, margin: "0 0 6px" }}>
           <strong style={{ color: C.ink }}>Went well:</strong> {r.wentWell}
         </p>
       )}
       {r.wouldChange && (
-        <p style={{ fontSize: "15px", color: C.muted, margin: "0 0 6px", lineHeight: 1.55 }}>
+        <p style={{ ...T.read, fontSize: "15px", color: C.muted, margin: "0 0 6px" }}>
           <strong style={{ color: C.ink }}>Would change:</strong> {r.wouldChange}
         </p>
       )}

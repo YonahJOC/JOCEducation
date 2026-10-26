@@ -249,8 +249,15 @@ export function FlyerForm({ schoolId, short, flyer, canChooseEvery, approves, on
           ) : null}
         </div>
 
-        <div style={{ flex: "0 1 372px", display: "flex", flexDirection: "column", gap: "10px" }}>
-          <div style={{ ...T.meta }}>HOW IT LOOKS ON THE TV</div>
+        {/* Ink, because ink is the television. The preview sat on the white
+            of the form, which made it read as another field rather than as
+            the thing itself. */}
+        <div style={{
+          flex: "0 1 404px", display: "flex", flexDirection: "column", gap: "10px",
+          background: C.ink, borderRadius: R.row, padding: "16px",
+          position: "sticky", top: "18px",
+        }}>
+          <div style={{ ...T.meta, color: C.onDarkLabel }}>HOW IT LOOKS ON THE TV</div>
           <FlyerPreview
             short={short}
             onOverflow={onOverflow}
@@ -269,14 +276,24 @@ export function FlyerForm({ schoolId, short, flyer, canChooseEvery, approves, on
           <ul style={{ margin: "4px 0 0", paddingLeft: "18px" }}>{warnings.map((w) => <li key={w}>{w}</li>)}</ul>
         </Note>
       ) : null}
-      {!approves ? <Note>A teacher looks at it before it goes on the screen.</Note> : null}
       {error ? <Note tone="error">{error}</Note> : null}
 
-      <div style={{ display: "flex", gap: "10px", marginTop: "12px", flexWrap: "wrap" }}>
+      {/* What happens when you press the button, beside the button. It was
+          a blue note three paragraphs up, where somebody deciding whether
+          to press it was no longer looking. */}
+      <div style={{
+        display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap",
+        marginTop: "16px", paddingTop: "14px", borderTop: `1px solid ${C.rule}`,
+      }}>
+        <span style={{ ...T.small, fontWeight: 400, color: C.muted, flex: "1 1 240px", minWidth: 0 }}>
+          {approves
+            ? "It goes up in the hallway within a few minutes."
+            : "A teacher looks at it before it goes on the screen."}
+        </span>
+        <Btn tone="quiet" onClick={onDone} disabled={pending}>Cancel</Btn>
         <Btn onClick={submit} disabled={pending}>
           {pending ? "Saving…" : flyer ? "Save changes" : approves ? "Put it on the screen" : "Send it to a teacher"}
         </Btn>
-        <Btn tone="quiet" onClick={onDone} disabled={pending}>Cancel</Btn>
       </div>
     </div>
   );
