@@ -14,6 +14,7 @@ import {
 } from "@/lib/school-screen/queue";
 import { dayKey } from "@/lib/school-screen/rules";
 import { slideState } from "@/lib/school-screen/slideshow";
+import type { UploadsTab } from "@/lib/school-screen/tabs";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useMedia } from "@/components/ui/useMedia";
 import { FlyerForm } from "./FlyerForm";
@@ -61,13 +62,14 @@ const decide = (kind: QueueItem["kind"], id: string, yes: boolean) =>
       ? decidePhoto(id, yes)
       : decideShoutOut(id, yes);
 
-export type Tab = "waiting" | "aside" | "mine";
-
-/** The ?tab= a link may carry, and nothing else. */
-export function tabFromQuery(v: string | string[] | undefined): Tab | undefined {
-  const s = Array.isArray(v) ? v[0] : v;
-  return s === "aside" || s === "mine" || s === "waiting" ? s : undefined;
-}
+/**
+ * The tab names live in lib, not here.
+ *
+ * The page that reads ?tab= is a server component, and a function
+ * exported from a "use client" module is not a function on the server.
+ * See src/lib/school-screen/tabs.ts.
+ */
+type Tab = UploadsTab;
 
 /** What happened, and the one thing a person might want to do about it. */
 type Toast = { text: string; undo?: { label: string; items: QueueItem[]; yes: boolean } };

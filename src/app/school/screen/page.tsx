@@ -3,7 +3,8 @@ import { safeAuth } from "@/auth";
 import { currentSchoolId } from "@/lib/school-scope";
 import { myScreenSchool, screenRoleFor } from "@/lib/school-screen/access";
 import { screenEditorData } from "@/lib/school-screen/editor-data";
-import { ScreenEditor, screenTabFromQuery } from "@/components/school-screen/ScreenEditor";
+import { ScreenEditor } from "@/components/school-screen/ScreenEditor";
+import { screenTabFromQuery } from "@/lib/school-screen/tabs";
 import { C, T } from "@/lib/joc-tokens";
 
 /**

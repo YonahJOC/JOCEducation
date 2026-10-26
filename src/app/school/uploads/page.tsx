@@ -4,7 +4,8 @@ import { currentSchoolId } from "@/lib/school-scope";
 import { myScreenSchool, screenRoleFor } from "@/lib/school-screen/access";
 import { screenEditorData } from "@/lib/school-screen/editor-data";
 import { shortName } from "@/lib/school-screen/rules";
-import { UploadsBoard, tabFromQuery } from "@/components/school-screen/UploadsBoard";
+import { UploadsBoard } from "@/components/school-screen/UploadsBoard";
+import { uploadsTabFromQuery } from "@/lib/school-screen/tabs";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { C, T } from "@/lib/joc-tokens";
 
@@ -28,7 +29,7 @@ export default async function SchoolUploadsPage({
   await requireSchoolPanel({ demo: "allow" });
   const session = await safeAuth();
   // "2 set aside by an ambassador" on the home page lands on that tab.
-  const tab = tabFromQuery((await searchParams).tab);
+  const tab = uploadsTabFromQuery((await searchParams).tab);
 
   const schoolId = (await currentSchoolId()) ?? (await myScreenSchool())?.id ?? null;
   const role = schoolId ? await screenRoleFor(session?.user, schoolId) : null;

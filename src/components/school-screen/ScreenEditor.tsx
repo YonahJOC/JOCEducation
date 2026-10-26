@@ -11,6 +11,7 @@ import {
 import type { ScreenEditorData, EditorFlyer } from "@/lib/school-screen/editor-data";
 import { dayKey, shortName, shoutOutFrom } from "@/lib/school-screen/rules";
 import { SLIDE_SECONDS, slideState, type SlideState } from "@/lib/school-screen/slideshow";
+import type { ScreenTab } from "@/lib/school-screen/tabs";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useMedia } from "@/components/ui/useMedia";
 import { FlyerForm } from "./FlyerForm";
@@ -35,15 +36,14 @@ import { Btn, Field, Note, StatusChip, input } from "./ui";
  * this file drew.
  */
 
-export type Tab = "slideshow" | "photos" | "shouts" | "dedication" | "settings";
-
-const TABS: Tab[] = ["slideshow", "photos", "shouts", "dedication", "settings"];
-
-/** The ?tab= a link may carry, and nothing else. */
-export function screenTabFromQuery(v: string | string[] | undefined): Tab | undefined {
-  const s = Array.isArray(v) ? v[0] : v;
-  return TABS.includes(s as Tab) ? (s as Tab) : undefined;
-}
+/**
+ * The tab names live in lib, not here.
+ *
+ * The page that reads ?tab= is a server component, and a function
+ * exported from a "use client" module is not a function on the server.
+ * See src/lib/school-screen/tabs.ts.
+ */
+type Tab = ScreenTab;
 
 /** White, hairline, 16px, no shadow. Ink is the television and nothing else. */
 const card: React.CSSProperties = {
