@@ -6,7 +6,7 @@ import { IconFont } from "@/components/ui/IconFont";
 import { PortalShell } from "@/components/shell/PortalShell";
 import { ambassadorNav } from "@/lib/nav";
 import { myAmbassadorship } from "@/lib/ambassadors";
-import { waitingForAmbassador } from "@/lib/school-screen/editor-data";
+import { updatesForAmbassador, waitingForAmbassador } from "@/lib/school-screen/editor-data";
 
 /**
  * The ambassador's corner of the portal.
@@ -48,7 +48,10 @@ export default async function AmbassadorLayout({ children }: { children: React.R
     );
   }
 
-  const waiting = await waitingForAmbassador(amb.schoolId, me?.id ?? null).catch(() => 0);
+  const [waiting, updates] = await Promise.all([
+    waitingForAmbassador(amb.schoolId, me?.id ?? null).catch(() => 0),
+    updatesForAmbassador(amb.schoolId, me?.id ?? null).catch(() => 0),
+  ]);
 
   return (
     <>
@@ -57,7 +60,7 @@ export default async function AmbassadorLayout({ children }: { children: React.R
         side="school"
         who={amb.schoolName}
         role={`Ambassador · ${amb.programName}`}
-        items={ambassadorNav({ waiting })}
+        items={ambassadorNav({ waiting, updates })}
         action={
           <Link
             href={`/school-screen/${amb.schoolSlug}`}

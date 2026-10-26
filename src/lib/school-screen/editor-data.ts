@@ -40,17 +40,26 @@ export type EditorFlyer = {
   /** The ambassador who passed it on, if one has. */
   endorsedBy: string | null;
   mine: boolean;
+  /**
+   * When something last happened to it: decided, else endorsed, else made.
+   *
+   * One field rather than three, because everywhere that asks is asking
+   * the same question — how recently did this move — and a feed sorted on
+   * "whichever of these three is set" written out at each call site is
+   * three chances to get it wrong.
+   */
+  at: string;
 };
 
 export type EditorPhoto = {
   id: string; imageUrl: string; caption: string | null; status: EditorStatus;
-  by: string | null; endorsedBy: string | null; mine: boolean;
+  by: string | null; endorsedBy: string | null; mine: boolean; at: string;
 };
 
 export type EditorShoutOut = {
   id: string; text: string; firstName: string; lastName: string; grade: string;
   showName: boolean; email: string; status: EditorStatus; createdAt: string;
-  endorsedBy: string | null;
+  endorsedBy: string | null; at: string;
 };
 
 export type EditorDedication = { id: string; date: string; hebrewName: string; text: string | null; everySchool: boolean };
@@ -94,6 +103,10 @@ function who(u: { name: string | null; email: string | null } | null): string | 
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 
+/** The last thing that happened to a row: decided, else endorsed, else made. */
+const movedAt = (r: { decidedAt?: Date | null; endorsedAt?: Date | null; createdAt: Date }) =>
+  (r.decidedAt ?? r.endorsedAt ?? r.createdAt).toISOString();
+
 export async function screenEditorData(
   schoolId: string, role: ScreenRole, userId: string | null,
 ): Promise<ScreenEditorData | null> {
@@ -136,6 +149,7 @@ export async function screenEditorData(
         id: true, schoolId: true, template: true, title: true, line: true, startsAt: true, time: true,
         place: true, ambassadors: true, icon: true, imageId: true, qrUrl: true, qrLabel: true,
         showFrom: true, showUntil: true, sort: true, status: true, createdById: true,
+        createdAt: true, endorsedAt: true, decidedAt: true,
         createdBy: { select: { name: true, email: true } },
         endorsedBy: { select: { name: true, email: true } },
       },
@@ -150,6 +164,7 @@ export async function screenEditorData(
       take: 40,
       select: {
         id: true, imageId: true, caption: true, status: true, uploadedById: true,
+        createdAt: true, endorsedAt: true, decidedAt: true,
         uploadedBy: { select: { name: true, email: true } },
         endorsedBy: { select: { name: true, email: true } },
       },
@@ -163,6 +178,7 @@ export async function screenEditorData(
           select: {
             id: true, text: true, firstName: true, lastName: true, grade: true,
             showName: true, authorEmail: true, status: true, createdAt: true,
+            endorsedAt: true, decidedAt: true,
             endorsedBy: { select: { name: true, email: true } },
           },
         }).catch(() => [])
@@ -195,17 +211,17 @@ export async function screenEditorData(
       imageUrl: f.imageId ? screenImageUrl(f.imageId) : null,
       qrUrl: f.qrUrl, qrLabel: f.qrLabel,
       showFrom: dayKey(f.showFrom), showUntil: dayKey(f.showUntil),
-      sort: f.sort, status: f.status, by: who(f.createdBy), endorsedBy: who(f.endorsedBy),
+      sort: f.sort, status: f.status, by: who(f.createdBy), endorsedBy: who(f.endorsedBy), at: movedAt(f),
       mine: Boolean(userId && f.createdById === userId),
     })),
     photos: photos.map((p) => ({
       id: p.id, imageUrl: screenImageUrl(p.imageId), caption: p.caption, status: p.status,
-      by: who(p.uploadedBy), endorsedBy: who(p.endorsedBy),
+      by: who(p.uploadedBy), endorsedBy: who(p.endorsedBy), at: movedAt(p),
       mine: Boolean(userId && p.uploadedById === userId),
     })),
     shoutOuts: shouts.map((s) => ({
       id: s.id, text: s.text, firstName: s.firstName, lastName: s.lastName, grade: s.grade,
-      showName: s.showName, email: s.authorEmail, status: s.status, createdAt: s.createdAt.toISOString(),
+      showName: s.showName, email: s.authorEmail, status: s.status, createdAt: s.createdAt.toISOString(), at: movedAt(s),
       endorsedBy: who(s.endorsedBy),
     })),
     dedications: dedications.map((d) => ({
@@ -255,4 +271,34 @@ export async function waitingForSchool(schoolId: string): Promise<number> {
     prisma.shoutOut.count({ where }).catch(() => 0),
   ]);
   return flyers + photos + shouts;
+}
+
+/**
+ * How many of a student's own things have moved in the last day.
+ *
+ * The number on their Updates item. Counted rather than built from the
+ * feed, because a rail that costs four queries on every page is a rail
+ * that costs four queries on every page.
+ *
+ * PENDING is excluded: nothing has happened to it, and the person who
+ * sent it in is not waiting to be told they sent it in.
+ */
+export async function updatesForAmbassador(
+  schoolId: string,
+  userId: string | null,
+  /** How far back counts as recent. The clock is read here, not by a page. */
+  hours = 24,
+): Promise<number> {
+  if (!isDatabaseConfigured() || !userId) return 0;
+  const since = new Date(Date.now() - hours * 3_600_000);
+  const moved = { OR: [{ decidedAt: { gte: since } }, { endorsedAt: { gte: since } }] };
+  const [flyers, photos] = await Promise.all([
+    prisma.screenFlyer.count({
+      where: { schoolId, createdById: userId, status: { not: "PENDING" }, ...moved },
+    }).catch(() => 0),
+    prisma.screenPhoto.count({
+      where: { schoolId, uploadedById: userId, status: { not: "PENDING" }, ...moved },
+    }).catch(() => 0),
+  ]);
+  return flyers + photos;
 }

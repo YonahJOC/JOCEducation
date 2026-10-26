@@ -131,6 +131,14 @@ export type ReportForTeacher = {
   photoShared: boolean;
   submittedAt: Date;
   seen: boolean;
+  /**
+   * When the teacher read it.
+   *
+   * `seen` answers whether; a student's Updates page needs when, so that a
+   * teacher reading something can take its place in order beside a flyer
+   * going up.
+   */
+  seenAt: Date | null;
   /** The student's name. Never leaves the teacher's view. */
   byName: string | null;
   eventTitle: string | null;
@@ -184,6 +192,7 @@ export async function myReports(ambassadorId: string): Promise<ReportForTeacher[
     photoShared: r.photoShared,
     submittedAt: r.submittedAt,
     seen: Boolean(r.seenBySupervisorAt),
+    seenAt: r.seenBySupervisorAt,
     byName: r.ambassador.user.name,
     eventTitle: r.event?.title ?? null,
   }));
@@ -253,6 +262,7 @@ export async function whoISupervise(): Promise<SupervisedAmbassador[]> {
       photoShared: r.photoShared,
       submittedAt: r.submittedAt,
       seen: Boolean(r.seenBySupervisorAt),
+      seenAt: r.seenBySupervisorAt,
       byName: a.user.name,
       eventTitle: r.event?.title ?? null,
     })),

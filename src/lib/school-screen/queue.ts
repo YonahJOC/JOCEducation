@@ -30,6 +30,8 @@ export type QueueItem = {
   by: string | null;
   endorsedBy: string | null;
   status: ScreenStatus;
+  /** When it last moved: decided, else endorsed, else made. */
+  at: string;
   /** This person sent it in. */
   mine: boolean;
   /** The flyer itself, so a preview can be drawn the way the TV draws it. */
@@ -56,6 +58,7 @@ export function queueItems(data: ScreenEditorData, want: ScreenStatus[]): QueueI
       by: f.by,
       endorsedBy: f.endorsedBy,
       status: f.status,
+      at: f.at,
       mine: f.mine,
       flyer: f,
     });
@@ -74,6 +77,7 @@ export function queueItems(data: ScreenEditorData, want: ScreenStatus[]): QueueI
       by: p.by,
       endorsedBy: p.endorsedBy,
       status: p.status,
+      at: p.at,
       mine: p.mine,
       flyer: null,
     });
@@ -95,6 +99,7 @@ export function queueItems(data: ScreenEditorData, want: ScreenStatus[]): QueueI
       by: name || s.email || null,
       endorsedBy: s.endorsedBy,
       status: s.status,
+      at: s.at,
       // A shout-out comes from a student who is not in this portal at all,
       // so it is never anybody's own upload.
       mine: false,

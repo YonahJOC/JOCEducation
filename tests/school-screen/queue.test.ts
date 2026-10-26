@@ -21,12 +21,14 @@ const flyer = (over: Partial<ScreenEditorData["flyers"][number]> = {}) => ({
   ambassadors: null, icon: null, imageUrl: null, qrUrl: null, qrLabel: null,
   showFrom: "2026-10-20", showUntil: "2026-10-27", sort: 0,
   status: "PENDING" as ScreenStatus, by: "Rivka Mandel", endorsedBy: null, mine: false,
+  at: "2026-10-22T10:00:00.000Z",
   ...over,
 });
 
 const photo = (over: Partial<ScreenEditorData["photos"][number]> = {}) => ({
   id: "p1", imageUrl: "/x.jpg", caption: "Packing packages",
   status: "PENDING" as ScreenStatus, by: "Rivka Mandel", endorsedBy: null, mine: false,
+  at: "2026-10-22T10:00:00.000Z",
   ...over,
 });
 
@@ -34,7 +36,7 @@ const shout = (over: Partial<ScreenEditorData["shoutOuts"][number]> = {}) => ({
   id: "x1", text: "Thank you for helping me with my locker",
   firstName: "Dovid", lastName: "Klein", grade: "11th", showName: true,
   email: "dovid@demo-academy.test", status: "PENDING" as ScreenStatus,
-  createdAt: "2026-10-22T10:00:00.000Z", endorsedBy: null,
+  createdAt: "2026-10-22T10:00:00.000Z", endorsedBy: null, at: "2026-10-22T10:00:00.000Z",
   ...over,
 });
 
