@@ -595,7 +595,9 @@ function SettingsTab({ data, onDone }: { data: ScreenEditorData; onDone: () => v
           somebody opened to do something else. */}
       {school.emailDomains.length === 0 ? (
         <Note tone="warn">
-          No school email domain is set, so any signed-in account can send a shout-out. Set one below.
+          <strong>Shout-outs are off.</strong> The code on your screen will not let anybody write
+          one until you say which email addresses belong to your school. Set one below and it
+          starts working straight away.
         </Note>
       ) : null}
 

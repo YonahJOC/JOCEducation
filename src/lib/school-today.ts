@@ -298,7 +298,12 @@ export async function getSchoolToday(
       pending: across("PENDING"),
       setAside: across("SET_ASIDE"),
       dedicationToday: dedicationsToday > 0,
-      screenUp: Boolean(school?.liveScreenUrl),
+      // Anything at all on this school's screen, in any state, is proof
+      // enough that they use it — better proof than liveScreenUrl, which
+      // is set by hand and which no school on the live database has.
+      usesScreen:
+        Boolean(school?.liveScreenUrl) ||
+        flyerStates.length + photoStates.length + shoutStates.length > 0,
     }));
 
     rows.sort((a, b) => b.weight - a.weight);

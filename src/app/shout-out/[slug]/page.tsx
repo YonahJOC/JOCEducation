@@ -84,6 +84,14 @@ export default async function ShoutOutPage({ params }: { params: Promise<{ slug:
               <a href={`/login?next=${encodeURIComponent(`/shout-out/${slug}`)}`} style={{ color: C.blue, fontWeight: 700 }}>Sign in with your school email</a>{" "}
               to send one.
             </p>
+          ) : !allowed && school.screenEmailDomains.length === 0 ? (
+            /* Their school has not said whose addresses count, so there is
+               no address they could switch to. Telling them to sign in with
+               their school email would send them round in circles. */
+            <p style={{ ...T.read, color: C.ink }}>
+              {short} hasn&rsquo;t switched shout-outs on yet. Ask a teacher to set your school&rsquo;s
+              email address under the screen settings, and this will start working.
+            </p>
           ) : !allowed ? (
             <p style={{ ...T.read, color: C.ink }}>
               You&rsquo;re signed in as <strong>{email}</strong>. Shout-outs for {short} come from a school address

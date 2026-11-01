@@ -21,16 +21,23 @@ export type ScreenTodayCounts = {
   setAside: number;
   /** Something is already dedicated for today. */
   dedicationToday: boolean;
-  /** This school's screen is switched on. Nothing shows if it is not. */
-  screenUp: boolean;
+  /**
+   * This school uses the screen at all.
+   *
+   * It was `Boolean(liveScreenUrl)`, which is a field somebody at JOC fills
+   * in by hand and which, on the live database, not one school in fifty-two
+   * has — so these rows never appeared for anybody. A count standing at
+   * more than zero proves the feature is in use far better than a flag
+   * nobody remembers to set; this is now only the gate on the dedication
+   * row, which is the one that would otherwise nag a school that has never
+   * heard of the screen.
+   */
+  usesScreen: boolean;
 };
 
 const UPLOADS = "/school/uploads";
 
 export function screenTodayRows(c: ScreenTodayCounts): SchoolTodayRow[] {
-  // A school with no screen is not behind on one.
-  if (!c.screenUp) return [];
-
   const rows: SchoolTodayRow[] = [];
 
   if (c.endorsed > 0) {
@@ -79,7 +86,7 @@ export function screenTodayRows(c: ScreenTodayCounts): SchoolTodayRow[] {
     });
   }
 
-  if (!c.dedicationToday) {
+  if (!c.dedicationToday && c.usesScreen) {
     rows.push({
       id: "screen-dedication",
       kind: "SCREEN_DEDICATION",

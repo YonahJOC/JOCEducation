@@ -128,8 +128,14 @@ describe("email domains", () => {
     expect(emailAllowed(null, d)).toBe(false);
   });
 
-  it("takes any account while a school has set none", () => {
-    expect(emailAllowed("a@gmail.com", [])).toBe(true);
+  it("takes nobody while a school has named no domain", () => {
+    // It used to take anybody with a JOC account at all, on the grounds
+    // that a teacher reads every shout-out before it reaches a wall. True,
+    // and it still meant a stranger could drop a sentence into a queue at
+    // a school they have nothing to do with. A school's QR code now does
+    // nothing until that school says whose addresses count.
+    expect(emailAllowed("a@gmail.com", [])).toBe(false);
+    expect(emailAllowed("a@haftr.org", [])).toBe(false);
   });
 });
 

@@ -15,15 +15,24 @@ const counts = (over: Partial<ScreenTodayCounts> = {}): ScreenTodayCounts => ({
   pending: 0,
   setAside: 0,
   dedicationToday: true,
-  screenUp: true,
+  usesScreen: true,
   ...over,
 });
 
-describe("a school with no screen", () => {
-  it("is told nothing about one", () => {
-    // Including the dedication row, which would otherwise appear for every
-    // school in the country every day.
-    expect(screenTodayRows(counts({ screenUp: false, endorsed: 4, dedicationToday: false }))).toEqual([]);
+describe("a school that has never used the screen", () => {
+  it("is not nagged about a dedication for a wall it does not have", () => {
+    // This row would otherwise appear for every school in the country,
+    // every day, about a television they have never heard of.
+    expect(screenTodayRows(counts({ usesScreen: false, dedicationToday: false }))).toEqual([]);
+  });
+
+  it("is still told when something is actually waiting", () => {
+    // Four things sitting in a queue is proof the screen is in use,
+    // whatever a hand-set flag says. The old rule gated every row on that
+    // flag, and not one school on the live database has it set — so these
+    // rows had never once appeared for anybody.
+    const rows = screenTodayRows(counts({ usesScreen: false, endorsed: 4 }));
+    expect(rows.map((r) => r.kind)).toEqual(["SCREEN_ENDORSED"]);
   });
 });
 

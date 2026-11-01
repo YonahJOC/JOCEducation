@@ -1,6 +1,7 @@
 import QRCode from "qrcode";
 import { LOBBY_SLUG } from "@/lib/lobby/slug";
 import { CHESED_MINUTE } from "./chesed-minute";
+import { liveTotals } from "@/lib/lobby/live";
 import { createHash } from "node:crypto";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getRunningCycle } from "@/lib/cycle-data";
@@ -121,10 +122,20 @@ export async function buildScreenData(slug: string, origin: string, now = new Da
       select: { name: true, screenShortName: true, appStats: { select: { minutesThisYear: true } } },
     }).catch(() => []),
 
-    prisma.appSchoolStats.aggregate({
-      _sum: { hoursAllTime: true },
-      where: { school: { isTest: false } },
-    }).catch(() => null),
+    /**
+     * The band along the foot: hours of chesed worldwide.
+     *
+     * Asked of the app at render, exactly as the lobby wall asks it, and
+     * not added up from our own table. That table is filled by a nightly
+     * job, counts only the schools this portal knows about, and has been
+     * silently out of date; a number under the word "worldwide" that is
+     * neither worldwide nor today is the kind of thing a school notices
+     * before we do.
+     *
+     * Cached for a quarter of an hour, so thirty televisions asking every
+     * minute are one call to the app.
+     */
+    liveTotals(),
 
     getRunningCycle().catch(() => null),
   ]);
@@ -161,7 +172,10 @@ export async function buildScreenData(slug: string, origin: string, now = new Da
       acts: school.appStats?.actsAllTime ?? null,
       hours: school.appStats ? hoursFromMinutes(school.appStats.minutesThisYear) : null,
     },
-    worldHours: world?._sum.hoursAllTime ?? null,
+    // Left off rather than filled in from our own sum when the app does not
+    // answer: that figure is this portal's schools only, and putting it
+    // under "worldwide" would say something untrue quietly.
+    worldHours: world.hours,
     networkSchools: network.length + 1,
     network: network
       .map((s) => ({ name: s.screenShortName || s.name, hours: hoursFromMinutes(s.appStats?.minutesThisYear) ?? 0 }))

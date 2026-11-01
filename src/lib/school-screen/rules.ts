@@ -228,13 +228,22 @@ export function normalizeDomains(input: string | string[]): string[] {
 /**
  * Whether this address may send a shout-out to this school.
  *
- * The school's own domain, or a subdomain of it. A school with no domain set
- * yet takes any signed-in account — the approval queue still stands between
- * a post and the wall — and the staff page says so until one is set.
+ * The school's own domain, or a subdomain of it.
+ *
+ * A school with no domain set takes nobody. It used to take anybody with a
+ * JOC account at all, on the grounds that a person reads every shout-out
+ * before it reaches a wall — true, but it meant a stranger could put a
+ * sentence into a teacher's queue at a school they have nothing to do
+ * with, and the only thing standing between that and a corridor was
+ * somebody being tired. A warning on the settings page is not a lock.
+ *
+ * So the QR code on a school's screen does nothing until that school says
+ * whose addresses count. The settings page says so, and the form says so
+ * rather than failing silently.
  */
 export function emailAllowed(email: string | null | undefined, domains: string[]): boolean {
   if (!email) return false;
-  if (domains.length === 0) return true;
+  if (domains.length === 0) return false;
   const host = email.trim().toLowerCase().split("@")[1] ?? "";
   return domains.some((d) => host === d || host.endsWith(`.${d}`));
 }

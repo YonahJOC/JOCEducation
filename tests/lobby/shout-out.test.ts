@@ -156,12 +156,15 @@ describe("a school's wall, which did not change", () => {
     expect(res).toEqual({ ok: false, error: "Sign in with your school email first." });
   });
 
-  it("says something sensible when that school refuses an outside address", async () => {
-    // emailAllowed lets any signed-in address through an empty list, so this
-    // is really pinning that the message never reads "(@undefined)".
+  it("sends a signed-in stranger to a teacher, not round in circles", async () => {
+    // A school that has named no domain takes nobody. The message must not
+    // say "sign in with your school email" — they are signed in, and their
+    // school has not said what one looks like.
     session = { user: { id: "u4", email: "a@b.com" } };
     const res = await send("openschool");
-    expect(res.ok).toBe(true);
+    expect(res.ok).toBe(false);
+    expect(res).not.toHaveProperty("error", expect.stringContaining("undefined"));
+    if (!res.ok) expect(res.error).toContain("Ask a teacher");
   });
 
   it("still refuses a wall that does not exist", async () => {
