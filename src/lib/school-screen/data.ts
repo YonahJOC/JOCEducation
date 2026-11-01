@@ -1,5 +1,6 @@
 import QRCode from "qrcode";
 import { LOBBY_SLUG } from "@/lib/lobby/slug";
+import { CHESED_MINUTE } from "./chesed-minute";
 import { createHash } from "node:crypto";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { getRunningCycle } from "@/lib/cycle-data";
@@ -51,19 +52,14 @@ export function shoutOutUrl(origin: string, slug: string): string {
   return `${base}/${path}/${encodeURIComponent(slug)}`;
 }
 
-/** The flyer every screen falls back to when a school has nothing of its own up yet. */
+/**
+ * The flyer every screen falls back to when a school has nothing up yet.
+ *
+ * The flyer itself is in chesed-minute.ts so that the portal can draw the
+ * same one. Only the QR is added here: drawing it needs the server.
+ */
 async function chesedMinuteFlyer(): Promise<ScreenFlyer> {
-  return {
-    id: "joc-chesed-minute",
-    template: "PROGRAM",
-    title: "The Chesed Minute",
-    line: "1 video. 60 seconds.",
-    startsAt: null, time: null, place: null, ambassadors: null,
-    icon: "mic",
-    imageUrl: null,
-    qrSvg: await qrSvg(CHESED_MINUTE_URL),
-    qrLabel: "Scan to upload",
-  };
+  return { ...CHESED_MINUTE, qrSvg: await qrSvg(CHESED_MINUTE_URL) };
 }
 
 export async function buildScreenData(slug: string, origin: string, now = new Date()): Promise<ScreenData | null> {

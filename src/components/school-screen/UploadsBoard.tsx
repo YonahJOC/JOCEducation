@@ -194,9 +194,9 @@ export function UploadsBoard({
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
       <PageHeader
-        title="Uploads & approvals"
+        title={teacher ? "Admin panel" : "Your first look"}
         sub={teacher
-          ? "What your ambassadors passed on, and anything nobody has reached yet. Your yes is what puts it in the hallway."
+          ? "Approve what your ambassadors have posted. Your yes is what puts it in the hallway."
           : "You get first look. Pass on what should go up, and send in your own."}
         actions={
           <button

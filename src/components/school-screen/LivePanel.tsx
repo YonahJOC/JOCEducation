@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { C, F, R, T } from "@/lib/joc-tokens";
 import type { EditorFlyer } from "@/lib/school-screen/editor-data";
 import { SLIDE_SECONDS } from "@/lib/school-screen/slideshow";
+import { CHESED_MINUTE } from "@/lib/school-screen/chesed-minute";
 import { FlyerPreview } from "./FlyerPreview";
 
 /**
@@ -35,6 +36,12 @@ export function LivePanel({ flyers, short, sticky, note }: {
   const i = flyers.length === 0 ? 0 : at % flyers.length;
   const f = flyers[i];
 
+  // A school with nothing of its own up is not looking at a blank wall.
+  // It is looking at the Chesed Minute, so that is what this shows.
+  const shown = f
+    ? { ...f, hasQr: Boolean(f.qrUrl) }
+    : { ...CHESED_MINUTE, hasQr: true };
+
   return (
     <aside
       style={{
@@ -45,27 +52,15 @@ export function LivePanel({ flyers, short, sticky, note }: {
     >
       <p style={{ ...T.meta, color: C.onDarkLabel, margin: "0 0 12px" }}>ON THE SCREEN NOW</p>
 
-      {f ? (
-        <>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <FlyerPreview width={288} short={short} flyer={{ ...f, hasQr: Boolean(f.qrUrl) }} />
-          </div>
-          <p style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.white, margin: "12px 0 2px" }}>
-            {f.title}
-          </p>
-          <p style={{ ...T.meta, color: C.onDarkBody, margin: 0 }}>
-            SLIDE {i + 1} OF {flyers.length}
-          </p>
-        </>
-      ) : (
-        <div style={{
-          border: `2px dashed ${C.onDarkBody}`, borderRadius: R.form, padding: "28px 16px", textAlign: "center",
-        }}>
-          <p style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 600, color: C.onDarkBody, margin: 0, lineHeight: 1.5 }}>
-            JOC&rsquo;s Chesed Minute — until your first flyer goes up.
-          </p>
-        </div>
-      )}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <FlyerPreview width={288} short={short} flyer={shown} />
+      </div>
+      <p style={{ fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.white, margin: "12px 0 2px" }}>
+        {shown.title}
+      </p>
+      <p style={{ ...T.meta, color: C.onDarkBody, margin: 0 }}>
+        {f ? `SLIDE ${i + 1} OF ${flyers.length}` : "JOC'S OWN, UNTIL YOUR FIRST FLYER GOES UP"}
+      </p>
 
       {note ? (
         <p style={{ fontFamily: F.ui, fontSize: "14px", color: C.onDarkBody, margin: "12px 0 0", lineHeight: 1.5 }}>

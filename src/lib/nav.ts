@@ -233,8 +233,8 @@ export function schoolNav(
     return [
       { label: "Live screen", href: "/school/screen", hint: "What is showing in your building", icon: "slideshow" },
       {
-        label: "Uploads", href: "/school/uploads", icon: "inventory",
-        hint: "What is waiting for you to say yes to",
+        label: "Admin panel", href: "/school/uploads", icon: "inventory",
+        hint: "Approve what your ambassadors have posted",
         need: opts.waitingUploads || undefined, tone: "orange",
       },
       { label: "People", href: "/school/teachers", hint: "Who can sign in, and what they can do", icon: "group" },
@@ -279,7 +279,8 @@ export function schoolNav(
     // clocks — only the second has anybody waiting on it.
     items.push({ label: "Live screen", href: "/school/screen", icon: "slideshow" });
     items.push({
-      label: "Uploads", href: "/school/uploads", icon: "inventory",
+      label: "Admin panel", href: "/school/uploads", icon: "inventory",
+      hint: "Approve what your ambassadors have posted",
       need: opts.waitingUploads || undefined, tone: "orange",
     });
   }
@@ -301,7 +302,7 @@ export function schoolNav(
   // Uploads goes last of all, after Live screen: of the two, it is the one
   // with people waiting on it, and the Uploads page carries its own link to
   // the screen if the rail has had to let that one go.
-  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity", "Live screen", "Uploads"]) {
+  for (const label of ["Cycle progress", "Ambassadors", "Chesed activity", "Live screen", "Admin panel"]) {
     if (items.length <= MAX) break;
     const i = items.findIndex((it) => it.label === label);
     if (i >= 0) items.splice(i, 1);
@@ -354,9 +355,9 @@ export function ambassadorNav(opts: {
       icon: "slideshow",
     },
     {
-      label: "Uploads",
+      label: "Your first look",
       href: "/ambassador/uploads",
-      hint: "Your first look, and what you have sent in",
+      hint: "What is waiting for you, and what you have sent in",
       icon: "inventory",
       need: opts.waiting || undefined,
       tone: "orange",
