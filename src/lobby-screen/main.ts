@@ -2,7 +2,7 @@ import { hebrewDate } from '@/lib/hebrew-date';
 import './screen.css';
 import type { LobbyScreenData } from '@/lib/lobby/screen-data';
 import { esc, marqueeHTML } from '@/lib/school-screen/markup';
-import { lobbyShoutHTML, programSlideHTML, standingSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
+import { lobbyShoutHTML, photoSlideHTML, programSlideHTML, standingSlideHTML, tilesHTML } from '@/lib/lobby/screen-markup';
 import { dayKey } from '@/lib/school-screen/rules';
 
 /**
@@ -138,8 +138,32 @@ function slides(d: LobbyScreenData): { html: string }[] {
   // Today, then the rest of the week, then the one question that is true on
   // any day of the year. The panel never goes away, so the wall never
   // changes shape because somebody fell behind on the diary.
-  if (list.length === 0) return [{ html: standingSlideHTML() }];
-  return list.map((e) => ({ html: programSlideHTML(e) }));
+  const diary = list.length === 0
+    ? [{ html: standingSlideHTML() }]
+    : list.map((e) => ({ html: programSlideHTML(e) }));
+
+  /**
+   * Picture, programme, picture, programme.
+   *
+   * Strictly alternating, and a picture leads: somebody walking past gets a
+   * photograph of a child making pizza before they get a timetable. A run
+   * of pictures followed by a run of cards reads as two screens taking
+   * turns at the same slot.
+   *
+   * Photographs come newest first — the pizzas made this morning are the
+   * ones the people standing here were part of. When one list runs out the
+   * other finishes on its own rather than repeating itself: a programme
+   * shown twice in a round looks like the wall has stuck.
+   */
+  const photos = d.photos.map((p) => ({ html: photoSlideHTML(p) }));
+  if (photos.length === 0) return diary;
+
+  const out: { html: string }[] = [];
+  for (let i = 0; i < Math.max(photos.length, diary.length); i++) {
+    if (i < photos.length) out.push(photos[i]);
+    if (i < diary.length) out.push(diary[i]);
+  }
+  return out;
 }
 
 function renderClock() {

@@ -63,7 +63,13 @@ async function chesedMinuteFlyer(): Promise<ScreenFlyer> {
   return { ...CHESED_MINUTE, qrSvg: await qrSvg(CHESED_MINUTE_URL) };
 }
 
-export async function buildScreenData(slug: string, origin: string, now = new Date()): Promise<ScreenData | null> {
+export async function buildScreenData(
+  slug: string,
+  origin: string,
+  now = new Date(),
+  /** How many approved photographs this screen wants. */
+  opts: { photos?: number } = {},
+): Promise<ScreenData | null> {
   if (!isDatabaseConfigured()) return null;
 
   const school = await prisma.school.findUnique({
@@ -102,7 +108,10 @@ export async function buildScreenData(slug: string, origin: string, now = new Da
     prisma.screenPhoto.findMany({
       where: { schoolId: school.id, status: "APPROVED", consent: true },
       orderBy: { decidedAt: "desc" },
-      take: 2,
+      // Two is what a school's screen uses: the newest pair open its
+      // slideshow and the flyers carry the rest of it. The lobby wall shows
+      // photographs in their own right and asks for more.
+      take: opts.photos ?? 2,
       select: { id: true, imageId: true, caption: true },
     }).catch(() => []),
 

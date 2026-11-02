@@ -100,7 +100,9 @@ export async function buildLobbyScreenData(
   origin: string,
   now = new Date(),
 ): Promise<LobbyScreenData | null> {
-  const base = await buildScreenData(LOBBY_SLUG, origin, now);
+    // Photographs are their own slide on this wall, not a pair opening a
+  // slideshow, so it asks for a dozen rather than two.
+  const base = await buildScreenData(LOBBY_SLUG, origin, now, { photos: 12 });
   if (!base) return null;
 
   const doc = await readDoc();

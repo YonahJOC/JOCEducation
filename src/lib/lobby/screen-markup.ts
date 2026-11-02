@@ -90,6 +90,28 @@ export function programSlideHTML(e: LobbyEvent): string {
 }
 
 /**
+ * A photograph of chesed actually happening, filling the slot.
+ *
+ * The wall could say what is on today and what everybody has done, and had
+ * no way at all to show a child rolling dough — which is the one thing in
+ * this building that needs no caption. Somebody uploaded ten of them and
+ * they went nowhere, because the uploader was offered for a screen that
+ * could not draw them.
+ *
+ * Edge to edge, no white card: the picture is the slide. The caption sits
+ * on a gradient over the foot of it, and only when there is one — a
+ * ribbon reading "No caption" is worse than no ribbon.
+ */
+export function photoSlideHTML(p: { imageUrl: string; caption: string | null }): string {
+  const caption = (p.caption ?? "").trim();
+  return `<div class="slide slide-photo">
+  <img class="slide-photo-img" src="${esc(p.imageUrl)}" alt="" />
+  <div class="slide-photo-tag">${ms('photo_camera')}Chesed in action</div>
+  ${caption ? `<div class="slide-photo-cap">${esc(caption)}</div>` : ''}
+</div>`;
+}
+
+/**
  * What the slide slot shows when the diary has run out.
  *
  * There are two fallbacks before this one — today's programmes, then the

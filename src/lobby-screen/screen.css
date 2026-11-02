@@ -346,3 +346,52 @@
 .slide-stand .stand-group {
   display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
+
+/* ── A photograph in the slide slot ──────────────────────────────────────
+ *
+ * The picture is the slide: no white card, no padding, edge to edge inside
+ * the same radius every other slide uses. A chesed photograph is the one
+ * thing on this wall that explains itself, and cropping it into a frame
+ * with 48px of white around it would be apologising for it.
+ *
+ * The chip and the caption float on top. The caption rides a gradient
+ * rather than a solid bar, because these are phone photos and a hard edge
+ * across one of them looks like a mistake.
+ */
+.slide-photo { padding: 0; overflow: hidden; background: #0d1b33; }
+.slide-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.slide-photo-tag {
+  position: absolute;
+  top: 26px;
+  left: 26px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 19px;
+  border-radius: 999px;
+  background: rgba(13, 27, 51, 0.72);
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.slide-photo-tag .ss-ms { font-size: 24px; color: #ff8e00; }
+.slide-photo-cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 90px 34px 30px;
+  background: linear-gradient(to top, rgba(13, 27, 51, 0.88) 38%, rgba(13, 27, 51, 0));
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+}
