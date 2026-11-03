@@ -98,6 +98,8 @@ type U = {
    * what everyone does before any admin role has been assigned.
    */
   capabilities?: string[] | null;
+  /** Their admin role is the whole of their access. See isInternal. */
+  scoped?: boolean | null;
 } | null | undefined;
 
 /** True for any @justonechesed.org address. */
@@ -179,9 +181,19 @@ function rankOf(role?: string | null): number {
   return RANK[(role as Role) ?? "TEACHER"] ?? 0;
 }
 
-/** Anyone on the JOC side: STAFF, ADMIN or SUPER_ADMIN. */
+/**
+ * Anyone on the JOC side: STAFF, ADMIN or SUPER_ADMIN.
+ *
+ * Except somebody on a scoped admin role, who is deliberately not. A JOC
+ * address grants the run of the site — the lesson plans, the resource
+ * library, the board, the shop — and that is exactly what somebody brought
+ * in to look after the screens should not get. They keep what their
+ * capabilities open, and nothing else, the way a school sees its own panel
+ * and nothing beyond it.
+ */
 export function isInternal(user: U): boolean {
   if (!user) return false;
+  if (user.scoped) return false;
   return rankOf(user.role) >= RANK.STAFF || isStaffEmail(user.email);
 }
 

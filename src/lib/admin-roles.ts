@@ -136,7 +136,7 @@ export async function capabilitiesForUser(userId: string): Promise<Capability[] 
   try {
     const u = await prisma.user.findUnique({
       where: { id: userId },
-      select: { adminRole: { select: { capabilities: true, isSuperAdmin: true } } },
+      select: { adminRole: { select: { capabilities: true, isSuperAdmin: true, scoped: true } } },
     });
     if (!u?.adminRole) return null;
     // The super admin role always holds everything, whatever the row says.
@@ -144,5 +144,29 @@ export async function capabilitiesForUser(userId: string): Promise<Capability[] 
     return clean(u.adminRole.capabilities);
   } catch {
     return null;
+  }
+}
+
+/**
+ * Whether this person's admin role is the whole of their access.
+ *
+ * A JOC address grants the run of the site on its own, which is right for
+ * almost everybody there and wrong for somebody brought in to look after
+ * the screens. On a scoped role they keep what their capabilities open and
+ * lose everything that came with the address.
+ */
+export async function scopedForUser(userId: string): Promise<boolean> {
+  if (!isDatabaseConfigured()) return false;
+  try {
+    const u = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { adminRole: { select: { scoped: true, isSuperAdmin: true } } },
+    });
+    // A super admin is never scoped, whatever the row says — the same
+    // belt-and-braces as the capability list above.
+    if (!u?.adminRole || u.adminRole.isSuperAdmin) return false;
+    return u.adminRole.scoped;
+  } catch {
+    return false;
   }
 }

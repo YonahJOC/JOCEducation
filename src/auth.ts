@@ -8,7 +8,7 @@ import {
   initialRoleFor, isStaffEmail, isSuperAdminEmail, isProgramStaffEmail,
   emailDomain, isConsumerEmail,
 } from "@/lib/access";
-import { capabilitiesForUser } from "@/lib/admin-roles";
+import { capabilitiesForUser, scopedForUser } from "@/lib/admin-roles";
 
 /**
  * Two ways in.
@@ -138,6 +138,7 @@ const config: NextAuthConfig = {
           // as the role itself — so a permissions change takes effect within
           // five minutes without anybody having to sign out.
           token.capabilities = await capabilitiesForUser(String(token.uid));
+          token.scoped = await scopedForUser(String(token.uid));
           token.refreshedAt = Date.now();
         } catch {
           // Keep the existing claims rather than signing someone out.
@@ -158,7 +159,17 @@ const config: NextAuthConfig = {
       // built-in default for their role.
       session.user.capabilities = (token.capabilities as string[] | null) ?? null;
 
-      const staffEmail = isStaffEmail(session.user.email);
+      /**
+       * A scoped admin role is the whole of somebody's access.
+       *
+       * Their JOC address would otherwise hand them the run of the site —
+       * the materials, the board, the shop — which is the one thing
+       * somebody brought in for the screens is not meant to have. Read
+       * before isStaff, so nothing downstream has to know about it.
+       */
+      session.user.scoped = Boolean(token.scoped);
+
+      const staffEmail = isStaffEmail(session.user.email) && !session.user.scoped;
       session.user.isStaff = staffEmail;
 
       // A JOC address always resolves to at least STAFF, even if the stored

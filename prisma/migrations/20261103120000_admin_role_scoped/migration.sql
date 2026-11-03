@@ -1,0 +1,11 @@
+-- An admin role that is the whole of somebody's access, not an addition to it.
+--
+-- A JOC address grants the run of the site on its own: lesson plans, the
+-- resource library, the Teachers' Board, the shop. That is right for almost
+-- everybody at JOC and wrong for somebody brought in to look after the
+-- screens, who should see the screens and nothing else.
+--
+-- `scoped` says so. A person on a scoped role is not internal: they keep
+-- exactly what their capabilities open and lose the free run of everything
+-- else, the same way a school sees its own panel and nothing beyond it.
+ALTER TABLE "AdminRole" ADD COLUMN IF NOT EXISTS "scoped" BOOLEAN NOT NULL DEFAULT false;

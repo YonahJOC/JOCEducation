@@ -17,6 +17,11 @@ declare module "next-auth" {
        * role, and access falls back to the built-in default for their role.
        */
       capabilities: string[] | null;
+      /**
+       * Their admin role is the whole of their access, not an addition to
+       * it: a JOC address stops granting the run of the site.
+       */
+      scoped?: boolean;
     } & DefaultSession["user"];
   }
 

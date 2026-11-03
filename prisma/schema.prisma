@@ -1618,6 +1618,13 @@ model AdminRole {
   /// but they cannot be deleted — the console would have nobody to run it.
   builtIn Boolean @default(false)
 
+  /// This role is the whole of somebody's access, not an addition to it.
+  ///
+  /// A JOC address grants the run of the site on its own. Somebody brought
+  /// in to look after the screens should see the screens: scoped takes the
+  /// free run away and leaves exactly what the capabilities open.
+  scoped Boolean @default(false)
+
   /// True for the super admin row only. Always holds every capability, and
   /// the console refuses to take any away: without this it is possible to
   /// remove your own access and lock everybody out permanently.
