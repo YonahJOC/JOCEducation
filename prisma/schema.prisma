@@ -614,6 +614,7 @@ model User {
 
   @@index([schoolId])
   @@index([role])
+  ambassadorMessages AmbassadorMessage[] @relation("AmbassadorMessageAuthor")
 }
 
 model Account {
@@ -2136,6 +2137,7 @@ model ProgramAmbassador {
   @@unique([userId, schoolId, programId])
   @@index([schoolId, programId])
   @@index([supervisorId])
+  messages AmbassadorMessage[]
 }
 
 /// A code a teacher hands to a student, on paper or out loud.
@@ -2258,6 +2260,42 @@ model SchoolMessage {
 
   @@index([schoolId, sentAt])
   @@index([schoolId, inbound, seenAt])
+}
+
+
+/// A student ambassador and their teacher, in writing.
+///
+/// Everything else on an ambassador's side is one-directional: they send
+/// work up, the teacher says yes or no, and Updates tells them what
+/// happened. A fifteen-year-old who does not understand why their flyer was
+/// set aside had nowhere to ask.
+///
+/// A conversation is (ambassadorId) — there is nothing to store about one
+/// that this column does not already say, the same reasoning as
+/// SchoolMessage.
+model AmbassadorMessage {
+  id           String            @id @default(cuid())
+  ambassadorId String
+  ambassador   ProgramAmbassador @relation(fields: [ambassadorId], references: [id], onDelete: Cascade)
+
+  /// Who the other side is. TEACHER is their own supervising teacher.
+  /// JOC exists and nothing writes it: a private channel between adults at
+  /// JOC and somebody's child is a safeguarding decision, not a feature.
+  audience String @default("TEACHER")
+
+  body String @db.Text
+
+  /// True when the student wrote it.
+  fromStudent Boolean @default(false)
+
+  authorId String?
+  author   User?   @relation("AmbassadorMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  sentAt DateTime  @default(now())
+  seenAt DateTime?
+
+  @@index([ambassadorId, sentAt])
+  @@index([ambassadorId, fromStudent, seenAt])
 }
 
 enum ProgramPostKind {

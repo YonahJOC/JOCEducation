@@ -6,7 +6,8 @@ import { IconFont } from "@/components/ui/IconFont";
 import { PortalShell } from "@/components/shell/PortalShell";
 import { ambassadorNav } from "@/lib/nav";
 import { myAmbassadorship } from "@/lib/ambassadors";
-import { updatesForAmbassador, waitingForAmbassador } from "@/lib/school-screen/editor-data";
+import { waitingForAmbassador } from "@/lib/school-screen/editor-data";
+import { unreadForAmbassador } from "@/lib/ambassador-messages";
 
 /**
  * The ambassador's corner of the portal.
@@ -48,9 +49,11 @@ export default async function AmbassadorLayout({ children }: { children: React.R
     );
   }
 
-  const [waiting, updates] = await Promise.all([
+  // Updates moved onto the Live Screen page, so its count joins the one
+  // already on that item rather than carrying a rail item of its own.
+  const [waiting, unread] = await Promise.all([
     waitingForAmbassador(amb.schoolId, me?.id ?? null).catch(() => 0),
-    updatesForAmbassador(amb.schoolId, me?.id ?? null).catch(() => 0),
+    unreadForAmbassador(me?.id ?? null).catch(() => 0),
   ]);
 
   return (
@@ -69,7 +72,7 @@ export default async function AmbassadorLayout({ children }: { children: React.R
          * teacher who gave it and to nobody else.
          */
         role="Screen ambassador"
-        items={ambassadorNav({ waiting, updates })}
+        items={ambassadorNav({ waiting, unread })}
         action={
           <Link
             href={`/school-screen/${amb.schoolSlug}`}

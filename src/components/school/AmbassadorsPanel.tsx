@@ -7,6 +7,8 @@ import {
 import type { SupervisedAmbassador, ReportForTeacher } from "@/lib/ambassadors";
 import { sectionHeading, C, F, R, T, HIT, CONTENT_MAX, primaryButton, secondaryButton, chip, bandLabel } from "@/lib/joc-tokens";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { MessageThread } from "@/components/ambassador/MessageThread";
+import type { AmbassadorMessage } from "@/lib/ambassador-messages";
 
 /**
  * Your ambassadors, for the teacher who supervises them.
@@ -19,11 +21,13 @@ const day = (d: Date | string) =>
   new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 
 export function AmbassadorsPanel({
-  programs, invites, supervised,
+  programs, invites, supervised, threads,
 }: {
   programs: { id: number; name: string; stage: string }[];
   invites: { id: string; code: string; expiresAt: Date | string; usedCount: number; programId: number; programName: string }[];
   supervised: SupervisedAmbassador[];
+  /** Each student's conversation with this teacher, by ambassadorship id. */
+  threads: Record<string, AmbassadorMessage[]>;
 }) {
   const current = supervised.filter((a) => a.current);
   const past = supervised.filter((a) => !a.current);
@@ -75,7 +79,7 @@ export function AmbassadorsPanel({
         </div>
       ) : (
         <div style={{ display: "grid", gap: "12px" }}>
-          {current.map((a) => <Ambassador key={a.id} a={a} />)}
+          {current.map((a) => <Ambassador key={a.id} a={a} thread={threads[a.id] ?? []} />)}
         </div>
       )}
 
@@ -85,7 +89,7 @@ export function AmbassadorsPanel({
             Finished
           </h2>
           <div style={{ display: "grid", gap: "12px" }}>
-            {past.map((a) => <Ambassador key={a.id} a={a} />)}
+            {past.map((a) => <Ambassador key={a.id} a={a} thread={threads[a.id] ?? []} />)}
           </div>
         </>
       )}
@@ -227,10 +231,12 @@ function Invite({
   );
 }
 
-function Ambassador({ a }: { a: SupervisedAmbassador }) {
+function Ambassador({ a, thread }: { a: SupervisedAmbassador; thread: AmbassadorMessage[] }) {
   const [open, setOpen] = useState(a.reports.some((r) => !r.seen));
   const [ended, setEnded] = useState(false);
   const [asking, setAsking] = useState(false);
+  // Open straight away when the student is waiting on an answer.
+  const [talking, setTalking] = useState(a.unread > 0);
   const [pending, start] = useTransition();
   const unread = a.reports.filter((r) => !r.seen).length;
   // The question is about a person, so it uses their name.
@@ -274,6 +280,47 @@ function Ambassador({ a }: { a: SupervisedAmbassador }) {
           {a.reports.map((r) => <Report key={r.id} r={r} />)}
         </div>
       )}
+
+      {/*
+        Their side of the conversation.
+
+        Open when they have written something nobody has read: a message
+        from a student sitting behind a collapsed panel is a message
+        nobody answers.
+      */}
+      <div style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.paper, padding: "16px 18px" }}>
+        <button
+          type="button"
+          onClick={() => setTalking((v) => !v)}
+          aria-expanded={talking}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "8px", minHeight: HIT,
+            background: "none", border: "none", cursor: "pointer", padding: 0,
+            fontFamily: F.ui, fontSize: "15px", fontWeight: 700, color: C.ink,
+          }}
+        >
+          <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "20px", color: C.muted }}>
+            {talking ? "expand_less" : "forum"}
+          </span>
+          Messages
+          {a.unread > 0 ? (
+            <span style={{ ...chip, backgroundColor: C.blueTint, color: C.blue }}>{a.unread} new</span>
+          ) : thread.length > 0 ? (
+            <span style={{ ...chip, backgroundColor: C.panel, color: C.muted }}>{thread.length}</span>
+          ) : null}
+        </button>
+
+        {talking ? (
+          <div style={{ marginTop: "12px" }}>
+            <MessageThread
+              ambassadorId={a.id}
+              messages={thread}
+              teacherName={a.studentName ?? a.studentEmail}
+              closed={!a.current}
+            />
+          </div>
+        ) : null}
+      </div>
 
       {/*
         Ending somebody's place used to be one click, from a quiet

@@ -369,32 +369,40 @@ export const SIDE = {
 export function ambassadorNav(opts: {
   /** Items waiting for this student's first look. */
   waiting?: number;
-  /** Their own things that have moved since they last looked. */
-  updates?: number;
+  /** Messages from their teacher they have not opened. */
+  unread?: number;
 } = {}): NavItem[] {
   return [
-    { label: "Home", href: "/ambassador", hint: "Where your things got to", icon: "home" },
     {
-      label: "Live screen",
-      href: "/ambassador/screen",
-      hint: "What is showing in your building",
-      icon: "slideshow",
+      label: 'How this works',
+      href: '/ambassador',
+      hint: 'What an ambassador does',
+      icon: 'help',
     },
     {
-      label: "Your first look",
-      href: "/ambassador/uploads",
-      hint: "What is waiting for you, and what you have sent in",
-      icon: "inventory",
+      /**
+       * One place for the wall.
+       *
+       * It was four items — home, the screen, the queue, the updates —
+       * which read as four jobs. There is one job: the screen. What is
+       * waiting for you, what is on it, and what happened to the things
+       * you sent, all on the page about the thing itself.
+       */
+      label: 'Live Screen',
+      href: '/ambassador/screen',
+      hint: 'What is waiting for you, and what is on the wall',
+      icon: 'slideshow',
       need: opts.waiting || undefined,
-      tone: "orange",
+      tone: 'orange',
+      also: ['/ambassador/uploads', '/ambassador/updates'],
     },
     {
-      label: "Updates",
-      href: "/ambassador/updates",
-      hint: "What happened to the things you sent",
-      icon: "forum",
-      need: opts.updates || undefined,
-      tone: "blue",
+      label: 'Message center',
+      href: '/ambassador/messages',
+      hint: 'Your teacher',
+      icon: 'forum',
+      need: opts.unread || undefined,
+      tone: 'blue',
     },
   ];
 }

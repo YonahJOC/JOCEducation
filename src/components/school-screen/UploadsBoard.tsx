@@ -98,7 +98,7 @@ function liveNow(item: QueueItem, today: string): boolean {
 }
 
 export function UploadsBoard({
-  data, mode, short, initialTab,
+  data, mode, short, initialTab, embedded,
 }: {
   data: ScreenEditorData;
   mode: QueueMode;
@@ -106,6 +106,13 @@ export function UploadsBoard({
   short: string;
   /** Which tab a link asked for, so "2 set aside" lands on the right one. */
   initialTab?: Tab;
+  /**
+   * Drawn inside a page that already has a heading.
+   *
+   * The ambassador side folded this into the Live Screen page, where a
+   * second 30px title under the first one read as two pages stacked.
+   */
+  embedded?: boolean;
 }) {
   const router = useRouter();
   const [, start] = useTransition();
@@ -193,7 +200,7 @@ export function UploadsBoard({
 
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
-      <PageHeader
+      {embedded ? null : <PageHeader
         title={teacher ? "Admin panel" : "Your first look"}
         sub={teacher
           ? "Approve what your ambassadors have posted. Your yes is what puts it in the hallway."
@@ -215,7 +222,29 @@ export function UploadsBoard({
             {adding ? "Close" : "Upload"}
           </button>
         }
-      />
+      />}
+
+      {/* Embedded, the Upload button has no header to live in, so it goes
+          above the tabs where the eye already is. */}
+      {embedded ? (
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+          <button
+            type="button"
+            onClick={() => { setEditing(null); setAdding((a) => (a ? null : "flyer")); }}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "8px", minHeight: HIT,
+              padding: "0 18px", borderRadius: R.button, border: 0, cursor: "pointer",
+              background: C.blue, color: C.white,
+              fontFamily: F.ui, fontSize: "15px", fontWeight: 700,
+            }}
+          >
+            <span aria-hidden="true" className="material-symbols-rounded" style={{ fontSize: "20px" }}>
+              {adding ? "close" : "add"}
+            </span>
+            {adding ? "Close" : "Upload"}
+          </button>
+        </div>
+      ) : null}
 
       {editing ? (
         <div style={{ ...card, padding: "18px", marginBottom: "22px" }}>

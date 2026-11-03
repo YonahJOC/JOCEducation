@@ -2,6 +2,7 @@ import { requireSchoolPanel } from "../account-only";
 import { safeAuth } from "@/auth";
 import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { whoISupervise } from "@/lib/ambassadors";
+import { messagesFor } from "@/lib/ambassador-messages";
 import { AmbassadorsPanel } from "@/components/school/AmbassadorsPanel";
 import { currentSchoolId } from "@/lib/school-scope";
 
@@ -26,6 +27,11 @@ export default async function SchoolAmbassadorsPage() {
   const schoolId = await currentSchoolId();
 
   const supervised = await whoISupervise();
+
+  // Each student's thread with this teacher, loaded alongside their card.
+  const threads = Object.fromEntries(
+    await Promise.all(supervised.map(async (a) => [a.id, await messagesFor(a.id).catch(() => [])] as const)),
+  );
 
   // Programs this school actually runs. Offering a place on a program they
   // have never heard of would be the platform inventing work for them.
@@ -66,6 +72,7 @@ export default async function SchoolAmbassadorsPage() {
       programs={programs}
       invites={invites}
       supervised={supervised}
+      threads={threads}
     />
   );
 }

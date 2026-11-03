@@ -213,6 +213,8 @@ export type SupervisedAmbassador = {
   endsAt: Date | null;
   current: boolean;
   reports: ReportForTeacher[];
+  /** Messages this student has written that the teacher has not opened. */
+  unread: number;
 };
 
 export async function whoISupervise(): Promise<SupervisedAmbassador[]> {
@@ -238,6 +240,8 @@ export async function whoISupervise(): Promise<SupervisedAmbassador[]> {
           event: { select: { title: true } },
         },
       },
+      // What this student has written and the teacher has not opened.
+      _count: { select: { messages: { where: { fromStudent: true, seenAt: null } } } },
     },
   });
 
@@ -251,6 +255,7 @@ export async function whoISupervise(): Promise<SupervisedAmbassador[]> {
     startsAt: a.startsAt,
     endsAt: a.endsAt,
     current: !a.endsAt || a.endsAt.getTime() > now,
+    unread: a._count.messages,
     reports: a.reports.map((r) => ({
       id: r.id,
       occurredOn: r.occurredOn,
