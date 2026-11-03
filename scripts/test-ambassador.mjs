@@ -36,16 +36,38 @@ if (remove) {
   process.exit(0);
 }
 
-// A supervisor: whoever at JOC is around. In real life this is a teacher at
-// the school, but the test school has no staff of its own.
-const supervisor = await prisma.user.findFirst({
-  where: { email: { endsWith: "@justonechesed.org" }, NOT: { email: STUDENT } },
-  orderBy: { email: "asc" },
+/**
+ * A supervisor: a made-up teacher, not a real colleague.
+ *
+ * This used to grab whichever @justonechesed.org account sorted first and
+ * hang the fixture off them — so a real member of staff turned up as a
+ * student's supervisor, and the ambassador's own page told her "Avigayil
+ * Rosenwasser reads these" about write-ups nobody reads. A test fixture
+ * should never put a real person's name in front of anybody.
+ *
+ * The address is on `.test`, a reserved TLD, so no mail can reach it even
+ * by accident — the same reason the demo school uses one.
+ */
+const SUPERVISOR = "teacher@joc-test-school.test";
+const supervisor = await prisma.user.upsert({
+  where: { email: SUPERVISOR },
+  update: { schoolId: school.id },
+  create: {
+    email: SUPERVISOR,
+    name: "Mrs. Tamar Weiss",
+    role: "SCHOOL_ADMIN",
+    schoolId: school.id,
+    mustChangePassword: false,
+    emailVerified: new Date(),
+  },
 });
 
 const student = await prisma.user.upsert({
   where: { email: STUDENT },
-  create: { email: STUDENT, name: "Test Ambassador", role: "TEACHER" },
+  // A name, not a label: half of what this fixture is for is seeing what
+  // the pages look like with a person's name in them, and "Test
+  // Ambassador" tells you nothing about whether a real one fits.
+  create: { email: STUDENT, name: "Shira Blau", role: "TEACHER" },
   update: {},
 });
 
