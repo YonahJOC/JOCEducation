@@ -198,7 +198,7 @@ export function isInternal(user: U): boolean {
 export const CAPABILITIES = [
   // Educational material
   "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms", "app_activity",
-  "set_program_light", "lobby",
+  "set_program_light", "lobby", "school_screens",
   // The calendar
   "programming", "cycles", "coordinators",
   // School accounts
@@ -221,7 +221,7 @@ export const CAPABILITY_GROUPS: { label: string; capabilities: Capability[] }[] 
     label: "Educational material",
     capabilities: [
       "lessons", "resources", "programs", "board", "rooms", "shop", "site", "forms",
-      "app_activity", "set_program_light", "lobby",
+      "app_activity", "set_program_light", "lobby", "school_screens",
     ],
   },
   { label: "The calendar", capabilities: ["programming", "cycles", "coordinators"] },
@@ -244,6 +244,7 @@ export const CAPABILITY_LABELS: Record<Capability, string> = {
   app_activity: "JOC App activity",
   set_program_light: "The traffic light",
   lobby: "The lobby screen",
+  school_screens: "Every school's screen",
   run_admin_agenda: "The admin meeting",
   programming: "Programming calendar",
   cycles: "Chesed Cycle dates",
@@ -278,6 +279,8 @@ export const CAPABILITY_DESCRIPTIONS: Record<Capability, string> = {
     "Overrule the traffic light on a school: hold a program off, or clear one to be approached. A coordinator can act on a light without this; only this changes one.",
   lobby:
     "What the TV in the lobby shows — today's programs, what is coming up, and the impact counters.",
+  school_screens:
+    "Look after the televisions in schools: what is on each one, and what students and teachers have sent in for it. Not the school accounts behind them — no plans, no seats, no money.",
   run_admin_agenda:
     "Run the admin meeting — the schools coordinators have sent for a decision, and what was decided about each.",
   programming: "What is running and where — the events at each school.",

@@ -138,7 +138,7 @@ export function jocNav(
   }
   // Every TV JOC looks after, in one place: the lobby's, and each school's
   // hallway screen. It opens on whichever of the two this person can change.
-  if (can(user, "lobby") || can(user, "schools")) {
+  if (can(user, "lobby") || can(user, "schools") || can(user, "school_screens")) {
     items.push({
       label: "Live screens",
       href: can(user, "lobby") ? "/admin/lobby" : "/admin/school-screens",

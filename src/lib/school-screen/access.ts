@@ -27,9 +27,18 @@ export type ScreenActor = { userId: string | null; email: string | null; role: S
 
 type SessionUser = NonNullable<Awaited<ReturnType<typeof safeAuth>>>["user"];
 
+/**
+ * Somebody at JOC who looks after the screens.
+ *
+ * `schools` is here because whoever runs school accounts has always had
+ * this. `school_screens` exists because that is far too much to hand
+ * somebody whose job is the walls: it opens plans, seats and the whole
+ * client list. Looking after what thirty corridors show is a job of its
+ * own, and now it is a permission of its own.
+ */
 export function isScreenStaff(user: SessionUser | null | undefined): boolean {
   if (openForReview) return true;
-  return Boolean(user && can(user, "schools"));
+  return Boolean(user && (can(user, "schools") || can(user, "school_screens")));
 }
 
 /** This person's part in this school's screen, or null if they have none. */
