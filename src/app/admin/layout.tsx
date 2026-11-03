@@ -6,6 +6,8 @@ import { signOutAction } from "@/app/actions/auth";
 import { PortalShell, ShellExit } from "@/components/shell/PortalShell";
 import { jocNav, roleLabel } from "@/lib/nav";
 import { needCount } from "@/lib/program-today";
+import { can } from "@/lib/access";
+import { jocWaiting } from "@/lib/ambassador-messages";
 import { deskBadges } from "@/lib/my-desk";
 import { pageTitle, C, R, F, label } from "@/lib/joc-tokens";
 
@@ -70,6 +72,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // The two numbers at the top of the rail: what is waiting on this person,
   // and what is new in the office.
   const badges = await deskBadges();
+  // Students waiting on an answer from JOC. Only shown to the people who
+  // can actually open that list.
+  const students = can(me, "messages") || can(me, "schools") ? await jocWaiting().catch(() => 0) : 0;
 
   // A coordinator's rail is the programs they run, each with what it needs.
   const mine = leadsProgram ? await listProgramsForAdmin() : [];
@@ -96,7 +101,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
          check whose console you are in, and an email answers that twice. */
       who={me?.name?.trim() || me?.email || "Nobody signed in"}
       role={openForReview ? "Console" : roleLabel(me, { leadsPrograms: mine.length })}
-      items={jocNav(me, { programs, badges })}
+      items={jocNav(me, { programs, badges: { ...badges, students } })}
       /* Leaving the console. Its own link, under the card — going back to
          the site is not signing out, and the two should not look alike. */
       action={

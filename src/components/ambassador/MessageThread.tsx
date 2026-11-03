@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { C, F, R, T, HIT } from "@/lib/joc-tokens";
 import { sendAmbassadorMessage, seenAmbassadorMessages } from "@/app/actions/ambassador-messages";
-import type { AmbassadorMessage } from "@/lib/ambassador-messages";
+import type { AmbassadorMessage, Audience } from "@/lib/ambassador-messages";
 
 /**
  * One conversation, between a student and their teacher.
@@ -15,13 +15,18 @@ import type { AmbassadorMessage } from "@/lib/ambassador-messages";
  * already taught them.
  */
 export function MessageThread({
-  ambassadorId, messages, teacherName, closed,
+  ambassadorId, messages, teacherName, closed, audience = "TEACHER", note,
 }: {
   ambassadorId: string;
   messages: AmbassadorMessage[];
+  /** Whoever is at the other end: a teacher, a student, or Just One Chesed. */
   teacherName: string;
   /** A finished tenure: readable, not writable. */
   closed?: boolean;
+  /** Which of the two conversations this is. */
+  audience?: Audience;
+  /** The line under the heading, where the default is not right. */
+  note?: string;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -44,7 +49,7 @@ export function MessageThread({
     if (body.length < 2) { setError("Write something first."); return; }
     setError(null);
     start(async () => {
-      const res = await sendAmbassadorMessage(ambassadorId, body);
+      const res = await sendAmbassadorMessage(ambassadorId, body, audience);
       if (!res.ok) { setError(res.error); return; }
       setText("");
       router.refresh();
@@ -61,7 +66,7 @@ export function MessageThread({
           {teacherName}
         </p>
         <p style={{ ...T.small, fontWeight: 400, color: C.muted, margin: "2px 0 0" }}>
-          Your teacher. Nobody else at your school reads this.
+          {note ?? "Your teacher. Nobody else at your school reads this."}
         </p>
       </header>
 

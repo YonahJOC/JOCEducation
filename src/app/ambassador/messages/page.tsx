@@ -45,14 +45,17 @@ export default async function AmbassadorMessagesPage() {
     );
   }
 
-  const messages = await messagesFor(scope.id).catch(() => []);
+  const [messages, jocMessages] = await Promise.all([
+    messagesFor(scope.id, "TEACHER").catch(() => []),
+    messagesFor(scope.id, "JOC").catch(() => []),
+  ]);
   const teacherName = scope.supervisor.name?.trim() || "Your teacher";
 
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
       <PageHeader
         title="Message center"
-        sub={`Ask ${teacherName} anything about the screen.`}
+        sub={`Ask ${teacherName}, or Just One Chesed, anything about the screen.`}
       />
 
       <div style={{ display: "grid", gap: "18px", maxWidth: "760px" }}>
@@ -60,23 +63,27 @@ export default async function AmbassadorMessagesPage() {
           ambassadorId={scope.id}
           messages={messages}
           teacherName={teacherName}
+          note="Your teacher. Nobody else at your school reads this."
         />
 
         {/*
-          Said plainly, because the alternative is a student waiting for an
-          answer from somebody who was never going to write.
+          One channel to the organisation, not a thread with each person in
+          it. A student should not have to work out who to ask.
         */}
-        <section style={{
-          background: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.row, padding: "16px 18px",
-        }}>
-          <p style={{ fontFamily: F.ui, fontSize: "15.5px", fontWeight: 700, color: C.ink, margin: 0 }}>
-            Just One Chesed does not write to students.
-          </p>
-          <p style={{ ...T.small, fontWeight: 400, color: C.muted, margin: "4px 0 0", lineHeight: 1.5, maxWidth: "58ch" }}>
-            Anything you need from JOC goes through {teacherName}, who can reach them directly.
-            Nothing you write here leaves your school.
-          </p>
-        </section>
+        <MessageThread
+          ambassadorId={scope.id}
+          messages={jocMessages}
+          teacherName="Just One Chesed"
+          audience="JOC"
+          note="Everybody at JOC who looks after ambassadors reads this. Whoever is around will answer."
+        />
+      </div>
+
+      <div style={{ maxWidth: "760px", marginTop: "14px" }}>
+        <p style={{ ...T.small, fontWeight: 400, color: C.faint, margin: 0, lineHeight: 1.5 }}>
+          Both conversations stay here. Your teacher does not see what you write to JOC, and JOC
+          does not see what you write to your teacher.
+        </p>
       </div>
     </div>
   );

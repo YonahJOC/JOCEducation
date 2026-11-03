@@ -3,6 +3,8 @@ import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 import { safeAuth, openForReview } from "@/auth";
 import { can } from "@/lib/access";
 import { Inbox, type InboxRow } from "@/components/admin/Inbox";
+import { StudentMessages } from "@/components/admin/StudentMessages";
+import { jocThreads } from "@/lib/ambassador-messages";
 import { C, F, label, pageTitle } from "@/lib/joc-tokens";
 
 /**
@@ -40,7 +42,7 @@ export default async function AdminMessagesPage() {
     );
   }
 
-  const [messages, schools, programs] = await Promise.all([
+  const [messages, schools, programs, studentThreads] = await Promise.all([
     prisma.schoolMessage.findMany({
       orderBy: { sentAt: "asc" },
       take: 2000,
@@ -65,6 +67,9 @@ export default async function AdminMessagesPage() {
         leads: { select: { id: true, name: true, email: true }, take: 1 },
       },
     }).catch(() => []),
+    // What ambassadors have written to JOC. One list for everybody who
+    // reads this page, because a student writes to JOC and not to a person.
+    seesAll ? jocThreads().catch(() => []) : Promise.resolve([]),
   ]);
 
   const programById = new Map(programs.map((p) => [p.id, p]));
@@ -209,6 +214,11 @@ export default async function AdminMessagesPage() {
           </p>
         </div>
       </div>
+
+      {/* Students first: a school waits a day without minding, and a
+          fifteen-year-old who asked a question and heard nothing decides
+          the whole thing is dead. */}
+      {seesAll ? <StudentMessages threads={studentThreads} /> : null}
 
       <Inbox
         rows={rows}

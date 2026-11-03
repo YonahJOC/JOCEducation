@@ -64,7 +64,7 @@ export function jocNav(
   opts: {
     programs?: { name: string; slug: string; heroColor: string; need: number }[];
     /** The two counts in the rail. */
-    badges?: { desk: number; office: number };
+    badges?: { desk: number; office: number; students?: number };
   } = {},
 ): NavItem[] {
   // "My desk", not "Today": the page is no longer only the things that are
@@ -143,7 +143,14 @@ export function jocNav(
   // What the schools have written. A row on Today saying somebody wrote in
   // needs somewhere to land, and the schools list is not it.
   if (can(user, "schools") || can(user, "app_activity")) {
-    items.push({ label: "Messages", href: "/admin/messages", hint: "What schools have written in", icon: "forum" });
+    items.push({
+      label: "Messages", href: "/admin/messages", icon: "forum",
+      hint: "What schools and ambassadors have written in",
+      // Students only. A school waiting a day does not mind; a student who
+      // asked a question and heard nothing decides the thing is dead.
+      need: opts.badges?.students || undefined,
+      tone: "orange",
+    });
   }
   if (can(user, "programs") || can(user, "coordinators") || programs.length > 0) {
     items.push({ label: "Programs", href: "/admin/my-programs", hint: "Each program's own console", icon: "volunteer_activism" });
