@@ -74,19 +74,45 @@ export function jocNav(
   // the desk is this person's own work, the Office is everybody's. Everyone in
   // the console gets both, including a coordinator who gets nothing else —
   // the Buzz inside it is still gated on its own permission.
-  const items: NavItem[] = [
+  /**
+   * Somebody whose admin role is the whole of their access.
+   *
+   * My desk and The Office are the two halves of working at JOC — your own
+   * list and everybody else's. Somebody brought in to look after the
+   * screens is not working at JOC in that sense, and handing them a desk
+   * with a Buzz feed on it is the opposite of what scoped means. They get
+   * the items their capabilities build, and nothing above them.
+   */
+  const scoped = Boolean(user?.scoped);
+
+  const items: NavItem[] = scoped ? [] : [
     { label: "My desk", href: "/admin", hint: "Your own work", need: opts.badges?.desk, tone: "orange", icon: "home" },
     { label: "The Office", href: "/admin/office", hint: "The Buzz, schools, the board", need: opts.badges?.office, tone: "blue", icon: "apartment" },
   ];
-  const programs = opts.programs ?? [];
+  const programs = scoped ? [] : (opts.programs ?? []);
 
   // A coordinator holds no capability at all. Their navigation is the
   // programs they run, one item each, and nothing else — because nothing else
   // in the console is theirs.
+  /**
+   * Holds something, anything, that the console is organised around.
+   *
+   * This list has to name every capability that builds a rail item below,
+   * or somebody who holds only the missing one is read as holding nothing
+   * and falls into the coordinator branch — which returns early, so the
+   * item their permission was for is never reached.
+   *
+   * That happened: lobby and school_screens were not on this list, so the
+   * person brought in to look after the televisions signed in and found My
+   * desk, The Office and no screens at all.
+   */
   const anyCapability =
     can(user, "schools") || can(user, "programs") || can(user, "lessons") ||
     can(user, "users") || can(user, "programming") || can(user, "forms") ||
-    can(user, "coordinators") || can(user, "run_admin_agenda");
+    can(user, "coordinators") || can(user, "run_admin_agenda") ||
+    can(user, "lobby") || can(user, "school_screens") || can(user, "experiences") ||
+    can(user, "cycles") || can(user, "orders") || can(user, "pricing") ||
+    can(user, "app_activity");
 
   if (!anyCapability && programs.length > 0) {
     for (const p of programs.slice(0, 5)) {

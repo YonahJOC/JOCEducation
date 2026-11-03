@@ -64,3 +64,31 @@ describe("looking after screens is separable from running schools", () => {
     }
   });
 });
+
+describe("the console rail a scoped person gets", () => {
+  it("is their permissions and nothing above them", async () => {
+    const { jocNav } = await import("@/lib/nav");
+    const rail = jocNav(screens).map((i) => i.label);
+    // No My desk, no The Office: those are the two halves of working at
+    // JOC, and this person is here for one thing.
+    expect(rail).toEqual(["Live screens"]);
+  });
+
+  it("still gives everybody else their desk", async () => {
+    const { jocNav } = await import("@/lib/nav");
+    expect(jocNav(ordinary).map((i) => i.label)).toContain("My desk");
+  });
+
+  it("does not swallow a rail item whose capability is the only one held", async () => {
+    const { jocNav } = await import("@/lib/nav");
+    /**
+     * The bug this file was written for. A person holding only `lobby` was
+     * read as holding no capability at all, fell into the coordinator
+     * branch, and that branch returns before Live screens is ever pushed —
+     * so they signed in to My desk, The Office and no screens.
+     */
+    const lobbyOnly = { email: "x@justonechesed.org", role: "STAFF", capabilities: ["lobby"] };
+    const rail = jocNav(lobbyOnly, { programs: [{ name: "Kindness Booth", slug: "kb", heroColor: "#000", need: 0 }] });
+    expect(rail.map((i) => i.label)).toContain("Live screens");
+  });
+});
