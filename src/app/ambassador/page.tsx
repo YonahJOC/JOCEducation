@@ -31,6 +31,87 @@ export const metadata = { title: "Your program" };
 export const dynamic = "force-dynamic";
 
 /**
+ * What the job is, for somebody on their first day.
+ *
+ * They used to arrive at a blue banner and an empty form asking how many
+ * people came to a thing that had not happened yet. Three steps, two
+ * buttons, and the same words a teacher would use handing them the code.
+ */
+function HowItWorks() {
+  const steps = [
+    {
+      icon: "visibility",
+      title: "You get first look",
+      line: "Flyers, photos and shout-outs from your school turn up here. You pass on what should go up.",
+    },
+    {
+      icon: "add_photo_alternate",
+      title: "Send in your own",
+      line: "A flyer for what you run, or a photo of it happening. A teacher approves it before it reaches the wall.",
+    },
+    {
+      icon: "edit_note",
+      title: "Say how it went",
+      line: "After each run, a minute of writing so your teacher knows what actually happened.",
+    },
+  ];
+
+  return (
+    <section style={{
+      background: C.white, border: `1px solid ${C.hairline}`, borderRadius: R.row, padding: "20px",
+    }}>
+      <h2 style={{ fontFamily: F.ui, fontSize: "19px", fontWeight: 700, color: C.ink, margin: "0 0 4px" }}>
+        How this works
+      </h2>
+      <p style={{ ...T.small, fontWeight: 400, color: C.muted, margin: "0 0 16px" }}>
+        Three things, and the first one is the one people are waiting on.
+      </p>
+
+      <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "14px" }}>
+        {steps.map((s, i) => (
+          <li key={s.title} style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
+            <span aria-hidden="true" style={{
+              width: "30px", height: "30px", flex: "none", borderRadius: "999px",
+              background: C.blueTint, color: C.blue,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontFamily: F.data, fontSize: "13px", fontWeight: 700,
+            }}>
+              {i + 1}
+            </span>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ fontFamily: F.ui, fontSize: "16px", fontWeight: 700, color: C.ink, margin: 0 }}>
+                {s.title}
+              </p>
+              <p style={{ ...T.small, fontWeight: 400, color: C.muted, margin: "2px 0 0", lineHeight: 1.5, maxWidth: "52ch" }}>
+                {s.line}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "18px" }}>
+        <Link href="/ambassador/uploads" style={{
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          minHeight: HIT, padding: "0 18px", borderRadius: R.button, textDecoration: "none",
+          background: C.blue, color: C.white, fontFamily: F.ui, fontSize: "15px", fontWeight: 700,
+        }}>
+          Make your first flyer
+        </Link>
+        <Link href="/ambassador/screen" style={{
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          minHeight: HIT, padding: "0 16px", borderRadius: R.button, textDecoration: "none",
+          background: C.white, color: C.ink, border: `1px solid ${C.outline}`,
+          fontFamily: F.ui, fontSize: "15px", fontWeight: 700,
+        }}>
+          See the screen first
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/**
  * Dates the calendar says this program ran at their school.
  *
  * So a write-up can be attached to one rather than typed blind. Up to
@@ -102,6 +183,8 @@ export default async function AmbassadorPage() {
   const theirs = showing.filter((f) => f.endorsedMine || f.mine).length;
 
   const runs = await pastRuns(mine.schoolId, mine.programId);
+  // Nothing sent in and nothing written up: they have just joined.
+  const brandNew = (data ? myUploads(data).length : 0) === 0 && reports.length === 0;
 
   return (
     <div style={{ maxWidth: CONTENT_MAX }}>
@@ -144,7 +227,11 @@ export default async function AmbassadorPage() {
             </section>
           ) : null}
 
-          {data ? (
+          {/* Somebody's first day. They were handed an empty report form
+              and nothing else; this says what the job actually is. */}
+          {brandNew ? <HowItWorks /> : null}
+
+          {data && !brandNew ? (
             <UploadsPeek
               items={myUploads(data).slice(0, 4)}
               short={short}

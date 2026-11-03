@@ -86,8 +86,8 @@ export type ScreenEditorData = {
 /**
  * The name to put against a submission or an approval.
  *
- * It used to return the first word, which made "Rivka Mandel" into "Rivka"
- * and "Mrs. Devorah Klein" into "Mrs." — fine as a hint on a dense row, and
+ * It used to return the first word, which made "Ploni Almoni" into "Ploni"
+ * and "Mrs. Plonit Almonit" into "Mrs." — fine as a hint on a dense row, and
  * useless on a card whose whole job is to say who decided this. A school
  * with two Rivkas learns nothing from "Rivka".
  *

@@ -37,10 +37,10 @@ async function main() {
    */
   const student = await prisma.user.upsert({
     where: { email: "ambassador@demo-academy.test" },
-    update: { name: "Rivka Mandel", schoolId: null, schoolAppAdmin: false, active: true },
+    update: { name: "Ploni Almoni", schoolId: null, schoolAppAdmin: false, active: true },
     create: {
       email: "ambassador@demo-academy.test",
-      name: "Rivka Mandel",
+      name: "Ploni Almoni",
       role: "TEACHER",
       schoolId: null,
       schoolAppAdmin: false,
@@ -126,7 +126,7 @@ async function main() {
 
   await prisma.shoutOut.createMany({
     data: [
-      shout("Chavi stayed behind to help me carry the boxes to the car.", "Tzippy", "10th", "PENDING", false),
+      shout("Plonit stayed behind to help me carry the boxes to the car.", "Plonit", "10th", "PENDING", false),
       shout("Mrs Adler called my grandmother every day she was in hospital.", "Shira", "11th", "ENDORSED", true),
     ],
   });

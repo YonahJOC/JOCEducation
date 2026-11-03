@@ -21,7 +21,7 @@ const item = (over: Partial<QueueItem> = {}): QueueItem => ({
   imageUrl: null,
   quote: null,
   onScreen: null,
-  by: "Rivka Mandel",
+  by: "Ploni Almoni",
   endorsedBy: null,
   status: "PENDING" as ScreenStatus,
   at: "2026-10-22T10:00:00.000Z",
@@ -43,8 +43,8 @@ describe("what happened to the things you sent in", () => {
   });
 
   it("names the ambassador who passed it on", () => {
-    const [u] = ambassadorUpdates([item({ status: "ENDORSED", endorsedBy: "Tzippy Katz" })]);
-    expect(u.line).toContain("Tzippy Katz");
+    const [u] = ambassadorUpdates([item({ status: "ENDORSED", endorsedBy: "Plonit Almonit" })]);
+    expect(u.line).toContain("Plonit Almonit");
   });
 
   it("does not invent a name when nobody endorsed it", () => {

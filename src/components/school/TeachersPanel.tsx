@@ -110,7 +110,7 @@ export function TeachersPanel({
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           <input
             value={name} onChange={(e) => setName(e.target.value)}
-            placeholder="Morah Leah Stein"
+            placeholder="Morah Plonit Almonit"
             style={{ ...field, flex: "1 1 150px", minWidth: "140px" }}
           />
           <input

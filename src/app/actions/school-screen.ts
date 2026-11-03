@@ -473,7 +473,15 @@ export async function submitShoutOut(form: FormData): Promise<R> {
     if (!me?.id || !me.email) return { ok: false, error: "Sign in with your school email first." };
     if (!emailAllowed(me.email, school.screenEmailDomains)) {
       const d = school.screenEmailDomains[0];
-      return { ok: false, error: d ? `Sign in with your school email (@${d}).` : "Sign in with your school email first." };
+      // Two different problems, and telling somebody to "sign in with your
+      // school email" when their school has not said what one looks like
+      // sends them round in circles.
+      return {
+        ok: false,
+        error: d
+          ? `Sign in with your school email (@${d}).`
+          : "Your school hasn't switched shout-outs on yet. Ask a teacher to set your school's email address in the screen settings.",
+      };
     }
   }
 

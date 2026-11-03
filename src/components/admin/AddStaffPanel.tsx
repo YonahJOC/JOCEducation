@@ -64,7 +64,7 @@ export function AddStaffPanel({ schoolId, disabled }: { schoolId: string; disabl
               id={`staff-name-${schoolId}`}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Morah Leah Stein"
+              placeholder="Morah Plonit Almonit"
               disabled={disabled || pending}
               style={field}
             />

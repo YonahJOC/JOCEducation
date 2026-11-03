@@ -20,21 +20,21 @@ const flyer = (over: Partial<ScreenEditorData["flyers"][number]> = {}) => ({
   line: "11th grade", startsAt: null, time: "2:00 PM", place: "Gym",
   ambassadors: null, icon: null, imageUrl: null, qrUrl: null, qrLabel: null,
   showFrom: "2026-10-20", showUntil: "2026-10-27", sort: 0,
-  status: "PENDING" as ScreenStatus, by: "Rivka Mandel", endorsedBy: null, mine: false, endorsedMine: false,
+  status: "PENDING" as ScreenStatus, by: "Ploni Almoni", endorsedBy: null, mine: false, endorsedMine: false,
   at: "2026-10-22T10:00:00.000Z",
   ...over,
 });
 
 const photo = (over: Partial<ScreenEditorData["photos"][number]> = {}) => ({
   id: "p1", imageUrl: "/x.jpg", caption: "Packing packages",
-  status: "PENDING" as ScreenStatus, by: "Rivka Mandel", endorsedBy: null, mine: false,
+  status: "PENDING" as ScreenStatus, by: "Ploni Almoni", endorsedBy: null, mine: false,
   at: "2026-10-22T10:00:00.000Z",
   ...over,
 });
 
 const shout = (over: Partial<ScreenEditorData["shoutOuts"][number]> = {}) => ({
   id: "x1", text: "Thank you for helping me with my locker",
-  firstName: "Dovid", lastName: "Klein", grade: "11th", showName: true,
+  firstName: "Ploni", lastName: "Almoni", grade: "11th", showName: true,
   email: "dovid@demo-academy.test", status: "PENDING" as ScreenStatus,
   createdAt: "2026-10-22T10:00:00.000Z", endorsedBy: null, at: "2026-10-22T10:00:00.000Z",
   ...over,
@@ -113,7 +113,7 @@ describe("the three kinds in one list", () => {
 
   it("signs a shout-out the way the TV will sign it", () => {
     const data = make({ shoutOuts: [shout()] });
-    expect(queueItems(data, ["PENDING"])[0].onScreen).toBe("— Dovid Klein, 11th grade");
+    expect(queueItems(data, ["PENDING"])[0].onScreen).toBe("— Ploni Almoni, 11th grade");
   });
 
   it("keeps a name off the screen when the student said no", () => {
@@ -122,7 +122,7 @@ describe("the three kinds in one list", () => {
     const data = make({ shoutOuts: [shout({ showName: false })] });
     const item = queueItems(data, ["PENDING"])[0];
     expect(item.onScreen).toBe("— 11th grade");
-    expect(item.onScreen).not.toContain("Dovid");
+    expect(item.onScreen).not.toContain("Ploni");
   });
 
   it("never counts a shout-out as somebody in the portal's own upload", () => {

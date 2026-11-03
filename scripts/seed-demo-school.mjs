@@ -117,7 +117,7 @@ async function main() {
     },
     create: {
       email: EMAIL,
-      name: "Mrs. Shira Feldman",
+      name: "Mrs. Plonit Almonit",
       role: "SCHOOL_ADMIN",
       schoolId: school.id,
       passwordHash,
