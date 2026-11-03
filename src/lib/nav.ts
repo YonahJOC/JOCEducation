@@ -263,6 +263,12 @@ export function schoolNav(
         hint: "Approve what your ambassadors have posted",
         need: opts.waitingUploads || undefined, tone: "orange",
       },
+      {
+        // A demo of student ambassadors with no way to read what they
+        // write is a demo of half of it.
+        label: "Ambassadors", href: "/school/ambassadors", icon: "diversity_3",
+        hint: "Your students, their write-ups and what they have asked you",
+      },
       { label: "People", href: "/school/teachers", hint: "Who can sign in, and what they can do", icon: "group" },
     ];
   }

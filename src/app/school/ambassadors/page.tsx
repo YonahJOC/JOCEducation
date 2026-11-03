@@ -21,7 +21,9 @@ export const metadata = { title: "Your ambassadors" };
 export const dynamic = "force-dynamic";
 
 export default async function SchoolAmbassadorsPage() {
-  await requireSchoolPanel();
+  // Part of the demo portal: a demo of student ambassadors with no way to
+  // read what they write is a demo of half of it.
+  await requireSchoolPanel({ demo: "allow" });
 
   const session = await safeAuth();
   const schoolId = await currentSchoolId();
