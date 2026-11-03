@@ -50,9 +50,9 @@ function HowItWorks() {
       line: "A flyer for what you run, or a photo of it happening. A teacher approves it before it reaches the wall.",
     },
     {
-      icon: "edit_note",
-      title: "Say how it went",
-      line: "After each run, a minute of writing so your teacher knows what actually happened.",
+      icon: "tv",
+      title: "Watch it go up",
+      line: "Your teacher says yes, and it is in the corridor within five minutes.",
     },
   ];
 
@@ -190,7 +190,7 @@ export default async function AmbassadorPage() {
     <div style={{ maxWidth: CONTENT_MAX }}>
       <PageHeader
         title={first ? `Hi, ${first}` : "Your program"}
-        sub={`You run ${mine.programName}, and you get first look at the hallway screen.`}
+        sub={`You look after the screen at ${mine.schoolName}. Nothing goes up on it until you have seen it first.`}
       />
 
       <div style={{ display: "flex", gap: "22px", alignItems: "flex-start", flexWrap: "wrap" }}>

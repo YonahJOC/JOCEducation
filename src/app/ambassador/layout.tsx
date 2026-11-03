@@ -59,7 +59,16 @@ export default async function AmbassadorLayout({ children }: { children: React.R
       <PortalShell
         side="school"
         who={amb.schoolName}
-        role={`Ambassador · ${amb.programName}`}
+        /**
+         * The job, not the programme.
+         *
+         * An ambassadorship is stored against a programme because the row
+         * needs one, and the rail was printing it as though that were what
+         * the student does. It is not: they look after the screen. The
+         * programme is where their place came from, which matters to the
+         * teacher who gave it and to nobody else.
+         */
+        role="Screen ambassador"
         items={ambassadorNav({ waiting, updates })}
         action={
           <Link
