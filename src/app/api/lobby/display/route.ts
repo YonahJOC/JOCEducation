@@ -1,19 +1,28 @@
+import { safeAuth, openForReview } from "@/auth";
+import { can } from "@/lib/access";
 import { readDoc } from "@/lib/lobby/store";
 import { sanitizeDoc } from "@/lib/lobby/config";
 import { liveTotals, liveTag } from "@/lib/lobby/live";
 
 /**
- * What the screens read. Public, because a TV cannot sign in.
+ * The whole lobby document, for the lobby panel's preview.
  *
- * It carries nothing a passer-by could not read off the screen itself: the
- * programs running today, what is coming up and the impact counters.
+ * It used to be public, when it was what the TV read. The wall reads
+ * /api/lobby/screen now, and this is the raw document: the team's private
+ * notes on each program, the Google key and the counter's password. So it
+ * goes only to somebody who may edit the lobby.
  *
- * ETag on the version number and a 304 when it has not moved — a Fire TV
- * stick polls this every minute, all day, forever.
+ * ETag on the version number and a 304 when it has not moved.
  */
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  if (!openForReview) {
+    const session = await safeAuth();
+    if (!session?.user) return Response.json({ error: "Sign in required." }, { status: 401 });
+    if (!can(session.user, "lobby")) return Response.json({ error: "Not yours." }, { status: 403 });
+  }
+
   const [doc, live] = await Promise.all([readDoc(), liveTotals()]);
 
   // The ETag covers the live figures as well as the document's version.

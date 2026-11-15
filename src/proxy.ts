@@ -83,6 +83,8 @@ const PUBLIC_PATHS = new Set([
   // Same reason: it has to open as itself and ask, rather than bounce
   // somebody to a marketing page.
   "/buzz",
+  // The iPad counter: it asks for its own way in (see /counter/open).
+  "/counter",
 ]);
 
 // Reachable by anyone signed in, including someone who still has to change
@@ -101,8 +103,12 @@ const PUBLIC_PREFIXES = [
   // files show only what anybody standing in the lobby can already read off
   // the wall. /api/lobby/doc, which edits it, is not here — that one checks
   // the session and the lobby permission itself.
+  // (/api/lobby/display used to be here. It is the raw document — notes,
+  // keys, the counter's password — and now checks the lobby permission.)
   "/lobby",
-  "/api/lobby/display",
+  // The iPad counter and its private link. The page decides for itself: the
+  // link's key, a device that already has it, or a lobby sign-in.
+  "/counter/",
   // The lobby wall reads this one. Same reason: a television cannot sign in,
   // and it carries only what somebody standing in the lobby can already see.
   "/api/lobby/screen",

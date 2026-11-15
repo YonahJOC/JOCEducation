@@ -76,6 +76,11 @@ describe("the lobby endpoints", () => {
     expect((await r.json()).programs).toEqual([]);
   });
 
+  it("keeps the raw document (notes, keys, the counter's password) from anyone without the lobby permission", async () => {
+    allowed = false;
+    expect([401, 403]).toContain((await display(req())).status);
+  });
+
   it("refuses an edit from somebody without the lobby permission", async () => {
     allowed = false;
     expect((await putDoc(put(0, emptyDoc()))).status).toBe(403);
