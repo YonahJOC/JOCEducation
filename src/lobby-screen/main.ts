@@ -261,13 +261,11 @@ function render() {
   // is not.
   show('grades', true);
   setHTML('grades', tilesHTML([
-    // A plus says "at least this many". That is honest about a figure
-    // somebody rounded down, and wrong about one that has been counted:
-    // hours comes from the app to the hour, and pizzas and challahs are
-    // exact tallies. Beds is still a round number typed in, so it keeps
-    // its plus.
-    { value: d.lobby.hours != null ? count(d.lobby.hours) : '—', caption: 'hours of chesed', icon: 'schedule', on: true },
-    { value: count(d.lobby.counters.beds) + '+', caption: 'beds built', icon: 'bed' },
+    // All four alike: none is lit up over the others, because the wall is
+    // showing what JOC has done together, not ranking it. And every figure
+    // is shown as it stands, with no "+" after it.
+    { value: d.lobby.hours != null ? count(d.lobby.hours) : '—', caption: 'hours of chesed', icon: 'schedule' },
+    { value: count(d.lobby.counters.beds), caption: 'beds built', icon: 'bed' },
     { value: count(d.lobby.counters.pizzas), caption: 'pizzas made', icon: 'local_pizza' },
     { value: count(d.lobby.counters.challahs), caption: 'challahs baked', icon: 'bakery_dining' },
   ]));
