@@ -267,7 +267,7 @@ function render() {
     { value: d.lobby.hours != null ? count(d.lobby.hours) : '—', caption: 'hours of chesed', icon: 'schedule' },
     { value: count(d.lobby.counters.beds), caption: 'beds built', icon: 'bed' },
     { value: count(d.lobby.counters.pizzas), caption: 'pizzas made', icon: 'local_pizza' },
-    { value: count(d.lobby.counters.challahs), caption: 'challahs baked', icon: 'bakery_dining' },
+    { value: count(d.lobby.counters.challahs), caption: 'challahs baked', icon: 'challah' },
   ]));
 
   show('around', d.network.length > 0);

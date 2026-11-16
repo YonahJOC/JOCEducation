@@ -149,6 +149,25 @@ export function standingSlideHTML(): string {
  * again above the number as well ("Hours", then 265,851, then "of chesed"),
  * which said everything twice in a card with no room to spare.
  */
+/**
+ * A plaited challah, drawn here because the icon font has none.
+ *
+ * Material's nearest, bakery_dining, is a croissant — which on a wall
+ * saying "challahs baked" reads as a rugelach. Strands lean one way along
+ * the top and the other along the bottom, each edged in the tile's own
+ * colour so the plait shows; the fill takes the tile's text colour.
+ */
+const CHALLAH = `<svg class="ss-svg" viewBox="0 0 40 24" aria-hidden="true"><g fill="currentColor" stroke="#F4F7FD" stroke-width="1.1">${[
+  [6, 13.6, 3.4, 4.4, 35], [11, 9.6, 3.8, 5.2, -35], [11, 15.4, 3.8, 5.2, 35],
+  [17, 9, 4.2, 5.8, -35], [17, 15.4, 4.2, 5.8, 35], [23, 9, 4.2, 5.8, -35],
+  [23, 15.4, 4.2, 5.8, 35], [29, 9.6, 3.8, 5.2, -35], [29, 15.4, 3.8, 5.2, 35],
+  [34, 13.6, 3.4, 4.4, -35],
+]
+  .map(([x, y, rx, ry, a]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${a} ${x} ${y})"/>`)
+  .join('')}</g></svg>`;
+
+const tileIcon = (name: string) => (name === 'challah' ? CHALLAH : ms(name));
+
 export function tilesHTML(
   tiles: { value: string; caption: string; icon: string; on?: boolean }[],
 ): string {
@@ -158,7 +177,7 @@ export function tilesHTML(
       // the long ones step down rather than running off the edge.
       const long = t.value.replace(/\D/g, '').length >= 5;
       return `<div class="ss-tile${t.on ? ' on' : ''}">
-    <div class="ss-tile-h">${ms(t.icon)}</div>
+    <div class="ss-tile-h">${tileIcon(t.icon)}</div>
     <div class="ss-tile-n${long ? ' ss-long' : ''}">${esc(t.value)}</div>
     <div class="ss-tile-s">${esc(t.caption)}</div>
   </div>`;
