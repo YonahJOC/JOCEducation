@@ -255,18 +255,21 @@ function render() {
   show('soQr', Boolean(d.shoutOutQrSvg));
   setHTML('soQrBox', d.shoutOutQrSvg ?? '');
 
-  // Where a school shows hours by grade. Hours comes from the app; beds
-  // and pizzas are typed into the panel. A dash, not a nought, when the
-  // app has not answered — a nought is a claim and a dash is not.
+  // Where a school shows hours by grade. Hours comes from the app; beds,
+  // pizzas and challahs from the panel and the iPad counter. A dash, not a
+  // nought, when the app has not answered — a nought is a claim and a dash
+  // is not.
   show('grades', true);
   setHTML('grades', tilesHTML([
     // A plus says "at least this many". That is honest about a figure
     // somebody rounded down, and wrong about one that has been counted:
-    // hours comes from the app to the hour, and pizzas is now an exact
-    // tally. Beds is still a round number typed in, so it keeps its plus.
-    { label: 'Hours', value: d.lobby.hours != null ? count(d.lobby.hours) : '—', unit: 'of chesed', icon: 'schedule', on: true },
-    { label: 'Beds', value: count(d.lobby.counters.beds) + '+', unit: 'given out', icon: 'bed' },
-    { label: 'Pizzas', value: count(d.lobby.counters.pizzas), unit: 'made', icon: 'local_pizza' },
+    // hours comes from the app to the hour, and pizzas and challahs are
+    // exact tallies. Beds is still a round number typed in, so it keeps
+    // its plus.
+    { value: d.lobby.hours != null ? count(d.lobby.hours) : '—', caption: 'hours of chesed', icon: 'schedule', on: true },
+    { value: count(d.lobby.counters.beds) + '+', caption: 'beds built', icon: 'bed' },
+    { value: count(d.lobby.counters.pizzas), caption: 'pizzas made', icon: 'local_pizza' },
+    { value: count(d.lobby.counters.challahs), caption: 'challahs baked', icon: 'bakery_dining' },
   ]));
 
   show('around', d.network.length > 0);

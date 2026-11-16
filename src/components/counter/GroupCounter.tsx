@@ -138,7 +138,7 @@ function Welcome({ onStart }: { onStart: (s: CounterSession) => void }) {
 
       <Field label="What are you making?">
         <Segmented
-          options={[{ id: "pizzas", label: "Pizzas" }, { id: "beds", label: "Beds" }]}
+          options={[{ id: "pizzas", label: "Pizzas" }, { id: "beds", label: "Beds" }, { id: "challahs", label: "Challahs" }]}
           value={project}
           onChange={(v) => setProject(v as Project)}
         />
@@ -341,7 +341,7 @@ function Setup({
 
         <Section title="This group is making">
           <Segmented
-            options={[{ id: "pizzas", label: "Pizzas" }, { id: "beds", label: "Beds" }]}
+            options={[{ id: "pizzas", label: "Pizzas" }, { id: "beds", label: "Beds" }, { id: "challahs", label: "Challahs" }]}
             value={session.project}
             onChange={(v) => onChange({ ...session, project: v as Project })}
           />

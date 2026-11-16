@@ -12,7 +12,7 @@
  * written down in ImpactSubmit with who pressed it.
  */
 
-export type Project = "pizzas" | "beds";
+export type Project = "pizzas" | "beds" | "challahs";
 
 export type CounterSession = {
   groupName: string;
@@ -30,6 +30,7 @@ export type CounterSession = {
 export const WORDS: Record<Project, { made: string; label: string; one: string }> = {
   pizzas: { made: "Pizzas made", label: "Pizza project", one: "pizza" },
   beds: { made: "Beds given out", label: "Bed project", one: "bed" },
+  challahs: { made: "Challahs baked", label: "Challah project", one: "challah" },
 };
 
 export function newSession(input: {
@@ -63,7 +64,7 @@ export function loadSession(): CounterSession | null {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return null;
     const p = JSON.parse(raw) as Partial<CounterSession>;
-    if (p.project !== "pizzas" && p.project !== "beds") return null;
+    if (p.project !== "pizzas" && p.project !== "beds" && p.project !== "challahs") return null;
     const num = (v: unknown, f: number) => (Number.isFinite(Number(v)) ? Math.max(0, Math.round(Number(v))) : f);
     return {
       groupName: typeof p.groupName === "string" ? p.groupName.slice(0, 48) : "",

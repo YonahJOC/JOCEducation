@@ -24,13 +24,13 @@ import { DOC_ID } from "@/lib/lobby/store";
  * is not a lost click, it is a lost group.
  */
 
-export type Project = "pizzas" | "beds";
+export type Project = "pizzas" | "beds" | "challahs";
 
 type Result =
   | { ok: true; total: number }
   | { ok: false; error: string };
 
-const PROJECTS: Project[] = ["pizzas", "beds"];
+const PROJECTS: Project[] = ["pizzas", "beds", "challahs"];
 
 /** As many goes as a busy afternoon could plausibly need, and no more. */
 const TRIES = 5;

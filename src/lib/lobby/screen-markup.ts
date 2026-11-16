@@ -141,19 +141,26 @@ export function standingSlideHTML(): string {
 </div>`;
 }
 
-/** The three tiles, where a school shows hours by grade. */
+/**
+ * Our impact: one tile a figure, where a school shows hours by grade.
+ *
+ * Each tile is the number and one line saying what it is — "hours of
+ * chesed", "pizzas made" — read as a phrase. It used to carry the word
+ * again above the number as well ("Hours", then 265,851, then "of chesed"),
+ * which said everything twice in a card with no room to spare.
+ */
 export function tilesHTML(
-  tiles: { label: string; value: string; unit: string; icon: string; on?: boolean }[],
+  tiles: { value: string; caption: string; icon: string; on?: boolean }[],
 ): string {
   const body = tiles
     .map((t) => {
-      // Six figures need more room than three, and a tile is a third of the
-      // card — the long ones step down rather than running off the edge.
+      // Six figures need more room than three, and with four tiles across
+      // the long ones step down rather than running off the edge.
       const long = t.value.replace(/\D/g, '').length >= 5;
       return `<div class="ss-tile${t.on ? ' on' : ''}">
-    <div class="ss-tile-h"><div class="ss-tile-l">${esc(t.label)}</div>${ms(t.icon)}</div>
+    <div class="ss-tile-h">${ms(t.icon)}</div>
     <div class="ss-tile-n${long ? ' ss-long' : ''}">${esc(t.value)}</div>
-    <div class="ss-tile-s">${esc(t.unit)}</div>
+    <div class="ss-tile-s">${esc(t.caption)}</div>
   </div>`;
     })
     .join('');
@@ -161,7 +168,7 @@ export function tilesHTML(
   return `<div class="ss-gr-head">
   <div class="ss-gr-k">${ms('volunteer_activism')}Our impact</div>
 </div>
-<div class="ss-gr-tiles ss-three">${body}</div>`;
+<div class="ss-gr-tiles ss-four">${body}</div>`;
 }
 
 /**

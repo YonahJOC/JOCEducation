@@ -58,7 +58,7 @@ export type LobbyScreenData = ScreenData & {
     /** All-day items. */
     banners: LobbyEvent[];
     theme: { en: string; he: string; question: string };
-    counters: { beds: number; pizzas: number };
+    counters: { beds: number; pizzas: number; challahs: number };
     /** Hours across every organisation on the app, or null if it did not answer. */
     hours: number | null;
   };
@@ -221,7 +221,11 @@ export async function buildLobbyScreenData(
       })),
       banners: view.banners.map(toEvent),
       theme: doc.settings.theme,
-      counters: { beds: doc.counters.values.beds, pizzas: doc.counters.values.pizzas },
+      counters: {
+        beds: doc.counters.values.beds,
+        pizzas: doc.counters.values.pizzas,
+        challahs: doc.counters.values.challahs,
+      },
       hours: live.hours,
     },
   };

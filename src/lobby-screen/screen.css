@@ -195,9 +195,16 @@
    Lobby only — the slots a school fills with shout-outs and grades
    ====================================================================== */
 
-/* Three tiles, not four grades; six-figure numbers step down a size. */
-.ss-gr-tiles.ss-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.ss-tile-n.ss-long { font-size: 56px; }
+/* Four figures across: hours, beds, pizzas, challahs. Each tile is the
+   number and one line under it, so the tiles are tighter than a school's
+   grade tiles and six-figure numbers step down further. */
+.ss-gr-tiles.ss-four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ss-gr-tiles.ss-four .ss-tile { padding: 18px 18px 18px; gap: 6px; min-width: 0; }
+.ss-gr-tiles.ss-four .ss-tile-h { justify-content: flex-start; }
+.ss-gr-tiles.ss-four .ss-tile-h .ss-ms { font-size: 28px; }
+.ss-gr-tiles.ss-four .ss-tile-n { font-size: 56px; }
+.ss-gr-tiles.ss-four .ss-tile-n.ss-long { font-size: 44px; }
+.ss-gr-tiles.ss-four .ss-tile-s { font-size: 17px; white-space: nowrap; }
 
 
 
