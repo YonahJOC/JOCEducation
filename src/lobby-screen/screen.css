@@ -205,9 +205,11 @@
    are as large as "hours of chesed" can be and still stay on one line. */
 .ss-gr-tiles.ss-four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .ss-gr-tiles.ss-four .ss-tile { padding: 16px 14px 16px; gap: 6px; min-width: 0; }
-.ss-gr-tiles.ss-four .ss-tile-h { justify-content: flex-start; }
+.ss-gr-tiles.ss-four .ss-tile-h { justify-content: flex-start; height: 32px; }
 .ss-gr-tiles.ss-four .ss-tile-h .ss-ms { font-size: 32px; }
-.ss-gr-tiles.ss-four .ss-tile-h .ss-svg { height: 32px; width: auto; display: block; }
+/* The challah is wider than it is tall, so at the glyphs' 32px it stood a
+   size above the clock, bed and pizza beside it. 24px matches them. */
+.ss-gr-tiles.ss-four .ss-tile-h .ss-svg { height: 24px; width: auto; display: block; }
 .ss-gr-tiles.ss-four .ss-tile-n,
 .ss-gr-tiles.ss-four .ss-tile-n.ss-long { font-size: 48px; }
 .ss-gr-tiles.ss-four .ss-tile-s { font-size: 25px; white-space: nowrap; }
